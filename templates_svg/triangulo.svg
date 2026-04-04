@@ -1,0 +1,9 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="none"/>
+  
+  <polygon points="256,50 480,450 32,450" fill="none" stroke="{{COR_BORDA}}" stroke-width="15"/>
+  
+  <text x="256" y="380" font-family="Arial" font-size="250" font-weight="normal" fill="{{COR_TEXTO}}" text-anchor="middle">
+    {{DIGITO}}
+  </text>
+</svg>

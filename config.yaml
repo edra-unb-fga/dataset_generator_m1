@@ -1,0 +1,88 @@
+dataset:
+  num_images: 200
+  image_size: [640, 640]
+  min_objects: 1
+  max_objects: 3
+  output_dir: "output"
+  # Número de augmentações por imagem gerada (expansão de dataset)
+  augmentations_per_image: 2
+
+roboflow:
+  enabled: true
+  output_dir: "roboflow_dataset"
+  seed: 42
+  split:
+    train: 0.8
+    valid: 0.1
+    test: 0.1
+
+foreground: 
+  digits: [3, 4, 5]
+  shapes: ["triangulo", "estrela", "hexagono"]
+
+composition:
+  scale_range: [0.15, 0.4]
+  rotation_limit: 180
+  min_dist: 30
+
+background:
+  folder: "./backgrounds"
+
+# Augmentação com imgaug separada por etapa
+augmentation:
+  # 1) Foreground (aplicado apenas no objeto antes da composição)
+  foreground:
+    enabled: true
+    flip_lr: 0.25
+    flip_ud: 0.05
+    crop_percent: [0.0, 0.03]
+    contrast: [0.75, 1.35]
+    affine_prob: 0.35
+    affine_scale: [0.90, 1.10]
+    affine_translate: [-0.06, 0.06]
+    affine_rotate: [-20, 20]
+    blur: true
+    noise: true
+    noise_gaussian_scale: [0.0, 0.14]
+    noise_dropout_prob: [0.0, 0.06]
+    noise_probability: 0.75
+    brightness: true
+    distortion: true
+
+  # 2) Background (aplicado apenas no fundo antes da composição)
+  background:
+    enabled: true
+    flip_lr: 0.15
+    flip_ud: 0.05
+    crop_percent: [0.0, 0.06]
+    contrast: [0.70, 1.40]
+    affine_prob: 0.45
+    affine_scale: [0.92, 1.08]
+    affine_translate: [-0.05, 0.05]
+    affine_rotate: [-8, 8]
+    blur: true
+    noise: true
+    noise_gaussian_scale: [0.0, 0.18]
+    noise_dropout_prob: [0.0, 0.02]
+    noise_probability: 0.8
+    brightness: true
+    distortion: true
+
+  # 3) Composição (aplicado na imagem final + ajuste de bbox)
+  composition:
+    enabled: true
+    flip_lr: 0.6
+    flip_ud: 0.1
+    crop_percent: [0.0, 0.06]
+    contrast: [0.72, 1.35]
+    affine_prob: 0.6
+    affine_scale: [0.93, 1.07]
+    affine_translate: [-0.05, 0.05]
+    affine_rotate: [-15, 15]
+    blur: true
+    noise: true
+    noise_gaussian_scale: [0.0, 0.14]
+    noise_dropout_prob: [0.0, 0.03]
+    noise_probability: 0.7
+    brightness: true
+    distortion: true
