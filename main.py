@@ -153,6 +153,33 @@ def main():
     
     # Todas as combinações possíveis de (forma, digito)
     all_combinations = [(s, d) for s in shapes for d in digits]
+    shuffled_cycle = all_combinations[:]
+    random.shuffle(shuffled_cycle)
+    cycle_idx = 0
+
+    def _pick_balanced_combinations(k):
+        # Seleciona k combinações tentando manter a frequência global equilibrada.
+        nonlocal shuffled_cycle, cycle_idx
+
+        selected = []
+        selected_set = set()
+        max_unique = min(k, len(all_combinations))
+
+        while len(selected) < max_unique:
+            if cycle_idx >= len(shuffled_cycle):
+                shuffled_cycle = all_combinations[:]
+                random.shuffle(shuffled_cycle)
+                cycle_idx = 0
+
+            combo = shuffled_cycle[cycle_idx]
+            cycle_idx += 1
+
+            if combo not in selected_set:
+                selected.append(combo)
+                selected_set.add(combo)
+
+        return selected
+
     class_map, class_names = _build_shape_digit_class_map(shapes, digits)
     output_size = tuple(config["dataset"].get("image_size", [640, 640]))
 
@@ -167,8 +194,8 @@ def main():
         
         base_objects = []
         
-        # Seleciona combinações únicas para esta imagem
-        selected_combinations = random.sample(all_combinations, num_objects_in_image)
+        # Seleciona combinações únicas para esta imagem com distribuição mais equilibrada.
+        selected_combinations = _pick_balanced_combinations(num_objects_in_image)
 
         for shape, digit in selected_combinations:
             fg = fg_generator.generate(

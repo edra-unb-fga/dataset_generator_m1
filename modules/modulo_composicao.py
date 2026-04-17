@@ -1,6 +1,7 @@
 from PIL import Image
 import random
 import os
+import numpy as np
 
 class CompositionModule:
     def __init__(self, bg_dir=None):
@@ -38,6 +39,25 @@ class CompositionModule:
             return False
             
         return True
+
+    def _get_visible_bbox(self, fg_image, alpha_threshold=8):
+        # Calcula o bbox do conteúdo visível (canal alpha) no próprio FG.
+        # Retorna (x1, y1, x2, y2) no sistema local da imagem.
+        if fg_image.mode != "RGBA":
+            w, h = fg_image.size
+            return (0, 0, w, h)
+
+        alpha = np.array(fg_image.getchannel("A"))
+        ys, xs = np.where(alpha > alpha_threshold)
+
+        if len(xs) == 0 or len(ys) == 0:
+            return None
+
+        x1 = int(xs.min())
+        y1 = int(ys.min())
+        x2 = int(xs.max()) + 1
+        y2 = int(ys.max()) + 1
+        return (x1, y1, x2, y2)
 
     def compose_multiple(self, objects, scale_range=(0.15, 0.4), rotation_limit=0, output_size=(640, 640), min_dist=10, background_image=None):
         # Cola múltiplos FGs no BG de forma aleatória e calcula as BBoxes no formato YOLO.
@@ -87,6 +107,15 @@ class CompositionModule:
             
             fg_resized = fg_image.resize((new_w, new_h), Image.Resampling.LANCZOS)
             fg_w, fg_h = fg_resized.size
+
+            visible_bbox = self._get_visible_bbox(fg_resized)
+            if visible_bbox is None:
+                print(f"Bbox warning: Foreground class {class_id} ficou totalmente transparente. Skipping.")
+                continue
+
+            vis_x1, vis_y1, vis_x2, vis_y2 = visible_bbox
+            vis_w = vis_x2 - vis_x1
+            vis_h = vis_y2 - vis_y1
             
             # 3. Sorteia a Posição (Garantindo que não saia da tela e sem overlap)
             max_x = bg_w - fg_w
@@ -105,7 +134,7 @@ class CompositionModule:
                 candidate_x = random.randint(0, max_x)
                 candidate_y = random.randint(0, max_y)
                 
-                candidate_rect = (candidate_x, candidate_y, fg_w, fg_h)
+                candidate_rect = (candidate_x + vis_x1, candidate_y + vis_y1, vis_w, vis_h)
                 
                 overlap = False
                 for r in placed_rects:
@@ -132,13 +161,18 @@ class CompositionModule:
             bg = Image.alpha_composite(bg, fg_layer)
             
             # 5. MATEMÁTICA DA BBOX (YOLO Format)
-            center_x_px = paste_x + (fg_w / 2.0)
-            center_y_px = paste_y + (fg_h / 2.0)
+            bbox_x1 = paste_x + vis_x1
+            bbox_y1 = paste_y + vis_y1
+            bbox_w = vis_w
+            bbox_h = vis_h
+
+            center_x_px = bbox_x1 + (bbox_w / 2.0)
+            center_y_px = bbox_y1 + (bbox_h / 2.0)
             
             x_center_norm = center_x_px / bg_w
             y_center_norm = center_y_px / bg_h
-            w_norm = fg_w / bg_w
-            h_norm = fg_h / bg_h
+            w_norm = bbox_w / bg_w
+            h_norm = bbox_h / bg_h
             
             yolo_annotation = f"{class_id} {x_center_norm:.6f} {y_center_norm:.6f} {w_norm:.6f} {h_norm:.6f}"
             bbox_data = [x_center_norm, y_center_norm, w_norm, h_norm, class_id]

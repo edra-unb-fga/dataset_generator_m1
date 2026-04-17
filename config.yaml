@@ -39,7 +39,7 @@ augmentation:
     contrast: [0.75, 1.35]
     affine_prob: 0.35
     affine_scale: [0.90, 1.10]
-    affine_translate: [-0.06, 0.06]
+    affine_translate: [0.0, 0.0]
     affine_rotate: [-20, 20]
     blur: true
     noise: true
@@ -58,7 +58,7 @@ augmentation:
     contrast: [0.70, 1.40]
     affine_prob: 0.45
     affine_scale: [0.92, 1.08]
-    affine_translate: [-0.05, 0.05]
+    affine_translate: [0.0, 0.0]
     affine_rotate: [-8, 8]
     blur: true
     noise: true
@@ -77,7 +77,7 @@ augmentation:
     contrast: [0.72, 1.35]
     affine_prob: 0.6
     affine_scale: [0.93, 1.07]
-    affine_translate: [-0.05, 0.05]
+    affine_translate: [0.0, 0.0]
     affine_rotate: [-15, 15]
     blur: true
     noise: true

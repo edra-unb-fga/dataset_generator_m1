@@ -58,6 +58,19 @@ class AugmentationModuleImgAug:
         """Constrói a sequência de augmentações a partir da configuração"""
         if not self.config or not bool(self.config.get('enabled', True)):
             return iaa.Sequential([])
+
+        def _to_tuple_range(value, default):
+            if isinstance(value, (list, tuple)) and len(value) >= 2:
+                return (float(value[0]), float(value[1]))
+            if value is None:
+                return default
+            return (default[0], float(value))
+
+        def _to_scale_255(value, default=(0.0, 0.01 * 255)):
+            start, end = _to_tuple_range(value, default)
+            if max(abs(start), abs(end)) <= 1.0:
+                return (start * 255.0, end * 255.0)
+            return (start, end)
         
         augmenters_list = []
         
@@ -118,11 +131,14 @@ class AugmentationModuleImgAug:
         
         # Blur
         if self.config.get('blur', True):
+            blur_prob = float(self.config.get('blur_probability', 0.20))
+            blur_sigma = _to_tuple_range(self.config.get('blur_sigma', [0.0, 0.20]), (0.0, 0.20))
+            motion_blur = bool(self.config.get('motion_blur', False))
+            blur_options = [iaa.GaussianBlur(sigma=blur_sigma)]
+            if motion_blur:
+                blur_options.append(iaa.MotionBlur(k=(3, 5)))
             augmenters_list.append(
-                iaa.OneOf([
-                iaa.GaussianBlur(sigma=(0.0, 0.3)),
-                iaa.MotionBlur(k=(3, 5)),
-            ])
+                iaa.Sometimes(blur_prob, iaa.OneOf(blur_options))
             )
         
         # Noise
@@ -130,24 +146,18 @@ class AugmentationModuleImgAug:
             # Parâmetros configuráveis de ruído
             noise_prob = float(self.config.get('noise_probability', 0.5))
             
-            gaussian_scale = self.config.get('noise_gaussian_scale', [.0, 0.01*255])
-            if isinstance(gaussian_scale, (list, tuple)):
-                gaussian_scale_tuple = tuple(gaussian_scale)
-            else:
-                gaussian_scale_tuple = (0.0, float(gaussian_scale)*255)
+            gaussian_scale = self.config.get('noise_gaussian_scale', [0.0, 0.01])
+            gaussian_scale_tuple = _to_scale_255(gaussian_scale)
             
             dropout_prob = self.config.get('noise_dropout_prob', [0.01, 0.05])
-            if isinstance(dropout_prob, (list, tuple)):
-                dropout_prob_tuple = tuple(dropout_prob)
-            else:
-                dropout_prob_tuple = (0.01, float(dropout_prob))
+            dropout_prob_tuple = _to_tuple_range(dropout_prob, (0.01, 0.05))
             
             augmenters_list.append(
                 iaa.Sometimes(
                     noise_prob,
                     iaa.OneOf([
-                    iaa.AdditiveGaussianNoise(loc=0, scale=(0.0, 0.01*255)),
-                    iaa.Dropout(p=(0.0, 0.01)),
+                    iaa.AdditiveGaussianNoise(loc=0, scale=gaussian_scale_tuple),
+                    iaa.Dropout(p=dropout_prob_tuple),
                     
 ])  
                 )
@@ -161,15 +171,16 @@ class AugmentationModuleImgAug:
         
         # Perspectiva/Distorção
         if self.config.get('distortion', True):
+            distortion_prob = float(self.config.get('distortion_probability', 0.20))
             augmenters_list.append(
                 iaa.Sometimes(
-                    0.3,
+                    distortion_prob,
                     iaa.PerspectiveTransform(scale=(0.01, 0.03))
                 )
             )
             augmenters_list.append(
                 iaa.Sometimes(
-                    0.2,
+                    distortion_prob,
                     iaa.ElasticTransformation(alpha=(0.0, 30.0), sigma=5.0)
                 )
             )
