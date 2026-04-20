@@ -123,8 +123,105 @@ def _export_roboflow_dataset(output_dir, class_names, export_cfg):
     print(f"- test: {len(test_pairs)} imagens")
     print(f"- classes: {class_names}")
 
+
+def _build_shape_class_map(shapes):
+    class_map = {}
+    class_names = []
+
+    for shape in shapes:
+        class_map[shape] = len(class_names)
+        class_names.append(shape)
+
+    return class_map, class_names
+
+
+def _run_gabarito_mode(config):
+    gabarito_cfg = config.get("gabarito", {})
+
+    num_images = int(gabarito_cfg.get("num_images", config["dataset"].get("num_images", 100)))
+    output_dir = gabarito_cfg.get("output_dir", "output_gabarito")
+    shapes = gabarito_cfg.get("shapes", config.get("foreground", {}).get("shapes", []))
+    marker_scale = float(gabarito_cfg.get("marker_scale", 0.18))
+    aruco_dictionary = gabarito_cfg.get("aruco_dictionary", "DICT_4X4_50")
+    output_size = tuple(config["dataset"].get("image_size", [640, 640]))
+
+    if not shapes:
+        raise ValueError("Nenhuma forma configurada para gerar o gabarito.")
+
+    fg_generator = ForegroundGenerator(template_dir="templates_svg")
+    composer = CompositionModule(bg_dir=config["background"]["folder"])
+    class_map, class_names = _build_shape_class_map(shapes)
+
+    scale_range = tuple(config["composition"].get("scale_range", [0.15, 0.4]))
+    rotation_limit = int(config["composition"].get("rotation_limit", 0))
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    for image_idx in range(num_images):
+        shape_name = random.choice(shapes)
+        class_id = class_map[shape_name]
+        aruco_id = image_idx % 50
+
+        gabarito_fg = fg_generator.generate_gabarito(
+            shape_name=shape_name,
+            aruco_id=aruco_id,
+            output_size=output_size,
+            marker_scale=marker_scale,
+            dictionary_name=aruco_dictionary,
+        )
+
+        composed_image, yolo_txt, _ = composer.compose_and_annotate(
+            gabarito_fg,
+            class_id=class_id,
+            scale_range=scale_range,
+            rotation_limit=rotation_limit,
+            output_size=output_size,
+        )
+
+        image_path = os.path.join(output_dir, f"image_{image_idx}.jpg")
+        label_path = os.path.join(output_dir, f"image_{image_idx}.txt")
+
+        composed_image.save(image_path)
+
+        with open(label_path, "w", encoding="utf-8") as file:
+            file.write(yolo_txt)
+
+        print(f"image_{image_idx}.jpg gerado como gabarito da forma '{shape_name}' (ArUco {aruco_id})")
+
+    export_cfg = dict(config.get("roboflow", {}))
+    if export_cfg.get("enabled", True):
+        export_cfg["output_dir"] = gabarito_cfg.get("roboflow_output_dir", "roboflow_dataset_gabarito")
+        _export_roboflow_dataset(output_dir=output_dir, class_names=class_names, export_cfg=export_cfg)
+
+
+def _choose_dataset_mode(config):
+    configured_mode = str(config.get("mode", "prompt")).strip().lower()
+
+    if configured_mode in {"dataset", "gabarito"}:
+        return configured_mode
+
+    if not os.isatty(0):
+        return "dataset"
+
+    print("Qual dataset você quer gerar?")
+    print("1 - dataset normal")
+    print("2 - gabarito")
+
+    while True:
+        choice = input("Escolha 1 ou 2: ").strip()
+        if choice == "1":
+            return "dataset"
+        if choice == "2":
+            return "gabarito"
+        print("Opção inválida. Digite 1 ou 2.")
+
 def main():
     config = load_config()
+
+    mode = _choose_dataset_mode(config)
+    if mode == "gabarito":
+        _run_gabarito_mode(config)
+        return
 
     num_images = config["dataset"]["num_images"]
     digits = config["foreground"]["digits"]

@@ -7,6 +7,8 @@ dataset:
   # Número de augmentações por imagem gerada (expansão de dataset)
   augmentations_per_image: 2
 
+mode: "prompt"
+
 roboflow:
   enabled: true
   output_dir: "roboflow_dataset"
@@ -19,6 +21,14 @@ roboflow:
 foreground: 
   digits: [3, 4, 5]
   shapes: ["triangulo", "estrela", "hexagono"]
+
+gabarito:
+  num_images: 400
+  output_dir: "output_gabarito"
+  roboflow_output_dir: "roboflow_dataset_gabarito"
+  shapes: ["triangulo_gabarito", "estrela_gabarito", "hexagono_gabarito"]
+  marker_scale: 0.18
+  aruco_dictionary: "DICT_4X4_50"
 
 composition:
   scale_range: [0.15, 0.4]

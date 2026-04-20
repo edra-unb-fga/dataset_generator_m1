@@ -1,7 +1,11 @@
 import cairosvg
 import io
-from PIL import Image
 import os
+import re
+from pathlib import Path
+
+import cv2
+from PIL import Image
 
 class ForegroundGenerator:
     def __init__(self, template_dir="templates_svg"):
@@ -9,24 +13,55 @@ class ForegroundGenerator:
         self.template_dir = template_dir
 
 
+    def _find_template_path(self, shape_name, digit=None):
+        # Procura primeiro o template específico e depois qualquer template da forma.
+        template_dir = Path(self.template_dir)
+        candidates = []
+
+        if digit is not None:
+            candidates.append(template_dir / f"{shape_name}_{digit}.svg")
+
+        candidates.append(template_dir / f"{shape_name}.svg")
+
+        if digit is None:
+            candidates.extend(sorted(template_dir.glob(f"{shape_name}_*.svg")))
+
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
+
+        return None
+
     def _load_template(self, shape_name, digit=None):
         # Lê o arquivo SVG como texto.
-        filepath = ""
+        filepath = self._find_template_path(shape_name, digit)
         try:
-            if digit is not None:
-                # Tenta carregar o template específico (ex: triangulo_3.svg)
-                filepath = os.path.join(self.template_dir, f"{shape_name}_{digit}.svg")
-                if os.path.exists(filepath):
-                    with open(filepath, 'r', encoding='utf-8') as file:
-                        return file.read()
-            
-            # Fallback para o template genérico antigo (ex: triangulo.svg)
-            filepath = os.path.join(self.template_dir, f"{shape_name}.svg")
+            if filepath is None:
+                raise FileNotFoundError
+
             with open(filepath, 'r', encoding='utf-8') as file:
                 return file.read()
-                
         except FileNotFoundError:
-             raise FileNotFoundError(f"Erro: Template não encontrado: {filepath}")
+            raise FileNotFoundError(f"Erro: Template não encontrado: {filepath}")
+
+    def _generate_aruco_marker(self, aruco_id, marker_size, dictionary_name="DICT_4X4_50"):
+        # Gera um marcador ArUco quadrado em escala de cinza.
+        if not hasattr(cv2, "aruco"):
+            raise ImportError(
+                "opencv-contrib-python é necessário para gerar o gabarito com ArUco."
+            )
+
+        dictionary_constant = getattr(cv2.aruco, dictionary_name, None)
+        if dictionary_constant is None:
+            raise ValueError(f"Dicionário ArUco inválido: {dictionary_name}")
+
+        dictionary = cv2.aruco.getPredefinedDictionary(dictionary_constant)
+        max_id = int(dictionary.bytesList.shape[0]) - 1
+        if aruco_id < 0 or aruco_id > max_id:
+            raise ValueError(f"aruco_id fora do intervalo permitido para {dictionary_name}: 0..{max_id}")
+
+        marker_gray = cv2.aruco.generateImageMarker(dictionary, int(aruco_id), int(marker_size))
+        return Image.fromarray(marker_gray).convert("RGBA")
 
     def generate(self, shape_name, digit, color_border="#000000", color_text="#000000", output_size=(512, 512)):
         # Injeta os parâmetros no SVG e renderiza para uma imagem PIL RGBA.
@@ -62,6 +97,44 @@ class ForegroundGenerator:
         image = Image.open(io.BytesIO(png_bytes)).convert("RGBA")
         
         return image
+
+    def generate_gabarito(
+        self,
+        shape_name,
+        aruco_id,
+        color_border="#000000",
+        output_size=(512, 512),
+        marker_scale=0.18,
+        dictionary_name="DICT_4X4_50",
+    ):
+        # Gera uma base sem número e insere um marcador ArUco no centro.
+        svg_content = self._load_template(shape_name, None)
+
+        svg_content = re.sub(r"<text\b.*?</text>", "", svg_content, flags=re.DOTALL)
+        svg_content = svg_content.replace("{{COR_BORDA}}", color_border)
+        svg_content = svg_content.replace("{{COR_TEXTO}}", color_border)
+        svg_content = svg_content.replace("{{DIGITO}}", "")
+
+        png_bytes = cairosvg.svg2png(
+            bytestring=svg_content.encode('utf-8'),
+            output_width=output_size[0],
+            output_height=output_size[1]
+        )
+
+        base_image = Image.open(io.BytesIO(png_bytes)).convert("RGBA")
+
+        marker_size = max(1, int(min(output_size) * marker_scale))
+        marker_image = self._generate_aruco_marker(
+            aruco_id=aruco_id,
+            marker_size=marker_size,
+            dictionary_name=dictionary_name,
+        )
+
+        paste_x = (base_image.width - marker_image.width) // 2
+        paste_y = (base_image.height - marker_image.height) // 2
+        base_image.alpha_composite(marker_image, (paste_x, paste_y))
+
+        return base_image
 
 # TESTE DO MÓDULO
 if __name__ == "__main__":
