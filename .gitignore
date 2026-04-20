@@ -37,7 +37,14 @@ Thumbs.db
 
 # Generated datasets and outputs
 output/
+output_gabarito/
+output_gabarito_*/
 roboflow_dataset/
+roboflow_dataset_gabarito/
+roboflow_dataset_gabarito_*/
+
+# Temporary gabarito smoke-test outputs
+debug_gabarito_*.png
 
 # Temporary files
 *.tmp
