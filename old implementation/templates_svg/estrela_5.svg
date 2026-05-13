@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" width="49.110634mm" height="52.01392690941081mm" viewBox="52.85863799999999 91.4978062502946 49.110634 52.01392690941081" version="1.1" id="svg1615" inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)" sodipodi:docname="Bases Bouncing 2_0.svg">
+  <sodipodi:namedview id="namedview1617" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:document-units="mm" showgrid="false" inkscape:zoom="0.75098906" inkscape:cx="231.02867" inkscape:cy="398.80741" inkscape:window-width="1920" inkscape:window-height="1001" inkscape:window-x="2391" inkscape:window-y="-9" inkscape:window-maximized="1" inkscape:current-layer="layer1" />
+  <defs id="defs1612">
+    <marker style="overflow:visible" id="marker3624" refX="0" refY="0" orient="auto" inkscape:stockid="Stop" markerWidth="1" markerHeight="8" viewBox="0 0 1 8" inkscape:isstock="true" inkscape:collect="always" preserveAspectRatio="xMidYMid">
+      <path style="fill:none;stroke:context-stroke;stroke-width:1" d="M 0,4 V -4" id="path3622" />
+    </marker>
+    <marker style="overflow:visible" id="Stop" refX="0" refY="0" orient="auto" inkscape:stockid="Stop" markerWidth="1" markerHeight="8" viewBox="0 0 1 8" inkscape:isstock="true" inkscape:collect="always" preserveAspectRatio="xMidYMid">
+      <path style="fill:none;stroke:context-stroke;stroke-width:1" d="M 0,4 V -4" id="path171" />
+    </marker>
+  </defs>
+  <g inkscape:label="Camada 1" inkscape:groupmode="layer" id="layer1" transform="translate(-28.632288,-43.299352)">
+    <g id="g1276-8-2" transform="translate(58.65934,121.62938)">
+      <g id="g1282-6-6" transform="translate(-28.839583,-36.352955)">
+        <path style="fill:#ffffff;stroke:none;stroke-width:0.3;stroke-dasharray:none" id="path3117-3-9-3-3" sodipodi:type="arc" sodipodi:cx="76.226486" sodipodi:cy="75.362968" sodipodi:rx="19.555317" sodipodi:ry="19.555317" sodipodi:start="4.7026069" sodipodi:end="4.7020109" sodipodi:arc-type="arc" d="M 76.035198,55.808587 A 19.555317,19.555317 0 0 1 95.780839,75.168766 19.555317,19.555317 0 0 1 76.423602,94.917292 19.555317,19.555317 0 0 1 56.672192,75.562998 19.555317,19.555317 0 0 1 76.023543,55.808705" sodipodi:open="true" />
+        <text xml:space="preserve" style="font-weight:bold;font-size:17.6389px;line-height:249.999px;font-family:arial;-inkscape-font-specification:'arial Bold';text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:1;stroke-dasharray:none" x="76.273857" y="81.594292" id="text2563-8-8-2-2-0-5-4"><tspan sodipodi:role="line" id="tspan2561-3-9-4-4-1-7-6" style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.6389px;font-family:arial;-inkscape-font-specification:arial;fill:#000000;stroke:none;stroke-width:1" x="76.273857" y="81.594292">5</tspan></text>
+        <path sodipodi:type="star" style="fill:none;stroke:#000000;stroke-width:3.2568;stroke-dasharray:none" id="path16028-1-5" inkscape:flatsided="false" sodipodi:sides="5" sodipodi:cx="420.5" sodipodi:cy="435.5" sodipodi:r1="75.307701" sodipodi:r2="37.653847" sodipodi:arg1="0.78539816" sodipodi:arg2="1.4137167" inkscape:rounded="0" inkscape:randomized="0" d="m 473.75059,488.75059 -47.36023,-16.06032 -40.07934,29.90938 0.63916,-50.00516 -40.83072,-28.87521 47.75525,-14.84457 14.84457,-47.75525 28.87521,40.83072 50.00516,-0.63916 -29.90938,40.07934 z" transform="matrix(0.24299422,0.03595419,-0.03595419,0.24299422,-10.199949,-45.415023)" inkscape:transform-center-x="0.058200784" inkscape:transform-center-y="-1.7110102" />
+      </g>
+    </g>
+    </g>
+</svg>
