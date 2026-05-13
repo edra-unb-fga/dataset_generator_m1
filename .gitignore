@@ -49,3 +49,5 @@ debug_gabarito_*.png
 # Temporary files
 *.tmp
 *.temp
+/old implementation/roboflow_dataset
+/old implementation/output
