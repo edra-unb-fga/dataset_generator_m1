@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Synthetic YOLO dataset generator for manometro and landing datasets."
 requires-python = ">=3.10"
 dependencies = [
-  "albumentations>=1.4",
+  "albumentations>=2.0.8",
   "numpy>=1.24",
   "opencv-python>=4.8",
   "Pillow>=10.0",

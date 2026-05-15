@@ -327,6 +327,31 @@ The examples comment each augmentation block with a documentation link. The init
 - `noise_params`: `null`
 - `probability`: `0.1`
 
+`PlasmaShadow`: https://explore.albumentations.ai/transform/PlasmaShadow
+
+- `shadow_intensity_range`: `[0.1, 0.35]`
+- `plasma_size`: `256`
+- `roughness`: `3.0`
+- `probability`: `0.0`
+
+`PlasmaBrightnessContrast`: https://explore.albumentations.ai/transform/PlasmaBrightnessContrast
+
+- `brightness_range`: `[-0.08, 0.08]`
+- `contrast_range`: `[-0.08, 0.08]`
+- `plasma_size`: `256`
+- `roughness`: `3.0`
+- `probability`: `0.0`
+
+`RandomSunFlare`: https://explore.albumentations.ai/transform/RandomSunFlare
+
+- `flare_roi`: `[0.0, 0.0, 1.0, 0.5]`
+- `src_radius`: `80`
+- `src_color`: `[255, 255, 255]`
+- `angle_range`: `[0.0, 1.0]`
+- `num_flare_circles_range`: `[1, 3]`
+- `method`: `overlay`
+- `probability`: `0.0`
+
 ### Final Filters
 
 `RandomGamma`: https://explore.albumentations.ai/transform/RandomGamma

@@ -203,4 +203,10 @@ Initial supported filters:
 
 Unsupported filters should fail config validation rather than being silently ignored.
 
+Stage order in configs should be:
+
+- `background_filters`: `ColorFilters`, then `BlurAndNoiseFilters`.
+- `foreground_filters`: `ColorFilters`, then `BlurAndNoiseFilters`, then `AtmosphericEffectsFilters`.
+- `final_filters`: `ColorFilters`, then `BlurAndNoiseFilters`, then `AtmosphericEffectsFilters`.
+
 Default filter values are listed in `docs/ARCHITECTURE_VERBOSE.md` and mirrored as comments in the example YAML files.

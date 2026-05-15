@@ -229,12 +229,12 @@ Filters are grouped by stage:
 - `foreground_filters`
 - `final_filters`
 
-Each filter entry has Albumentations-like parameter names plus a `probability`. The implementation should build image-only Albumentations transforms from these config blocks.
+Each filter entry has Albumentations-like parameter names plus a `probability`. The implementation should build image-only Albumentations transforms from these config blocks when Albumentations exposes a compatible transform, with documented local fallbacks only where necessary.
 
 Supported initial filters:
 
 - Background: `HueSaturationValue`, `RandomBrightnessContrast`, `GaussianBlur`, `GaussNoise`.
-- Foreground: `HueSaturationValue`, `AdditiveNoise`.
+- Foreground: `HueSaturationValue`, `AdditiveNoise`, `PlasmaShadow`, `PlasmaBrightnessContrast`, `RandomSunFlare`.
 - Final: `RandomGamma`, `PlanckianJitter`, `SaltAndPepper`, `MotionBlur`, `PlasmaShadow`, `PlasmaBrightnessContrast`, `RandomSunFlare`, `Illumination`, `AtmosphericFog`.
 
 ## CLI
