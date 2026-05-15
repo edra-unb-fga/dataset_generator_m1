@@ -1,89 +1,173 @@
-# Reference Notes
+# Preserved Prototype Knowledge
 
-## New Architecture Requirements
+This file captures the implementation details that are worth keeping before the prototype/reference folders are deleted. It intentionally describes the behavior directly instead of pointing back to those folders.
 
-The new application is a staged synthetic generation pipeline:
+## Alpha-Visible Bounding Boxes
 
-```text
-background + foreground generation
--> shared perspective transformations
--> assembly + YOLO annotation
--> final image-only transformations
--> center crop
--> final image
-```
+RGBA foregrounds should use the alpha channel to compute the visible object bbox.
 
-Important constraints:
+Algorithm:
 
-- Config must control probabilities, ranges, object counts, foreground scale, crop ranges, and stage filters.
-- There must be separate configs for `manometro` and `landing`.
-- Albumentations should be used for image-only filters.
-- Affine transformations, perspective transformations, crop, assembly, and bbox math can use OpenCV/Pillow/local geometry.
-- Perspective parameters are sampled once per image and applied to both foreground and background.
-- Foregrounds must be placed so they remain inside the selected final crop.
-- YOLO annotations are generated after the crop from pipeline metadata and placement information.
+1. Read the alpha channel as a 2D array.
+2. Select pixels where `alpha > alpha_threshold`.
+3. If no pixels are visible, treat the foreground as invalid.
+4. Otherwise:
+   - `x1 = min(visible_x)`
+   - `y1 = min(visible_y)`
+   - `x2 = max(visible_x) + 1`
+   - `y2 = max(visible_y) + 1`
 
-## Useful Old Implementation Ideas
+Use a small default threshold such as `8` to ignore near-transparent edges.
 
-From `old implementation/modules/modulo_composicao.py`:
+## Rectangle Overlap With Distance
 
-- `_get_visible_bbox` computes a tight bbox from foreground alpha using a small alpha threshold.
-- `_check_overlap` is a simple rectangle overlap test with a minimum distance.
-- `compose_multiple` shows the core placement loop: sample scale, resize, attempt placement, paste with alpha, then serialize YOLO.
+Placement should reject objects that overlap or sit too close to already placed objects.
 
-Do not port this directly because the new pipeline needs preselected crop bounds, shared perspective, and stage-separated filters.
+For rectangles `(x, y, w, h)`, compute right/bottom as `x + w`, `y + h`. Two rectangles do not conflict when one is fully left, right, above, or below the other by at least `min_instance_distance_px`. Otherwise they conflict.
 
-From `old implementation/modules/modulo_augmentation_imgaug.py`:
+This is intentionally simple and deterministic. It is good enough for initial placement and easy to test.
 
-- Image-only foreground augmentation should preserve the alpha channel.
-- Bounding-box conversion helpers are useful conceptually, but the new app should keep final filters image-only and own the geometry path.
+## Multi-Object Placement Loop
 
-From `old implementation/main.py`:
+For each selected foreground:
 
-- Balanced class selection is useful for landing if the class map uses shape+digit combinations.
-- Roboflow export can be a later helper, not the first output contract unless requested.
+1. Apply rotation and foreground-local transformations.
+2. Scale the foreground based on `sampling.foreground_scale_range`.
+3. Compute the visible bbox after scale.
+4. Try random positions inside the selected crop bounds.
+5. Reject positions that fail containment or minimum-distance checks.
+6. Stop after `sampling.max_placement_attempts`.
+7. If placement fails, skip that instance and write a manifest reason.
 
-## Useful Parameter-Control Example Ideas
+The final annotation uses the visible bbox, not the full transparent foreground canvas.
 
-From `parameter control and features and cli implmentation example/src/augmentation_pipeline.py`:
+## YOLO Serialization
 
-- `argparse` plus YAML config loading is a reasonable CLI baseline.
-- Config merging should be explicit and limited to declared CLI override fields.
-- A manifest/summary JSON is useful for run inspection.
-- Deterministic seeds should be set once at the run level and propagated through sampled per-image parameters.
-
-Do not reuse the `imgaug` implementation. The new spec calls for Albumentations image-only transforms and local geometry for perspective/annotation.
-
-## Rotation Behavior
-
-Two rotation modes should be encoded explicitly:
-
-- `square`: rotate the full foreground with expanded canvas. Use this for `manometro`.
-- `circle`: rotate, then crop to the tight visible alpha/object bbox. Use this for `landing`.
-
-Both modes should return:
-
-- RGBA image.
-- Local visible bbox after rotation/crop.
-- Transform metadata for debugging and manifest entries.
-
-## Annotation Rules
-
-YOLO line format:
+YOLO label lines use:
 
 ```text
 <class_id> <cx> <cy> <w> <h>
 ```
 
-All coordinates are normalized against the final cropped image dimensions. Bboxes should be derived from visible alpha/object bounds after all geometric transforms and placement. Clip boxes to image bounds and skip invalid boxes.
+Where `cx`, `cy`, `w`, and `h` are normalized by final cropped image width/height. Use six decimal places for stable text output.
 
-## Asset Notes
+Conversion from pixel bbox:
 
-Default assets live under `new implementation snippets`:
+```text
+cx = (x1 + x2) / 2 / image_width
+cy = (y1 + y2) / 2 / image_height
+w = (x2 - x1) / image_width
+h = (y2 - y1) / image_height
+```
 
-- Backgrounds: recursive material folders under `backgrounds`.
-- Landing foregrounds: `foregrounds/landing_foregrounds`.
-- Manometro foregrounds: `foregrounds/manometro_foregrounds`.
+Clip boxes to image bounds before serialization and drop boxes with non-positive width or height.
 
-Filename parsing should be deterministic and tested. The class map should be written into `data.yaml` and the manifest.
+## Foreground Alpha Preservation
+
+Image-only filters should not accidentally make transparent regions visible.
+
+Recommended behavior for RGBA foregrounds:
+
+1. Split foreground into RGB and alpha.
+2. Apply image-only filters to RGB.
+3. Recombine filtered RGB with the original alpha.
+4. For pixels where alpha is zero, force RGB to zero as a cleanup step.
+
+This allows color/noise/blur on the visible object without polluting transparent padding.
+
+## Rotation Modes
+
+Square rotation:
+
+- Rotate with expanded canvas.
+- Do not crop after rotation.
+- Compute bbox from visible alpha after rotation.
+- Use for `manometro`.
+
+Circle/tight rotation:
+
+- Rotate with expanded canvas.
+- Compute visible alpha bbox.
+- Crop the rotated image to that visible bbox.
+- Recompute local bbox in cropped coordinates.
+- Use for `landing`.
+
+Both modes should use high-quality resampling and preserve all visible pixels.
+
+## Balanced Class Sampling
+
+For datasets with a small finite set of foreground classes, use shuffled cycles to avoid long random droughts for any class:
+
+1. Build all class candidates.
+2. Shuffle the list.
+3. Draw from it in order.
+4. When exhausted, reshuffle and continue.
+5. For multi-object images, avoid selecting the same candidate twice when possible.
+
+This is optional for the first smoke implementation but useful once class mapping is final.
+
+## Config And CLI Merging
+
+Use this precedence:
+
+```text
+defaults in code
+-> YAML config
+-> explicit CLI overrides
+```
+
+Only supported CLI flags should override config values. Do not implement arbitrary deep overrides in the first version; it makes validation and reproducibility harder.
+
+The run should write a resolved config summary into the manifest or next to it.
+
+## Manifest
+
+Write `manifest.json` when `output.write_manifest` is true. Include:
+
+- Resolved config.
+- Seed.
+- Class map.
+- Generated image count.
+- Skipped image/instance count.
+- Per-image source background.
+- Per-image foreground source files and class IDs.
+- Sampled affine/perspective/filter parameters when available.
+- Placement attempts and skip reasons.
+- Output image and label paths.
+
+This replaces console-only progress logs and makes smoke runs inspectable after the fact.
+
+## Output Contract
+
+Initial output should be flat and YOLO-compatible:
+
+```text
+<output_dir>/
+  images/
+  labels/
+  debug/
+  data.yaml
+  manifest.json
+```
+
+Train/valid/test splitting and Roboflow-style export can be added later as a separate export command.
+
+## Image Loading Normalization
+
+When reading images:
+
+- Convert backgrounds to RGB or RGBA as needed for compositing.
+- Convert foregrounds to RGBA.
+- If an input has grayscale or unusual channels, normalize to expected channel count before processing.
+- Keep output image dtype as `uint8`.
+
+## Error Handling
+
+Prefer structured skip records over crashes for per-sample failures:
+
+- Missing foreground/background files: fatal startup error.
+- Fully transparent foreground: skip instance.
+- Could not place an object: skip instance.
+- Generated image has no labels: skip image.
+- Invalid config values: fatal startup error.
 

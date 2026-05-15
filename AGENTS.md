@@ -2,13 +2,14 @@
 
 ## Mission
 
-Build the new synthetic data generator from `new implementation snippets/NEW ARCHITECTURE.md`. Treat the old implementation and the parameter-control example as references only. The new application must follow the new staged pipeline and YAML schema, especially the shared perspective transform between foreground and background.
+Build the new synthetic data generator from `NEW ARCHITECTURE.md` and the docs in `docs/`. The prototype/reference folders may be deleted, so rely on the self-contained docs rather than old code paths. The new application must follow the staged pipeline and YAML schema, especially the shared perspective transform between foreground and background.
 
 ## Source Of Truth
 
-- Primary spec: `new implementation snippets/NEW ARCHITECTURE.md`
+- Primary spec: `NEW ARCHITECTURE.md`
 - Planning docs: `docs/IMPLEMENTATION_PLAN.md`
 - Reference notes: `docs/REFERENCE_NOTES.md`
+- Config schema: `docs/CONFIG_SCHEMA.md`
 - Example configs: `examples/configs/`
 
 ## Implementation Principles
@@ -38,4 +39,3 @@ CLI overrides config only for declared command-line parameters. Unknown config k
 - Shared perspective parameters are identical for paired foreground/background generation.
 - YOLO annotations match alpha-visible bboxes after placement and crop.
 - Debug images draw bbox overlays and include stage samples.
-

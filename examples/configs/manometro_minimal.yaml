@@ -6,8 +6,8 @@ debug_dir: debug
 seed: 42
 
 paths:
-  backgrounds_dir: new implementation snippets/backgrounds
-  foregrounds_dir: new implementation snippets/foregrounds/manometro_foregrounds
+  backgrounds_dir: backgrounds
+  foregrounds_dir: foregrounds/manometro_foregrounds
   recursive_backgrounds: true
 
 output:
@@ -101,4 +101,3 @@ final_filters:
       angle_range: [-12, 12]
       direction_range: [-0.2, 0.2]
       probability: 0.1
-

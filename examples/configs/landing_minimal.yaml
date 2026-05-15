@@ -6,8 +6,8 @@ debug_dir: debug
 seed: 42
 
 paths:
-  backgrounds_dir: new implementation snippets/backgrounds
-  foregrounds_dir: new implementation snippets/foregrounds/landing_foregrounds
+  backgrounds_dir: backgrounds
+  foregrounds_dir: foregrounds/landing_foregrounds
   recursive_backgrounds: true
 
 output:
@@ -101,4 +101,3 @@ final_filters:
       angle_range: [-20, 20]
       direction_range: [-0.3, 0.3]
       probability: 0.15
-
