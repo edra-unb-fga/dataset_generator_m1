@@ -38,6 +38,7 @@ After each image is assembled and cut, the main thread can still apply some filt
 ## Detailed config file parameters:
 
 ### General parameters:
+
 - `dataset_type`: str, either "manometro" or "landing", this will determine the type of foregrounds to use and the type of behavior of foreground rotation (square or circle method).
 - `num_images`: int, number of images to generate.
 - `output_dir`: str, path to the directory where the generated images and annotations will be saved.
@@ -46,6 +47,7 @@ After each image is assembled and cut, the main thread can still apply some filt
 - `backgrounds_dir`: str or list, path to the directory where the background images are located or a list of paths, default is "backgrounds".
 
 ### Affine Transformations Augmentation and geometric parameters:
+
 - `perspective_transformations`: dict, parameters for the perspective transformations to apply to both the background and foreground on a given image and the probability of applying them.
   - `scale_range`: tuple of float, range of scaling factors for the perspective transformation (min, max).
   - `shear_range`: tuple of float, range of shear factors for the perspective transformation (min, max).
@@ -71,6 +73,7 @@ After each image is assembled and cut, the main thread can still apply some filt
 - `foreground_scale_range`: tuple of float, range of scaling factors for the foreground images as a fraction of the image size (min, max).
 
 ### Image-Only Transformations Albumentations parameters:
+
 - `background_filters`: dict, parameters for the filters to apply to the background images and the probability of applying them.
   - `ColorFilters`: dict, parameters for the color filters to apply to the background images and the probability of applying them.
     - [`HueSaturationValue`](https://explore.albumentations.ai/transform/HueSaturationValue): dict, parameters for the HueSaturationValue filter and probability of applying it.
@@ -103,11 +106,31 @@ After each image is assembled and cut, the main thread can still apply some filt
       - `val_shift_range`: tuple of int, range of values for the value shift, should be in range of -255 and 255 (min, max).
       - `probability`: float, probability of applying the HueSaturationValue filter.  
   - `BlurAndNoiseFilters`: dict, parameters for the BlurAndNoiseFilters to apply to the foreground images and the probability of applying them.
-    - [`AditiveNoise`](https://explore.albumentations.ai/transform/AdditiveNoise): {fill}
-  - `AtmosphericEffectsFilters`: dict, parameters for the atmospheric effects and miscellaneous filters to apply to the final images and the probability of applying them.
-    - [`PlasmaShadow`](https://explore.albumentations.ai/transform/PlasmaShadow): {fill}
-    - [`PlasmaBrightnessContrast`](https://explore.albumentations.ai/transform/PlasmaBrightnessContrast): {fill}
-    - [`RandomSunFlare`](https://explore.albumentations.ai/transform/RandomSunFlare): {fill}
+    - [`AdditiveNoise`](https://explore.albumentations.ai/transform/AdditiveNoise): dict, parameters for the AdditiveNoise filter and probability of applying it.
+      - `noise_type`: str, type of noise distribution to use, either "uniform", "gaussian", "laplace", or "beta".
+      - `spatial_mode`: str, how to generate and apply the noise, either "constant", "per_pixel", or "shared".
+      - `noise_params`: dict or None, parameters for the chosen noise distribution.
+      - `probability`: float, probability of applying the AdditiveNoise filter.
+  - `AtmosphericEffectsFilters`: dict, parameters for the atmospheric effects and miscellaneous filters to apply to the foreground images and the probability of applying them.
+    - [`PlasmaShadow`](https://explore.albumentations.ai/transform/PlasmaShadow): dict, parameters for the PlasmaShadow filter and probability of applying it.
+      - `shadow_intensity_range`: tuple of float, range of values for the shadow intensity, should be between 0 and 1 (min, max).
+      - `plasma_size`: int, size of the initial plasma pattern grid.
+      - `roughness`: float, controls how quickly the plasma noise amplitude increases, should be greater than 0.
+      - `probability`: float, probability of applying the PlasmaShadow filter.
+    - [`PlasmaBrightnessContrast`](https://explore.albumentations.ai/transform/PlasmaBrightnessContrast): dict, parameters for the PlasmaBrightnessContrast filter and probability of applying it.
+      - `brightness_range`: tuple of float, range of values for the spatial brightness adjustment, should be between -1 and 1 (min, max).
+      - `contrast_range`: tuple of float, range of values for the spatial contrast adjustment, should be between -1 and 1 (min, max).
+      - `plasma_size`: int, size of the initial plasma pattern grid.
+      - `roughness`: float, controls how quickly the plasma noise amplitude increases, should be greater than 0.
+      - `probability`: float, probability of applying the PlasmaBrightnessContrast filter.
+    - [`RandomSunFlare`](https://explore.albumentations.ai/transform/RandomSunFlare): dict, parameters for the RandomSunFlare filter and probability of applying it.
+      - `flare_roi`: tuple of float, region where the sun flare can appear in relative coordinates (x_min, y_min, x_max, y_max), should be in range of 0 and 1.
+      - `src_radius`: int, radius of the sun circle in pixels.
+      - `src_color`: tuple of int, color of the sun in RGB format.
+      - `angle_range`: tuple of float, range of angles for the flare direction, should be in range of 0 and 1 (min, max).
+      - `num_flare_circles_range`: tuple of int, range for the number of flare circles to generate (min, max).
+      - `method`: str, method to use for generating the sun flare, either "overlay" or "physics_based".
+      - `probability`: float, probability of applying the RandomSunFlare filter.
   
 - `final_filters`: dict, parameters for the filters to apply to the final images and the probability of applying them.
   - `ColorFilters`: dict, parameters for the color filters to apply to the final images and the probability of applying them.
@@ -120,14 +143,49 @@ After each image is assembled and cut, the main thread can still apply some filt
       - `sampling_method`: str, method to use for sampling the temperature shift, either "uniform" or "gaussian".
       - `probability`: float, probability of applying the PlankianJitter filter.
   - `BlurAndNoiseFilters`: dict, parameters for the BlurAndNoiseFilters to apply to the final images and the probability of applying them.
-    - [`SaltAndPepper`](https://explore.albumentations.ai/transform/SaltAndPepper): {fill}
-    - [`MotionBlur`](https://explore.albumentations.ai/transform/MotionBlur): {fill}
+    - [`SaltAndPepper`](https://explore.albumentations.ai/transform/SaltAndPepper): dict, parameters for the SaltAndPepper filter and probability of applying it.
+      - `amount_range`: tuple of float, range for the total amount of salt and pepper noise, should be between 0 and 1 (min, max).
+      - `salt_vs_pepper_range`: tuple of float, range for the ratio of salt noise to pepper noise, should be between 0 and 1 (min, max).
+      - `probability`: float, probability of applying the SaltAndPepper filter.
+    - [`MotionBlur`](https://explore.albumentations.ai/transform/MotionBlur): dict, parameters for the MotionBlur filter and probability of applying it.
+      - `blur_range`: tuple of int, range of values for the motion blur kernel size, both values should be at least 3 (min, max).
+      - `allow_shifted`: bool, whether to allow random shifts of the motion blur kernel position.
+      - `angle_range`: tuple of float, range of possible angles for the motion blur line in degrees (min, max).
+      - `direction_range`: tuple of float, range for the motion bias, should be between -1 and 1 (min, max).
+      - `probability`: float, probability of applying the MotionBlur filter.
   - `AtmosphericEffectsFilters`: dict, parameters for the atmospheric effects and miscellaneous filters to apply to the final images and the probability of applying them.
-    - [`PlasmaShadow`](https://explore.albumentations.ai/transform/PlasmaShadow): {fill}
-    - [`PlasmaBrightnessContrast`](https://explore.albumentations.ai/transform/PlasmaBrightnessContrast): {fill}
-    - [`RandomSunFlare`](https://explore.albumentations.ai/transform/RandomSunFlare): {fill}
-    - [`Ilumination`](https://explore.albumentations.ai/transform/Illumination): {fill}
-    - [`AtmosphericFog`](https://explore.albumentations.ai/transform/AtmosphericFog): {fill}
+    - [`PlasmaShadow`](https://explore.albumentations.ai/transform/PlasmaShadow): dict, parameters for the PlasmaShadow filter and probability of applying it.
+      - `shadow_intensity_range`: tuple of float, range of values for the shadow intensity, should be between 0 and 1 (min, max).
+      - `plasma_size`: int, size of the initial plasma pattern grid.
+      - `roughness`: float, controls how quickly the plasma noise amplitude increases, should be greater than 0.
+      - `probability`: float, probability of applying the PlasmaShadow filter.
+    - [`PlasmaBrightnessContrast`](https://explore.albumentations.ai/transform/PlasmaBrightnessContrast): dict, parameters for the PlasmaBrightnessContrast filter and probability of applying it.
+      - `brightness_range`: tuple of float, range of values for the spatial brightness adjustment, should be between -1 and 1 (min, max).
+      - `contrast_range`: tuple of float, range of values for the spatial contrast adjustment, should be between -1 and 1 (min, max).
+      - `plasma_size`: int, size of the initial plasma pattern grid.
+      - `roughness`: float, controls how quickly the plasma noise amplitude increases, should be greater than 0.
+      - `probability`: float, probability of applying the PlasmaBrightnessContrast filter.
+    - [`RandomSunFlare`](https://explore.albumentations.ai/transform/RandomSunFlare): dict, parameters for the RandomSunFlare filter and probability of applying it.
+      - `flare_roi`: tuple of float, region where the sun flare can appear in relative coordinates (x_min, y_min, x_max, y_max), should be in range of 0 and 1.
+      - `src_radius`: int, radius of the sun circle in pixels.
+      - `src_color`: tuple of int, color of the sun in RGB format.
+      - `angle_range`: tuple of float, range of angles for the flare direction, should be in range of 0 and 1 (min, max).
+      - `num_flare_circles_range`: tuple of int, range for the number of flare circles to generate (min, max).
+      - `method`: str, method to use for generating the sun flare, either "overlay" or "physics_based".
+      - `probability`: float, probability of applying the RandomSunFlare filter.
+    - [`Illumination`](https://explore.albumentations.ai/transform/Illumination): dict, parameters for the Illumination filter and probability of applying it.
+      - `mode`: str, type of illumination pattern to use, either "linear", "corner", or "gaussian".
+      - `intensity_range`: tuple of float, range of values for the illumination effect strength, should be between 0.01 and 0.2 (min, max).
+      - `effect_type`: str, type of lighting change to apply, either "brighten", "darken", or "both".
+      - `angle_range`: tuple of float, range of gradient angles in degrees, only used for "linear" mode (min, max).
+      - `center_range`: tuple of float, range for the spotlight position in relative coordinates, only used for "gaussian" mode (min, max).
+      - `sigma_range`: tuple of float, range for the spotlight size, only used for "gaussian" mode (min, max).
+      - `probability`: float, probability of applying the Illumination filter.
+    - [`AtmosphericFog`](https://explore.albumentations.ai/transform/AtmosphericFog): dict, parameters for the AtmosphericFog filter and probability of applying it.
+      - `density_range`: tuple of float, range of values for the fog density (min, max).
+      - `fog_color`: tuple of int, fog color per channel.
+      - `depth_mode`: str, method to use for generating synthetic depth, either "linear", "diagonal", or "radial".
+      - `probability`: float, probability of applying the AtmosphericFog filter.
 
 
 ## CLI parameters:
