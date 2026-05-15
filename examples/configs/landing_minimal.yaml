@@ -1,4 +1,4 @@
-# Minimal landing smoke config.
+﻿# Minimal landing smoke config.
 # Full schema/defaults: docs/CONFIG_SCHEMA.md
 # Verbose stage behavior: docs/ARCHITECTURE_VERBOSE.md
 
@@ -65,8 +65,8 @@ background_filters:
       probability: 0.45 # default: 0.4; landing profile override: 0.45
   BlurAndNoiseFilters:
     GaussianBlur: # docs: https://explore.albumentations.ai/transform/GaussianBlur
-      blur_limit: [3, 5] # default: [3, 5]
-      sigma_limit: [0.0, 0.8] # default: [0.0, 0.6]; landing profile override: [0.0, 0.8]
+      blur_range: [3, 5] # default: [3, 5]
+      sigma_range: [0.0, 0.8] # default: [0.0, 0.6]; landing profile override: [0.0, 0.8]
       probability: 0.2 # default: 0.15; landing profile override: 0.2
     GaussNoise: # docs: https://explore.albumentations.ai/transform/GaussNoise
       std_range: [0.0, 0.08] # default: [0.0, 0.06]; landing profile override: [0.0, 0.08]
@@ -162,3 +162,6 @@ final_filters:
       fog_color: [255, 255, 255] # default: [255, 255, 255]
       depth_mode: linear # default: linear
       probability: 0.0 # default: 0.0
+
+
+

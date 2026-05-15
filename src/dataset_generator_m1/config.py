@@ -97,15 +97,16 @@ ALLOWED_GEOMETRY_KEYS = {
 }
 
 ALLOWED_FILTER_PARAMS = {
-    "HueSaturationValue": {"hue_shift_range", "sat_shift_range", "val_shift_range", "probability"},
-    "RandomBrightnessContrast": {"brightness_range", "contrast_range", "brightness_by_max", "ensure_safe_output", "probability"},
-    "GaussianBlur": {"blur_limit", "sigma_limit", "probability"},
+    "HueSaturationValue": {"hue_shift_range", "sat_shift_range", "val_shift_range", "hue_shift_limit", "sat_shift_limit", "val_shift_limit", "probability"},
+    "RandomBrightnessContrast": {"brightness_range", "contrast_range", "brightness_limit", "contrast_limit", "brightness_by_max", "ensure_safe_output", "ensure_safe_range", "probability"},
+    "GaussianBlur": {"blur_range", "sigma_range", "blur_limit", "sigma_limit", "probability"},
     "GaussNoise": {"std_range", "mean_range", "per_channel", "probability"},
     "AdditiveNoise": {"noise_type", "spatial_mode", "noise_params", "std_range", "mean_range", "probability"},
-    "RandomGamma": {"gamma_range", "probability"},
-    "PlanckianJitter": {"mode", "temperature_range", "sampling_method", "probability"},
+    "RandomGamma": {"gamma_range", "gamma_limit", "probability"},
+    "PlanckianJitter": {"mode", "temperature_range", "temperature_limit", "sampling_method", "probability"},
+    "PlankianJitter": {"mode", "temperature_range", "temperature_limit", "sampling_method", "probability"},
     "SaltAndPepper": {"amount_range", "salt_vs_pepper_range", "probability"},
-    "MotionBlur": {"blur_range", "allow_shifted", "angle_range", "direction_range", "probability"},
+    "MotionBlur": {"blur_range", "blur_limit", "allow_shifted", "angle_range", "direction_range", "probability"},
     "PlasmaShadow": {"shadow_intensity_range", "plasma_size", "roughness", "probability"},
     "PlasmaBrightnessContrast": {"brightness_range", "contrast_range", "plasma_size", "roughness", "probability"},
     "RandomSunFlare": {"flare_roi", "src_radius", "src_color", "angle_range", "num_flare_circles_range", "method", "probability"},

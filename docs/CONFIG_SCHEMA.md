@@ -1,4 +1,4 @@
-# Config Schema
+﻿# Config Schema
 
 The generator config is YAML. The minimal examples in `examples/configs/` are the baseline schema for implementation.
 
@@ -210,3 +210,6 @@ Stage order in configs should be:
 - `final_filters`: `ColorFilters`, then `BlurAndNoiseFilters`, then `AtmosphericEffectsFilters`.
 
 Default filter values are listed in `docs/ARCHITECTURE_VERBOSE.md` and mirrored as comments in the example YAML files.
+
+
+

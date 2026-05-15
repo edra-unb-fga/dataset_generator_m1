@@ -127,7 +127,7 @@ Acceptance:
 
 ### 5. Image-Only Filter Factory
 
-Status: implemented locally in `filters.py`; Albumentations is intentionally not required for the first pass.
+Status: implemented in `filters.py` using AlbumentationsX where available. AlbumentationsX is installed through the `albumentationsx` package and imported with the upstream-compatible `import albumentations as A` module path.
 
 - Build image-only transforms from `background_filters`, `foreground_filters`, and `final_filters`.
 - Preserve foreground alpha during image-only foreground filters.
@@ -218,4 +218,4 @@ Acceptance:
 
 - Whether to add a later split/Roboflow export helper. It is not part of the initial core output contract.
 - Whether `final_crop_size_range` should support rectangular `[width, height]` and ranged square crops, or only fixed square values in the first implementation.
-- Whether to replace local filter implementations with Albumentations later. The current code keeps the documented names and parameter schema, but implements them directly.
+- Whether to keep local fallbacks for transforms whose documented config differs from AlbumentationsX runtime constraints, such as signed `MotionBlur.angle_range`, and transforms that are not exposed by the installed AlbumentationsX build.

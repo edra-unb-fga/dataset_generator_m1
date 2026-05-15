@@ -1,4 +1,4 @@
-# Verbose Architecture Reference
+﻿# Verbose Architecture Reference
 
 This document preserves the full design intent from the pre-rewrite architecture notes, updated to the current config structure. It is the long-form reference for implementation decisions, defaults, and stage behavior.
 
@@ -300,8 +300,8 @@ The examples comment each augmentation block with a documentation link. The init
 
 `GaussianBlur`: https://explore.albumentations.ai/transform/GaussianBlur
 
-- `blur_limit`: `[3, 5]`
-- `sigma_limit`: `[0.0, 0.6]`
+- `blur_range`: `[3, 5]`
+- `sigma_range`: `[0.0, 0.6]`
 - `probability`: `0.15`
 
 `GaussNoise`: https://explore.albumentations.ai/transform/GaussNoise
@@ -466,3 +466,6 @@ The CLI should write a resolved config summary into `manifest.json`.
 - Write a manifest instead of relying on console logs.
 - Seed once at run level and derive per-image random state.
 - Keep train/valid/test or Roboflow-style export out of the first core implementation.
+
+
+

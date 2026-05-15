@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 import numpy as np
 
 from dataset_generator_m1.filters import SUPPORTED_FILTERS, apply_filter_groups
@@ -30,7 +30,7 @@ def test_foreground_filters_preserve_alpha_channel():
     [
         ("HueSaturationValue", {"hue_shift_range": [1, 1], "sat_shift_range": [1, 1], "val_shift_range": [1, 1]}),
         ("RandomBrightnessContrast", {"brightness_range": [0.01, 0.01], "contrast_range": [0.01, 0.01]}),
-        ("GaussianBlur", {"blur_limit": [3, 3], "sigma_limit": [0.1, 0.1]}),
+        ("GaussianBlur", {"blur_range": [3, 3], "sigma_range": [0.1, 0.1]}),
         ("GaussNoise", {"std_range": [0.01, 0.01], "mean_range": [0.0, 0.0], "per_channel": False}),
         ("AdditiveNoise", {"noise_type": "gaussian", "spatial_mode": "shared", "noise_params": None}),
         ("RandomGamma", {"gamma_range": [100, 100]}),
@@ -53,3 +53,6 @@ def test_all_documented_filters_are_allowed_and_apply(name, params):
     assert name in SUPPORTED_FILTERS
     assert out.shape == image.shape
     assert out.dtype == np.uint8
+
+
+

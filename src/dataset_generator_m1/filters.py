@@ -4,10 +4,15 @@ import os
 from typing import Any
 
 os.environ.setdefault("NO_ALBUMENTATIONS_UPDATE", "1")
+os.environ.setdefault("ALBUMENTATIONS_NO_TELEMETRY", "1")
 
-import albumentations as A
 import cv2
 import numpy as np
+
+try:
+    import albumentations as A
+except ImportError:
+    A = None
 
 SUPPORTED_FILTERS = {
     "HueSaturationValue",
@@ -73,7 +78,9 @@ def apply_filter_groups(image: np.ndarray, groups: dict[str, Any], rng: np.rando
 
 
 def apply_named_filter(name: str, image: np.ndarray, params: dict[str, Any], rng: np.random.Generator) -> np.ndarray:
-    if name in ALBUMENTATIONS_FILTERS:
+    if name == "PlankianJitter":
+        name = "PlanckianJitter"
+    if A is not None and name in ALBUMENTATIONS_FILTERS:
         return apply_albumentations_filter(name, image, params)
     if name == "HueSaturationValue":
         return hue_saturation_value(image, params, rng)
@@ -109,26 +116,28 @@ def apply_albumentations_filter(name: str, image: np.ndarray, params: dict[str, 
     return transform(image=image)["image"]
 
 
-def build_albumentations_transform(name: str, params: dict[str, Any]) -> A.ImageOnlyTransform:
+def build_albumentations_transform(name: str, params: dict[str, Any]) -> Any:
+    if A is None:
+        raise ImportError("AlbumentationsX is not importable in this environment")
     if name == "HueSaturationValue":
         return A.HueSaturationValue(
-            hue_shift_limit=tuple(params.get("hue_shift_range", [-6, 6])),
-            sat_shift_limit=tuple(params.get("sat_shift_range", [-18, 18])),
-            val_shift_limit=tuple(params.get("val_shift_range", [-12, 12])),
+            hue_shift_range=tuple(get_param(params, "hue_shift_range", "hue_shift_limit", [-6, 6])),
+            sat_shift_range=tuple(get_param(params, "sat_shift_range", "sat_shift_limit", [-18, 18])),
+            val_shift_range=tuple(get_param(params, "val_shift_range", "val_shift_limit", [-12, 12])),
             p=1.0,
         )
     if name == "RandomBrightnessContrast":
         return A.RandomBrightnessContrast(
-            brightness_limit=tuple(params.get("brightness_range", [-0.12, 0.12])),
-            contrast_limit=tuple(params.get("contrast_range", [-0.12, 0.12])),
+            brightness_range=tuple(get_param(params, "brightness_range", "brightness_limit", [-0.12, 0.12])),
+            contrast_range=tuple(get_param(params, "contrast_range", "contrast_limit", [-0.12, 0.12])),
             brightness_by_max=bool(params.get("brightness_by_max", True)),
-            ensure_safe_range=bool(params.get("ensure_safe_output", True)),
+            ensure_safe_output=bool(get_param(params, "ensure_safe_output", "ensure_safe_range", True)),
             p=1.0,
         )
     if name == "GaussianBlur":
         return A.GaussianBlur(
-            blur_limit=tuple(params.get("blur_limit", [3, 5])),
-            sigma_limit=tuple(params.get("sigma_limit", [0.0, 0.6])),
+            blur_range=tuple(get_param(params, "blur_range", "blur_limit", [3, 5])),
+            sigma_range=tuple(get_param(params, "sigma_range", "sigma_limit", [0.0, 0.6])),
             p=1.0,
         )
     if name == "GaussNoise":
@@ -146,11 +155,11 @@ def build_albumentations_transform(name: str, params: dict[str, Any]) -> A.Image
             p=1.0,
         )
     if name == "RandomGamma":
-        return A.RandomGamma(gamma_limit=tuple(params.get("gamma_range", [90, 110])), p=1.0)
+        return A.RandomGamma(gamma_range=tuple(get_param(params, "gamma_range", "gamma_limit", [90, 110])), p=1.0)
     if name == "PlanckianJitter":
         return A.PlanckianJitter(
             mode=params.get("mode", "blackbody"),
-            temperature_limit=tuple(params.get("temperature_range", [5000, 8500])),
+            temperature_range=tuple(get_param(params, "temperature_range", "temperature_limit", [5000, 8500])),
             sampling_method=params.get("sampling_method", "uniform"),
             p=1.0,
         )
@@ -162,7 +171,7 @@ def build_albumentations_transform(name: str, params: dict[str, Any]) -> A.Image
         )
     if name == "MotionBlur":
         return A.MotionBlur(
-            blur_limit=tuple(params.get("blur_range", [3, 5])),
+            blur_range=tuple(get_param(params, "blur_range", "blur_limit", [3, 5])),
             allow_shifted=bool(params.get("allow_shifted", True)),
             angle_range=tuple(params.get("angle_range", [-12, 12])),
             direction_range=tuple(params.get("direction_range", [-0.2, 0.2])),
@@ -211,8 +220,24 @@ def pair(params: dict[str, Any], key: str, default: tuple[float, float]) -> tupl
     return float(value[0]), float(value[1])
 
 
+def pair_from_alias(params: dict[str, Any], preferred: str, legacy: str, default: tuple[float, float]) -> tuple[float, float]:
+    value = get_param(params, preferred, legacy, list(default))
+    return float(value[0]), float(value[1])
+
+
+def get_param(params: dict[str, Any], preferred: str, legacy: str, default: Any) -> Any:
+    if preferred in params:
+        return params[preferred]
+    return params.get(legacy, default)
+
+
 def int_pair(params: dict[str, Any], key: str, default: tuple[int, int]) -> tuple[int, int]:
     value = params.get(key, list(default))
+    return int(value[0]), int(value[1])
+
+
+def int_pair_from_alias(params: dict[str, Any], preferred: str, legacy: str, default: tuple[int, int]) -> tuple[int, int]:
+    value = get_param(params, preferred, legacy, list(default))
     return int(value[0]), int(value[1])
 
 
@@ -243,11 +268,11 @@ def brightness_contrast(image: np.ndarray, params: dict[str, Any], rng: np.rando
 
 
 def gaussian_blur(image: np.ndarray, params: dict[str, Any], rng: np.random.Generator) -> np.ndarray:
-    low, high = int_pair(params, "blur_limit", (3, 5))
+    low, high = int_pair_from_alias(params, "blur_range", "blur_limit", (3, 5))
     kernel = int(rng.integers(low, high + 1))
     if kernel % 2 == 0:
         kernel += 1
-    sigma = rng.uniform(*pair(params, "sigma_limit", (0.0, 0.6)))
+    sigma = rng.uniform(*pair_from_alias(params, "sigma_range", "sigma_limit", (0.0, 0.6)))
     return cv2.GaussianBlur(image, (kernel, kernel), sigmaX=sigma)
 
 
@@ -283,7 +308,7 @@ def salt_and_pepper(image: np.ndarray, params: dict[str, Any], rng: np.random.Ge
 
 
 def motion_blur(image: np.ndarray, params: dict[str, Any], rng: np.random.Generator) -> np.ndarray:
-    low, high = int_pair(params, "blur_range", (3, 5))
+    low, high = int_pair_from_alias(params, "blur_range", "blur_limit", (3, 5))
     size = int(rng.integers(low, high + 1))
     if size % 2 == 0:
         size += 1

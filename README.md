@@ -1,4 +1,4 @@
-# Dataset Generator M1
+﻿# Dataset Generator M1
 
 Synthetic YOLO dataset generator for the `manometro` and `landing` dataset families.
 
@@ -35,3 +35,6 @@ Outputs are written as:
 ```
 
 The implementation follows the canonical spec in `docs/NEW ARCHITECTURE.md`; config defaults and augmentation details are documented in `docs/CONFIG_SCHEMA.md` and `docs/ARCHITECTURE_VERBOSE.md`.
+
+Image-only augmentations use AlbumentationsX. The package dependency is `albumentationsx`, while the Python import remains `import albumentations as A`.
+
