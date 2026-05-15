@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from time import perf_counter
 from typing import Any
 
 import cv2
@@ -10,7 +11,7 @@ import yaml
 
 from .assets import discover_foregrounds, discover_images
 from .config import GeneratorConfig
-from .filters import apply_filter_groups
+from .filters import apply_filter_groups, augmentation_backend_status
 from .imaging import (
     alpha_composite,
     apply_perspective,
@@ -47,6 +48,7 @@ class DatasetGenerator:
         )
 
     def generate(self) -> dict[str, Any]:
+        started_at = perf_counter()
         output_dir = self.config.output_dir
         images_dir = output_dir / "images"
         labels_dir = output_dir / "labels"
@@ -64,9 +66,24 @@ class DatasetGenerator:
             "skips": [],
         }
 
+        print("[dataset-generator-m1] Starting generation")
+        print(f"  dataset_type: {self.config.dataset_type}")
+        print(f"  output_dir: {output_dir}")
+        print(f"  requested images: {self.config.num_images}")
+        print(f"  image_size: {self.config.image_size[0]}x{self.config.image_size[1]}")
+        print(f"  seed: {self.data['seed']}")
+        print(f"  backgrounds: {len(self.backgrounds)} from {self.data['paths']['backgrounds_dir']}")
+        print(f"  foregrounds: {len(self.foregrounds)} from {self.data['paths']['foregrounds_dir']}")
+        print(f"  classes: {len(self.class_names)}")
+        print(f"  augmentations: {augmentation_backend_status()}")
+        if self.config.debug_count:
+            print(f"  debug overlays: first {self.config.debug_count} images")
+        print()
+
         generated = 0
         attempts = 0
         max_attempts = max(self.config.num_images * 5, self.config.num_images + 10)
+        self.print_progress(generated, attempts, max_attempts)
         while generated < self.config.num_images and attempts < max_attempts:
             attempts += 1
             sample_rng = np.random.default_rng(int(self.rng.integers(0, 2**31 - 1)))
@@ -74,14 +91,34 @@ class DatasetGenerator:
                 record = self.generate_one(generated, images_dir, labels_dir, debug_dir, sample_rng)
             except Exception as exc:
                 manifest["skips"].append({"index": generated, "reason": str(exc)})
+                print()
+                print(f"[skip] target image_{generated:06d}: {exc}")
+                self.print_progress(generated, attempts, max_attempts)
                 continue
             if record is None:
                 manifest["skips"].append({"index": generated, "reason": "no_valid_annotations"})
+                print()
+                print(f"[skip] target image_{generated:06d}: no valid annotations after placement/crop")
+                self.print_progress(generated, attempts, max_attempts)
                 continue
             manifest["samples"].append(record)
             generated += 1
+            print()
+            instance_summary = ", ".join(
+                f"{item['class_name']}@{item['bbox']}" for item in record["instances"]
+            )
+            print(
+                f"[ok] image_{record['index']:06d}: "
+                f"{len(record['instances'])} object(s), "
+                f"perspective={record['perspective'].get('enabled', False)}, "
+                f"background={Path(record['background_path']).name}"
+            )
+            if instance_summary:
+                print(f"     objects: {instance_summary}")
+            self.print_progress(generated, attempts, max_attempts)
 
         if generated < self.config.num_images:
+            print()
             recent_reasons = manifest["skips"][-5:]
             raise RuntimeError(
                 f"Generated {generated}/{self.config.num_images} images before retry budget was exhausted. "
@@ -92,7 +129,26 @@ class DatasetGenerator:
             self.write_data_yaml(output_dir)
         if self.data["output"].get("write_manifest", True):
             (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        elapsed = perf_counter() - started_at
+        print()
+        print("[dataset-generator-m1] Finished")
+        print(f"  generated: {generated}/{self.config.num_images}")
+        print(f"  attempts: {attempts}/{max_attempts}")
+        print(f"  skips: {len(manifest['skips'])}")
+        print(f"  elapsed: {elapsed:.1f}s")
+        print(f"  images: {images_dir}")
+        print(f"  labels: {labels_dir}")
+        if self.config.debug_count:
+            print(f"  debug: {debug_dir}")
         return manifest
+
+    def print_progress(self, generated: int, attempts: int, max_attempts: int) -> None:
+        total = self.config.num_images
+        width = 28
+        ratio = generated / total if total else 1.0
+        filled = int(width * ratio)
+        bar = "#" * filled + "-" * (width - filled)
+        print(f"\rprogress [{bar}] {generated}/{total} images | attempts {attempts}/{max_attempts}", end="", flush=True)
 
     def generate_one(
         self,

@@ -11,8 +11,10 @@ import numpy as np
 
 try:
     import albumentations as A
-except ImportError:
+    ALBUMENTATIONS_IMPORT_ERROR = None
+except ImportError as exc:
     A = None
+    ALBUMENTATIONS_IMPORT_ERROR = exc
 
 SUPPORTED_FILTERS = {
     "HueSaturationValue",
@@ -46,6 +48,13 @@ ALBUMENTATIONS_FILTERS = {
     "RandomSunFlare",
     "Illumination",
 }
+
+
+def augmentation_backend_status() -> str:
+    if A is None:
+        return f"local fallbacks (AlbumentationsX import failed: {ALBUMENTATIONS_IMPORT_ERROR})"
+    version = getattr(A, "__version__", "unknown")
+    return f"AlbumentationsX {version}"
 
 
 def apply_filter_groups(image: np.ndarray, groups: dict[str, Any], rng: np.random.Generator, preserve_alpha: bool = False) -> np.ndarray:
@@ -165,8 +174,8 @@ def build_albumentations_transform(name: str, params: dict[str, Any]) -> Any:
         )
     if name == "SaltAndPepper":
         return A.SaltAndPepper(
-            amount=tuple(params.get("amount_range", [0.0, 0.01])),
-            salt_vs_pepper=tuple(params.get("salt_vs_pepper_range", [0.45, 0.55])),
+            amount_range=tuple(params.get("amount_range", [0.0, 0.01])),
+            salt_vs_pepper_range=tuple(params.get("salt_vs_pepper_range", [0.45, 0.55])),
             p=1.0,
         )
     if name == "MotionBlur":
