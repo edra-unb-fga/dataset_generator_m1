@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataset-generator-m1"
+version = "0.1.0"
+description = "Synthetic YOLO dataset generator for manometro and landing datasets."
+requires-python = ">=3.10"
+dependencies = [
+  "albumentations>=1.4",
+  "numpy>=1.24",
+  "opencv-python>=4.8",
+  "Pillow>=10.0",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[project.scripts]
+dataset-generator-m1 = "dataset_generator_m1.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

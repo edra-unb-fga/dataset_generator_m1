@@ -7,7 +7,9 @@ Build the new synthetic dataset generator described by `NEW ARCHITECTURE.md`. Th
 - `manometro`: foregrounds from `foregrounds/manometro_foregrounds`, square rotation.
 - `landing`: foregrounds from `foregrounds/landing_foregrounds`, circle/tight rotation.
 
-This plan assumes the asset folders currently under the snippet area will be moved to the repository root before or during implementation.
+The asset folders are expected at the repository root before generation runs.
+
+Current status: the first implementation pass is in place under `src/dataset_generator_m1/`. It uses the root `backgrounds/` and `foregrounds/` layout, the documented minimal YAML configs, local image-only filter implementations, YOLO output, debug overlays, `data.yaml`, and `manifest.json`.
 
 ## Target Repository Layout
 
@@ -33,17 +35,11 @@ src/
     __main__.py
     cli.py
     config.py
-    models.py
-    pipeline.py
     assets.py
     filters.py
-    geometry.py
-    background.py
-    foreground.py
-    assembly.py
-    annotations.py
-    debug.py
-    output.py
+    generator.py
+    imaging.py
+    types.py
 tests/
   fixtures/
   test_config.py
@@ -72,9 +68,10 @@ tests/
 
 ### 1. Project Skeleton
 
-- Add package under `src/dataset_generator_m1`.
-- Add dependency metadata with `albumentations`, `opencv-python`, `numpy`, `pillow`, `pyyaml`, `pydantic` or dataclass validation, and test tooling.
-- Add console module entry point through `python -m dataset_generator_m1`.
+- Status: implemented.
+- Package added under `src/dataset_generator_m1`.
+- Dependency metadata added in `pyproject.toml` with `opencv-python`, `numpy`, `pillow`, and `pyyaml`.
+- Console module entry point added through `python -m dataset_generator_m1`.
 
 Acceptance:
 
@@ -83,10 +80,10 @@ Acceptance:
 
 ### 2. Config System
 
-- Define a typed config model matching `docs/CONFIG_SCHEMA.md`.
-- Support `configs/landing.yaml` and `configs/manometro.yaml`.
-- Merge CLI overrides for `dataset_type`, `config`, `num_images`, `output_dir`, `debug`, `debug_dir`, and `backgrounds_dir`.
-- Validate ranges, probabilities, image sizes, and paths.
+- Status: implemented for `examples/configs/*.yaml`.
+- Defines a config loader matching `docs/CONFIG_SCHEMA.md`.
+- Merges CLI overrides for `dataset_type`, `config`, `num_images`, `output_dir`, `debug`, `debug_dir`, and `backgrounds_dir`.
+- Validates top-level keys, known nested keys, ranges, output format, foreground rotation mode, supported filters, and supported filter parameter names.
 
 Acceptance:
 
@@ -95,11 +92,12 @@ Acceptance:
 
 ### 3. Asset Discovery
 
-- Resolve default roots: `backgrounds`, `foregrounds/landing_foregrounds`, `foregrounds/manometro_foregrounds`.
-- Support custom `backgrounds_dir` as string or list.
-- Discover background images recursively when `paths.recursive_backgrounds` is true.
-- Map foreground filenames to class IDs and class names deterministically.
-- Decide landing class policy before implementation: shape only, shape+digit, or separate `gabarito` classes.
+- Status: implemented.
+- Resolves default roots: `backgrounds`, `foregrounds/landing_foregrounds`, `foregrounds/manometro_foregrounds`.
+- Supports custom `backgrounds_dir` as string or list.
+- Discovers background images recursively when `paths.recursive_backgrounds` is true.
+- Maps foreground filenames to class IDs and class names deterministically.
+- Landing class policy is shape/gabarito stem without trailing size digit, for example `estrela`, `estrela_gabarito`, `triangulo`.
 
 Acceptance:
 
@@ -107,6 +105,8 @@ Acceptance:
 - Missing/empty directories produce actionable errors.
 
 ### 4. Geometry Utilities
+
+Status: implemented in `imaging.py` and `generator.py`; tests are still pending.
 
 Implement as pure functions with tests:
 
@@ -125,9 +125,11 @@ Acceptance:
 - Rotation tests verify non-transparent pixels remain visible.
 - YOLO boxes are normalized and clipped to `[0, 1]`.
 
-### 5. Albumentations Filter Factory
+### 5. Image-Only Filter Factory
 
-- Build image-only Albumentations transforms from `background_filters`, `foreground_filters`, and `final_filters`.
+Status: implemented locally in `filters.py`; Albumentations is intentionally not required for the first pass.
+
+- Build image-only transforms from `background_filters`, `foreground_filters`, and `final_filters`.
 - Preserve foreground alpha during image-only foreground filters.
 - Keep final filters strictly image-only. No final affine or perspective transforms.
 
@@ -138,6 +140,8 @@ Acceptance:
 
 ### 6. Background Stage
 
+Status: implemented in `generator.py`.
+
 - Pick a background cell, tile to 3x3, apply background filters, flips/affine transforms, and shared perspective.
 - Return generated canvas plus metadata needed for legal centered crop.
 
@@ -147,6 +151,8 @@ Acceptance:
 - Debug mode can save pre/post stage images.
 
 ### 7. Foreground Stage
+
+Status: implemented in `generator.py`.
 
 - Pick foregrounds and apply configured foreground filters, rotation behavior, and shared perspective.
 - Return RGBA foreground plus visible bbox and class metadata.
@@ -159,6 +165,8 @@ Acceptance:
 - Fully transparent or invalid instances are skipped with manifest reason.
 
 ### 8. Assembly And Annotation
+
+Status: implemented in `generator.py`.
 
 - Sample final crop before placement.
 - Place all foregrounds within crop bounds.
@@ -174,6 +182,8 @@ Acceptance:
 - Multi-instance images produce one label line per placed object.
 
 ### 9. Output And Debugging
+
+Status: implemented in `generator.py`.
 
 Output structure:
 
@@ -206,7 +216,6 @@ Acceptance:
 
 ## Open Decisions
 
-- Landing class map: shape only, shape+digit, or separate `gabarito` classes.
 - Whether to add a later split/Roboflow export helper. It is not part of the initial core output contract.
 - Whether `final_crop_size_range` should support rectangular `[width, height]` and ranged square crops, or only fixed square values in the first implementation.
-
+- Whether to replace local filter implementations with Albumentations later. The current code keeps the documented names and parameter schema, but implements them directly.
