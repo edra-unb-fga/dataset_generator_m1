@@ -41,6 +41,7 @@ After each image is assembled and cut, the main thread can still apply some filt
 
 - `dataset_type`: str, either "manometro" or "landing", this will determine the type of foregrounds to use and the type of behavior of foreground rotation (square or circle method).
 - `num_images`: int, number of images to generate.
+- `image_size`: tuple of int, size of the final generated images in pixels (width, height).
 - `output_dir`: str, path to the directory where the generated images and annotations will be saved.
 - `debug`: int or None, whether to generate debug images for a sample of the generated images and how many (if int, the number of debug images to generate, if None, no debug images will be generated).
 - `debug_dir`: str, path to the directory where the debug images will be saved (inside the output directory), only used if `debug` is not None.

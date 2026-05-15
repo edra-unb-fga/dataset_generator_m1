@@ -1,0 +1,104 @@
+dataset_type: manometro
+num_images: 10
+output_dir: outputs/manometro-minimal
+debug: 5
+debug_dir: debug
+seed: 42
+
+paths:
+  backgrounds_dir: new implementation snippets/backgrounds
+  foregrounds_dir: new implementation snippets/foregrounds/manometro_foregrounds
+  recursive_backgrounds: true
+
+output:
+  image_size: [1280, 1280]
+  image_format: jpg
+  label_format: yolo
+  write_data_yaml: true
+  write_manifest: true
+
+sampling:
+  foreground_instances_range: [1, 2]
+  foreground_scale_range: [0.20, 0.45]
+  min_instance_distance_px: 20
+  max_placement_attempts: 50
+  final_crop_size_range: [1280, 1280]
+
+perspective_transformations:
+  probability: 0.25
+  scale_range: [0.0, 0.02]
+  shear_range: [-0.015, 0.015]
+
+background_affine_transformations:
+  rotation:
+    angle_range: [-6, 6]
+    probability: 0.35
+  scaling:
+    scale_range: [0.96, 1.06]
+    probability: 0.35
+  translation:
+    translate_range: [-0.04, 0.04]
+    probability: 0.2
+
+foreground_affine_transformations:
+  rotation:
+    mode: square
+    angle_range: [-35, 35]
+    probability: 0.8
+
+background_filters:
+  ColorFilters:
+    HueSaturationValue:
+      hue_shift_range: [-6, 6]
+      sat_shift_range: [-18, 18]
+      val_shift_range: [-12, 12]
+      probability: 0.3
+    RandomBrightnessContrast:
+      brightness_range: [-0.12, 0.12]
+      contrast_range: [-0.12, 0.12]
+      brightness_by_max: true
+      ensure_safe_output: true
+      probability: 0.4
+  BlurAndNoiseFilters:
+    GaussianBlur:
+      blur_limit: [3, 5]
+      sigma_limit: [0.0, 0.6]
+      probability: 0.15
+    GaussNoise:
+      std_range: [0.0, 0.06]
+      mean_range: [0.0, 0.0]
+      per_channel: false
+      probability: 0.2
+
+foreground_filters:
+  ColorFilters:
+    HueSaturationValue:
+      hue_shift_range: [-3, 3]
+      sat_shift_range: [-8, 8]
+      val_shift_range: [-6, 6]
+      probability: 0.2
+  BlurAndNoiseFilters:
+    AdditiveNoise:
+      noise_type: gaussian
+      spatial_mode: shared
+      noise_params: null
+      probability: 0.1
+
+final_filters:
+  ColorFilters:
+    RandomGamma:
+      gamma_range: [90, 110]
+      probability: 0.2
+    PlankianJitter:
+      mode: blackbody
+      temperature_range: [5000, 8500]
+      sampling_method: uniform
+      probability: 0.1
+  BlurAndNoiseFilters:
+    MotionBlur:
+      blur_range: [3, 5]
+      allow_shifted: true
+      angle_range: [-12, 12]
+      direction_range: [-0.2, 0.2]
+      probability: 0.1
+
