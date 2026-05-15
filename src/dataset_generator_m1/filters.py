@@ -43,11 +43,15 @@ ALBUMENTATIONS_FILTERS = {
     "RandomGamma",
     "PlanckianJitter",
     "SaltAndPepper",
+    "MotionBlur",
     "PlasmaShadow",
     "PlasmaBrightnessContrast",
     "RandomSunFlare",
     "Illumination",
+    "AtmosphericFog",
 }
+
+LOCAL_FALLBACK_FILTERS = SUPPORTED_FILTERS - ALBUMENTATIONS_FILTERS
 
 
 def augmentation_backend_status() -> str:
@@ -55,6 +59,16 @@ def augmentation_backend_status() -> str:
         return f"local fallbacks (AlbumentationsX import failed: {ALBUMENTATIONS_IMPORT_ERROR})"
     version = getattr(A, "__version__", "unknown")
     return f"AlbumentationsX {version}"
+
+
+def filter_backend(name: str) -> str:
+    if name == "PlankianJitter":
+        name = "PlanckianJitter"
+    if name in ALBUMENTATIONS_FILTERS and A is not None:
+        return "albumentationsx"
+    if name in SUPPORTED_FILTERS:
+        return "local"
+    raise ValueError(f"Unsupported filter: {name}")
 
 
 def apply_filter_groups(image: np.ndarray, groups: dict[str, Any], rng: np.random.Generator, preserve_alpha: bool = False) -> np.ndarray:
@@ -219,6 +233,13 @@ def build_albumentations_transform(name: str, params: dict[str, Any]) -> Any:
             angle_range=tuple(params.get("angle_range", [0, 360])),
             center_range=tuple(params.get("center_range", [0.25, 0.75])),
             sigma_range=tuple(params.get("sigma_range", [0.2, 0.6])),
+            p=1.0,
+        )
+    if name == "AtmosphericFog":
+        return A.AtmosphericFog(
+            density_range=tuple(params.get("density_range", [0.05, 0.15])),
+            fog_color=tuple(params.get("fog_color", [255, 255, 255])),
+            depth_mode=params.get("depth_mode", "linear"),
             p=1.0,
         )
     raise ValueError(f"No Albumentations mapping for filter: {name}")

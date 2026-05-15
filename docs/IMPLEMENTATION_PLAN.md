@@ -218,4 +218,4 @@ Acceptance:
 
 - Whether to add a later split/Roboflow export helper. It is not part of the initial core output contract.
 - Whether `final_crop_size_range` should support rectangular `[width, height]` and ranged square crops, or only fixed square values in the first implementation.
-- Whether to keep local fallbacks for transforms whose documented config differs from AlbumentationsX runtime constraints, such as signed `MotionBlur.angle_range`, and transforms that are not exposed by the installed AlbumentationsX build.
+- Whether to keep local fallback implementations as a future emergency path. Current documented filters are tested against AlbumentationsX with the `albumentationsx>=2.2.4,<2.2.6` pin.

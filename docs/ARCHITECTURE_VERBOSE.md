@@ -376,7 +376,7 @@ The examples comment each augmentation block with a documentation link. The init
 
 - `blur_range`: `[3, 5]`
 - `allow_shifted`: `true`
-- `angle_range`: `[-12, 12]`
+- `angle_range`: `[0, 12]`
 - `direction_range`: `[-0.2, 0.2]`
 - `probability`: `0.1`
 
@@ -466,6 +466,7 @@ The CLI should write a resolved config summary into `manifest.json`.
 - Write a manifest instead of relying on console logs.
 - Seed once at run level and derive per-image random state.
 - Keep train/valid/test or Roboflow-style export out of the first core implementation.
+
 
 
 
