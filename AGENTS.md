@@ -8,6 +8,7 @@ Build the new synthetic data generator from `NEW ARCHITECTURE.md` and the docs i
 
 - Primary spec: `NEW ARCHITECTURE.md`
 - Planning docs: `docs/IMPLEMENTATION_PLAN.md`
+- Verbose architecture reference: `docs/ARCHITECTURE_VERBOSE.md`
 - Reference notes: `docs/REFERENCE_NOTES.md`
 - Config schema: `docs/CONFIG_SCHEMA.md`
 - Example configs: `examples/configs/`

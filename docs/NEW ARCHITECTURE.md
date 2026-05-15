@@ -1,6 +1,6 @@
 # Synthetic Dataset Generator Architecture
 
-This document is the product-level architecture for the new generator. It is intentionally self-contained so the old exploratory implementations can be removed after the repository is reorganized.
+This document is the product-level architecture for the new generator. It is intentionally self-contained so the old exploratory implementations can be removed after the repository is reorganized. For the expanded pre-rewrite detail, defaults, and filter links, see `docs/ARCHITECTURE_VERBOSE.md`.
 
 The implementation will live in a fresh Python package and will generate YOLO image/label pairs for two dataset families:
 
@@ -235,7 +235,7 @@ Supported initial filters:
 
 - Background: `HueSaturationValue`, `RandomBrightnessContrast`, `GaussianBlur`, `GaussNoise`.
 - Foreground: `HueSaturationValue`, `AdditiveNoise`.
-- Final: `RandomGamma`, `PlankianJitter`, `SaltAndPepper`, `MotionBlur`, `PlasmaShadow`, `PlasmaBrightnessContrast`, `RandomSunFlare`, `Illumination`, `AtmosphericFog`.
+- Final: `RandomGamma`, `PlanckianJitter`, `SaltAndPepper`, `MotionBlur`, `PlasmaShadow`, `PlasmaBrightnessContrast`, `RandomSunFlare`, `Illumination`, `AtmosphericFog`.
 
 ## CLI
 
@@ -274,4 +274,3 @@ The following prototype behaviors are part of this architecture now and no longe
 - Emit a manifest/summary file for run inspection.
 - Seed the run once and derive per-image random state from that seed.
 - Keep Roboflow-style split export out of the initial core. The first output contract is flat `images/`, `labels/`, `debug/`, `data.yaml`, and `manifest.json`.
-
