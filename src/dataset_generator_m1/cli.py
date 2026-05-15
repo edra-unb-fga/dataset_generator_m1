@@ -21,6 +21,12 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--debug", type=int, default=None)
     generate.add_argument("--debug-dir", type=str, default=None)
     generate.add_argument("--backgrounds-dir", type=str, default=None)
+    generate.add_argument(
+        "--foreground-group-weights",
+        type=parse_group_weights,
+        default=None,
+        help="Comma-separated foreground sampling weights by subdirectory, e.g. numeros=0.75,gabaritos=0.25",
+    )
     generate.add_argument("--print-config", action="store_true", help="Print the resolved config before generating")
     return parser
 
@@ -40,6 +46,7 @@ def generate_command(args: argparse.Namespace) -> int:
         "debug": args.debug,
         "debug_dir": args.debug_dir,
         "backgrounds_dir": args.backgrounds_dir,
+        "foreground_group_weights": args.foreground_group_weights,
     }
     config = load_config(args.config, overrides)
     if args.print_config:
@@ -50,3 +57,23 @@ def generate_command(args: argparse.Namespace) -> int:
     print(f"Generated {len(manifest['samples'])} images in {output_dir}")
     return 0
 
+
+def parse_group_weights(value: str) -> dict[str, float]:
+    weights: dict[str, float] = {}
+    for item in value.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        if "=" not in item:
+            raise argparse.ArgumentTypeError("Expected format group=weight,group=weight")
+        group_name, raw_weight = item.split("=", 1)
+        group_name = group_name.strip()
+        if not group_name:
+            raise argparse.ArgumentTypeError("Foreground group names cannot be empty")
+        try:
+            weights[group_name] = float(raw_weight)
+        except ValueError as exc:
+            raise argparse.ArgumentTypeError(f"Invalid weight for {group_name}: {raw_weight}") from exc
+    if not weights:
+        raise argparse.ArgumentTypeError("At least one foreground group weight is required")
+    return weights

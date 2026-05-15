@@ -92,6 +92,7 @@ Field meanings:
 sampling:
   foreground_instances_range: [1, 2]
   foreground_scale_range: [0.20, 0.45]
+  foreground_group_weights: {}
   min_instance_distance_px: 20
   max_placement_attempts: 50
   final_crop_size_range: [1280, 1280]
@@ -101,6 +102,7 @@ Defaults:
 
 - `foreground_instances_range`: `[1, 2]`
 - `foreground_scale_range`: `[0.20, 0.45]`
+- `foreground_group_weights`: `{}`
 - `min_instance_distance_px`: `20`
 - `max_placement_attempts`: `50`
 - `final_crop_size_range`: `[1280, 1280]`
@@ -109,9 +111,18 @@ Field meanings:
 
 - `foreground_instances_range`: inclusive `[min, max]` number of objects per image.
 - `foreground_scale_range`: foreground width as a fraction of final image width.
+- `foreground_group_weights`: optional sampling weights by first foreground subdirectory. For landing, use `numeros: 0.75` and `gabaritos: 0.25` to sample written numbers and ArUco gabaritos separately.
 - `min_instance_distance_px`: minimum spacing between visible bboxes.
 - `max_placement_attempts`: placement retry budget per foreground.
 - `final_crop_size_range`: selected crop size before final output. Fixed-size smoke configs use `[1280, 1280]`.
+
+The same weights can be overridden from the CLI:
+
+```powershell
+python -m dataset_generator_m1 generate --config examples/configs/landing_minimal.yaml --foreground-group-weights numeros=0.75,gabaritos=0.25
+```
+
+Landing class names depend on the subdirectory. Assets under `numeros` keep the full stem, so `hexagono_3` and `hexagono_4` become different classes. Assets under a gabarito directory collapse the final numeric suffix, so `hexagono_gabarito_3`, `hexagono_gabarito_4`, and `hexagono_gabarito_5` all become `hexagono_gabarito`. Manometro assets in range subdirectories use the range directory as the class name, for example `40-60`.
 
 ## Perspective
 

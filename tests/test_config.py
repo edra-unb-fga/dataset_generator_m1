@@ -20,3 +20,11 @@ def test_landing_defaults_to_circle_rotation():
     assert rotation["mode"] == "circle"
     assert rotation["angle_range"] == [-180, 180]
 
+
+def test_foreground_group_weights_cli_override():
+    config = load_config(
+        "examples/configs/landing_minimal.yaml",
+        {"foreground_group_weights": {"numeros": 1.0, "gabaritos": 0.0}},
+    )
+
+    assert config.data["sampling"]["foreground_group_weights"] == {"numeros": 1.0, "gabaritos": 0.0}

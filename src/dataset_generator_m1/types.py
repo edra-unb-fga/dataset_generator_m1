@@ -15,6 +15,7 @@ class Asset:
     path: Path
     class_id: int
     class_name: str
+    group_name: str | None = None
 
 
 @dataclass

@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 import yaml
 
-from .assets import discover_foregrounds, discover_images
+from .assets import discover_foregrounds, discover_images, is_landing_gabarito_group
 from .config import GeneratorConfig
 from .filters import apply_filter_groups, augmentation_backend_status
 from .imaging import (
@@ -46,6 +46,8 @@ class DatasetGenerator:
             self.data["paths"]["foregrounds_dir"],
             self.data["dataset_type"],
         )
+        self.foregrounds_by_group = self.group_foregrounds()
+        self.active_group_weights = self.resolve_group_weights()
 
     def generate(self) -> dict[str, Any]:
         started_at = perf_counter()
@@ -75,6 +77,9 @@ class DatasetGenerator:
         print(f"  backgrounds: {len(self.backgrounds)} from {self.data['paths']['backgrounds_dir']}")
         print(f"  foregrounds: {len(self.foregrounds)} from {self.data['paths']['foregrounds_dir']}")
         print(f"  classes: {len(self.class_names)}")
+        if self.active_group_weights:
+            weights = ", ".join(f"{name}={weight:g}" for name, weight in self.active_group_weights.items())
+            print(f"  foreground group weights: {weights}")
         print(f"  augmentations: {augmentation_backend_status()}")
         if self.config.debug_count:
             print(f"  debug overlays: first {self.config.debug_count} images")
@@ -268,8 +273,19 @@ class DatasetGenerator:
     def sample_foreground_instances(self, rng: np.random.Generator) -> list[Asset]:
         low, high = self.data["sampling"]["foreground_instances_range"]
         count = int(rng.integers(int(low), int(high) + 1))
-        indices = rng.integers(0, len(self.foregrounds), count)
-        return [self.foregrounds[int(index)] for index in indices]
+        if not self.active_group_weights:
+            indices = rng.integers(0, len(self.foregrounds), count)
+            return [self.foregrounds[int(index)] for index in indices]
+
+        group_names = list(self.active_group_weights)
+        weights = np.array([self.active_group_weights[name] for name in group_names], dtype=np.float64)
+        weights = weights / weights.sum()
+        assets: list[Asset] = []
+        for _ in range(count):
+            group_name = str(rng.choice(group_names, p=weights))
+            group_assets = self.foregrounds_by_group[group_name]
+            assets.append(group_assets[int(rng.integers(0, len(group_assets)))])
+        return assets
 
     def generate_foreground(self, asset: Asset, perspective: PerspectiveSample, rng: np.random.Generator) -> ForegroundInstance:
         image = read_rgba(asset.path)
@@ -337,13 +353,63 @@ class DatasetGenerator:
         h, w = out.shape[:2]
         for line in labels:
             class_id, cx, cy, bw, bh = line.split()
+            class_index = int(class_id)
+            class_name = self.class_names[class_index] if class_index < len(self.class_names) else class_id
+            color = color_for_class(class_index)
             x1 = int((float(cx) - float(bw) / 2) * w)
             y1 = int((float(cy) - float(bh) / 2) * h)
             x2 = int((float(cx) + float(bw) / 2) * w)
             y2 = int((float(cy) + float(bh) / 2) * h)
-            cv2.rectangle(out, (x1, y1), (x2, y2), (0, 255, 80), 3)
-            cv2.putText(out, class_id, (x1, max(20, y1 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 80), 2)
+            cv2.rectangle(out, (x1, y1), (x2, y2), color, 3)
+            text_size, baseline = cv2.getTextSize(class_name, cv2.FONT_HERSHEY_SIMPLEX, 0.65, 2)
+            label_y1 = max(0, y1 - text_size[1] - baseline - 8)
+            label_y2 = label_y1 + text_size[1] + baseline + 6
+            label_x2 = min(w - 1, x1 + text_size[0] + 8)
+            cv2.rectangle(out, (x1, label_y1), (label_x2, label_y2), color, -1)
+            cv2.putText(
+                out,
+                class_name,
+                (x1 + 4, label_y2 - baseline - 3),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.65,
+                (255, 255, 255),
+                2,
+            )
         return out
+
+    def group_foregrounds(self) -> dict[str, list[Asset]]:
+        groups: dict[str, list[Asset]] = {}
+        for asset in self.foregrounds:
+            if asset.group_name is None:
+                continue
+            groups.setdefault(asset.group_name, []).append(asset)
+        return groups
+
+    def resolve_group_weights(self) -> dict[str, float]:
+        configured = self.data["sampling"].get("foreground_group_weights") or {}
+        if not configured:
+            return {}
+        resolved: dict[str, float] = {}
+        for name, weight in configured.items():
+            group_name = self.resolve_group_name(name)
+            if group_name is not None:
+                resolved[group_name] = resolved.get(group_name, 0.0) + float(weight)
+                continue
+            resolved[name] = float(weight)
+        missing = sorted(set(resolved) - set(self.foregrounds_by_group))
+        if missing:
+            available = sorted(self.foregrounds_by_group)
+            raise ValueError(f"Unknown foreground group weight(s): {missing}. Available groups: {available}")
+        return {name: float(weight) for name, weight in resolved.items() if float(weight) > 0}
+
+    def resolve_group_name(self, name: str) -> str | None:
+        if name in self.foregrounds_by_group:
+            return name
+        if is_landing_gabarito_group(name):
+            matches = [group for group in self.foregrounds_by_group if is_landing_gabarito_group(group)]
+            if len(matches) == 1:
+                return matches[0]
+        return None
 
     def write_data_yaml(self, output_dir: Path) -> None:
         data = {
@@ -377,3 +443,19 @@ def perspective_matrix_for(width: int, height: int, sample: PerspectiveSample) -
         ]
     )
     return cv2.getPerspectiveTransform(src, dst)
+
+
+def color_for_class(class_id: int) -> tuple[int, int, int]:
+    palette = [
+        (45, 212, 191),
+        (59, 130, 246),
+        (245, 158, 11),
+        (239, 68, 68),
+        (139, 92, 246),
+        (34, 197, 94),
+        (236, 72, 153),
+        (20, 184, 166),
+        (249, 115, 22),
+        (100, 116, 139),
+    ]
+    return palette[class_id % len(palette)]

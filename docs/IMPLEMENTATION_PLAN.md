@@ -97,7 +97,8 @@ Acceptance:
 - Supports custom `backgrounds_dir` as string or list.
 - Discovers background images recursively when `paths.recursive_backgrounds` is true.
 - Maps foreground filenames to class IDs and class names deterministically.
-- Landing class policy is shape/gabarito stem without trailing size digit, for example `estrela`, `estrela_gabarito`, `triangulo`.
+- Landing class policy is directory-aware: `numeros` assets keep the full stem, for example `hexagono_3`, while `gabaritos` assets collapse the trailing size digit, for example `hexagono_gabarito_3` becomes `hexagono_gabarito`.
+- Manometro class policy uses the first foreground subdirectory as the class name, for example `0-20`, `20-40`, or `40-60`.
 
 Acceptance:
 

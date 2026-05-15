@@ -30,6 +30,7 @@ DEFAULTS: dict[str, Any] = {
     "sampling": {
         "foreground_instances_range": [1, 2],
         "foreground_scale_range": [0.20, 0.45],
+        "foreground_group_weights": {},
         "min_instance_distance_px": 20,
         "max_placement_attempts": 50,
         "final_crop_size_range": [1280, 1280],
@@ -70,6 +71,7 @@ ALLOWED_OVERRIDES = {
     "debug",
     "debug_dir",
     "backgrounds_dir",
+    "foreground_group_weights",
 }
 
 ALLOWED_NESTED_KEYS = {
@@ -78,6 +80,7 @@ ALLOWED_NESTED_KEYS = {
     "sampling": {
         "foreground_instances_range",
         "foreground_scale_range",
+        "foreground_group_weights",
         "min_instance_distance_px",
         "max_placement_attempts",
         "final_crop_size_range",
@@ -180,6 +183,8 @@ def apply_overrides(config: dict[str, Any], overrides: dict[str, Any]) -> None:
             raise ValueError(f"Unsupported CLI override: {key}")
         if key == "backgrounds_dir":
             config["paths"]["backgrounds_dir"] = value
+        elif key == "foreground_group_weights":
+            config["sampling"]["foreground_group_weights"] = value
         else:
             config[key] = value
 
@@ -209,6 +214,7 @@ def validate_config(config: dict[str, Any]) -> None:
     validate_pair(config["sampling"]["foreground_instances_range"], "sampling.foreground_instances_range", minimum=0)
     validate_pair(config["sampling"]["foreground_scale_range"], "sampling.foreground_scale_range", minimum=0.001)
     validate_pair(config["sampling"]["final_crop_size_range"], "sampling.final_crop_size_range", minimum=1)
+    validate_foreground_group_weights(config["sampling"].get("foreground_group_weights", {}))
     if int(config["sampling"]["max_placement_attempts"]) < 1:
         raise ValueError("sampling.max_placement_attempts must be >= 1")
     if config["foreground_affine_transformations"]["rotation"]["mode"] not in {"square", "circle"}:
@@ -257,3 +263,23 @@ def validate_pair(value: Any, name: str, minimum: float | int | None = None) -> 
         raise ValueError(f"{name} values must be >= {minimum}")
     if value[0] > value[1]:
         raise ValueError(f"{name} must be ordered [min, max]")
+
+
+def validate_foreground_group_weights(value: Any) -> None:
+    if value in (None, {}):
+        return
+    if not isinstance(value, dict):
+        raise ValueError("sampling.foreground_group_weights must be a mapping")
+    total = 0.0
+    for group_name, weight in value.items():
+        if not isinstance(group_name, str) or not group_name:
+            raise ValueError("sampling.foreground_group_weights keys must be non-empty strings")
+        try:
+            numeric = float(weight)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"sampling.foreground_group_weights.{group_name} must be numeric") from exc
+        if numeric < 0:
+            raise ValueError(f"sampling.foreground_group_weights.{group_name} must be >= 0")
+        total += numeric
+    if total <= 0:
+        raise ValueError("sampling.foreground_group_weights must contain at least one positive weight")

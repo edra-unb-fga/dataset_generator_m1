@@ -24,6 +24,7 @@ output:
 sampling:
   foreground_instances_range: [1, 2] # default: [1, 2]
   foreground_scale_range: [0.1, 0.3] # default: [0.20, 0.45]
+  foreground_group_weights: {} # optional subdirectory sampling weights, e.g. {"0-20": 1, "20-40": 1}
   min_instance_distance_px: 20 # default: 20
   max_placement_attempts: 50 # default: 50
   final_crop_size_range: [1280, 1280] # default: [1280, 1280]
