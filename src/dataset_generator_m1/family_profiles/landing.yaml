@@ -1,0 +1,24 @@
+schema_version: 1
+name: landing
+classes:
+  - estrela_3
+  - estrela_4
+  - estrela_5
+  - estrela_gabarito
+  - hexagono_3
+  - hexagono_4
+  - hexagono_5
+  - hexagono_gabarito
+  - triangulo_3
+  - triangulo_4
+  - triangulo_5
+  - triangulo_gabarito
+class_mapping:
+  - pattern: '^gabaritos/(?P<shape>.+)_gabarito_\d+$'
+    class_template: '{shape}_gabarito'
+  - pattern: '^numeros/(?P<class_name>.+)$'
+    class_template: '{class_name}'
+rotation:
+  mode: circle
+  angle_degrees: [-180.0, 180.0]
+  probability: 1.0

@@ -1,461 +1,310 @@
 from __future__ import annotations
 
-import json
+import os
+import shutil
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from dataclasses import dataclass
 from pathlib import Path
 from time import perf_counter
 from typing import Any
 
-import cv2
 import numpy as np
-import yaml
 
-from .assets import discover_foregrounds, discover_images, is_landing_gabarito_group
-from .config import GeneratorConfig
-from .filters import apply_filter_groups, augmentation_backend_status
-from .imaging import (
-    alpha_composite,
-    apply_perspective,
-    apply_rgb_affine,
-    center_crop,
-    clip_bbox,
-    expand_rect,
-    read_rgb,
-    read_rgba,
-    rects_intersect,
-    resize_rgba,
-    rotate_rgba,
-    tile_background,
-    visible_bbox,
-    write_image,
-)
-from .types import Asset, BBox, ForegroundInstance, PerspectiveSample, PlacedInstance
+from .assets import AssetCatalog, build_asset_catalog
+from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
+from .models import ResolvedProfile
+from .runstore import RunStore
+from .scene import ScenePlanner, SceneRejected, SceneRenderer, derive_seed
+from .telemetry import DisplayMode, MetricsAggregator, ResourceSampler, RunReporter, StageTimer
 
 
-class DatasetGenerator:
-    def __init__(self, config: GeneratorConfig):
-        self.config = config
-        self.data = config.data
-        self.rng = np.random.default_rng(int(self.data["seed"]))
-        self.backgrounds = discover_images(
-            self.data["paths"]["backgrounds_dir"],
-            recursive=bool(self.data["paths"].get("recursive_backgrounds", True)),
+def _disk_preflight(output_dir: Path, resolved: ResolvedProfile) -> dict[str, int]:
+    probe = output_dir.resolve()
+    while not probe.exists() and probe.parent != probe:
+        probe = probe.parent
+    width, height = resolved.profile.output.image_size
+    raw_bytes = width * height * 3 * resolved.profile.run.num_images
+    encoding_factor = 1.1 if resolved.profile.output.image_format == "png" else 0.6
+    estimated_bytes = int(raw_bytes * encoding_factor + resolved.profile.run.num_images * 64 * 1024)
+    reserve_bytes = 64 * 1024 * 1024
+    free_bytes = int(shutil.disk_usage(probe).free)
+    if free_bytes < estimated_bytes + reserve_bytes:
+        raise RuntimeError(
+            f"Insufficient disk space: estimated {estimated_bytes} bytes plus {reserve_bytes} bytes reserve, "
+            f"but only {free_bytes} bytes are free"
         )
-        if not self.backgrounds:
-            raise FileNotFoundError(f"No background images found in {self.data['paths']['backgrounds_dir']}")
-        self.foregrounds, self.class_names = discover_foregrounds(
-            self.data["paths"]["foregrounds_dir"],
-            self.data["dataset_type"],
-        )
-        self.foregrounds_by_group = self.group_foregrounds()
-        self.active_group_weights = self.resolve_group_weights()
-
-    def generate(self) -> dict[str, Any]:
-        started_at = perf_counter()
-        output_dir = self.config.output_dir
-        images_dir = output_dir / "images"
-        labels_dir = output_dir / "labels"
-        debug_dir = output_dir / str(self.data["debug_dir"])
-        images_dir.mkdir(parents=True, exist_ok=True)
-        labels_dir.mkdir(parents=True, exist_ok=True)
-        if self.config.debug_count:
-            debug_dir.mkdir(parents=True, exist_ok=True)
-
-        manifest: dict[str, Any] = {
-            "config": self.data,
-            "config_path": str(self.config.config_path) if self.config.config_path else None,
-            "classes": self.class_names,
-            "samples": [],
-            "skips": [],
-        }
-
-        print("[dataset-generator-m1] Starting generation")
-        print(f"  dataset_type: {self.config.dataset_type}")
-        print(f"  output_dir: {output_dir}")
-        print(f"  requested images: {self.config.num_images}")
-        print(f"  image_size: {self.config.image_size[0]}x{self.config.image_size[1]}")
-        print(f"  seed: {self.data['seed']}")
-        print(f"  backgrounds: {len(self.backgrounds)} from {self.data['paths']['backgrounds_dir']}")
-        print(f"  foregrounds: {len(self.foregrounds)} from {self.data['paths']['foregrounds_dir']}")
-        print(f"  classes: {len(self.class_names)}")
-        if self.active_group_weights:
-            weights = ", ".join(f"{name}={weight:g}" for name, weight in self.active_group_weights.items())
-            print(f"  foreground group weights: {weights}")
-        print(f"  augmentations: {augmentation_backend_status()}")
-        if self.config.debug_count:
-            print(f"  debug overlays: first {self.config.debug_count} images")
-        print()
-
-        generated = 0
-        attempts = 0
-        max_attempts = max(self.config.num_images * 5, self.config.num_images + 10)
-        self.print_progress(generated, attempts, max_attempts)
-        while generated < self.config.num_images and attempts < max_attempts:
-            attempts += 1
-            sample_rng = np.random.default_rng(int(self.rng.integers(0, 2**31 - 1)))
-            try:
-                record = self.generate_one(generated, images_dir, labels_dir, debug_dir, sample_rng)
-            except Exception as exc:
-                manifest["skips"].append({"index": generated, "reason": str(exc)})
-                print()
-                print(f"[skip] target image_{generated:06d}: {exc}")
-                self.print_progress(generated, attempts, max_attempts)
-                continue
-            if record is None:
-                manifest["skips"].append({"index": generated, "reason": "no_valid_annotations"})
-                print()
-                print(f"[skip] target image_{generated:06d}: no valid annotations after placement/crop")
-                self.print_progress(generated, attempts, max_attempts)
-                continue
-            manifest["samples"].append(record)
-            generated += 1
-            print()
-            instance_summary = ", ".join(
-                f"{item['class_name']}@{item['bbox']}" for item in record["instances"]
-            )
-            print(
-                f"[ok] image_{record['index']:06d}: "
-                f"{len(record['instances'])} object(s), "
-                f"perspective={record['perspective'].get('enabled', False)}, "
-                f"background={Path(record['background_path']).name}"
-            )
-            if instance_summary:
-                print(f"     objects: {instance_summary}")
-            self.print_progress(generated, attempts, max_attempts)
-
-        if generated < self.config.num_images:
-            print()
-            recent_reasons = manifest["skips"][-5:]
-            raise RuntimeError(
-                f"Generated {generated}/{self.config.num_images} images before retry budget was exhausted. "
-                f"Recent skips: {recent_reasons}"
-            )
-
-        if self.data["output"].get("write_data_yaml", True):
-            self.write_data_yaml(output_dir)
-        if self.data["output"].get("write_manifest", True):
-            (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-        elapsed = perf_counter() - started_at
-        print()
-        print("[dataset-generator-m1] Finished")
-        print(f"  generated: {generated}/{self.config.num_images}")
-        print(f"  attempts: {attempts}/{max_attempts}")
-        print(f"  skips: {len(manifest['skips'])}")
-        print(f"  elapsed: {elapsed:.1f}s")
-        print(f"  images: {images_dir}")
-        print(f"  labels: {labels_dir}")
-        if self.config.debug_count:
-            print(f"  debug: {debug_dir}")
-        return manifest
-
-    def print_progress(self, generated: int, attempts: int, max_attempts: int) -> None:
-        total = self.config.num_images
-        width = 28
-        ratio = generated / total if total else 1.0
-        filled = int(width * ratio)
-        bar = "#" * filled + "-" * (width - filled)
-        print(f"\rprogress [{bar}] {generated}/{total} images | attempts {attempts}/{max_attempts}", end="", flush=True)
-
-    def generate_one(
-        self,
-        index: int,
-        images_dir: Path,
-        labels_dir: Path,
-        debug_dir: Path,
-        rng: np.random.Generator,
-    ) -> dict[str, Any] | None:
-        out_w, out_h = self.config.image_size
-        crop_size = self.sample_crop_size(rng)
-        work_size = (max(out_w, crop_size) * 3, max(out_h, crop_size) * 3)
-        perspective = self.sample_perspective(work_size, rng)
-
-        background_path = Path(rng.choice(self.backgrounds))
-        background = self.generate_background(background_path, work_size, perspective, rng)
-        canvas, crop_origin = center_crop(background, (crop_size, crop_size))
-
-        instances = self.sample_foreground_instances(rng)
-        placed: list[PlacedInstance] = []
-        occupied: list[BBox] = []
-        for asset in instances:
-            foreground = self.generate_foreground(asset, perspective, rng)
-            scaled = self.scale_foreground(foreground, out_w, rng)
-            placement = self.place_foreground(canvas, scaled, occupied, rng)
-            if placement is None:
-                continue
-            x, y, bbox, attempts = placement
-            alpha_composite(canvas, scaled.image, x, y)
-            occupied.append(bbox)
-            placed.append(
-                PlacedInstance(
-                    asset=asset,
-                    bbox=bbox,
-                    attempts=attempts,
-                    source_path=str(asset.path),
-                    sampled={"angle": scaled.angle, "scale": scaled.scale},
-                )
-            )
-
-        final, final_origin = center_crop(canvas, (out_w, out_h))
-        labels = self.serialize_labels(placed, final_origin, out_w, out_h)
-        if not labels:
-            return None
-
-        final = apply_filter_groups(final, self.data.get("final_filters", {}), rng)
-
-        image_format = self.data["output"]["image_format"].lower()
-        suffix = "jpg" if image_format == "jpeg" else image_format
-        stem = f"image_{index:06d}"
-        image_path = images_dir / f"{stem}.{suffix}"
-        label_path = labels_dir / f"{stem}.txt"
-        write_image(image_path, final, image_format)
-        label_path.write_text("\n".join(labels) + "\n", encoding="utf-8")
-
-        debug_path = None
-        if index < self.config.debug_count:
-            debug = self.draw_debug(final, labels)
-            debug_path = debug_dir / f"{stem}_overlay.jpg"
-            write_image(debug_path, debug, "jpg")
-
-        return {
-            "index": index,
-            "image_path": str(image_path),
-            "label_path": str(label_path),
-            "debug_path": str(debug_path) if debug_path else None,
-            "background_path": str(background_path),
-            "perspective": perspective.params,
-            "crop_size": crop_size,
-            "crop_origin": crop_origin,
-            "final_crop_origin": final_origin,
-            "instances": [
-                {
-                    "class_id": item.asset.class_id,
-                    "class_name": item.asset.class_name,
-                    "bbox": item.bbox,
-                    "attempts": item.attempts,
-                    "source_path": item.source_path,
-                    "sampled": item.sampled,
-                }
-                for item in placed
-            ],
-        }
-
-    def sample_crop_size(self, rng: np.random.Generator) -> int:
-        low, high = self.data["sampling"]["final_crop_size_range"]
-        return int(rng.integers(int(low), int(high) + 1))
-
-    def sample_perspective(self, size: tuple[int, int], rng: np.random.Generator) -> PerspectiveSample:
-        settings = self.data["perspective_transformations"]
-        enabled = rng.random() <= float(settings.get("probability", 0.0))
-        if not enabled:
-            return PerspectiveSample(False, {"enabled": False})
-        scale = rng.uniform(*settings.get("scale_range", [0.0, 0.02]))
-        shear = rng.uniform(*settings.get("shear_range", [-0.015, 0.015]))
-        return PerspectiveSample(True, {"enabled": True, "scale": float(scale), "shear": float(shear)})
-
-    def generate_background(
-        self,
-        path: Path,
-        work_size: tuple[int, int],
-        perspective: PerspectiveSample,
-        rng: np.random.Generator,
-    ) -> np.ndarray:
-        image = read_rgb(path)
-        tiled = tile_background(image, work_size)
-        transformed = center_crop(tiled, work_size)[0]
-        transformed = apply_filter_groups(transformed, self.data.get("background_filters", {}), rng)
-        affine = self.data["background_affine_transformations"]
-        angle = sample_optional_range(affine["rotation"]["angle_range"], affine["rotation"]["probability"], rng, default=0.0)
-        scale = sample_optional_range(affine["scaling"]["scale_range"], affine["scaling"]["probability"], rng, default=1.0)
-        translate_x = sample_optional_range(affine["translation"]["translate_range"], affine["translation"]["probability"], rng, default=0.0)
-        translate_y = sample_optional_range(affine["translation"]["translate_range"], affine["translation"]["probability"], rng, default=0.0)
-        transformed = apply_rgb_affine(transformed, angle, scale, translate_x, translate_y)
-        return apply_perspective(transformed, perspective_matrix_for(transformed.shape[1], transformed.shape[0], perspective))
-
-    def sample_foreground_instances(self, rng: np.random.Generator) -> list[Asset]:
-        low, high = self.data["sampling"]["foreground_instances_range"]
-        count = int(rng.integers(int(low), int(high) + 1))
-        if not self.active_group_weights:
-            indices = rng.integers(0, len(self.foregrounds), count)
-            return [self.foregrounds[int(index)] for index in indices]
-
-        group_names = list(self.active_group_weights)
-        weights = np.array([self.active_group_weights[name] for name in group_names], dtype=np.float64)
-        weights = weights / weights.sum()
-        assets: list[Asset] = []
-        for _ in range(count):
-            group_name = str(rng.choice(group_names, p=weights))
-            group_assets = self.foregrounds_by_group[group_name]
-            assets.append(group_assets[int(rng.integers(0, len(group_assets)))])
-        return assets
-
-    def generate_foreground(self, asset: Asset, perspective: PerspectiveSample, rng: np.random.Generator) -> ForegroundInstance:
-        image = read_rgba(asset.path)
-        image = apply_filter_groups(image, self.data.get("foreground_filters", {}), rng, preserve_alpha=True)
-        rotation = self.data["foreground_affine_transformations"]["rotation"]
-        angle = sample_optional_range(rotation["angle_range"], rotation["probability"], rng, default=0.0)
-        image = rotate_rgba(image, angle, rotation["mode"])
-        image = apply_perspective(image, perspective_matrix_for(image.shape[1], image.shape[0], perspective))
-        bbox = visible_bbox(image)
-        if bbox is None:
-            raise ValueError(f"Foreground became invisible: {asset.path}")
-        return ForegroundInstance(image=image, visible_bbox=bbox, asset=asset, angle=angle)
-
-    def scale_foreground(self, instance: ForegroundInstance, output_width: int, rng: np.random.Generator) -> ForegroundInstance:
-        min_scale, max_scale = self.data["sampling"]["foreground_scale_range"]
-        scale = float(rng.uniform(float(min_scale), float(max_scale)))
-        target_width = max(1, int(output_width * scale))
-        resized = resize_rgba(instance.image, target_width)
-        bbox = visible_bbox(resized)
-        if bbox is None:
-            raise ValueError(f"Foreground became invisible after scaling: {instance.asset.path}")
-        return ForegroundInstance(resized, bbox, instance.asset, instance.angle, scale)
-
-    def place_foreground(
-        self,
-        canvas: np.ndarray,
-        instance: ForegroundInstance,
-        occupied: list[BBox],
-        rng: np.random.Generator,
-    ) -> tuple[int, int, BBox, int] | None:
-        h, w = canvas.shape[:2]
-        fh, fw = instance.image.shape[:2]
-        if fw >= w or fh >= h:
-            return None
-        max_attempts = int(self.data["sampling"]["max_placement_attempts"])
-        min_distance = int(self.data["sampling"]["min_instance_distance_px"])
-        lx1, ly1, lx2, ly2 = instance.visible_bbox
-        for attempt in range(1, max_attempts + 1):
-            x = int(rng.integers(0, w - fw))
-            y = int(rng.integers(0, h - fh))
-            bbox = (x + lx1, y + ly1, x + lx2, y + ly2)
-            expanded = expand_rect(bbox, min_distance)
-            if any(rects_intersect(expanded, other) for other in occupied):
-                continue
-            return x, y, bbox, attempt
-        return None
-
-    def serialize_labels(self, placed: list[PlacedInstance], origin: tuple[int, int], width: int, height: int) -> list[str]:
-        labels: list[str] = []
-        ox, oy = origin
-        for item in placed:
-            x1, y1, x2, y2 = item.bbox
-            clipped = clip_bbox((x1 - ox, y1 - oy, x2 - ox, y2 - oy), width, height)
-            if clipped is None:
-                continue
-            cx = ((clipped[0] + clipped[2]) / 2) / width
-            cy = ((clipped[1] + clipped[3]) / 2) / height
-            bw = (clipped[2] - clipped[0]) / width
-            bh = (clipped[3] - clipped[1]) / height
-            labels.append(f"{item.asset.class_id} {cx:.6f} {cy:.6f} {bw:.6f} {bh:.6f}")
-        return labels
-
-    def draw_debug(self, image: np.ndarray, labels: list[str]) -> np.ndarray:
-        out = image.copy()
-        h, w = out.shape[:2]
-        for line in labels:
-            class_id, cx, cy, bw, bh = line.split()
-            class_index = int(class_id)
-            class_name = self.class_names[class_index] if class_index < len(self.class_names) else class_id
-            color = color_for_class(class_index)
-            x1 = int((float(cx) - float(bw) / 2) * w)
-            y1 = int((float(cy) - float(bh) / 2) * h)
-            x2 = int((float(cx) + float(bw) / 2) * w)
-            y2 = int((float(cy) + float(bh) / 2) * h)
-            cv2.rectangle(out, (x1, y1), (x2, y2), color, 3)
-            text_size, baseline = cv2.getTextSize(class_name, cv2.FONT_HERSHEY_SIMPLEX, 0.65, 2)
-            label_y1 = max(0, y1 - text_size[1] - baseline - 8)
-            label_y2 = label_y1 + text_size[1] + baseline + 6
-            label_x2 = min(w - 1, x1 + text_size[0] + 8)
-            cv2.rectangle(out, (x1, label_y1), (label_x2, label_y2), color, -1)
-            cv2.putText(
-                out,
-                class_name,
-                (x1 + 4, label_y2 - baseline - 3),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.65,
-                (255, 255, 255),
-                2,
-            )
-        return out
-
-    def group_foregrounds(self) -> dict[str, list[Asset]]:
-        groups: dict[str, list[Asset]] = {}
-        for asset in self.foregrounds:
-            if asset.group_name is None:
-                continue
-            groups.setdefault(asset.group_name, []).append(asset)
-        return groups
-
-    def resolve_group_weights(self) -> dict[str, float]:
-        configured = self.data["sampling"].get("foreground_group_weights") or {}
-        if not configured:
-            return {}
-        resolved: dict[str, float] = {}
-        for name, weight in configured.items():
-            group_name = self.resolve_group_name(name)
-            if group_name is not None:
-                resolved[group_name] = resolved.get(group_name, 0.0) + float(weight)
-                continue
-            resolved[name] = float(weight)
-        missing = sorted(set(resolved) - set(self.foregrounds_by_group))
-        if missing:
-            available = sorted(self.foregrounds_by_group)
-            raise ValueError(f"Unknown foreground group weight(s): {missing}. Available groups: {available}")
-        return {name: float(weight) for name, weight in resolved.items() if float(weight) > 0}
-
-    def resolve_group_name(self, name: str) -> str | None:
-        if name in self.foregrounds_by_group:
-            return name
-        if is_landing_gabarito_group(name):
-            matches = [group for group in self.foregrounds_by_group if is_landing_gabarito_group(group)]
-            if len(matches) == 1:
-                return matches[0]
-        return None
-
-    def write_data_yaml(self, output_dir: Path) -> None:
-        data = {
-            "path": str(output_dir),
-            "train": "images",
-            "names": {index: name for index, name in enumerate(self.class_names)},
-        }
-        (output_dir / "data.yaml").write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+    return {"estimated_output_bytes": estimated_bytes, "free_bytes_at_start": free_bytes, "reserve_bytes": reserve_bytes}
 
 
-def sample_optional_range(values: list[float], probability: float, rng: np.random.Generator, default: float) -> float:
-    if rng.random() > float(probability):
-        return default
-    return float(rng.uniform(float(values[0]), float(values[1])))
+@dataclass(frozen=True)
+class GenerationOptions:
+    display: DisplayMode = "auto"
+    output_format: str = "human"
+    workers: int | str = 1
+    resume: bool = False
+    qa_samples: int | None = None
+    invocation: tuple[str, ...] = ()
 
 
-def perspective_matrix_for(width: int, height: int, sample: PerspectiveSample) -> np.ndarray | None:
-    if not sample.enabled:
-        return None
-    scale = float(sample.params["scale"])
-    shear = float(sample.params["shear"])
-    inset_x = scale * width
-    inset_y = scale * height
-    src = np.float32([[0, 0], [width, 0], [width, height], [0, height]])
-    dst = np.float32(
-        [
-            [inset_x + shear * width, inset_y],
-            [width - inset_x + shear * width, inset_y],
-            [width - inset_x - shear * width, height - inset_y],
-            [inset_x - shear * width, height - inset_y],
-        ]
+def _annotation_record(annotation: Any) -> dict[str, Any]:
+    return {
+        "class_id": annotation.class_id,
+        "class_name": annotation.class_name,
+        "bbox": list(annotation.bbox),
+        "normalized_bbox": list(annotation.normalized_bbox),
+        "visible_bbox_fraction": annotation.visible_bbox_fraction,
+        "source_asset": annotation.source_asset,
+        "source_group": annotation.source_group,
+        "asset_to_scene": annotation.asset_to_scene.tolist(),
+        "asset_to_output": annotation.asset_to_output.tolist(),
+    }
+
+
+def _produce_slot(
+    resolved: ResolvedProfile,
+    catalog: AssetCatalog,
+    slot: int,
+    starting_attempt: int,
+    coordinator_pid: int,
+) -> dict[str, Any]:
+    """Render one deterministic slot without performing terminal or pool writes."""
+    planner = ScenePlanner(resolved, catalog)
+    renderer = SceneRenderer(resolved)
+    synthesizer = BackgroundSynthesizer(
+        catalog,
+        resolved.recipes,
+        resolved.profile.assets.backgrounds.group_weights,
+        resolved.profile.assets.backgrounds.asset_weights,
     )
-    return cv2.getPerspectiveTransform(src, dst)
+    rejections: list[dict[str, Any]] = []
+    for candidate_attempt in range(starting_attempt, resolved.profile.run.max_candidate_attempts):
+        timings: dict[str, int] = {}
+        try:
+            with StageTimer(timings, "scene_plan"):
+                plan = planner.plan(slot, candidate_attempt)
+            with StageTimer(timings, "background_synthesis"):
+                background_rng = np.random.default_rng(
+                    derive_seed(resolved.profile.run.seed, slot, candidate_attempt, "background-synthesis")
+                )
+                background = synthesizer.synthesize(plan.recipe_id, plan.canvas_size, background_rng)
+            with StageTimer(timings, "scene_render"):
+                rendered = renderer.render(plan, background)
+            return {
+                "accepted": True,
+                "image": rendered.image,
+                "rejections": rejections,
+                "record": {
+                    "schema_version": 1,
+                    "slot": slot,
+                    "candidate_attempt": candidate_attempt,
+                    "geometry_signature": plan.geometry_signature(),
+                    "intentional_negative": plan.intentional_negative,
+                    "attempted_instances": plan.attempted_instances,
+                    "camera_rect": list(plan.camera_rect),
+                    "scene_to_output": plan.scene_to_output.tolist(),
+                    "perspective_quad": plan.perspective_quad.tolist(),
+                    "coverage_fraction": rendered.coverage_fraction,
+                    "annotations": [_annotation_record(annotation) for annotation in rendered.annotations],
+                    "rejected_instances": [*plan.planning_rejections, *rendered.rejected_instances],
+                    "background": {
+                        "recipe_id": background.recipe_id,
+                        "recipe_version": background.recipe_version,
+                        "graph_hash": background.graph_hash,
+                        "sources": list(background.source_assets),
+                        "sampled_parameters": background.sampled_parameters,
+                        "node_timings_ns": background.node_timings_ns,
+                        "qa": background.qa,
+                        "warnings": list(background.warnings),
+                    },
+                    "stage_timings_ns": timings,
+                    "execution": {
+                        "worker_pid": os.getpid(),
+                        "worker_process": os.getpid() != coordinator_pid,
+                    },
+                },
+            }
+        except (SceneRejected, BackgroundSynthesisError) as exc:
+            rejections.append(
+                {
+                    "schema_version": 1,
+                    "slot": slot,
+                    "candidate_attempt": candidate_attempt,
+                    "reason": type(exc).__name__,
+                    "message": str(exc),
+                    "stage_timings_ns": timings,
+                }
+            )
+    return {"accepted": False, "image": None, "record": None, "rejections": rejections}
 
 
-def color_for_class(class_id: int) -> tuple[int, int, int]:
-    palette = [
-        (45, 212, 191),
-        (59, 130, 246),
-        (245, 158, 11),
-        (239, 68, 68),
-        (139, 92, 246),
-        (34, 197, 94),
-        (236, 72, 153),
-        (20, 184, 166),
-        (249, 115, 22),
-        (100, 116, 139),
-    ]
-    return palette[class_id % len(palette)]
+def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: GenerationOptions | None = None) -> dict[str, Any]:
+    options = options or GenerationOptions()
+    started = perf_counter()
+    preflight = _disk_preflight(Path(output_dir), resolved)
+    catalog = build_asset_catalog(resolved)
+    store = RunStore.open(Path(output_dir), resolved, catalog, resume=options.resume, invocation=options.invocation)
+    target = resolved.profile.run.num_images
+    workers = int(options.workers)
+    if workers < 1:
+        raise ValueError("workers must be >= 1")
+    metrics = MetricsAggregator(
+        target=target,
+        configured_recipe_weights=dict(resolved.profile.background_synthesis.recipe_weights),
+        configured_foreground_group_weights=dict(resolved.profile.assets.foregrounds.group_weights),
+    )
+    metrics.set_workload(worker_count=workers, active_workers=0, in_flight=0, queued=target)
+    for sample in store.samples:
+        metrics.record_sample(sample)
+    for rejection in store.rejections:
+        metrics.record_rejection(rejection)
+    reporter = RunReporter(
+        options.display,
+        resolved.profile.telemetry.refresh_hz,
+        target,
+        plain_interval_seconds=resolved.profile.telemetry.plain_interval_seconds,
+    )
+    resources = ResourceSampler()
+    reporter.start(metrics)
+    qa_limit = resolved.profile.report.qa_samples if options.qa_samples is None else options.qa_samples
+    status = "complete"
+    interrupted = False
+    fatal_error: str | None = None
+
+    def commit_result(slot: int, result: dict[str, Any]) -> bool:
+        nonlocal status, fatal_error
+        for rejection in result["rejections"]:
+            store.append_rejection(rejection)
+            metrics.record_rejection(rejection)
+        if not result["accepted"]:
+            status = "failed"
+            fatal_error = f"Slot {slot} exhausted its candidate-attempt budget"
+            return False
+        committed = store.commit_sample(result["record"], result["image"], qa=metrics.accepted < qa_limit)
+        metrics.record_sample(committed)
+        resource = resources.sample_if_due(resolved.profile.telemetry.resource_interval_seconds)
+        if resource is not None:
+            resource.update({"accepted": metrics.accepted, "candidate_attempts": metrics.candidate_attempts})
+            store.append_metric(resource)
+            metrics.record_resource(resource)
+        reporter.update(metrics)
+        if shutil.disk_usage(store.root).free < 32 * 1024 * 1024:
+            raise RuntimeError("Generation stopped because remaining disk space fell below 32 MiB")
+        if resolved.profile.run.max_wall_seconds and perf_counter() - started > resolved.profile.run.max_wall_seconds:
+            raise RuntimeError("Configured maximum wall time exceeded")
+        if (
+            resolved.profile.run.max_rejection_rate is not None
+            and metrics.candidate_attempts >= 10
+            and sum(metrics.rejection_reasons.values()) / metrics.candidate_attempts > resolved.profile.run.max_rejection_rate
+        ):
+            raise RuntimeError("Configured maximum rejection rate exceeded")
+        return True
+
+    try:
+        completed = store.completed_slots()
+        slots = [slot for slot in range(target) if slot not in completed]
+        coordinator_pid = os.getpid()
+        if workers == 1:
+            for slot_index, slot in enumerate(slots):
+                metrics.set_workload(worker_count=1, active_workers=1, in_flight=1, queued=max(0, len(slots) - slot_index - 1))
+                result = _produce_slot(resolved, catalog, slot, store.next_attempt(slot), coordinator_pid)
+                if not commit_result(slot, result):
+                    break
+        else:
+            # Batch windows bound queued jobs and returned-image memory. Sorted commits
+            # keep JSONL ordering identical to a single-process generation run.
+            window = workers * 2
+            executor = ProcessPoolExecutor(max_workers=workers)
+            active_futures: dict[Any, int] = {}
+            try:
+                for offset in range(0, len(slots), window):
+                    batch = slots[offset : offset + window]
+                    metrics.set_workload(
+                        worker_count=workers,
+                        active_workers=min(workers, len(batch)),
+                        in_flight=len(batch),
+                        queued=max(0, len(slots) - offset - len(batch)),
+                    )
+                    reporter.update(metrics, force=True)
+                    active_futures = {
+                        executor.submit(
+                            _produce_slot,
+                            resolved,
+                            catalog,
+                            slot,
+                            store.next_attempt(slot),
+                            coordinator_pid,
+                        ): slot
+                        for slot in batch
+                    }
+                    results = {active_futures[future]: future.result() for future in as_completed(active_futures)}
+                    for slot in sorted(results):
+                        if not commit_result(slot, results[slot]):
+                            for future in active_futures:
+                                future.cancel()
+                            break
+                    if status == "failed":
+                        break
+            except KeyboardInterrupt:
+                for future in active_futures:
+                    future.cancel()
+                try:
+                    executor.shutdown(wait=True, cancel_futures=True)
+                except KeyboardInterrupt:
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    raise SystemExit(130)
+                completed_results = {
+                    slot: future.result()
+                    for future, slot in active_futures.items()
+                    if future.done() and not future.cancelled()
+                }
+                for slot in sorted(completed_results):
+                    if slot not in store.completed_slots():
+                        commit_result(slot, completed_results[slot])
+                interrupted = True
+                if status == "complete":
+                    status = "interrupted"
+            except Exception:
+                executor.shutdown(wait=True, cancel_futures=True)
+                raise
+            else:
+                executor.shutdown(wait=True)
+    except KeyboardInterrupt:
+        interrupted = True
+        status = "interrupted"
+    except Exception as exc:
+        status = "failed"
+        fatal_error = f"{type(exc).__name__}: {exc}"
+    finally:
+        metrics.set_workload(worker_count=workers, active_workers=0, in_flight=0, queued=0)
+        final_resource = resources.sample_if_due(resolved.profile.telemetry.resource_interval_seconds, force=True)
+        if final_resource is not None:
+            final_resource.update({"accepted": metrics.accepted, "candidate_attempts": metrics.candidate_attempts})
+            store.append_metric(final_resource)
+            metrics.record_resource(final_resource)
+        summary = metrics.summary()
+        summary.update(
+            {
+                "schema_version": 1,
+                "status": status,
+                "interrupted": interrupted,
+                "fatal_error": fatal_error,
+                "run_id": store.run_id,
+                "pool_path": str(store.root),
+                "catalog_fingerprint": catalog.fingerprint,
+                "contract_hash": resolved.contract_hash,
+                "worker_count": workers,
+                "preflight": preflight,
+                "catalog_quality": {
+                    "exact_duplicate_groups": catalog.quality.exact_duplicate_groups,
+                    "perceptual_duplicate_groups": catalog.quality.perceptual_duplicate_groups,
+                    "background_group_counts": catalog.quality.background_group_counts,
+                    "foreground_group_counts": catalog.quality.foreground_group_counts,
+                    "class_counts": catalog.quality.class_counts,
+                },
+            }
+        )
+        store.write_summary(summary)
+        store.write_qa_index()
+        reporter.update(metrics, force=True)
+        reporter.finish(summary)
+    return summary

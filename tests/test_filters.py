@@ -1,99 +1,30 @@
-﻿import numpy as np
+import numpy as np
 import pytest
 
-from dataset_generator_m1 import filters
-from dataset_generator_m1.filters import (
-    ALBUMENTATIONS_FILTERS,
-    LOCAL_FALLBACK_FILTERS,
-    SUPPORTED_FILTERS,
-    apply_filter_groups,
-    augmentation_backend_status,
-    filter_backend,
-)
+from dataset_generator_m1.filters import apply_pipeline, backend_version, validate_transform_specs
+from dataset_generator_m1.models import TransformSpec
 
 
-FILTER_CASES = [
-    ("HueSaturationValue", {"hue_shift_range": [1, 1], "sat_shift_range": [1, 1], "val_shift_range": [1, 1]}),
-    ("RandomBrightnessContrast", {"brightness_range": [0.01, 0.01], "contrast_range": [0.01, 0.01]}),
-    ("GaussianBlur", {"blur_range": [3, 3], "sigma_range": [0.1, 0.1]}),
-    ("GaussNoise", {"std_range": [0.01, 0.01], "mean_range": [0.0, 0.0], "per_channel": False}),
-    ("AdditiveNoise", {"noise_type": "gaussian", "spatial_mode": "shared", "noise_params": None}),
-    ("RandomGamma", {"gamma_range": [100, 100]}),
-    ("PlanckianJitter", {"mode": "blackbody", "temperature_range": [5000, 8500], "sampling_method": "uniform"}),
-    ("SaltAndPepper", {"amount_range": [0.01, 0.01], "salt_vs_pepper_range": [0.5, 0.5]}),
-    ("MotionBlur", {"blur_range": [3, 3], "allow_shifted": True, "angle_range": [0, 12], "direction_range": [-0.2, 0.2]}),
-    ("PlasmaShadow", {"shadow_intensity_range": [0.1, 0.2], "plasma_size": 64, "roughness": 3.0}),
-    ("PlasmaBrightnessContrast", {"brightness_range": [0.01, 0.01], "contrast_range": [0.01, 0.01], "plasma_size": 64, "roughness": 3.0}),
-    ("RandomSunFlare", {"flare_roi": [0.0, 0.0, 1.0, 0.5], "src_radius": 20, "src_color": [255, 255, 255], "angle_range": [0.0, 1.0], "num_flare_circles_range": [1, 1], "method": "overlay"}),
-    ("Illumination", {"mode": "linear", "intensity_range": [0.01, 0.02], "effect_type": "both", "angle_range": [0, 360], "center_range": [0.25, 0.75], "sigma_range": [0.2, 0.6]}),
-    ("AtmosphericFog", {"density_range": [0.05, 0.05], "fog_color": [255, 255, 255], "depth_mode": "linear"}),
-]
-
-
-def test_albumentationsx_is_importable():
-    assert filters.A is not None, augmentation_backend_status()
-    assert "AlbumentationsX" in augmentation_backend_status()
-
-
-def test_filter_backend_map_is_explicit():
-    tested_filters = {name for name, _ in FILTER_CASES}
-    assert tested_filters == SUPPORTED_FILTERS - {"PlankianJitter"}
-
-    for name, _ in FILTER_CASES:
-        print(f"{name}: {filter_backend(name)}")
-
-    assert ALBUMENTATIONS_FILTERS == {
-        "HueSaturationValue",
-        "RandomBrightnessContrast",
-        "GaussianBlur",
-        "GaussNoise",
-        "AdditiveNoise",
-        "RandomGamma",
-        "PlanckianJitter",
-        "SaltAndPepper",
-        "MotionBlur",
-        "PlasmaShadow",
-        "PlasmaBrightnessContrast",
-        "RandomSunFlare",
-        "Illumination",
-        "AtmosphericFog",
-    }
-    assert LOCAL_FALLBACK_FILTERS == {"PlankianJitter"}
-
-    assert filter_backend("HueSaturationValue") == "albumentationsx"
-    assert filter_backend("MotionBlur") == "albumentationsx"
-    assert filter_backend("AtmosphericFog") == "albumentationsx"
-
-
-def test_foreground_filters_preserve_alpha_channel():
-    image = np.zeros((16, 16, 4), dtype=np.uint8)
+def test_foreground_appearance_preserves_alpha() -> None:
+    image = np.zeros((24, 24, 4), dtype=np.uint8)
     image[:, :, :3] = 120
-    image[4:12, 4:12, 3] = 255
-    groups = {
-        "ColorFilters": {
-            "HueSaturationValue": {
-                "hue_shift_range": [1, 1],
-                "sat_shift_range": [1, 1],
-                "val_shift_range": [1, 1],
-                "probability": 1.0,
-            }
-        }
-    }
+    image[4:20, 4:20, 3] = 255
+    specs = (
+        TransformSpec(
+            type="HueSaturationValue",
+            probability=1.0,
+            params={"hue_shift_limit": (1, 1), "sat_shift_limit": (2, 2), "val_shift_limit": (3, 3)},
+        ),
+    )
 
-    out = apply_filter_groups(image, groups, np.random.default_rng(1), preserve_alpha=True)
+    output = apply_pipeline(image, specs, np.random.default_rng(3), preserve_alpha=True)
 
-    assert np.array_equal(out[:, :, 3], image[:, :, 3])
-    assert np.all(out[image[:, :, 3] == 0, :3] == 0)
+    assert np.array_equal(output[:, :, 3], image[:, :, 3])
+    assert np.all(output[image[:, :, 3] == 0, :3] == 0)
 
 
-@pytest.mark.parametrize("name,params", FILTER_CASES)
-def test_all_documented_filters_are_allowed_and_apply(name, params):
-    image = np.full((96, 96, 3), 128, dtype=np.uint8)
-    groups = {"AnyGroup": {name: {**params, "probability": 1.0}}}
+def test_transform_capability_validation_is_version_specific() -> None:
+    invalid = (TransformSpec(type="GaussianBlur", params={"obsolete_parameter": 1}),)
 
-    out = apply_filter_groups(image, groups, np.random.default_rng(1))
-
-    assert name in SUPPORTED_FILTERS
-    assert out.shape == image.shape
-    assert out.dtype == np.uint8
-
+    with pytest.raises(ValueError, match=f"Albumentations {backend_version()} does not accept"):
+        validate_transform_specs(invalid, "appearance.final")

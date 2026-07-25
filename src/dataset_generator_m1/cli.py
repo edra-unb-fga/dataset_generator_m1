@@ -2,78 +2,161 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import sys
 from pathlib import Path
 from typing import Any
 
-from .config import load_config
-from .generator import DatasetGenerator
+from rich.console import Console
+from rich.panel import Panel
+import psutil
+
+from .config import load_profile
+from .exporter import ExportOptions, export_pools, parse_splits
+from .generator import GenerationOptions, generate_pool
+from .workflows import benchmark, compare_artifacts, preview_backgrounds, preview_scenes, validate_project
+
+
+DISPLAY_CHOICES = ["auto", "live", "full", "plain", "quiet"]
+
+
+def _common(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--display", choices=DISPLAY_CHOICES, default="auto")
+    parser.add_argument("--output-format", choices=["human", "json"], default="human")
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="dataset_generator_m1")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    parser = argparse.ArgumentParser(prog="dataset-generator-m1", description="Auditable synthetic dataset generation workbench")
+    commands = parser.add_subparsers(dest="command", required=True)
 
-    generate = subparsers.add_parser("generate", help="Generate a synthetic YOLO dataset")
-    generate.add_argument("--config", type=str, default=None, help="Path to YAML config")
-    generate.add_argument("--dataset-type", choices=["manometro", "landing"], default=None)
-    generate.add_argument("--num-images", type=int, default=None)
-    generate.add_argument("--output-dir", type=str, default=None)
-    generate.add_argument("--debug", type=int, default=None)
-    generate.add_argument("--debug-dir", type=str, default=None)
-    generate.add_argument("--backgrounds-dir", type=str, default=None)
-    generate.add_argument(
-        "--foreground-group-weights",
-        type=parse_group_weights,
-        default=None,
-        help="Comma-separated foreground sampling weights by subdirectory, e.g. numeros=0.75,gabaritos=0.25",
-    )
-    generate.add_argument("--print-config", action="store_true", help="Print the resolved config before generating")
+    validate = commands.add_parser("validate", help="Validate a profile, assets, recipes, and capabilities")
+    validate.add_argument("--config", required=True)
+    _common(validate)
+
+    preview = commands.add_parser("preview", help="Build scene or background preview reports")
+    preview_commands = preview.add_subparsers(dest="preview_command", required=True)
+    preview_scene = preview_commands.add_parser("scenes", help="Compare named scene variants")
+    preview_scene.add_argument("--config", required=True)
+    preview_scene.add_argument("--variants")
+    preview_scene.add_argument("--samples", type=int, default=8)
+    preview_scene.add_argument("--output-dir", required=True)
+    _common(preview_scene)
+    preview_background = preview_commands.add_parser("backgrounds", help="Preview every background recipe")
+    preview_background.add_argument("--config", required=True)
+    preview_background.add_argument("--samples-per-recipe", type=int, default=4)
+    preview_background.add_argument("--output-dir", required=True)
+    _common(preview_background)
+
+    generate = commands.add_parser("generate", help="Generate or resume an auditable sample pool")
+    generate.add_argument("--config", required=True)
+    generate.add_argument("--num-images", type=int)
+    generate.add_argument("--output-dir", required=True)
+    generate.add_argument("--resume", action="store_true")
+    generate.add_argument("--workers", default="1")
+    generate.add_argument("--qa-samples", type=int)
+    _common(generate)
+
+    bench = commands.add_parser("benchmark", help="Benchmark fixed scene plans")
+    bench.add_argument("--config", required=True)
+    bench.add_argument("--output-dir", required=True)
+    bench.add_argument("--samples", type=int, default=5)
+    bench.add_argument("--warmup", type=int, default=1)
+    _common(bench)
+
+    compare = commands.add_parser("compare", help="Compare run or benchmark artifacts")
+    compare.add_argument("--left", required=True)
+    compare.add_argument("--right", required=True)
+    compare.add_argument("--output-dir", required=True)
+    _common(compare)
+
+    export = commands.add_parser("export", help="Merge generation pools and export YOLO splits")
+    export.add_argument("--pool", action="append", required=True)
+    export.add_argument("--format", choices=["yolo"], default="yolo")
+    export.add_argument("--strategy", choices=["random", "stratified", "asset-disjoint"], default="random")
+    export.add_argument("--splits", default="train=0.8,val=0.1,test=0.1")
+    export.add_argument("--output-dir", required=True)
+    export.add_argument("--preserve-names", action="store_true")
+    export.add_argument("--seed", type=int, default=42)
+    _common(export)
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+def _workers(value: str, resolved: Any | None = None) -> int:
+    if value == "auto":
+        cpu_limit = max(1, (os.cpu_count() or 2) - 1)
+        if resolved is None:
+            return cpu_limit
+        width, height = resolved.profile.output.image_size
+        canvas_pixels = width * height * resolved.profile.scene.canvas_scale**2
+        estimated_bytes_per_worker = max(256 * 1024 * 1024, int(canvas_pixels * 64))
+        memory_limit = max(1, int(psutil.virtual_memory().available * 0.60) // estimated_bytes_per_worker)
+        return max(1, min(cpu_limit, memory_limit, 32))
+    workers = int(value)
+    if workers < 1:
+        raise ValueError("workers must be auto or an integer >= 1")
+    return workers
+
+
+def _run(args: argparse.Namespace) -> dict[str, Any]:
+    if args.command == "validate":
+        return validate_project(load_profile(args.config))
+    if args.command == "preview" and args.preview_command == "backgrounds":
+        return preview_backgrounds(load_profile(args.config), args.output_dir, args.samples_per_recipe)
+    if args.command == "preview" and args.preview_command == "scenes":
+        return preview_scenes(args.config, args.variants, args.output_dir, args.samples)
     if args.command == "generate":
-        return generate_command(args)
-    return 1
+        resolved = load_profile(args.config, {"num_images": args.num_images, "qa_samples": args.qa_samples})
+        return generate_pool(
+            resolved,
+            args.output_dir,
+            GenerationOptions(
+                display="quiet" if args.output_format == "json" else args.display,
+                output_format=args.output_format,
+                workers=_workers(args.workers, resolved),
+                resume=args.resume,
+                qa_samples=args.qa_samples,
+                invocation=tuple(getattr(args, "_sanitized_invocation", ())),
+            ),
+        )
+    if args.command == "benchmark":
+        return benchmark(load_profile(args.config), args.output_dir, args.samples, args.warmup)
+    if args.command == "compare":
+        return compare_artifacts(args.left, args.right, args.output_dir)
+    if args.command == "export":
+        return export_pools(
+            args.pool,
+            args.output_dir,
+            ExportOptions(args.strategy, parse_splits(args.splits), args.preserve_names, args.seed),
+        )
+    raise ValueError("Unsupported command")
 
 
-def generate_command(args: argparse.Namespace) -> int:
-    overrides: dict[str, Any] = {
-        "dataset_type": args.dataset_type,
-        "num_images": args.num_images,
-        "output_dir": args.output_dir,
-        "debug": args.debug,
-        "debug_dir": args.debug_dir,
-        "backgrounds_dir": args.backgrounds_dir,
-        "foreground_group_weights": args.foreground_group_weights,
-    }
-    config = load_config(args.config, overrides)
-    if args.print_config:
-        print(json.dumps(config.data, indent=2))
-    generator = DatasetGenerator(config)
-    manifest = generator.generate()
-    output_dir = Path(config.data["output_dir"])
-    print(f"Generated {len(manifest['samples'])} images in {output_dir}")
-    return 0
-
-
-def parse_group_weights(value: str) -> dict[str, float]:
-    weights: dict[str, float] = {}
-    for item in value.split(","):
-        item = item.strip()
-        if not item:
-            continue
-        if "=" not in item:
-            raise argparse.ArgumentTypeError("Expected format group=weight,group=weight")
-        group_name, raw_weight = item.split("=", 1)
-        group_name = group_name.strip()
-        if not group_name:
-            raise argparse.ArgumentTypeError("Foreground group names cannot be empty")
-        try:
-            weights[group_name] = float(raw_weight)
-        except ValueError as exc:
-            raise argparse.ArgumentTypeError(f"Invalid weight for {group_name}: {raw_weight}") from exc
-    if not weights:
-        raise argparse.ArgumentTypeError("At least one foreground group weight is required")
-    return weights
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
+    try:
+        args = parser.parse_args(argv)
+        raw_invocation = list(sys.argv[1:] if argv is None else argv)
+        args._sanitized_invocation = tuple(
+            Path(token).name if ("/" in token or "\\" in token) and not token.startswith("--") else token
+            for token in raw_invocation
+        )
+    except SystemExit as exc:
+        return int(exc.code)
+    try:
+        result = _run(args)
+        if args.output_format == "json":
+            sys.stdout.write(json.dumps(result, separators=(",", ":")) + "\n")
+        elif result.get("status") not in {"valid", "complete"}:
+            message = result.get("fatal_error") or f"Command ended with status {result.get('status', 'unknown')}"
+            Console(stderr=True).print(Panel.fit(str(message), title="[red]generation failed[/red]", border_style="red"))
+        elif args.display != "quiet":
+            Console().print(Panel.fit(f"[bold]{result.get('status', 'complete')}[/bold]", title=args.command))
+        return 0 if result.get("status") in {"valid", "complete"} else 1
+    except Exception as exc:
+        error = {"schema_version": 1, "status": "error", "error_type": type(exc).__name__, "message": str(exc)}
+        output_format = getattr(locals().get("args", None), "output_format", "human")
+        if output_format == "json":
+            sys.stdout.write(json.dumps(error, separators=(",", ":")) + "\n")
+        else:
+            Console(stderr=True).print(Panel.fit(str(exc), title=f"[red]{type(exc).__name__}[/red]", border_style="red"))
+        return 1

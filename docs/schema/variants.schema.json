@@ -1,0 +1,23 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "variants": {
+      "additionalProperties": {
+        "type": "object"
+      },
+      "title": "Variants",
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "variants"
+  ],
+  "title": "VariantCatalog",
+  "type": "object"
+}

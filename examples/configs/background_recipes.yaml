@@ -1,0 +1,40 @@
+schema_version: 1
+recipes:
+  direct:
+    nodes:
+      - {id: source, op: sample_asset}
+      - {id: canvas, op: resize_crop, inputs: {image: source}}
+    output: canvas
+
+  palette:
+    nodes:
+      - {id: base, op: sample_asset}
+      - {id: palette_source, op: sample_asset, params: {same_group_as: base, distinct_from: [base]}}
+      - {id: base_canvas, op: resize_crop, inputs: {image: base}}
+      - {id: palette_canvas, op: resize_crop, inputs: {image: palette_source}}
+      - {id: transferred, op: palette_transfer, inputs: {image: base_canvas, palette: palette_canvas}, params: {strength: [0.35, 0.75]}}
+    output: transferred
+
+  mask_multiband:
+    nodes:
+      - {id: first, op: sample_asset}
+      - {id: second, op: sample_asset, params: {same_group_as: first, distinct_from: [first]}}
+      - {id: mask_source, op: sample_asset, params: {same_group_as: first, distinct_from: [first, second]}}
+      - {id: first_canvas, op: resize_crop, inputs: {image: first}}
+      - {id: second_canvas, op: resize_crop, inputs: {image: second}}
+      - {id: mask_canvas, op: resize_crop, inputs: {image: mask_source}}
+      - {id: mask_luma, op: channel_extract, inputs: {image: mask_canvas}, params: {color_space: Lab, channel: 0}}
+      - {id: mask, op: mask_normalize, inputs: {mask: mask_luma}, params: {percentiles: [10, 90], blur_fraction: 0.025}}
+      - {id: blended, op: multiband_blend, inputs: {first: first_canvas, second: second_canvas, mask: mask}, params: {levels: 5}}
+    output: blended
+
+  displaced:
+    nodes:
+      - {id: base, op: sample_asset}
+      - {id: field_source, op: sample_asset, params: {same_group_as: base, distinct_from: [base]}}
+      - {id: base_canvas, op: resize_crop, inputs: {image: base}}
+      - {id: field_canvas, op: resize_crop, inputs: {image: field_source}}
+      - {id: field_x, op: channel_extract, inputs: {image: field_canvas}, params: {color_space: Lab, channel: 0}}
+      - {id: field_y, op: channel_extract, inputs: {image: field_canvas}, params: {color_space: Lab, channel: 1}}
+      - {id: warped, op: displace, inputs: {image: base_canvas, map_x: field_x, map_y: field_y}, params: {amplitude_fraction: [0.005, 0.025], blur_fraction: 0.02}}
+    output: warped

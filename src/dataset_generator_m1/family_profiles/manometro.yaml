@@ -1,0 +1,10 @@
+schema_version: 1
+name: manometro
+classes: [0-20, 20-40, 40-60, 60-80, 80-100]
+class_mapping:
+  - pattern: '^(?P<class_name>[^/]+)/.+$'
+    class_template: '{class_name}'
+rotation:
+  mode: square
+  angle_degrees: [-180.0, 180.0]
+  probability: 1.0
