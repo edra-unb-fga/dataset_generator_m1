@@ -3,15 +3,17 @@
 This file defines the project language. It intentionally describes the domain, not the implementation.
 
 - **Family**: one coherent annotation problem with an ordered class catalog, asset-mapping rules, and geometric policies. A run has exactly one family.
-- **Composer**: the strict, versioned user configuration that selects subject profiles and optional inline appearance effects.
+- **Composer**: the strict, versioned user configuration that selects subject profiles plus typed inline values and optional ordered appearance effects.
 - **Profile bundle**: reusable executable YAML plus machine metadata and human documentation for one typed subject.
 - **Resolved generation contract**: the immutable, hashed runtime input produced from a composer, referenced profiles, declared overrides, family definition, and recipes.
 - **Asset catalog**: the validated, fingerprinted inventory of decodable source images, mappings, groups, metadata, and sampling weights available to a run.
 - **Background recipe**: a versioned, typed, acyclic graph that combines one or more catalog backgrounds into one RGB scene canvas.
+- **Background mixing profile**: versioned sampling weights over available background recipes; it changes selection frequency, not recipe algorithms.
 - **Scene plan**: deterministic sampled intent for a slot and candidate attempt: asset choices, normalized random draws, placements, camera window, recipe, and one global homography.
 - **Candidate**: one attempt to realize a slot. It either becomes an accepted sample or produces a typed rejection record.
 - **Sample**: an accepted rendered image with annotations, geometry evidence, source lineage, timings, and QA evidence.
 - **Generation pool**: a resumable, auditable collection of compatible samples and rejections. It is not yet a train/validation/test dataset.
+- **Run control record**: the atomic desired/actual coordinator state paired with an append-only event log for pause, continue, stop, completion, and resume.
 - **Variant**: a named, schema-validated overlay used to compare experimental scene or appearance settings while preserving shared choices and random quantiles.
 - **Appearance treatment**: one ordered background/foreground/final effect configuration in a paired study. It may change pixels but not assets, geometry, masks, annotations, recipes, or output dimensions.
 - **Effect trace**: the stable transform ID, independent seed, activation, sampled parameters, pixel count, and exclusive call duration recorded by the production renderer.

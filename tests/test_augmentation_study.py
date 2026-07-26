@@ -26,7 +26,7 @@ def _tiny_profile(tmp_path: Path) -> Path:
             "output": {"image_size": [96, 96], "image_format": "png"},
             "sampling": {"instances_per_image": [1, 1], "foreground_size": [0.2, 0.2]},
             "scene": {"canvas_scale": 1.25},
-            "background_synthesis": {"recipe_weights": {"direct": 1.0}},
+            "background_mixing": {"recipe_weights": {"direct": 1.0}},
         },
     )
 

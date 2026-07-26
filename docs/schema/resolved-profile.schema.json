@@ -258,6 +258,26 @@
       "title": "CameraConfig",
       "type": "object"
     },
+    "ExecutionConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "workers": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "const": "auto",
+              "type": "string"
+            }
+          ],
+          "default": 1,
+          "title": "Workers"
+        }
+      },
+      "title": "ExecutionConfig",
+      "type": "object"
+    },
     "OutputConfig": {
       "additionalProperties": false,
       "properties": {
@@ -607,6 +627,9 @@
     },
     "background_synthesis": {
       "$ref": "#/$defs/BackgroundSynthesisConfig"
+    },
+    "execution": {
+      "$ref": "#/$defs/ExecutionConfig"
     },
     "family": {
       "enum": [

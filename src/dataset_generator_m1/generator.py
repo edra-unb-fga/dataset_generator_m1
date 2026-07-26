@@ -12,6 +12,7 @@ import numpy as np
 
 from .assets import AssetCatalog, build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
+from .execution import resolve_worker_count
 from .models import ResolvedProfile
 from .preflight import PreflightRequest, require_warning_receipt, run_preflight
 from .run_control import RunController, TerminalControlAdapter
@@ -24,7 +25,7 @@ from .telemetry import DisplayMode, MetricsAggregator, ResourceSampler, RunRepor
 class GenerationOptions:
     display: DisplayMode = "auto"
     output_format: str = "human"
-    workers: int | str = 1
+    workers: int | str | None = None
     resume: bool = False
     qa_samples: int | None = None
     invocation: tuple[str, ...] = ()
@@ -151,7 +152,7 @@ def probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float = 60.0) -
 
 def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: GenerationOptions | None = None) -> dict[str, Any]:
     options = options or GenerationOptions()
-    workers = int(options.workers)
+    workers = resolve_worker_count(options.workers, resolved)
     preflight = options.preflight_result or run_preflight(
         PreflightRequest(resolved, Path(output_dir), workers)
     )

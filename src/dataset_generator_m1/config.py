@@ -182,7 +182,22 @@ def _normalized_overrides(overrides: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
-def load_profile(path: str | Path, overrides: dict[str, Any] | None = None) -> ResolvedProfile:
+def _merge_inline(base: dict[str, Any], inline: dict[str, Any]) -> dict[str, Any]:
+    result = deepcopy(base)
+    for key, value in inline.items():
+        if isinstance(value, dict) and isinstance(result.get(key), dict):
+            result[key] = _merge_inline(result[key], value)
+        else:
+            result[key] = deepcopy(value)
+    return result
+
+
+def load_profile(
+    path: str | Path,
+    overrides: dict[str, Any] | None = None,
+    *,
+    override_sources: tuple[Path, ...] = (),
+) -> ResolvedProfile:
     config_path = Path(path).resolve()
     raw = load_yaml_strict(config_path)
     if raw.get("schema_version") != 2:
@@ -199,25 +214,60 @@ def load_profile(path: str | Path, overrides: dict[str, Any] | None = None) -> R
         "output": composer.output,
         "sampling": composer.sampling,
         "scene": composer.scene,
-        "background_synthesis": composer.background_synthesis,
+        "execution": composer.execution,
         "telemetry": composer.telemetry,
-        "report": composer.report,
     }
     resolved_values: dict[str, Any] = {"schema_version": 2}
-    sources: list[Path] = [config_path]
+    sources: list[Path] = [config_path, *override_sources]
     metadata: list[dict[str, Any]] = []
     graph: dict[str, Any] = {}
     for subject, reference in references.items():
         value, found_sources, found_metadata, node = _load_bundle(reference, config_path, subject)
+        inline_model = getattr(composer.inline, subject, None)
+        if inline_model is not None:
+            value = _merge_inline(value, inline_model.model_dump(mode="json", exclude_none=True))
+            node["inline"] = inline_model.model_dump(mode="json", exclude_none=True)
         resolved_values[subject] = value["family"] if subject == "family" else value
         sources.extend(found_sources)
         metadata.extend(found_metadata)
         graph[subject] = node
 
+    background_value: dict[str, Any] = {}
+    for subject, reference in (
+        ("background_recipes", composer.background_recipes),
+        ("background_mixing", composer.background_mixing),
+    ):
+        value, found_sources, found_metadata, node = _load_bundle(reference, config_path, subject)
+        inline_model = getattr(composer.inline, subject)
+        if inline_model is not None:
+            value = _merge_inline(value, inline_model.model_dump(mode="json", exclude_none=True))
+            node["inline"] = inline_model.model_dump(mode="json", exclude_none=True)
+        background_value.update(value)
+        sources.extend(found_sources)
+        metadata.extend(found_metadata)
+        graph[subject] = node
+    resolved_values["background_synthesis"] = background_value
+
+    report_value, report_sources, report_metadata, report_node = _load_bundle(
+        composer.reporting, config_path, "reporting"
+    )
+    if composer.inline.reporting is not None:
+        inline_report = composer.inline.reporting.model_dump(mode="json", exclude_none=True)
+        report_value = _merge_inline(report_value, inline_report)
+        report_node["inline"] = inline_report
+    resolved_values["report"] = report_value
+    sources.extend(report_sources)
+    metadata.extend(report_metadata)
+    graph["reporting"] = report_node
+
     appearance_value, appearance_sources, appearance_metadata, appearance_node = _load_bundle(composer.appearance.preset, config_path, "appearance")
     sources.extend(appearance_sources)
     metadata.extend(appearance_metadata)
-    graph["appearance"] = {"preset": appearance_node, "stages": {}}
+    graph["appearance"] = {
+        "preset": appearance_node,
+        "stages": {},
+        "inline": composer.appearance.inline.model_dump(mode="json"),
+    }
     for stage in ("background", "foreground", "final"):
         for reference in getattr(composer.appearance, stage):
             value, found_sources, found_metadata, node = _load_bundle(reference, config_path, f"appearance.{stage}")

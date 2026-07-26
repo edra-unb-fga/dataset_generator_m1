@@ -16,6 +16,14 @@ jobs:
       - run: uv run python scripts/generate_schemas.py
       - run: git diff --exit-code -- docs/schema
       - run: uv run pytest -q
+      - name: Guided configuration noninteractive smoke
+        run: >-
+          uv run python -m dataset_generator_m1 configure
+          --family landing --output outputs/windows-composer.yaml
+          --run-output-dir outputs/windows-configured-pool
+          --output-format json
+      - run: uv run python -m dataset_generator_m1 resolve --config outputs/windows-composer.yaml --set run.num_images=1 --output-format json
+      - run: uv run python -m dataset_generator_m1 preflight --config outputs/windows-composer.yaml --output-dir outputs/windows-configured-pool --output-format json
       - name: Quick augmentation correctness study
         run: >-
           uv run python -m dataset_generator_m1 experiment augmentations

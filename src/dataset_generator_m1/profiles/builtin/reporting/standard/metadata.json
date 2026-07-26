@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:reporting/standard","subject":"reporting","status":"standard","compatible_families":["landing","manometro"],"intents":["qa-gallery"],"performance_risk":"none","warning_codes":[],"evidence":[],"scaling_drivers":[]}

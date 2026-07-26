@@ -44,10 +44,12 @@ def write_profile(path: Path, *, duplicate_family: bool = False) -> None:
     write_bundle(root, "output", "output", "  image_size: [320, 192]\n")
     write_bundle(root, "sampling", "sampling", "  instances_per_image: [1, 2]\n")
     write_bundle(root, "scene", "scene", "  canvas_scale: 2.0\n")
-    write_bundle(root, "background_synthesis", "background", f"  recipe_file: {path.parent.joinpath('background_recipes.yaml').as_posix()}\n  recipe_weights: {{direct: 1.0}}\n")
+    write_bundle(root, "background_recipes", "background", f"  recipe_file: {path.parent.joinpath('background_recipes.yaml').as_posix()}\n")
+    write_bundle(root, "background_mixing", "background", "  recipe_weights: {direct: 1.0}\n")
     write_bundle(root, "appearance", "appearance", "  background: []\n  foreground: []\n  final: []\n")
+    write_bundle(root, "execution", "execution", "  workers: 1\n")
     write_bundle(root, "telemetry", "telemetry", "  refresh_hz: 3.0\n")
-    write_bundle(root, "report", "report", "  qa_samples: 1\n")
+    write_bundle(root, "reporting", "report", "  qa_samples: 1\n")
     path.write_text(
         f"""schema_version: 2
 {family}
@@ -56,11 +58,13 @@ assets: profiles/assets/assets/profile.yaml
 output: profiles/output/output/profile.yaml
 sampling: profiles/sampling/sampling/profile.yaml
 scene: profiles/scene/scene/profile.yaml
-background_synthesis: profiles/background_synthesis/background/profile.yaml
+background_recipes: profiles/background_recipes/background/profile.yaml
+background_mixing: profiles/background_mixing/background/profile.yaml
 appearance:
   preset: profiles/appearance/appearance/profile.yaml
+execution: profiles/execution/execution/profile.yaml
 telemetry: profiles/telemetry/telemetry/profile.yaml
-report: profiles/report/report/profile.yaml
+reporting: profiles/reporting/report/profile.yaml
 """,
         encoding="utf-8",
     )
@@ -93,10 +97,11 @@ def test_only_declared_operational_overrides_are_accepted(tmp_path: Path) -> Non
     profile_path = tmp_path / "profile.yaml"
     write_profile(profile_path)
 
-    resolved = load_profile(profile_path, {"num_images": 9, "qa_samples": 2})
+    resolved = load_profile(profile_path, {"num_images": 9, "qa_samples": 2, "execution.workers": 3})
 
     assert resolved.profile.run.num_images == 9
     assert resolved.profile.report.qa_samples == 2
+    assert resolved.profile.execution.workers == 3
     with pytest.raises(ValueError, match="Unknown override path"):
         load_profile(profile_path, {"scene.camera.scale": 0.5})
 

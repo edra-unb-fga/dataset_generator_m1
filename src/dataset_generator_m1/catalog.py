@@ -10,11 +10,16 @@ from .config import _builtin_root, _resolve_reference, load_profile, load_yaml_s
 from .models import GenerationComposer, ProfileBundle, ProfileMetadata
 
 
-def list_profiles() -> dict[str, Any]:
+def list_profiles(composer: str | Path | None = None) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
     for metadata_path in sorted(_builtin_root().glob("*/*/metadata.json")):
         metadata = ProfileMetadata.model_validate(json.loads(metadata_path.read_text(encoding="utf-8")))
         entries.append(metadata.model_dump(mode="json"))
+    if composer:
+        root = Path(composer).resolve().parent / "profiles" / "workspace"
+        for metadata_path in sorted(root.glob("*/*/metadata.json")):
+            metadata = ProfileMetadata.model_validate(json.loads(metadata_path.read_text(encoding="utf-8")))
+            entries.append(metadata.model_dump(mode="json"))
     return {"schema_version": 1, "status": "complete", "profiles": entries}
 
 
@@ -43,8 +48,13 @@ def show_profile(reference: str, *, composer: str | Path | None = None) -> dict[
     }
 
 
-def resolved_contract(config: str | Path, overrides: dict[str, Any] | None = None) -> dict[str, Any]:
-    resolved = load_profile(config, overrides)
+def resolved_contract(
+    config: str | Path,
+    overrides: dict[str, Any] | None = None,
+    *,
+    override_sources: tuple[Path, ...] = (),
+) -> dict[str, Any]:
+    resolved = load_profile(config, overrides, override_sources=override_sources)
     return {
         "schema_version": 1,
         "status": "complete",

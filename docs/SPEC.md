@@ -11,7 +11,8 @@ The stable command surface is:
 catalog list
 catalog show PROFILE-REFERENCE [--config COMPOSER]
 catalog promote --config COMPOSER --stage background|foreground|final --id ID
-resolve --config COMPOSER
+configure --family landing|manometro --output COMPOSER
+resolve --config COMPOSER [--overrides FILE] [--set PATH=VALUE...]
 validate --config COMPOSER
 preview scenes --config COMPOSER [--variants VARIANTS] --samples N --output-dir DIR
 preview backgrounds --config COMPOSER --samples-per-recipe N --output-dir DIR
@@ -25,7 +26,7 @@ export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|ass
 
 Every leaf command accepts `--display auto|live|full|plain|quiet` and `--output-format human|json`. `auto` selects Rich Live only for an interactive terminal. JSON disables generation display and emits exactly one versioned result or error document. Rich follows normal terminal and `NO_COLOR` behavior.
 
-`num_images` and `qa_samples` are ordinary declared leaf overrides. `realistic-heavy` is the shipped
+`num_images`, `qa_samples`, and `execution.workers` are ordinary declared leaf overrides. `realistic-heavy` is the shipped
 appearance default and participates in the resolved contract hash.
 Scene previews use named variant YAML overlays. Augmentation matrix files are strict appearance-only
 contracts and fail before artifacts are created if they attempt to change geometry or sources.
@@ -44,16 +45,20 @@ assets: builtin:assets/landing
 output: builtin:output/standard
 sampling: builtin:sampling/landing-standard
 scene: builtin:scene/standard
-background_synthesis: builtin:background_synthesis/standard
+background_recipes: builtin:background_recipes/standard
+background_mixing: builtin:background_mixing/standard
 appearance: {preset: builtin:appearance/realistic-heavy}
+execution: builtin:execution/standard
 telemetry: builtin:telemetry/standard
-report: builtin:report/standard
+reporting: builtin:reporting/standard
 ```
 
 References may be built-in IDs, workspace IDs, or paths relative to the composer. Built-in bundles
 contain `profile.yaml`, `metadata.json`, and `README.md`. Singleton subjects resolve one complete
-profile; appearance resolves one preset plus ordered stage profiles and strict inline effects. Generic
-YAML deep merging is not part of the composer interface.
+profile; appearance resolves one preset plus ordered stage profiles and strict inline effects. A composer
+may also provide modeled partial inline values for run, assets, output, sampling, scene, background recipes,
+background mixing, execution, telemetry, and reporting. These values are schema-checked before they are applied;
+generic untyped YAML deep merging is not part of the composer interface.
 
 Dimensions are always `[width, height]`. Scene/camera values are normalized fractions unless a field
 explicitly names pixels or degrees. Appearance transforms are ordered `{id, type, probability, params}`
@@ -69,6 +74,11 @@ metadata, and declared overrides into one immutable contract hash. The run recor
 source hashes, profile metadata, and overrides. Validation must fail before generation on schema errors,
 unsupported transforms, invalid references or recipes, missing roots, decode failures, ambiguous class
 mappings, empty classes, or zero effective weights.
+
+Precedence is referenced profiles, composer inline values, an optional override file, declared common CLI
+options, and repeated typed `--set` leaves. Later `--set` values win. Override files participate in source
+hashes; applied leaves are retained in the resolved contract and run manifest. Unknown paths, mapping-valued
+`--set`, and invalid final types fail before output creation. See [CONFIGURATION.md](CONFIGURATION.md).
 
 The asset catalog records collision-safe logical paths, dimensions, mode, SHA-256, a perceptual fingerprint, group, class mapping, and optional background tags, aliases, exclusions, seamlessness, texture kind, and approved recipe roles. Its stable fingerprint participates in resume compatibility. Exact and perceptual duplicate groups are reported as catalog-quality evidence.
 

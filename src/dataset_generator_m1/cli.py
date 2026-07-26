@@ -2,21 +2,24 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 from typing import Any
 
 from rich.console import Console
+from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.prompt import Confirm
-import psutil
+from rich.table import Table
 
 from .config import load_profile
 from .catalog import list_profiles, promote_inline_stack, resolved_contract, show_profile
+from .configurator import APPEARANCE_IDS, configure_interactive, configure_noninteractive
 from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
+from .execution import resolve_worker_count
 from .generator import GenerationOptions, generate_pool, probe_profile
+from .overrides import OverridePlan, build_override_plan
 from .preflight import PreflightRequest, confirm_preflight, run_preflight
 from .run_control import request_run_action, run_status
 from .workflows import benchmark, compare_artifacts, preview_backgrounds, preview_scenes, validate_project
@@ -30,6 +33,11 @@ def _common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--output-format", choices=["human", "json"], default="human")
 
 
+def _overrides(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--overrides", help="YAML file containing typed leaf overrides")
+    parser.add_argument("--set", dest="typed_sets", action="append", default=[], metavar="PATH=VALUE")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="dataset-generator-m1", description="Auditable synthetic dataset generation workbench")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -37,6 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     catalog = commands.add_parser("catalog", help="Discover and inspect reusable configuration profiles")
     catalog_commands = catalog.add_subparsers(dest="catalog_command", required=True)
     catalog_list = catalog_commands.add_parser("list", help="List built-in profiles")
+    catalog_list.add_argument("--config", help="Also discover workspace profiles beside this composer")
     _common(catalog_list)
     catalog_show = catalog_commands.add_parser("show", help="Show one built-in, workspace, or path profile")
     catalog_show.add_argument("reference")
@@ -48,15 +57,24 @@ def build_parser() -> argparse.ArgumentParser:
     catalog_promote.add_argument("--id", required=True)
     _common(catalog_promote)
 
+    configure = commands.add_parser("configure", help="Author a saved schema-v2 composer in a guided cockpit")
+    configure.add_argument("--family", choices=["landing", "manometro"], required=True)
+    configure.add_argument("--output", required=True, help="Composer YAML to create or replace")
+    configure.add_argument("--run-output-dir", help="Output directory used for the cockpit preflight estimate")
+    configure.add_argument("--appearance", choices=list(APPEARANCE_IDS), default=APPEARANCE_IDS[0])
+    _common(configure)
+
     resolve = commands.add_parser("resolve", help="Print the immutable contract resolved from a composer")
     resolve.add_argument("--config", required=True)
+    _overrides(resolve)
     _common(resolve)
 
     preflight = commands.add_parser("preflight", help="Validate warnings, disk use, and an environment-local ETA")
     preflight.add_argument("--config", required=True)
     preflight.add_argument("--output-dir", required=True)
-    preflight.add_argument("--workers", default="1")
+    preflight.add_argument("--workers")
     preflight.add_argument("--write-receipt")
+    _overrides(preflight)
     _common(preflight)
 
     validate = commands.add_parser("validate", help="Validate a profile, assets, recipes, and capabilities")
@@ -82,10 +100,10 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--num-images", type=int)
     generate.add_argument("--output-dir", required=True)
     generate.add_argument("--resume", action="store_true")
-    generate.add_argument("--workers", default="1")
+    generate.add_argument("--workers")
     generate.add_argument("--qa-samples", type=int)
-    generate.add_argument("--appearance-preset", choices=["realistic-heavy"])
     generate.add_argument("--receipt")
+    _overrides(generate)
     _common(generate)
 
     run = commands.add_parser("run", help="Inspect or control a generation coordinator")
@@ -131,34 +149,43 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _workers(value: str, resolved: Any | None = None) -> int:
-    if value == "auto":
-        cpu_limit = max(1, (os.cpu_count() or 2) - 1)
-        if resolved is None:
-            return cpu_limit
-        width, height = resolved.profile.output.image_size
-        canvas_pixels = width * height * resolved.profile.scene.canvas_scale**2
-        estimated_bytes_per_worker = max(256 * 1024 * 1024, int(canvas_pixels * 64))
-        memory_limit = max(1, int(psutil.virtual_memory().available * 0.60) // estimated_bytes_per_worker)
-        return max(1, min(cpu_limit, memory_limit, 32))
-    workers = int(value)
-    if workers < 1:
-        raise ValueError("workers must be auto or an integer >= 1")
-    return workers
+def _override_plan(args: argparse.Namespace, common: dict[str, Any] | None = None) -> OverridePlan:
+    return build_override_plan(
+        override_file=getattr(args, "overrides", None),
+        common=common,
+        set_values=getattr(args, "typed_sets", ()),
+    )
 
 
 def _run(args: argparse.Namespace) -> dict[str, Any]:
     if args.command == "catalog" and args.catalog_command == "list":
-        return list_profiles()
+        return list_profiles(args.config)
     if args.command == "catalog" and args.catalog_command == "show":
         return show_profile(args.reference, composer=args.config)
     if args.command == "catalog" and args.catalog_command == "promote":
         return promote_inline_stack(args.config, args.stage, args.id)
+    if args.command == "configure":
+        output_dir = args.run_output_dir or (Path("outputs") / Path(args.output).stem)
+        if args.output_format == "json" or args.display == "quiet":
+            return configure_noninteractive(
+                family=args.family,
+                destination=args.output,
+                output_dir=output_dir,
+                appearance=args.appearance,
+            )
+        return configure_interactive(
+            family=args.family,
+            destination=args.output,
+            output_dir=output_dir,
+            appearance=args.appearance,
+        )
     if args.command == "resolve":
-        return resolved_contract(args.config)
+        plan = _override_plan(args)
+        return resolved_contract(args.config, plan.values, override_sources=plan.source_paths)
     if args.command == "preflight":
-        resolved = load_profile(args.config)
-        workers = _workers(args.workers, resolved)
+        plan = _override_plan(args, {"execution.workers": args.workers})
+        resolved = load_profile(args.config, plan.values, override_sources=plan.source_paths)
+        workers = resolve_worker_count(None, resolved)
         result = run_preflight(
             PreflightRequest(resolved, Path(args.output_dir), workers),
             probe_runner=lambda: probe_profile(resolved),
@@ -178,11 +205,16 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
     if args.command == "preview" and args.preview_command == "scenes":
         return preview_scenes(args.config, args.variants, args.output_dir, args.samples)
     if args.command == "generate":
-        resolved = load_profile(
-            args.config,
-            {"num_images": args.num_images, "qa_samples": args.qa_samples, "appearance_preset": args.appearance_preset},
+        plan = _override_plan(
+            args,
+            {
+                "run.num_images": args.num_images,
+                "report.qa_samples": args.qa_samples,
+                "execution.workers": args.workers,
+            },
         )
-        workers = _workers(args.workers, resolved)
+        resolved = load_profile(args.config, plan.values, override_sources=plan.source_paths)
+        workers = resolve_worker_count(None, resolved)
         preflight = run_preflight(
             PreflightRequest(resolved, Path(args.output_dir), workers),
             probe_runner=lambda: probe_profile(resolved),
@@ -267,6 +299,35 @@ def main(argv: list[str] | None = None) -> int:
                         f"Warnings: {warning_text}\n"
                         f"Probe: {'yes' if result['probe']['triggered'] else 'no'}",
                         title="preflight",
+                    )
+                )
+            elif args.command == "catalog" and args.catalog_command == "list":
+                table = Table(title="Configuration catalog", expand=True)
+                for heading in ("ID", "Subject", "Status", "Risk"):
+                    table.add_column(heading)
+                for item in result["profiles"]:
+                    table.add_row(item["id"], item["subject"], item["status"], item["performance_risk"])
+                Console().print(table)
+            elif args.command == "catalog" and args.catalog_command == "show":
+                console = Console()
+                metadata = result["metadata"]
+                console.print(
+                    Panel.fit(
+                        f"{metadata['id']}\nSubject: {metadata['subject']}\nStatus: {metadata['status']}\n"
+                        f"Performance risk: {metadata['performance_risk']}",
+                        title="profile",
+                    )
+                )
+                if result["documentation"]:
+                    console.print(Markdown(result["documentation"]))
+            elif args.command == "configure":
+                runtime = result["runtime"]
+                Console().print(
+                    Panel.fit(
+                        f"Saved: {result['config']}\nContract: {result['contract_hash'][:12]}\n"
+                        f"ETA: {runtime['lower_seconds']:.1f}–{runtime['upper_seconds']:.1f}s ({runtime['confidence']})\n"
+                        f"Next: {result['suggested_next']}",
+                        title="composer ready",
                     )
                 )
             else:

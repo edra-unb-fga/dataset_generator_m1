@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:background_recipes/standard","subject":"background_recipes","status":"standard","compatible_families":["landing","manometro"],"intents":["reviewed-recipe-catalog"],"performance_risk":"informational","warning_codes":[],"evidence":[],"scaling_drivers":["recipe-operators","canvas-megapixels"]}

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from dataset_generator_m1.config import load_profile, load_yaml_strict
+from dataset_generator_m1.configurator import add_inline_effect, default_composer, save_composer
 from dataset_generator_m1.preflight import (
     PreflightRequest,
     confirm_preflight,
@@ -131,3 +132,25 @@ def test_missing_receipt_is_rejected_only_when_acknowledgements_are_required(tmp
         assert "receipt" in str(exc)
     else:
         raise AssertionError("Risky noninteractive generation must require a receipt")
+
+
+def test_inline_random_fog_requires_cost_acknowledgement(tmp_path: Path) -> None:
+    composer = add_inline_effect(
+        default_composer("landing"),
+        stage="final",
+        effect_type="RandomFog",
+        effect_id="custom-patch-fog",
+        probability=1.0,
+        params={},
+    )
+    path = save_composer(composer, tmp_path / "random-fog.yaml")
+    resolved = load_profile(path, {"num_images": 1})
+
+    result = run_preflight(
+        PreflightRequest(resolved, tmp_path / "run", 1, tmp_path / "observations.jsonl")
+    )
+
+    assert "INLINE_APPEARANCE_UNREVIEWED" in result["required_acknowledgements"]
+    assert "RANDOM_FOG_HIGH_COST" in result["required_acknowledgements"]
+    assert result["profile"] == "local:appearance/inline-random-fog"
+    assert result["runtime"]["confidence"] == "low"
