@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "BackgroundCatalogEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Aliases",
+          "type": "array"
+        },
+        "approved_roles": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Approved Roles",
+          "type": "array"
+        },
+        "excluded": {
+          "default": false,
+          "title": "Excluded",
+          "type": "boolean"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "seamless": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seamless"
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "texture_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "micro",
+                "structured"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Texture Kind"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "BackgroundCatalogEntry",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assets": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/BackgroundCatalogEntry"
+      },
+      "title": "Assets",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version"
+  ],
+  "title": "BackgroundCatalogMetadata",
+  "type": "object"
+}

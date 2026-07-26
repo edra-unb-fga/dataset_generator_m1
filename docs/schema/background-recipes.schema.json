@@ -1,0 +1,126 @@
+{
+  "$defs": {
+    "BackgroundRecipe": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_cross_group_pairs": {
+          "default": [],
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Allowed Cross Group Pairs",
+          "type": "array"
+        },
+        "experimental": {
+          "default": false,
+          "title": "Experimental",
+          "type": "boolean"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/$defs/RecipeNode"
+          },
+          "title": "Nodes",
+          "type": "array"
+        },
+        "output": {
+          "title": "Output",
+          "type": "string"
+        },
+        "tileable": {
+          "default": false,
+          "title": "Tileable",
+          "type": "boolean"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "nodes",
+        "output"
+      ],
+      "title": "BackgroundRecipe",
+      "type": "object"
+    },
+    "RecipeNode": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "object"
+        },
+        "op": {
+          "enum": [
+            "sample_asset",
+            "resize_crop",
+            "colorspace_convert",
+            "channel_extract",
+            "channel_compose",
+            "palette_transfer",
+            "mask_normalize",
+            "linear_blend",
+            "multiband_blend",
+            "displace"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "op"
+      ],
+      "title": "RecipeNode",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "recipes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/BackgroundRecipe"
+      },
+      "title": "Recipes",
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "recipes"
+  ],
+  "title": "RecipeCatalog",
+  "type": "object"
+}

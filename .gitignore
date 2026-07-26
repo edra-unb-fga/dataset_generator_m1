@@ -11,6 +11,8 @@ dist/
 
 # Virtual environments
 .venv/
+.uv-cache/
+.uv-python/
 venv/
 env/
 ENV/
@@ -37,6 +39,7 @@ Thumbs.db
 
 # Generated datasets and outputs
 output/
+outputs/
 output_gabarito/
 output_gabarito_*/
 roboflow_dataset/
@@ -49,3 +52,5 @@ debug_gabarito_*.png
 # Temporary files
 *.tmp
 *.temp
+/old implementation/roboflow_dataset
+/old implementation/output

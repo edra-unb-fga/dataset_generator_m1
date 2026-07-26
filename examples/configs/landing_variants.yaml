@@ -1,0 +1,11 @@
+schema_version: 1
+variants:
+  baseline: {}
+  stronger_color:
+    appearance:
+      final:
+        - type: RandomBrightnessContrast
+          probability: 0.75
+          params:
+            brightness_limit: [-0.15, 0.15]
+            contrast_limit: [-0.15, 0.15]
