@@ -3,7 +3,9 @@ from pathlib import Path
 
 import pytest
 
-from dataset_generator_m1.config import generated_json_schemas, load_profile, load_yaml_strict
+from dataset_generator_m1.catalog import list_profiles
+from dataset_generator_m1.config import generated_json_schemas, load_appearance_profile, load_profile, load_yaml_strict
+from dataset_generator_m1.filters import validate_appearance
 from dataset_generator_m1.models import RecipeCatalog, VariantCatalog
 
 
@@ -109,3 +111,35 @@ def test_all_shipped_profiles_recipes_variants_and_schemas_validate() -> None:
     for name, schema in schemas.items():
         committed = json.loads((Path("docs/schema") / f"{name}.schema.json").read_text(encoding="utf-8"))
         assert committed == schema
+
+
+def test_all_builtin_appearance_profiles_are_documented_and_executable() -> None:
+    expected = {
+        "builtin:appearance/realistic-heavy",
+        "builtin:appearance/current-fast",
+        "builtin:appearance/legacy-heavy-compatible",
+        "builtin:appearance/random-fog-heavy",
+        "builtin:appearance/no-appearance",
+        "builtin:appearance/all-effects-stress",
+    }
+    catalog = list_profiles()
+    appearance_ids = {item["id"] for item in catalog["profiles"] if item["subject"] == "appearance"}
+    assert expected <= appearance_ids
+
+    for reference in expected:
+        appearance = load_appearance_profile(reference, "examples/configs/landing_minimal.yaml")
+        validate_appearance(appearance.background, appearance.foreground, appearance.final)
+
+
+def test_legacy_profile_now_uses_native_fog_without_rewriting_historical_report() -> None:
+    appearance = load_appearance_profile(
+        "builtin:appearance/legacy-heavy-compatible",
+        "examples/configs/landing_minimal.yaml",
+    )
+    types = [item.type for item in appearance.final]
+    assert "AtmosphericFog" in types
+    assert "RandomFog" not in types
+
+    historical = json.loads(Path("docs/experiments/augmentation-heavy-v1/conclusion.json").read_text(encoding="utf-8"))
+    assert historical["legacy"]["translation"] == "RandomFog"
+    assert historical["legacy"]["fidelity"] == "approximation"

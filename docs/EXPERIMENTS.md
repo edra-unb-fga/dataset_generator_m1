@@ -25,6 +25,11 @@ Visual review rejected `RandomFog` for the realistic preset because even low-den
 the complete frame and obscured labels. Realistic weather uses light drizzle instead; fog remains only
 in the disclosed legacy-compatible and stress treatments.
 
+That paragraph describes the historical default study, not the current effect catalog. The reviewed
+[native fog comparison](experiments/native-fog-v1/README.md) keeps all three depth-dependent
+`AtmosphericFog` modes and patch-based `RandomFog` available as distinct effects. It supplies paired
+timing evidence for preflight warnings while leaving the earlier approximation record unchanged.
+
 The reviewed realistic-heavy treatment is now the shipped composer default:
 
 ```powershell
@@ -58,4 +63,6 @@ Slow-sample navigation, stage tabs, and difference views remain secondary invest
 
 The reviewed landing/manometro conclusion, compact measurements, environment fingerprints, and selected
 visual evidence are stored in [`docs/experiments/augmentation-heavy-v1/`](experiments/augmentation-heavy-v1/).
+Native-fog conclusions and the selected comparison sheet are stored in
+[`docs/experiments/native-fog-v1/`](experiments/native-fog-v1/).
 Raw study bundles remain ignored under `outputs/experiments/`.

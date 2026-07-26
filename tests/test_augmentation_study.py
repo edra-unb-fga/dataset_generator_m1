@@ -58,6 +58,29 @@ def test_default_matrix_preserves_legacy_provenance() -> None:
     assert "AtmosphericFog" not in legacy_types
 
 
+def test_fog_mode_matrix_keeps_native_and_patch_fog_distinct() -> None:
+    resolved = load_profile("examples/configs/landing_minimal.yaml")
+    treatments, metadata = resolve_treatments(
+        resolved,
+        matrix="examples/experiments/fog_mode_study.yaml",
+    )
+
+    assert tuple(treatments) == (
+        "current",
+        "atmospheric-linear",
+        "atmospheric-diagonal",
+        "atmospheric-radial",
+        "random-fog-heavy",
+    )
+    assert metadata["custom_matrix"] is True
+    assert {treatments[name].final[0].params["depth_mode"] for name in treatments if name.startswith("atmospheric-")} == {
+        "linear",
+        "diagonal",
+        "radial",
+    }
+    assert treatments["random-fog-heavy"].final[0].type == "RandomFog"
+
+
 def test_invalid_matrix_fails_before_output_creation(tmp_path: Path) -> None:
     profile = _tiny_profile(tmp_path)
     matrix = tmp_path / "bad-matrix.yaml"

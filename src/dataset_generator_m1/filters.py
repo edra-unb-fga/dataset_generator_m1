@@ -15,6 +15,7 @@ import albumentations as A
 import numpy as np
 
 from .models import TransformSpec
+from .native_effects import apply_atmospheric_fog, validate_atmospheric_fog_params
 
 
 SUPPORTED_TRANSFORMS = {
@@ -33,7 +34,10 @@ SUPPORTED_TRANSFORMS = {
     "Illumination",
     "RandomFog",
     "RandomRain",
+    "AtmosphericFog",
 }
+
+NATIVE_TRANSFORMS = {"AtmosphericFog"}
 
 
 @dataclass(frozen=True)
@@ -115,6 +119,9 @@ def validate_transform_specs(specs: Iterable[TransformSpec], stage: str) -> None
         seen_ids.add(effect_id)
         if spec.type not in SUPPORTED_TRANSFORMS:
             raise ValueError(f"Unsupported Albumentations transform in {stage}: {spec.type}")
+        if spec.type == "AtmosphericFog":
+            validate_atmospheric_fog_params(spec.params, stage)
+            continue
         transform_type = getattr(A, spec.type, None)
         if transform_type is None:
             raise ValueError(f"Installed Albumentations {backend_version()} lacks {spec.type} required by {stage}")
@@ -157,6 +164,9 @@ def apply_pipeline(
         alpha = image[:, :, 3].copy()
     for spec in specs:
         if rng.random() > spec.probability:
+            continue
+        if spec.type == "AtmosphericFog":
+            rgb, _ = apply_atmospheric_fog(rgb, spec.params, rng)
             continue
         transform_type = getattr(A, spec.type)
         transform = transform_type(**spec.params, p=1.0)
@@ -201,12 +211,16 @@ def apply_pipeline_traced(
         started = clock()
         applied_params: tuple[dict[str, Any], ...] = ()
         if applied:
-            transform_type = getattr(A, spec.type)
-            transform = transform_type(**spec.params, p=1.0)
-            composed = A.Compose([transform], seed=seed, save_applied_params=True)
-            payload = composed(image=rgb)
-            rgb = payload["image"]
-            applied_params = tuple(_json_safe(item) for item in payload.get("applied_transforms", ()))
+            if spec.type == "AtmosphericFog":
+                rgb, sampled = apply_atmospheric_fog(rgb, spec.params, activation_rng)
+                applied_params = (_json_safe(sampled),)
+            else:
+                transform_type = getattr(A, spec.type)
+                transform = transform_type(**spec.params, p=1.0)
+                composed = A.Compose([transform], seed=seed, save_applied_params=True)
+                payload = composed(image=rgb)
+                rgb = payload["image"]
+                applied_params = tuple(_json_safe(item) for item in payload.get("applied_transforms", ()))
         duration = max(0, clock() - started)
         traces.append(
             TransformTrace(

@@ -64,5 +64,7 @@ Generation writes `run.json`, `samples.jsonl`, `rejections.jsonl`, `metrics.json
 
 See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.md) for the normative
 contract, [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for contribution and verification rules,
-[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for paired-study rules, and [docs/ROADMAP.md](docs/ROADMAP.md)
+[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for paired-study rules,
+[docs/APPEARANCE_EFFECTS.md](docs/APPEARANCE_EFFECTS.md) for the supported effect catalog, and
+[docs/ROADMAP.md](docs/ROADMAP.md)
 for measured follow-on work.
