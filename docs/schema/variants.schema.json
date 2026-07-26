@@ -8,6 +8,7 @@
     },
     "variants": {
       "additionalProperties": {
+        "additionalProperties": true,
         "type": "object"
       },
       "title": "Variants",
