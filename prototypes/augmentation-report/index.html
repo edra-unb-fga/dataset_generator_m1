@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PROTOTYPE — Augmentation study report</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1014; --panel:#121a20; --line:#263640; --ink:#ecf3f5; --muted:#91a4ad; --teal:#52d6c6; --amber:#f5b85b; --red:#ff7979; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.45 Inter,system-ui,sans-serif; }
+    header { position:sticky; top:0; z-index:5; display:flex; justify-content:space-between; gap:20px; align-items:center; padding:16px 24px; border-bottom:1px solid var(--line); background:#0b1014eb; backdrop-filter:blur(12px); }
+    h1,h2,h3,p { margin:0; } h1 { font-size:18px; } h2 { font-size:16px; } h3 { font-size:13px; }
+    .eyebrow { color:var(--teal); font-weight:750; text-transform:uppercase; letter-spacing:.12em; font-size:11px; }
+    .meta,.muted { color:var(--muted); }
+    .summary { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .chip { border:1px solid var(--line); border-radius:999px; padding:5px 9px; background:#172127; white-space:nowrap; }
+    main { padding:22px 24px 100px; max-width:1600px; margin:auto; }
+    .notice { border-left:3px solid var(--amber); background:#2a2115; padding:10px 12px; margin-bottom:18px; color:#f6d9aa; }
+    .variant { display:none; } .variant.active { display:block; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    img { display:block; width:100%; aspect-ratio:1/1; object-fit:cover; background:#222; }
+    .t-current img { filter:none; }
+    .t-heavy img { filter:saturate(1.3) contrast(1.08) brightness(.92) blur(.25px); }
+    .t-legacy img { filter:saturate(.8) contrast(1.22) hue-rotate(8deg) brightness(.78) blur(.6px); }
+    .tag { display:inline-flex; gap:6px; align-items:center; font-size:11px; color:var(--muted); }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--teal); }
+    .slow .dot { background:var(--red); }
+    .bar { height:7px; border-radius:9px; background:#253239; overflow:hidden; margin-top:7px; }
+    .bar > span { display:block; height:100%; background:linear-gradient(90deg,var(--teal),var(--amber)); }
+    details { border-top:1px solid var(--line); } summary { padding:10px 13px; cursor:pointer; color:var(--muted); }
+    pre { white-space:pre-wrap; margin:0; padding:0 13px 13px; color:#b9c8ce; font:12px/1.5 ui-monospace,monospace; }
+    .sheet-head,.sheet-row { display:grid; grid-template-columns:170px repeat(3,minmax(180px,1fr)); gap:12px; align-items:start; }
+    .sheet-head { margin-bottom:8px; color:var(--muted); font-weight:700; }
+    .sheet-row { margin-bottom:18px; }
+    .fixture { padding:12px; position:sticky; top:80px; }
+    .fixture strong { display:block; font-size:18px; margin:6px 0; }
+    .treatment-info { padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .delta { color:var(--amber); font-variant-numeric:tabular-nums; }
+    .navigator { display:grid; grid-template-columns:310px 1fr; gap:16px; min-height:680px; }
+    .rank-list { padding:10px; display:grid; gap:8px; align-content:start; }
+    .rank-item { width:100%; text-align:left; border:1px solid var(--line); border-radius:9px; background:#151f25; color:var(--ink); padding:12px; cursor:pointer; }
+    .rank-item.selected { border-color:var(--teal); background:#172a2a; }
+    .rank-top { display:flex; justify-content:space-between; gap:10px; }
+    .focus { padding:16px; }
+    .focus-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:14px 0; }
+    .waterfall { display:grid; grid-template-columns:130px 1fr 70px; gap:7px 10px; align-items:center; margin-top:18px; }
+    .waterfall .track { height:16px; background:#202d34; border-radius:3px; overflow:hidden; }
+    .waterfall .fill { height:100%; background:var(--teal); }
+    .stage-tabs { display:flex; gap:8px; margin-bottom:14px; }
+    .stage-tabs button { border:1px solid var(--line); background:#162127; color:var(--ink); border-radius:8px; padding:9px 14px; cursor:pointer; }
+    .stage-tabs button.active { border-color:var(--teal); color:var(--teal); }
+    .investigator { display:grid; grid-template-columns:minmax(420px,1.4fr) minmax(300px,.6fr); gap:16px; }
+    .hero { display:grid; grid-template-columns:1fr 1fr; gap:2px; background:var(--line); }
+    .hero figure { margin:0; position:relative; }
+    .hero figcaption { position:absolute; left:10px; bottom:10px; background:#071014d9; padding:5px 8px; border-radius:6px; }
+    .stage-side { padding:16px; }
+    .effect { border-bottom:1px solid var(--line); padding:12px 0; }
+    .effect:last-child { border:0; }
+    .effect-head { display:flex; justify-content:space-between; }
+    .switcher { position:fixed; z-index:10; bottom:18px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:10px; padding:8px; border:1px solid #49606b; border-radius:999px; background:#eef7f9; color:#10171b; box-shadow:0 12px 40px #0009; }
+    .switcher button { width:34px; height:34px; border:0; border-radius:50%; background:#172127; color:white; cursor:pointer; font-size:18px; }
+    .switcher strong { min-width:190px; text-align:center; }
+    @media (max-width:900px) { .sheet-head { display:none; } .sheet-row { grid-template-columns:1fr; } .fixture { position:static; } .navigator,.investigator { grid-template-columns:1fr; } .focus-grid { grid-template-columns:1fr; } header { align-items:flex-start; flex-direction:column; } .summary { justify-content:flex-start; } }
+  </style>
+</head>
+<body>
+<header>
+  <div><div class="eyebrow">Prototype · landing · 20 measured fixtures</div><h1>Heavy augmentation attribution study</h1><p class="meta">Catalog 42e4c624 · current vs legacy-compatible vs realistic-heavy</p></div>
+  <div class="summary"><span class="chip">Slowest effect: RandomFog 2.15 s</span><span class="chip">Combined p95: 4.83 s</span><span class="chip">Geometry: identical ✓</span></div>
+</header>
+<main>
+  <div class="notice">Timing is comparable only inside this environment. “Legacy-compatible” replaces unsupported AtmosphericFog with RandomFog and is benchmark-only.</div>
+  <section id="A" class="variant"><div class="sheet-head"><span>Fixture</span><span>Current</span><span>Legacy-compatible</span><span>Realistic-heavy</span></div><div id="sheet"></div></section>
+  <section id="B" class="variant"><div class="navigator"><aside class="card rank-list" id="rank-list"></aside><article class="card focus" id="focus"></article></div></section>
+  <section id="C" class="variant"><div class="stage-tabs"><button data-stage="background">Background</button><button data-stage="foreground">Foreground</button><button data-stage="final">Final</button></div><div class="investigator"><div class="card hero"><figure><img src="fixtures/fixture-1.jpg"><figcaption>Current</figcaption></figure><figure class="t-heavy"><img src="fixtures/fixture-1.jpg"><figcaption id="hero-label">Background-heavy</figcaption></figure></div><aside class="card stage-side" id="stage-side"></aside></div></section>
+</main>
+<nav class="switcher" aria-label="Prototype variants"><button id="prev">←</button><strong id="variant-label"></strong><button id="next">→</button></nav>
+<script>
+const fixtures=[
+ {id:'slot-000',image:'fixtures/fixture-1.jpg',recipe:'direct',objects:4,current:1.94,legacy:5.61,heavy:4.83,slow:'RandomFog 2.15 s'},
+ {id:'slot-001',image:'fixtures/fixture-2.jpg',recipe:'mask_multiband',objects:7,current:2.31,legacy:5.08,heavy:4.21,slow:'PlasmaBrightnessContrast 0.39 s'},
+ {id:'slot-002',image:'fixtures/fixture-3.jpg',recipe:'palette',objects:2,current:1.41,legacy:4.44,heavy:3.82,slow:'GaussNoise 0.47 s'}];
+const treatments=[{key:'current',label:'Current',cls:'t-current'},{key:'legacy',label:'Legacy-compatible',cls:'t-legacy'},{key:'heavy',label:'Realistic-heavy',cls:'t-heavy'}];
+const sheet=document.querySelector('#sheet');
+fixtures.forEach((f,i)=>{const row=document.createElement('div');row.className='sheet-row';row.innerHTML=`<div class="card fixture"><span class="tag ${i===0?'slow':''}"><i class="dot"></i>${i===0?'slowest sample':'paired fixture'}</span><strong>${f.id}</strong><span class="muted">${f.recipe} · ${f.objects} objects</span><div class="bar"><span style="width:${f.heavy/6*100}%"></span></div><small>${f.slow}</small></div>`+treatments.map(t=>`<div class="card ${t.cls}"><img src="${f.image}" alt="${f.id} ${t.label}"><div class="treatment-info"><b>${t.label}</b><span class="delta">${f[t.key].toFixed(2)} s</span></div><details><summary>Stage and effect trace</summary><pre>background.synthesis  0.74 s (shared)\nbackground.appearance 0.46 s\nforeground.total       0.${3+i} s\nfinal.appearance       ${(f[t.key]*.52).toFixed(2)} s\nannotation invariant   PASS</pre></details></div>`).join('');sheet.append(row)});
+let selected=0;
+function renderFocus(){const f=fixtures[selected];document.querySelectorAll('.rank-item').forEach((el,i)=>el.classList.toggle('selected',i===selected));document.querySelector('#focus').innerHTML=`<div class="eyebrow">#${selected+1} slowest · ${f.id}</div><h2>${f.slow}</h2><p class="muted">${f.recipe} recipe · ${f.objects} accepted objects · same geometry and annotations</p><div class="focus-grid">${treatments.map(t=>`<div class="card ${t.cls}"><img src="${f.image}"><div class="treatment-info"><b>${t.label}</b><span>${f[t.key].toFixed(2)} s</span></div></div>`).join('')}</div><h3>Realistic-heavy stage waterfall</h3><div class="waterfall"><span>Shared synthesis</span><div class="track"><div class="fill" style="width:52%"></div></div><b>0.74 s</b><span>Background</span><div class="track"><div class="fill" style="width:34%"></div></div><b>0.48 s</b><span>Foreground</span><div class="track"><div class="fill" style="width:24%"></div></div><b>0.34 s</b><span>Final</span><div class="track"><div class="fill" style="width:100%"></div></div><b>1.42 s</b></div>`}
+const rank=document.querySelector('#rank-list');rank.innerHTML='<div><div class="eyebrow">Slow samples</div><h2>Ranked by modeled production cost</h2></div>';fixtures.forEach((f,i)=>{const b=document.createElement('button');b.className='rank-item';b.innerHTML=`<div class="rank-top"><b>${f.id}</b><span>${f.heavy.toFixed(2)} s</span></div><small>${f.slow}</small><div class="bar"><span style="width:${f.heavy/6*100}%"></span></div>`;b.onclick=()=>{selected=i;renderFocus()};rank.append(b)});renderFocus();
+const stages={background:[['GaussNoise','0.47 s'],['HueSaturationValue','0.11 s'],['GaussianBlur','0.01 s']],foreground:[['RandomSunFlare','0.03 s/call'],['PlasmaBrightnessContrast','0.02 s/call'],['AdditiveNoise','0.01 s/call']],final:[['RandomFog','2.15 s'],['PlasmaBrightnessContrast','0.36 s'],['PlasmaShadow','0.27 s'],['RandomSunFlare','0.20 s']]};
+function renderStage(stage){document.querySelectorAll('[data-stage]').forEach(b=>b.classList.toggle('active',b.dataset.stage===stage));document.querySelector('#hero-label').textContent=stage[0].toUpperCase()+stage.slice(1)+'-heavy';document.querySelector('#stage-side').innerHTML=`<div class="eyebrow">Stage investigation</div><h2>${stage[0].toUpperCase()+stage.slice(1)} effects</h2><p class="muted">Direct exclusive costs; identical fixture and downstream geometry.</p>${stages[stage].map((e,i)=>`<div class="effect"><div class="effect-head"><b>${e[0]}</b><span>${e[1]}</span></div><div class="bar"><span style="width:${Math.max(8,100-i*24)}%"></span></div></div>`).join('')}`};document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>renderStage(b.dataset.stage));renderStage('background');
+const variants=['A','B','C'],names={A:'A — Contact sheet',B:'B — Slow-sample navigator',C:'C — Stage investigation'};
+function current(){const v=new URLSearchParams(location.search).get('variant')?.toUpperCase();return variants.includes(v)?v:'A'}function show(v){document.querySelectorAll('.variant').forEach(el=>el.classList.toggle('active',el.id===v));document.querySelector('#variant-label').textContent=names[v];const u=new URL(location);u.searchParams.set('variant',v);history.replaceState({},'',u)}function cycle(delta){const i=variants.indexOf(current());show(variants[(i+delta+variants.length)%variants.length])}document.querySelector('#prev').onclick=()=>cycle(-1);document.querySelector('#next').onclick=()=>cycle(1);addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(e.target.tagName))return;if(e.key==='ArrowLeft')cycle(-1);if(e.key==='ArrowRight')cycle(1)});show(current());
+</script>
+</body>
+</html>
