@@ -18,6 +18,7 @@ from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
 from .generator import GenerationOptions, generate_pool, probe_profile
 from .preflight import PreflightRequest, confirm_preflight, run_preflight
+from .run_control import request_run_action, run_status
 from .workflows import benchmark, compare_artifacts, preview_backgrounds, preview_scenes, validate_project
 
 
@@ -86,6 +87,13 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--appearance-preset", choices=["realistic-heavy"])
     generate.add_argument("--receipt")
     _common(generate)
+
+    run = commands.add_parser("run", help="Inspect or control a generation coordinator")
+    run_commands = run.add_subparsers(dest="run_command", required=True)
+    for action in ("status", "pause", "continue", "stop"):
+        run_action = run_commands.add_parser(action, help=f"{action.capitalize()} a generation run")
+        run_action.add_argument("output_dir")
+        _common(run_action)
 
     experiment = commands.add_parser("experiment", help="Run controlled experiments")
     experiment_commands = experiment.add_subparsers(dest="experiment_command", required=True)
@@ -200,6 +208,10 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
                 receipt_path=receipt_path,
             ),
         )
+    if args.command == "run":
+        if args.run_command == "status":
+            return run_status(args.output_dir)
+        return request_run_action(args.output_dir, args.run_command)
     if args.command == "experiment" and args.experiment_command == "augmentations":
         return run_augmentation_study(
             AugmentationStudyRequest(

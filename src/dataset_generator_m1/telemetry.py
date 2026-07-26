@@ -35,7 +35,11 @@ class MetricsAggregator:
     target: int
     configured_recipe_weights: dict[str, float] = field(default_factory=dict)
     configured_foreground_group_weights: dict[str, float] = field(default_factory=dict)
-    started_at: float = field(default_factory=perf_counter)
+    clock: Callable[[], float] = field(default=perf_counter, repr=False)
+    started_at: float = field(init=False)
+    paused_total_seconds: float = 0.0
+    pause_started_at: float | None = None
+    baseline_accepted: int = 0
     accepted: int = 0
     candidate_attempts: int = 0
     rejection_reasons: dict[str, int] = field(default_factory=dict)
@@ -54,6 +58,10 @@ class MetricsAggregator:
     active_workers: int = 0
     in_flight: int = 0
     queued: int = 0
+    run_state: str = "running"
+
+    def __post_init__(self) -> None:
+        self.started_at = self.clock()
 
     def record_sample(self, record: dict[str, Any]) -> None:
         self.accepted += 1
@@ -101,13 +109,50 @@ class MetricsAggregator:
         self.in_flight = in_flight
         self.queued = queued
 
+    def set_run_state(self, state: str) -> None:
+        self.run_state = state
+
+    @property
+    def wall_elapsed_seconds(self) -> float:
+        return max(0.0, self.clock() - self.started_at)
+
+    @property
+    def paused_seconds(self) -> float:
+        active_pause = self.clock() - self.pause_started_at if self.pause_started_at is not None else 0.0
+        return max(0.0, self.paused_total_seconds + active_pause)
+
+    @property
+    def active_elapsed_seconds(self) -> float:
+        return max(1e-9, self.wall_elapsed_seconds - self.paused_seconds)
+
     @property
     def elapsed_seconds(self) -> float:
-        return max(1e-9, perf_counter() - self.started_at)
+        return self.active_elapsed_seconds
+
+    def begin_pause(self) -> None:
+        if self.pause_started_at is None:
+            self.pause_started_at = self.clock()
+
+    def end_pause(self) -> None:
+        if self.pause_started_at is not None:
+            self.paused_total_seconds += self.clock() - self.pause_started_at
+            self.pause_started_at = None
+
+    def begin_live_measurement(self) -> None:
+        """Start a fresh ETA window after replaying samples from an earlier session."""
+        self.started_at = self.clock()
+        self.paused_total_seconds = 0.0
+        self.pause_started_at = None
+        self.baseline_accepted = self.accepted
 
     @property
     def throughput(self) -> float:
-        return self.accepted / self.elapsed_seconds
+        return max(0, self.accepted - self.baseline_accepted) / self.elapsed_seconds
+
+    @property
+    def eta_seconds(self) -> float:
+        remaining = max(0, self.target - self.accepted)
+        return remaining / self.throughput if self.throughput > 0 else 0.0
 
     def summary(self) -> dict[str, Any]:
         stage_summary: dict[str, dict[str, float | int]] = {}
@@ -163,6 +208,8 @@ class MetricsAggregator:
             "target_samples": self.target,
             "candidate_attempts": self.candidate_attempts,
             "elapsed_seconds": self.elapsed_seconds,
+            "wall_elapsed_seconds": self.wall_elapsed_seconds,
+            "paused_seconds": self.paused_seconds,
             "throughput_images_per_second": self.throughput,
             "rejection_reasons": self.rejection_reasons,
             "candidate_rejection_rate": rejected_candidates / self.candidate_attempts if self.candidate_attempts else 0.0,
@@ -182,6 +229,7 @@ class MetricsAggregator:
             "stage_timings": stage_summary,
             "resource_peaks": self.resource_peaks,
             "workers": {"configured": self.worker_count, "active": self.active_workers, "in_flight": self.in_flight, "queued": self.queued},
+            "run_state": self.run_state,
         }
 
 
@@ -279,9 +327,10 @@ class RunReporter:
         table = Table(title="Dataset Generator M1", expand=True)
         table.add_column("Metric")
         table.add_column("Value", justify="right")
-        remaining = max(0, metrics.target - metrics.accepted)
-        eta = remaining / metrics.throughput if metrics.throughput > 0 else 0.0
+        eta = metrics.eta_seconds
         table.add_row("Accepted", f"{metrics.accepted}/{metrics.target}")
+        table.add_row("Run state", metrics.run_state)
+        table.add_row("Controls", "p pause/continue | s graceful stop | Ctrl+C interrupt")
         table.add_row("Attempts", str(metrics.candidate_attempts))
         table.add_row("Workers", f"{metrics.active_workers}/{metrics.worker_count} active | {metrics.in_flight} in flight | {metrics.queued} queued")
         table.add_row("Throughput", f"{metrics.throughput:.2f} images/s")

@@ -29,8 +29,18 @@ def test_cli_exposes_integrated_commands(capsys) -> None:
 
     output = capsys.readouterr().out
     assert exit_code == 0
-    for command in ("catalog", "resolve", "preflight", "validate", "preview", "generate", "experiment", "benchmark", "compare", "export"):
+    for command in ("catalog", "resolve", "preflight", "validate", "preview", "generate", "run", "experiment", "benchmark", "compare", "export"):
         assert command in output
+
+
+def test_run_status_command_supports_json(tmp_path, capsys) -> None:
+    from dataset_generator_m1.run_control import RunController
+
+    RunController.open(tmp_path, resume=False)
+    assert main(["run", "status", str(tmp_path), "--output-format", "json"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "valid"
+    assert payload["actual_state"] == "running"
 
 
 def test_preflight_command_supports_final_json_output(tmp_path, capsys) -> None:

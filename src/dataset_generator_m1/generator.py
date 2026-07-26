@@ -14,6 +14,7 @@ from .assets import AssetCatalog, build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
 from .models import ResolvedProfile
 from .preflight import PreflightRequest, require_warning_receipt, run_preflight
+from .run_control import RunController, TerminalControlAdapter
 from .runstore import RunStore
 from .scene import ScenePlanner, SceneRejected, SceneRenderer, derive_seed
 from .telemetry import DisplayMode, MetricsAggregator, ResourceSampler, RunReporter, StageTimer
@@ -150,7 +151,6 @@ def probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float = 60.0) -
 
 def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: GenerationOptions | None = None) -> dict[str, Any]:
     options = options or GenerationOptions()
-    started = perf_counter()
     workers = int(options.workers)
     preflight = options.preflight_result or run_preflight(
         PreflightRequest(resolved, Path(output_dir), workers)
@@ -167,6 +167,11 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         invocation=options.invocation,
         preflight=preflight,
     )
+    control = RunController.open(store.root, resume=options.resume)
+    terminal_control = TerminalControlAdapter(
+        store.root,
+        enabled=options.output_format == "human" and options.display not in {"quiet", "plain"},
+    )
     target = resolved.profile.run.num_images
     if workers < 1:
         raise ValueError("workers must be >= 1")
@@ -180,6 +185,7 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         metrics.record_sample(sample)
     for rejection in store.rejections:
         metrics.record_rejection(rejection)
+    metrics.begin_live_measurement()
     reporter = RunReporter(
         options.display,
         resolved.profile.telemetry.refresh_hz,
@@ -188,10 +194,41 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
     )
     resources = ResourceSampler()
     reporter.start(metrics)
+    terminal_control.start()
     qa_limit = resolved.profile.report.qa_samples if options.qa_samples is None else options.qa_samples
     status = "complete"
     interrupted = False
     fatal_error: str | None = None
+
+    def control_checkpoint() -> bool:
+        desired = control.read()["desired_state"]
+        if desired == "paused":
+            metrics.set_run_state("draining")
+            metrics.set_workload(
+                worker_count=workers,
+                active_workers=0,
+                in_flight=0,
+                queued=max(0, target - metrics.accepted),
+            )
+            reporter.update(metrics, force=True)
+
+        def paused() -> None:
+            metrics.begin_pause()
+            metrics.set_run_state("paused")
+            reporter.update(metrics, force=True)
+
+        def continued() -> None:
+            metrics.end_pause()
+            metrics.set_run_state("running")
+            reporter.update(metrics, force=True)
+
+        action = control.checkpoint(on_pause=paused, on_continue=continued)
+        if action == "stop":
+            metrics.end_pause()
+            metrics.set_run_state("stopping")
+            reporter.update(metrics, force=True)
+            return False
+        return True
 
     def commit_result(slot: int, result: dict[str, Any]) -> bool:
         nonlocal status, fatal_error
@@ -212,7 +249,7 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         reporter.update(metrics)
         if shutil.disk_usage(store.root).free < 32 * 1024 * 1024:
             raise RuntimeError("Generation stopped because remaining disk space fell below 32 MiB")
-        if resolved.profile.run.max_wall_seconds and perf_counter() - started > resolved.profile.run.max_wall_seconds:
+        if resolved.profile.run.max_wall_seconds and metrics.active_elapsed_seconds > resolved.profile.run.max_wall_seconds:
             raise RuntimeError("Configured maximum wall time exceeded")
         if (
             resolved.profile.run.max_rejection_rate is not None
@@ -226,11 +263,19 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         completed = store.completed_slots()
         slots = [slot for slot in range(target) if slot not in completed]
         coordinator_pid = os.getpid()
+        if not control_checkpoint():
+            interrupted = True
+            status = "interrupted"
+            slots = []
         if workers == 1:
             for slot_index, slot in enumerate(slots):
                 metrics.set_workload(worker_count=1, active_workers=1, in_flight=1, queued=max(0, len(slots) - slot_index - 1))
                 result = _produce_slot(resolved, catalog, slot, store.next_attempt(slot), coordinator_pid)
                 if not commit_result(slot, result):
+                    break
+                if not control_checkpoint():
+                    interrupted = True
+                    status = "interrupted"
                     break
         else:
             # Batch windows bound queued jobs and returned-image memory. Sorted commits
@@ -267,7 +312,14 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
                             break
                     if status == "failed":
                         break
+                    if not control_checkpoint():
+                        interrupted = True
+                        status = "interrupted"
+                        break
             except KeyboardInterrupt:
+                interrupted = True
+                if status == "complete":
+                    status = "interrupted"
                 for future in active_futures:
                     future.cancel()
                 try:
@@ -283,9 +335,6 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
                 for slot in sorted(completed_results):
                     if slot not in store.completed_slots():
                         commit_result(slot, completed_results[slot])
-                interrupted = True
-                if status == "complete":
-                    status = "interrupted"
             except Exception:
                 executor.shutdown(wait=True, cancel_futures=True)
                 raise
@@ -298,6 +347,9 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         status = "failed"
         fatal_error = f"{type(exc).__name__}: {exc}"
     finally:
+        terminal_control.stop()
+        metrics.end_pause()
+        metrics.set_run_state(status)
         metrics.set_workload(worker_count=workers, active_workers=0, in_flight=0, queued=0)
         final_resource = resources.sample_if_due(resolved.profile.telemetry.resource_interval_seconds, force=True)
         if final_resource is not None:
@@ -317,6 +369,11 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
                 "contract_hash": resolved.contract_hash,
                 "worker_count": workers,
                 "preflight": preflight,
+                "control": {
+                    "state_path": "control.json",
+                    "event_log_path": "control-events.jsonl",
+                    "paused_seconds": metrics.paused_seconds,
+                },
                 "catalog_quality": {
                     "exact_duplicate_groups": catalog.quality.exact_duplicate_groups,
                     "perceptual_duplicate_groups": catalog.quality.perceptual_duplicate_groups,
@@ -330,4 +387,5 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         store.write_qa_index()
         reporter.update(metrics, force=True)
         reporter.finish(summary)
+        control.finish(status)
     return summary

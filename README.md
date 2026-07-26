@@ -44,6 +44,18 @@ uv run python -m dataset_generator_m1 generate --config examples/configs/landing
 uv run python -m dataset_generator_m1 generate --config examples/configs/landing_minimal.yaml --num-images 50 --output-dir outputs/landing-expA --workers auto --resume
 ```
 
+Inspect and control a live run from another terminal:
+
+```powershell
+uv run python -m dataset_generator_m1 run status outputs/landing-expA
+uv run python -m dataset_generator_m1 run pause outputs/landing-expA
+uv run python -m dataset_generator_m1 run continue outputs/landing-expA
+uv run python -m dataset_generator_m1 run stop outputs/landing-expA
+```
+
+The live/full terminal display also accepts `p` for pause/continue and `s` for graceful stop. See
+[docs/RUN_CONTROL.md](docs/RUN_CONTROL.md) for checkpoint, resume, audit-log, and ETA semantics.
+
 Benchmark, compare, and export:
 
 ```powershell
