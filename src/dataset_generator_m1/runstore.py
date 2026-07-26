@@ -110,6 +110,7 @@ class RunStore:
         *,
         resume: bool,
         invocation: tuple[str, ...] = (),
+        preflight: dict[str, Any] | None = None,
     ) -> "RunStore":
         root = root.resolve()
         run_id = f"{resolved.profile.run.label}-{resolved.contract_hash[:4]}-{catalog.fingerprint[:4]}"
@@ -160,6 +161,7 @@ class RunStore:
                     "source_hashes": resolved.source_hashes,
                     "profile_metadata": list(resolved.profile_metadata),
                     "applied_overrides": resolved.applied_overrides,
+                    "preflight": preflight,
                     "family": resolved.family.model_dump(mode="json"),
                     "recipes": resolved.recipes.model_dump(mode="json"),
                     "provenance": provenance,

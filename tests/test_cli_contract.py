@@ -29,8 +29,28 @@ def test_cli_exposes_integrated_commands(capsys) -> None:
 
     output = capsys.readouterr().out
     assert exit_code == 0
-    for command in ("catalog", "resolve", "validate", "preview", "generate", "experiment", "benchmark", "compare", "export"):
+    for command in ("catalog", "resolve", "preflight", "validate", "preview", "generate", "experiment", "benchmark", "compare", "export"):
         assert command in output
+
+
+def test_preflight_command_supports_final_json_output(tmp_path, capsys) -> None:
+    exit_code = main(
+        [
+            "preflight",
+            "--config",
+            "examples/configs/landing_minimal.yaml",
+            "--output-dir",
+            str(tmp_path / "pool"),
+            "--output-format",
+            "json",
+        ]
+    )
+
+    payload = json.loads(capsys.readouterr().out)
+    assert exit_code == 0
+    assert payload["status"] == "valid"
+    assert payload["runtime"]["upper_seconds"] > payload["runtime"]["lower_seconds"]
+    assert payload["required_acknowledgements"] == []
 
 
 def test_catalog_and_resolve_expose_profile_provenance(capsys) -> None:

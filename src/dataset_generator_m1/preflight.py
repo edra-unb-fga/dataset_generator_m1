@@ -1,0 +1,268 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import platform
+import shutil
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from statistics import mean
+from typing import Any, Callable
+
+from .models import ResolvedProfile
+
+
+KNOWLEDGE_PATH = Path(__file__).with_name("knowledge") / "performance.json"
+DEFAULT_OBSERVATION_PATH = Path(".cache/performance-observations.jsonl")
+
+
+@dataclass(frozen=True)
+class PreflightRequest:
+    resolved: ResolvedProfile
+    output_dir: Path
+    workers: int
+    observation_path: Path = DEFAULT_OBSERVATION_PATH
+
+
+def _stable_hash(value: Any) -> str:
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def environment_class() -> dict[str, Any]:
+    return {
+        "system": platform.system(),
+        "machine": platform.machine(),
+        "logical_cpu_count": os.cpu_count(),
+    }
+
+
+def _appearance_metadata(resolved: ResolvedProfile) -> dict[str, Any]:
+    candidates = [item for item in resolved.profile_metadata if str(item.get("subject", "")).startswith("appearance")]
+    if candidates:
+        primary = next((item for item in reversed(candidates) if item.get("subject") == "appearance"), candidates[-1])
+        risks = [item.get("performance_risk", "none") for item in candidates]
+        risk = "confirmation" if "confirmation" in risks else "informational" if "informational" in risks else "none"
+        return {
+            **dict(primary),
+            "profile_ids": [item.get("id") for item in candidates],
+            "performance_risk": risk,
+            "warning_codes": list(
+                dict.fromkeys(code for item in candidates for code in item.get("warning_codes", ()))
+            ),
+            "evidence": list(dict.fromkeys(path for item in candidates for path in item.get("evidence", ()))),
+        }
+    return {
+        "id": "local:appearance/undocumented",
+        "subject": "appearance",
+        "performance_risk": "confirmation",
+        "warning_codes": ["UNDOCUMENTED_LOCAL_PROFILE"],
+        "evidence": [],
+    }
+
+
+def _read_observations(path: Path, request: PreflightRequest, environment: dict[str, Any]) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    records: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        record = json.loads(line)
+        if (
+            record.get("contract_hash") == request.resolved.contract_hash
+            and record.get("workers") == request.workers
+            and record.get("environment_class") == environment
+        ):
+            records.append(record)
+    return records
+
+
+def _append_observations(
+    path: Path,
+    request: PreflightRequest,
+    environment: dict[str, Any],
+    observations: list[dict[str, Any]],
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    width, height = request.resolved.profile.output.image_size
+    with path.open("a", encoding="utf-8") as handle:
+        for observation in observations:
+            record = {
+                "schema_version": 1,
+                "observed_at": datetime.now(timezone.utc).isoformat(),
+                "contract_hash": request.resolved.contract_hash,
+                "family": request.resolved.profile.family,
+                "workers": request.workers,
+                "dimensions": [width, height],
+                "megapixels": width * height / 1_000_000.0,
+                "environment_class": environment,
+                **observation,
+            }
+            handle.write(json.dumps(record, separators=(",", ":")) + "\n")
+
+
+def estimate_disk(output_dir: Path, resolved: ResolvedProfile) -> dict[str, int | bool]:
+    probe = output_dir.resolve()
+    while not probe.exists() and probe.parent != probe:
+        probe = probe.parent
+    width, height = resolved.profile.output.image_size
+    raw_bytes = width * height * 3 * resolved.profile.run.num_images
+    encoding_factor = 1.1 if resolved.profile.output.image_format == "png" else 0.6
+    estimated_bytes = int(raw_bytes * encoding_factor + resolved.profile.run.num_images * 64 * 1024)
+    reserve_bytes = 64 * 1024 * 1024
+    free_bytes = int(shutil.disk_usage(probe).free)
+    return {
+        "estimated_output_bytes": estimated_bytes,
+        "free_bytes": free_bytes,
+        "reserve_bytes": reserve_bytes,
+        "sufficient": free_bytes >= estimated_bytes + reserve_bytes,
+    }
+
+
+def _runtime_estimate(
+    request: PreflightRequest,
+    metadata: dict[str, Any],
+    observations: list[dict[str, Any]],
+    knowledge: dict[str, Any],
+) -> dict[str, Any]:
+    profile_id = str(metadata.get("id", "local:appearance/undocumented"))
+    entry = knowledge["profiles"].get(profile_id)
+    width, height = request.resolved.profile.output.image_size
+    megapixels = width * height / 1_000_000.0
+    if observations:
+        per_candidate = mean(float(item["duration_seconds"]) for item in observations)
+        confidence = "local-observation"
+        evidence = [str(request.observation_path)]
+    elif entry:
+        per_candidate = float(entry["seconds_per_candidate"][request.resolved.profile.family])
+        per_candidate *= max(0.1, megapixels / float(knowledge["reference_megapixels"]))
+        confidence = str(entry["confidence"])
+        evidence = list(entry.get("evidence", ()))
+    else:
+        per_candidate = max(0.25, megapixels)
+        confidence = "low"
+        evidence = []
+    effective_workers = max(1.0, request.workers * (0.82 if request.workers > 1 else 1.0))
+    expected = per_candidate * request.resolved.profile.run.num_images / effective_workers
+    bands = {
+        "high": (0.85, 1.25),
+        "medium": (0.70, 1.55),
+        "local-observation": (0.75, 1.45),
+        "local-probe": (0.75, 1.50),
+        "low": (0.50, 2.50),
+    }
+    low, high = bands.get(confidence, bands["low"])
+    return {
+        "lower_seconds": round(expected * low, 3),
+        "expected_seconds": round(expected, 3),
+        "upper_seconds": round(expected * high, 3),
+        "confidence": confidence,
+        "seconds_per_candidate": round(per_candidate, 6),
+        "evidence": evidence,
+        "model": "paired-profile-plus-local-observations-v1",
+    }
+
+
+def run_preflight(
+    request: PreflightRequest,
+    *,
+    probe_runner: Callable[[], list[dict[str, Any]]] | None = None,
+) -> dict[str, Any]:
+    if request.workers < 1:
+        raise ValueError("workers must be >= 1")
+    knowledge = json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8"))
+    metadata = _appearance_metadata(request.resolved)
+    environment = environment_class()
+    observations = _read_observations(request.observation_path, request, environment)
+    entry = knowledge["profiles"].get(metadata.get("id"))
+    expensive_or_weak = metadata.get("performance_risk") == "confirmation" or not entry or entry.get("confidence") == "low"
+    probe_triggered = bool(expensive_or_weak and not observations and probe_runner is not None)
+    probe_measurements: list[dict[str, Any]] = []
+    if probe_triggered:
+        probe_measurements = list(probe_runner())
+        if not probe_measurements or len(probe_measurements) > 3:
+            raise ValueError("Preflight probe must return one to three measured candidate observations")
+        for item in probe_measurements:
+            if float(item.get("duration_seconds", 0)) <= 0:
+                raise ValueError("Probe observations require a positive duration_seconds")
+        _append_observations(request.observation_path, request, environment, probe_measurements)
+        observations = probe_measurements
+    runtime = _runtime_estimate(request, metadata, observations, knowledge)
+    if probe_triggered:
+        runtime["confidence"] = "local-probe"
+    warning_codes = list(dict.fromkeys(str(code) for code in metadata.get("warning_codes", ())))
+    required = warning_codes if metadata.get("performance_risk") == "confirmation" else []
+    warnings = [
+        {
+            "code": code,
+            "severity": "warning" if code in required else "info",
+            "requires_acknowledgement": code in required,
+            "evidence": list(metadata.get("evidence", ())),
+        }
+        for code in warning_codes
+    ]
+    disk = estimate_disk(request.output_dir, request.resolved)
+    validation = [] if disk["sufficient"] else ["INSUFFICIENT_DISK_SPACE"]
+    binding = {
+        "contract_hash": request.resolved.contract_hash,
+        "num_images": request.resolved.profile.run.num_images,
+        "dimensions": list(request.resolved.profile.output.image_size),
+        "workers": request.workers,
+        "warning_codes": required,
+        "evidence_version": knowledge["evidence_version"],
+        "environment_class": environment,
+    }
+    return {
+        "schema_version": 1,
+        "status": "valid" if not validation else "invalid",
+        "validation_errors": validation,
+        "profile": metadata.get("id"),
+        "warnings": warnings,
+        "required_acknowledgements": required,
+        "runtime": runtime,
+        "disk": disk,
+        "probe": {
+            "triggered": probe_triggered,
+            "warmups": 1 if probe_triggered else 0,
+            "measurements": len(probe_measurements),
+        },
+        "receipt_binding": {"value": binding, "hash": _stable_hash(binding)},
+    }
+
+
+def confirm_preflight(result: dict[str, Any], destination: str | Path) -> dict[str, Any]:
+    if result.get("status") != "valid":
+        raise ValueError("Cannot confirm an invalid preflight")
+    receipt = {
+        "schema_version": 1,
+        "confirmed_at": datetime.now(timezone.utc).isoformat(),
+        "binding_hash": result["receipt_binding"]["hash"],
+        "acknowledged_warning_codes": list(result["required_acknowledgements"]),
+        "binding": result["receipt_binding"]["value"],
+    }
+    path = Path(destination)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+    os.replace(temporary, path)
+    return receipt
+
+
+def require_warning_receipt(result: dict[str, Any], receipt_path: str | Path | None) -> None:
+    required = list(result.get("required_acknowledgements", ()))
+    if not required:
+        return
+    if receipt_path is None:
+        raise ValueError("This configuration requires a matching preflight warning receipt")
+    path = Path(receipt_path)
+    if not path.exists():
+        raise ValueError(f"Preflight warning receipt does not exist: {path}")
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    if (
+        receipt.get("binding_hash") != result["receipt_binding"]["hash"]
+        or receipt.get("acknowledged_warning_codes") != required
+    ):
+        raise ValueError("Preflight warning receipt does not match the resolved contract or run settings")

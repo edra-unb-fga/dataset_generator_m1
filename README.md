@@ -24,6 +24,12 @@ uv run python -m dataset_generator_m1 catalog show builtin:appearance/realistic-
 uv run python -m dataset_generator_m1 resolve --config examples/configs/landing_minimal.yaml
 ```
 
+Review warnings, disk use, and an environment-local ETA before generation:
+
+```powershell
+uv run python -m dataset_generator_m1 preflight --config examples/configs/landing_minimal.yaml --output-dir outputs/landing-expA --workers auto
+```
+
 Preview background recipes or compare named variants before committing to a run:
 
 ```powershell
@@ -66,5 +72,6 @@ See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.m
 contract, [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for contribution and verification rules,
 [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for paired-study rules,
 [docs/APPEARANCE_EFFECTS.md](docs/APPEARANCE_EFFECTS.md) for the supported effect catalog, and
+[docs/PREFLIGHT.md](docs/PREFLIGHT.md) for ETA evidence and warning receipts, and
 [docs/ROADMAP.md](docs/ROADMAP.md)
 for measured follow-on work.
