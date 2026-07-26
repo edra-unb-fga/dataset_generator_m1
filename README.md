@@ -38,10 +38,21 @@ uv run python -m dataset_generator_m1 compare --left outputs/bench-A --right out
 uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --strategy asset-disjoint --splits train=0.8,val=0.1,test=0.1 --output-dir outputs/landing-yolo
 ```
 
+Run a paired heavy-augmentation study, or explicitly opt a normal generation run into the reviewed
+realistic-heavy appearance preset:
+
+```powershell
+uv run python -m dataset_generator_m1 experiment augmentations --config examples/configs/landing_minimal.yaml --output-dir outputs/experiments/landing-heavy
+uv run python -m dataset_generator_m1 generate --config examples/configs/landing_minimal.yaml --appearance-preset realistic-heavy --num-images 20 --output-dir outputs/landing-realistic-heavy
+```
+
 Every command supports `--display auto|live|full|plain|quiet` and `--output-format human|json`. JSON mode produces one machine-readable result document. Rich follows standard terminal detection and `NO_COLOR`.
 
 ## Pool artifacts
 
 Generation writes `run.json`, `samples.jsonl`, `rejections.jsonl`, `metrics.jsonl`, `summary.json`, atomic images, and a small `qa/index.html` gallery. Resume requires the same resolved contract and asset-catalog fingerprint.
 
-See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.md) for the normative contract, and [docs/ROADMAP.md](docs/ROADMAP.md) for measured follow-on work.
+See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.md) for the normative
+contract, [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for contribution and verification rules,
+[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for paired-study rules, and [docs/ROADMAP.md](docs/ROADMAP.md)
+for measured follow-on work.

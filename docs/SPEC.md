@@ -11,6 +11,8 @@ validate --config PROFILE
 preview scenes --config PROFILE [--variants VARIANTS] --samples N --output-dir DIR
 preview backgrounds --config PROFILE --samples-per-recipe N --output-dir DIR
 generate --config PROFILE [--num-images N] --output-dir DIR [--resume] [--workers auto|N] [--qa-samples N]
+generate --config PROFILE --appearance-preset realistic-heavy ...
+experiment augmentations --config PROFILE --output-dir DIR [--matrix MATRIX] [--warmups N] [--samples N] [--include-stress]
 benchmark --config PROFILE --output-dir DIR [--samples N] [--warmup N]
 compare --left ARTIFACT --right ARTIFACT --output-dir DIR
 export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|asset-disjoint --splits ... --output-dir DIR
@@ -18,7 +20,10 @@ export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|ass
 
 Every leaf command accepts `--display auto|live|full|plain|quiet` and `--output-format human|json`. `auto` selects Rich Live only for an interactive terminal. JSON disables generation display and emits exactly one versioned result or error document. Rich follows normal terminal and `NO_COLOR` behavior.
 
-Only `num_images` and `qa_samples` are deep-profile operational overrides. Experiments use named variant YAML overlays, which are validated after merge.
+`num_images` and `qa_samples` are ordinary operational overrides. `realistic-heavy` is the only named
+appearance preset and must be explicitly selected; it participates in the resolved contract hash.
+Scene previews use named variant YAML overlays. Augmentation matrix files are strict appearance-only
+contracts and fail before artifacts are created if they attempt to change geometry or sources.
 
 ## 2. Typed contracts
 
@@ -40,7 +45,10 @@ telemetry: {}
 report: {}
 ```
 
-Dimensions are always `[width, height]`. Scene/camera values are normalized fractions unless a field explicitly names pixels or degrees. Appearance transforms are ordered `{type, probability, params}` records and must exist with the given signature in the installed Albumentations version.
+Dimensions are always `[width, height]`. Scene/camera values are normalized fractions unless a field
+explicitly names pixels or degrees. Appearance transforms are ordered `{id, type, probability, params}`
+records and must exist with the given signature in the installed Albumentations version. Stable IDs
+are required by controlled studies and shipped profiles.
 
 Each packaged family definition supplies an ordered class catalog, ordered regex mapping rules, and its rotation policy. Every decoded foreground must match exactly one rule and one declared class. Background and foreground sampling support group and per-asset weights; configured and observed distributions are audit output.
 
@@ -52,7 +60,10 @@ The asset catalog records collision-safe logical paths, dimensions, mode, SHA-25
 
 ## 4. Deterministic scene geometry
 
-The planner owns all choices. Independent streams are derived from `(run_seed, slot, candidate_attempt, stream_name)` for geometry, foreground selection, recipe selection, negatives, synthesis, and appearance.
+The planner owns all choices. Independent streams are derived from `(run_seed, slot, candidate_attempt,
+stream_name)` for geometry, foreground selection, recipe selection, negatives, synthesis, and
+appearance. Inside appearance, activation and Albumentations parameters use streams derived from the
+stage and stable transform ID; background affine and final appearance have separate streams.
 
 For each candidate it:
 
@@ -92,7 +103,14 @@ Every result records recipe ID/version, graph hash, source logical paths and has
 
 ## 6. Telemetry and display
 
-Monotonic high-resolution timing is persisted for planning, synthesis, every recipe node, rendering, encoding/writing, and coordinator work represented in the pool. Candidate rejection records retain incurred stage cost. Aggregates include count, total, mean, median, p90, p95, and p99; run summaries also include throughput, candidate/object/background rejection rates, top causes, rejection cost, class/group/negative distributions, configured/observed recipe mix, QA distributions, warnings, and resource peaks.
+Monotonic high-resolution timing is persisted for planning, synthesis, every recipe node, rendering,
+encoding/writing, and coordinator work represented in the pool. Renderer records include exclusive
+background effects/affine/perspective/coverage; foreground decode/effects/rotation/resize/warp/
+visibility/composition/annotation; and final effects. Per-effect traces retain applied parameters.
+Candidate rejection records retain incurred stage cost. Aggregates include count, total, mean, median,
+p90, p95, and p99; run summaries also include throughput, candidate/object/background rejection rates,
+top causes, rejection cost, class/group/negative distributions, configured/observed recipe mix, QA
+distributions, warnings, and resource peaks.
 
 The coordinator owns one Rich `Console`, Live display, logging, pool commits, and ordered JSONL output. Process workers never print. Live/full display shows accepted and attempted progress, throughput/ETA, worker/in-flight/queue state, stage p50/p95 bottleneck, rejection causes, recipe mix, and memory. Plain output is periodic and line-oriented; quiet preserves artifacts and fatal status. Resource snapshots use low-rate psutil sampling across coordinator and child processes for CPU, RSS, and process I/O.
 
@@ -123,6 +141,14 @@ Images are atomically replaced before an fsynced per-record commit journal is up
 Scene preview writes one QA pool per variant. A shared seed/slot stream preserves asset choices and normalized random quantiles across variants. Background preview writes samples for every recipe plus source, node timing, QA, warning, and HTML gallery evidence.
 
 Benchmark uses warmups and deterministic plans, separately measuring scene computation, encoding, and writing, and records environment identity. Compare accepts a run, benchmark, preview, or export artifact and writes JSON plus HTML differences.
+
+The augmentation study reuses the production planner, synthesizer, and renderer. It synthesizes one
+background per fixture, balances treatment order on one worker, enforces identical geometry/source/
+mask/annotation signatures, and records exclusive effect parameters and timings. Its full ignored
+bundle contains `study.json`, `measurements.jsonl`, `summary.json`, an image-first HTML report, gallery,
+difference views, and a contact sheet. `AtmosphericFog` from the archived `a3dec1f` profile is represented
+only by a disclosed `RandomFog` approximation. Timing claims are paired and environment-local; no
+cross-machine thresholds are normative.
 
 Export merges compatible pools, builds a union class catalog, remaps class IDs, resolves identity and filename collisions, and writes YOLO detection images, labels, `data.yaml`, and `export.json`. Split assignment is deterministic. `asset-disjoint` unions samples sharing foreground or synthesized-background sources before assigning a component to one split.
 

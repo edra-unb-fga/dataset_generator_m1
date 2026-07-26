@@ -11,6 +11,9 @@ This file defines the project language. It intentionally describes the domain, n
 - **Sample**: an accepted rendered image with annotations, geometry evidence, source lineage, timings, and QA evidence.
 - **Generation pool**: a resumable, auditable collection of compatible samples and rejections. It is not yet a train/validation/test dataset.
 - **Variant**: a named, schema-validated overlay used to compare experimental scene or appearance settings while preserving shared choices and random quantiles.
+- **Appearance treatment**: one ordered background/foreground/final effect configuration in a paired study. It may change pixels but not assets, geometry, masks, annotations, recipes, or output dimensions.
+- **Effect trace**: the stable transform ID, independent seed, activation, sampled parameters, pixel count, and exclusive call duration recorded by the production renderer.
+- **Modeled production-equivalent cost**: shared synthesis plus rendering, encoding, and writing assigned to one treatment so experimental cost can be compared with normal sample work.
 - **Exported dataset**: one or more compatible pools remapped and split into a training format such as YOLO.
 
 ## Invariants
@@ -22,3 +25,4 @@ This file defines the project language. It intentionally describes the domain, n
 5. Exact Albumentations pixels are not a reproducibility promise. Scene identity, geometry, annotations, lineage, and ordered records are.
 6. Empty samples are intentional negatives. Accidental all-rejected candidates do not silently become negatives.
 7. Workers render candidates and return compact results. Only the coordinator writes pool state or terminal output.
+8. Each appearance effect owns a stream derived from its stable ID and stage. Adding an earlier effect cannot perturb later effect parameters, affine geometry, or annotations.

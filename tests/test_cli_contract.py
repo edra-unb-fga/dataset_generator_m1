@@ -29,5 +29,15 @@ def test_cli_exposes_integrated_commands(capsys) -> None:
 
     output = capsys.readouterr().out
     assert exit_code == 0
-    for command in ("validate", "preview", "generate", "benchmark", "compare", "export"):
+    for command in ("validate", "preview", "generate", "experiment", "benchmark", "compare", "export"):
         assert command in output
+
+
+def test_realistic_heavy_is_an_explicit_profile_override() -> None:
+    from dataset_generator_m1.config import load_profile
+
+    default = load_profile("examples/configs/landing_minimal.yaml")
+    heavy = load_profile("examples/configs/landing_minimal.yaml", {"appearance_preset": "realistic-heavy"})
+
+    assert len(heavy.profile.appearance.final) > len(default.profile.appearance.final)
+    assert heavy.contract_hash != default.contract_hash

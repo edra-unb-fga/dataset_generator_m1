@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
+from time import perf_counter_ns
 from typing import Any
 
 import cv2
@@ -10,7 +11,7 @@ import numpy as np
 
 from .assets import AssetCatalog, AssetRecord
 from .backgrounds import BackgroundSample
-from .filters import apply_pipeline
+from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox
 from .models import ResolvedProfile
 
@@ -92,6 +93,8 @@ class RenderedScene:
     scene_to_output: np.ndarray
     coverage_fraction: float
     rejected_instances: tuple[dict[str, Any], ...]
+    exclusive_timings_ns: dict[str, int]
+    effect_traces: tuple[dict[str, Any], ...]
 
 
 def _weighted_choice(
@@ -258,21 +261,49 @@ def _transform_bbox(matrix: np.ndarray, bbox: BBox) -> tuple[float, float, float
 
 
 class SceneRenderer:
-    def __init__(self, resolved: ResolvedProfile) -> None:
+    def __init__(self, resolved: ResolvedProfile, clock=perf_counter_ns) -> None:
         self.resolved = resolved
         self.profile = resolved.profile
+        self.clock = clock
+
+    @staticmethod
+    def _trace_record(trace: TransformTrace, instance_index: int | None = None) -> dict[str, Any]:
+        record = {
+            "id": trace.id,
+            "type": trace.type,
+            "stage": trace.stage,
+            "applied": trace.applied,
+            "seed": trace.seed,
+            "duration_ns": trace.duration_ns,
+            "input_pixels": trace.input_pixels,
+            "applied_params": list(trace.applied_params),
+        }
+        if instance_index is not None:
+            record["instance_index"] = instance_index
+        return record
 
     def render(self, plan: ScenePlan, background: BackgroundSample) -> RenderedScene:
         out_w, out_h = self.profile.output.image_size
         if background.image.shape[:2] != (plan.canvas_size[1], plan.canvas_size[0]):
             raise ValueError("Background sample size does not match scene canvas")
-        appearance_rng = np.random.default_rng(plan.appearance_seed)
-        background_image = apply_pipeline(background.image, self.profile.appearance.background, appearance_rng)
+        timings: dict[str, int] = {}
+        effect_traces: list[dict[str, Any]] = []
+        background_image, traces = apply_pipeline_traced(
+            background.image,
+            self.profile.appearance.background,
+            plan.appearance_seed,
+            "background",
+            clock=self.clock,
+        )
+        timings["background_effects"] = sum(trace.duration_ns for trace in traces)
+        effect_traces.extend(self._trace_record(trace) for trace in traces)
         affine = self.profile.scene.background_affine
-        angle = float(appearance_rng.uniform(*affine.rotation_degrees))
-        scale = float(appearance_rng.uniform(*affine.scale))
-        tx = float(appearance_rng.uniform(*affine.translation_x)) * plan.canvas_size[0]
-        ty = float(appearance_rng.uniform(*affine.translation_y)) * plan.canvas_size[1]
+        affine_rng = np.random.default_rng(derive_seed(plan.appearance_seed, 0, 0, "background-affine"))
+        angle = float(affine_rng.uniform(*affine.rotation_degrees))
+        scale = float(affine_rng.uniform(*affine.scale))
+        tx = float(affine_rng.uniform(*affine.translation_x)) * plan.canvas_size[0]
+        ty = float(affine_rng.uniform(*affine.translation_y)) * plan.canvas_size[1]
+        started = self.clock()
         affine_matrix = cv2.getRotationMatrix2D((plan.canvas_size[0] / 2, plan.canvas_size[1] / 2), angle, scale)
         affine_matrix[:, 2] += (tx, ty)
         background_image = cv2.warpAffine(
@@ -282,6 +313,8 @@ class SceneRenderer:
             flags=cv2.INTER_LINEAR,
             borderMode=cv2.BORDER_REFLECT_101,
         )
+        timings["background_affine"] = max(0, self.clock() - started)
+        started = self.clock()
         rendered = cv2.warpPerspective(
             background_image,
             plan.scene_to_output,
@@ -290,6 +323,8 @@ class SceneRenderer:
             borderMode=cv2.BORDER_CONSTANT,
             borderValue=(0, 0, 0),
         )
+        timings["background_perspective"] = max(0, self.clock() - started)
+        started = self.clock()
         coverage_source = np.full((plan.canvas_size[1], plan.canvas_size[0]), 255, dtype=np.uint8)
         coverage = cv2.warpPerspective(
             coverage_source,
@@ -302,20 +337,38 @@ class SceneRenderer:
         coverage_fraction = float(np.mean(coverage == 255))
         if coverage_fraction < 1.0:
             raise SceneRejected(f"background coverage incomplete: {coverage_fraction:.6f}")
+        timings["background_coverage"] = max(0, self.clock() - started)
 
         annotations: list[Annotation] = []
         masks: list[np.ndarray] = []
         rejected: list[dict[str, Any]] = []
         camera_w = plan.camera_rect[2]
         for index, instance in enumerate(plan.instances):
-            instance_rng = np.random.default_rng(derive_seed(plan.appearance_seed, index, 0, "foreground-appearance"))
+            started = self.clock()
             rgba = read_rgba(instance.asset.path)
-            rgba = apply_pipeline(rgba, self.profile.appearance.foreground, instance_rng, preserve_alpha=True)
+            timings["foreground_decode"] = timings.get("foreground_decode", 0) + max(0, self.clock() - started)
+            foreground_seed = derive_seed(plan.appearance_seed, index, 0, "foreground-appearance")
+            rgba, traces = apply_pipeline_traced(
+                rgba,
+                self.profile.appearance.foreground,
+                foreground_seed,
+                f"foreground:{index}",
+                preserve_alpha=True,
+                clock=self.clock,
+            )
+            timings["foreground_effects"] = timings.get("foreground_effects", 0) + sum(trace.duration_ns for trace in traces)
+            effect_traces.extend(self._trace_record(trace, index) for trace in traces)
+            started = self.clock()
             rgba = rotate_rgba(rgba, instance.angle_degrees, self.resolved.family.rotation.mode)
+            timings["foreground_rotation"] = timings.get("foreground_rotation", 0) + max(0, self.clock() - started)
             target_width = max(1, int(round(camera_w * instance.width_fraction)))
+            started = self.clock()
             rgba = resize_rgba(rgba, target_width)
+            timings["foreground_resize"] = timings.get("foreground_resize", 0) + max(0, self.clock() - started)
+            started = self.clock()
             local_bbox = visible_bbox(rgba)
             if local_bbox is None:
+                timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
                 rejected.append({"source": instance.asset.logical_path, "reason": "empty_alpha"})
                 continue
             height, width = rgba.shape[:2]
@@ -323,6 +376,8 @@ class SceneRenderer:
             top_left_y = instance.center[1] - height / 2.0
             asset_to_scene = np.array([[1.0, 0.0, top_left_x], [0.0, 1.0, top_left_y], [0.0, 0.0, 1.0]], dtype=np.float64)
             asset_to_output = plan.scene_to_output @ asset_to_scene
+            timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
+            started = self.clock()
             warped_rgb = cv2.warpPerspective(
                 rgba[:, :, :3],
                 asset_to_output,
@@ -339,8 +394,11 @@ class SceneRenderer:
                 borderMode=cv2.BORDER_CONSTANT,
                 borderValue=0,
             )
+            timings["foreground_warp"] = timings.get("foreground_warp", 0) + max(0, self.clock() - started)
+            started = self.clock()
             clipped_bbox = _bbox_from_mask(warped_alpha)
             if clipped_bbox is None:
+                timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
                 rejected.append({"source": instance.asset.logical_path, "reason": "outside_frame"})
                 continue
             full_bbox = _transform_bbox(asset_to_output, local_bbox)
@@ -348,6 +406,7 @@ class SceneRenderer:
             clipped_area = float((clipped_bbox[2] - clipped_bbox[0]) * (clipped_bbox[3] - clipped_bbox[1]))
             visible_fraction = min(1.0, clipped_area / full_area)
             if visible_fraction < self.profile.sampling.min_visible_bbox_fraction:
+                timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
                 rejected.append(
                     {
                         "source": instance.asset.logical_path,
@@ -356,8 +415,12 @@ class SceneRenderer:
                     }
                 )
                 continue
+            timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
+            started = self.clock()
             alpha = warped_alpha[:, :, None].astype(np.float32) / 255.0
             rendered = np.clip(warped_rgb.astype(np.float32) * alpha + rendered.astype(np.float32) * (1.0 - alpha), 0, 255).astype(np.uint8)
+            timings["foreground_composition"] = timings.get("foreground_composition", 0) + max(0, self.clock() - started)
+            started = self.clock()
             x1, y1, x2, y2 = clipped_bbox
             normalized_bbox = (
                 ((x1 + x2) / 2.0) / out_w,
@@ -379,10 +442,19 @@ class SceneRenderer:
                 )
             )
             masks.append(warped_alpha)
+            timings["foreground_annotation"] = timings.get("foreground_annotation", 0) + max(0, self.clock() - started)
 
         if not annotations and not plan.intentional_negative:
             raise SceneRejected("candidate has no accepted foreground annotations")
-        rendered = apply_pipeline(rendered, self.profile.appearance.final, appearance_rng)
+        rendered, traces = apply_pipeline_traced(
+            rendered,
+            self.profile.appearance.final,
+            derive_seed(plan.appearance_seed, 0, 0, "final-appearance"),
+            "final",
+            clock=self.clock,
+        )
+        timings["final_effects"] = sum(trace.duration_ns for trace in traces)
+        effect_traces.extend(self._trace_record(trace) for trace in traces)
         return RenderedScene(
             image=rendered,
             annotations=tuple(annotations),
@@ -390,4 +462,6 @@ class SceneRenderer:
             scene_to_output=plan.scene_to_output,
             coverage_fraction=coverage_fraction,
             rejected_instances=tuple(rejected),
+            exclusive_timings_ns=timings,
+            effect_traces=tuple(effect_traces),
         )

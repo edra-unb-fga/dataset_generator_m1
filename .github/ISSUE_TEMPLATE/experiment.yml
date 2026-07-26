@@ -1,0 +1,36 @@
+name: Experiment proposal
+description: Propose a controlled, measurable pipeline experiment.
+title: "[experiment] "
+labels: [experiment]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Decision question
+      description: What decision will the experiment make easier?
+    validations: {required: true}
+  - type: textarea
+    id: treatments
+    attributes:
+      label: Treatments and invariants
+      description: State what changes and what must remain paired.
+    validations: {required: true}
+  - type: textarea
+    id: measurements
+    attributes:
+      label: Measurements and acceptance evidence
+      description: Include sample size, warmups, visual review, metrics, and known caveats.
+    validations: {required: true}
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Artifact policy
+      description: State what remains ignored and what compact reviewed evidence may be tracked.
+    validations: {required: true}
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Data policy
+      options:
+        - label: I confirmed that this issue contains no private dataset assets or sensitive paths.
+          required: true

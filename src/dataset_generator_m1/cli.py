@@ -12,6 +12,7 @@ from rich.panel import Panel
 import psutil
 
 from .config import load_profile
+from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
 from .generator import GenerationOptions, generate_pool
 from .workflows import benchmark, compare_artifacts, preview_backgrounds, preview_scenes, validate_project
@@ -54,7 +55,19 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--resume", action="store_true")
     generate.add_argument("--workers", default="1")
     generate.add_argument("--qa-samples", type=int)
+    generate.add_argument("--appearance-preset", choices=["realistic-heavy"])
     _common(generate)
+
+    experiment = commands.add_parser("experiment", help="Run controlled experiments")
+    experiment_commands = experiment.add_subparsers(dest="experiment_command", required=True)
+    augmentations = experiment_commands.add_parser("augmentations", help="Run the paired appearance-attribution study")
+    augmentations.add_argument("--config", required=True)
+    augmentations.add_argument("--output-dir", required=True)
+    augmentations.add_argument("--matrix")
+    augmentations.add_argument("--warmups", type=int, default=2)
+    augmentations.add_argument("--samples", type=int, default=20)
+    augmentations.add_argument("--include-stress", action="store_true")
+    _common(augmentations)
 
     bench = commands.add_parser("benchmark", help="Benchmark fixed scene plans")
     bench.add_argument("--config", required=True)
@@ -105,7 +118,10 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
     if args.command == "preview" and args.preview_command == "scenes":
         return preview_scenes(args.config, args.variants, args.output_dir, args.samples)
     if args.command == "generate":
-        resolved = load_profile(args.config, {"num_images": args.num_images, "qa_samples": args.qa_samples})
+        resolved = load_profile(
+            args.config,
+            {"num_images": args.num_images, "qa_samples": args.qa_samples, "appearance_preset": args.appearance_preset},
+        )
         return generate_pool(
             resolved,
             args.output_dir,
@@ -117,6 +133,17 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
                 qa_samples=args.qa_samples,
                 invocation=tuple(getattr(args, "_sanitized_invocation", ())),
             ),
+        )
+    if args.command == "experiment" and args.experiment_command == "augmentations":
+        return run_augmentation_study(
+            AugmentationStudyRequest(
+                config=Path(args.config),
+                output_dir=Path(args.output_dir),
+                matrix=Path(args.matrix) if args.matrix else None,
+                warmups=args.warmups,
+                samples=args.samples,
+                include_stress=args.include_stress,
+            )
         )
     if args.command == "benchmark":
         return benchmark(load_profile(args.config), args.output_dir, args.samples, args.warmup)
