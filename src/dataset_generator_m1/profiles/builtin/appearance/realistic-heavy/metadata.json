@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:appearance/realistic-heavy","subject":"appearance","status":"standard","performance_risk":"informational","warning_codes":["REALISTIC_HEAVY_COST"],"evidence":["docs/experiments/augmentation-heavy-v1/conclusion.json"],"scaling_drivers":["image-megapixels","foreground-count","activated-effects"]}

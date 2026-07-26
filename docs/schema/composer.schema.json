@@ -1,0 +1,176 @@
+{
+  "$defs": {
+    "AppearanceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransformSpec"
+          },
+          "title": "Background",
+          "type": "array"
+        },
+        "foreground": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransformSpec"
+          },
+          "title": "Foreground",
+          "type": "array"
+        },
+        "final": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransformSpec"
+          },
+          "title": "Final",
+          "type": "array"
+        }
+      },
+      "title": "AppearanceConfig",
+      "type": "object"
+    },
+    "AppearanceSelection": {
+      "additionalProperties": false,
+      "properties": {
+        "preset": {
+          "default": "builtin:appearance/realistic-heavy",
+          "title": "Preset",
+          "type": "string"
+        },
+        "background": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Background",
+          "type": "array"
+        },
+        "foreground": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Foreground",
+          "type": "array"
+        },
+        "final": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Final",
+          "type": "array"
+        },
+        "inline": {
+          "$ref": "#/$defs/AppearanceConfig"
+        }
+      },
+      "title": "AppearanceSelection",
+      "type": "object"
+    },
+    "TransformSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "^[A-Za-z][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "type": {
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
+        },
+        "probability": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Probability",
+          "type": "number"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "TransformSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 2,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "family": {
+      "title": "Family",
+      "type": "string"
+    },
+    "run": {
+      "title": "Run",
+      "type": "string"
+    },
+    "assets": {
+      "title": "Assets",
+      "type": "string"
+    },
+    "output": {
+      "title": "Output",
+      "type": "string"
+    },
+    "sampling": {
+      "title": "Sampling",
+      "type": "string"
+    },
+    "scene": {
+      "title": "Scene",
+      "type": "string"
+    },
+    "background_synthesis": {
+      "title": "Background Synthesis",
+      "type": "string"
+    },
+    "appearance": {
+      "$ref": "#/$defs/AppearanceSelection"
+    },
+    "telemetry": {
+      "title": "Telemetry",
+      "type": "string"
+    },
+    "report": {
+      "title": "Report",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "family",
+    "run",
+    "assets",
+    "output",
+    "sampling",
+    "scene",
+    "background_synthesis",
+    "telemetry",
+    "report"
+  ],
+  "title": "GenerationComposer",
+  "type": "object"
+}

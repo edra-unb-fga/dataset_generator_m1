@@ -160,7 +160,7 @@ class ReportConfig(StrictModel):
 
 
 class GenerationProfile(StrictModel):
-    schema_version: Literal[1]
+    schema_version: Literal[2]
     family: Literal["landing", "manometro"]
     run: RunConfig
     assets: AssetsConfig
@@ -171,6 +171,48 @@ class GenerationProfile(StrictModel):
     appearance: AppearanceConfig = Field(default_factory=AppearanceConfig)
     telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
     report: ReportConfig = Field(default_factory=ReportConfig)
+
+
+class AppearanceSelection(StrictModel):
+    preset: str = "builtin:appearance/realistic-heavy"
+    background: tuple[str, ...] = ()
+    foreground: tuple[str, ...] = ()
+    final: tuple[str, ...] = ()
+    inline: AppearanceConfig = Field(default_factory=AppearanceConfig)
+
+
+class GenerationComposer(StrictModel):
+    schema_version: Literal[2]
+    family: str
+    run: str
+    assets: str
+    output: str
+    sampling: str
+    scene: str
+    background_synthesis: str
+    appearance: AppearanceSelection = Field(default_factory=AppearanceSelection)
+    telemetry: str
+    report: str
+
+
+class ProfileBundle(StrictModel):
+    schema_version: Literal[1]
+    subject: str
+    extends: tuple[str, ...] = ()
+    value: dict[str, Any]
+
+
+class ProfileMetadata(StrictModel):
+    schema_version: Literal[1]
+    id: str
+    subject: str
+    status: Literal["standard", "fast", "heavy", "diagnostic", "stress", "experimental", "local"]
+    compatible_families: tuple[Literal["landing", "manometro"], ...] = ("landing", "manometro")
+    intents: tuple[str, ...] = ()
+    performance_risk: Literal["none", "informational", "confirmation"] = "none"
+    warning_codes: tuple[str, ...] = ()
+    evidence: tuple[str, ...] = ()
+    scaling_drivers: tuple[str, ...] = ()
 
 
 class ClassMappingRule(StrictModel):
@@ -354,3 +396,7 @@ class ResolvedProfile(StrictModel):
     config_path: Path
     recipe_path: Path
     contract_hash: str
+    source_hashes: dict[str, str] = Field(default_factory=dict)
+    reference_graph: dict[str, Any] = Field(default_factory=dict)
+    profile_metadata: tuple[dict[str, Any], ...] = ()
+    applied_overrides: dict[str, Any] = Field(default_factory=dict)

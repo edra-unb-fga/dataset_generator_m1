@@ -1,0 +1,7 @@
+schema_version: 1
+subject: scene
+value:
+  canvas_scale: 2.0
+  camera: {crop_scale: [1.0, 1.15], center_jitter_x: [-0.08, 0.08], center_jitter_y: [-0.08, 0.08]}
+  perspective: {probability: 0.25, corner_offset_x: [-0.06, 0.06], corner_offset_y: [-0.06, 0.06], min_area_fraction: 0.70}
+  background_affine: {rotation_degrees: [-180.0, 180.0], scale: [0.8, 1.1], translation_x: [-0.05, 0.05], translation_y: [-0.05, 0.05]}

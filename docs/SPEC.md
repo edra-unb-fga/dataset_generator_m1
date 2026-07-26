@@ -1,27 +1,31 @@
 # Dataset Generator M1 Normative Specification
 
-Version 1 is a clean schema break. Legacy `dataset_type` profiles and legacy output manifests are invalid and have no migration layer. `CONTEXT.md` defines canonical terminology.
+Composer schema v2 is a clean generation break. Earlier pools remain readable for audit, comparison,
+and export, but cannot be resumed. `CONTEXT.md` defines canonical terminology.
 
 ## 1. Public commands
 
 The stable command surface is:
 
 ```text
-validate --config PROFILE
-preview scenes --config PROFILE [--variants VARIANTS] --samples N --output-dir DIR
-preview backgrounds --config PROFILE --samples-per-recipe N --output-dir DIR
-generate --config PROFILE [--num-images N] --output-dir DIR [--resume] [--workers auto|N] [--qa-samples N]
-generate --config PROFILE --appearance-preset realistic-heavy ...
-experiment augmentations --config PROFILE --output-dir DIR [--matrix MATRIX] [--warmups N] [--samples N] [--include-stress]
-benchmark --config PROFILE --output-dir DIR [--samples N] [--warmup N]
+catalog list
+catalog show PROFILE-REFERENCE [--config COMPOSER]
+catalog promote --config COMPOSER --stage background|foreground|final --id ID
+resolve --config COMPOSER
+validate --config COMPOSER
+preview scenes --config COMPOSER [--variants VARIANTS] --samples N --output-dir DIR
+preview backgrounds --config COMPOSER --samples-per-recipe N --output-dir DIR
+generate --config COMPOSER [--num-images N] --output-dir DIR [--resume] [--workers auto|N] [--qa-samples N]
+experiment augmentations --config COMPOSER --output-dir DIR [--matrix MATRIX] [--warmups N] [--samples N] [--include-stress]
+benchmark --config COMPOSER --output-dir DIR [--samples N] [--warmup N]
 compare --left ARTIFACT --right ARTIFACT --output-dir DIR
 export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|asset-disjoint --splits ... --output-dir DIR
 ```
 
 Every leaf command accepts `--display auto|live|full|plain|quiet` and `--output-format human|json`. `auto` selects Rich Live only for an interactive terminal. JSON disables generation display and emits exactly one versioned result or error document. Rich follows normal terminal and `NO_COLOR` behavior.
 
-`num_images` and `qa_samples` are ordinary operational overrides. `realistic-heavy` is the only named
-appearance preset and must be explicitly selected; it participates in the resolved contract hash.
+`num_images` and `qa_samples` are ordinary declared leaf overrides. `realistic-heavy` is the shipped
+appearance default and participates in the resolved contract hash.
 Scene previews use named variant YAML overlays. Augmentation matrix files are strict appearance-only
 contracts and fail before artifacts are created if they attempt to change geometry or sources.
 
@@ -29,21 +33,26 @@ contracts and fail before artifacts are created if they attempt to change geomet
 
 Pydantic v2 models in `src/dataset_generator_m1/models.py` are executable sources of truth. All models forbid unknown fields and are immutable. YAML loading rejects duplicate keys. Generated schemas live in `docs/schema/`.
 
-A generation profile has these root fields:
+A composer selects complete typed profiles:
 
 ```yaml
-schema_version: 1
-family: landing
-run: {}
-assets: {backgrounds: {}, foregrounds: {}}
-output: {image_size: [width, height]}
-sampling: {}
-scene: {}
-background_synthesis: {}
-appearance: {background: [], foreground: [], final: []}
-telemetry: {}
-report: {}
+schema_version: 2
+family: builtin:family/landing
+run: builtin:run/landing-standard
+assets: builtin:assets/landing
+output: builtin:output/standard
+sampling: builtin:sampling/landing-standard
+scene: builtin:scene/standard
+background_synthesis: builtin:background_synthesis/standard
+appearance: {preset: builtin:appearance/realistic-heavy}
+telemetry: builtin:telemetry/standard
+report: builtin:report/standard
 ```
+
+References may be built-in IDs, workspace IDs, or paths relative to the composer. Built-in bundles
+contain `profile.yaml`, `metadata.json`, and `README.md`. Singleton subjects resolve one complete
+profile; appearance resolves one preset plus ordered stage profiles and strict inline effects. Generic
+YAML deep merging is not part of the composer interface.
 
 Dimensions are always `[width, height]`. Scene/camera values are normalized fractions unless a field
 explicitly names pixels or degrees. Appearance transforms are ordered `{id, type, probability, params}`
@@ -54,7 +63,11 @@ Each packaged family definition supplies an ordered class catalog, ordered regex
 
 ## 3. Resolution and catalog validation
 
-Profile resolution loads the profile, packaged family definition, recipe catalog, optional background metadata, and declared operational overrides into one immutable contract hash. Validation must fail before generation on schema errors, unsupported transforms, invalid recipe references, missing roots, decode failures, ambiguous class mappings, empty classes, or zero effective weights.
+Composer resolution loads every referenced profile, packaged family definition, recipe catalog, profile
+metadata, and declared overrides into one immutable contract hash. The run records its reference graph,
+source hashes, profile metadata, and overrides. Validation must fail before generation on schema errors,
+unsupported transforms, invalid references or recipes, missing roots, decode failures, ambiguous class
+mappings, empty classes, or zero effective weights.
 
 The asset catalog records collision-safe logical paths, dimensions, mode, SHA-256, a perceptual fingerprint, group, class mapping, and optional background tags, aliases, exclusions, seamlessness, texture kind, and approved recipe roles. Its stable fingerprint participates in resume compatibility. Exact and perceptual duplicate groups are reported as catalog-quality evidence.
 

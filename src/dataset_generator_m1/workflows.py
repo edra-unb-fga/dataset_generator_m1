@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import platform
 from io import BytesIO
 from copy import deepcopy
@@ -16,7 +17,7 @@ from .assets import build_asset_catalog
 from .backgrounds import BackgroundSynthesizer
 from .config import load_profile, load_yaml_strict
 from .generator import GenerationOptions, generate_pool
-from .models import ResolvedProfile, VariantCatalog
+from .models import GenerationProfile, ResolvedProfile, RunConfig, VariantCatalog
 from .scene import ScenePlanner, SceneRenderer, derive_seed
 
 
@@ -108,19 +109,20 @@ def preview_scenes(
 ) -> dict[str, Any]:
     output = Path(output_dir).resolve()
     output.mkdir(parents=True, exist_ok=True)
-    base = load_yaml_strict(config_path)
+    base = load_profile(config_path)
     variants = {"base": {}}
     if variants_path:
         variants = VariantCatalog.model_validate(load_yaml_strict(variants_path)).variants
     results: dict[str, Any] = {}
     for name, overlay in variants.items():
-        config = _deep_merge(base, overlay)
-        config.setdefault("run", {})["label"] = f"{base['run']['label']}-{name}"
-        config["run"]["num_images"] = samples
-        config.setdefault("report", {})["qa_samples"] = samples
-        config_file = output / f"resolved_{name}.yaml"
-        config_file.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
-        resolved = load_profile(config_file)
+        config = _deep_merge(base.profile.model_dump(mode="json"), overlay)
+        config["run"] = {**config["run"], "label": f"{base.profile.run.label}-{name}", "num_images": samples}
+        config["report"] = {**config["report"], "qa_samples": samples}
+        profile = GenerationProfile.model_validate(config)
+        contract_hash = hashlib.sha256(
+            json.dumps({"base": base.contract_hash, "variant": name, "profile": profile.model_dump(mode="json")}, sort_keys=True).encode()
+        ).hexdigest()
+        resolved = base.model_copy(update={"profile": profile, "contract_hash": contract_hash})
         results[name] = generate_pool(resolved, output / name, GenerationOptions(display="quiet", workers=1))
     links = "".join(f'<li><a href="{name}/qa/index.html">{name}</a></li>' for name in results)
     (output / "index.html").write_text(f"<!doctype html><html><body><h1>Scene variants</h1><ul>{links}</ul></body></html>", encoding="utf-8")

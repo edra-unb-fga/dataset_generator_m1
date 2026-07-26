@@ -1,0 +1,96 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "subject": {
+      "title": "Subject",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "standard",
+        "fast",
+        "heavy",
+        "diagnostic",
+        "stress",
+        "experimental",
+        "local"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "compatible_families": {
+      "default": [
+        "landing",
+        "manometro"
+      ],
+      "items": {
+        "enum": [
+          "landing",
+          "manometro"
+        ],
+        "type": "string"
+      },
+      "title": "Compatible Families",
+      "type": "array"
+    },
+    "intents": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Intents",
+      "type": "array"
+    },
+    "performance_risk": {
+      "default": "none",
+      "enum": [
+        "none",
+        "informational",
+        "confirmation"
+      ],
+      "title": "Performance Risk",
+      "type": "string"
+    },
+    "warning_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warning Codes",
+      "type": "array"
+    },
+    "evidence": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "scaling_drivers": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Scaling Drivers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "subject",
+    "status"
+  ],
+  "title": "ProfileMetadata",
+  "type": "object"
+}

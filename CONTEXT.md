@@ -3,7 +3,9 @@
 This file defines the project language. It intentionally describes the domain, not the implementation.
 
 - **Family**: one coherent annotation problem with an ordered class catalog, asset-mapping rules, and geometric policies. A run has exactly one family.
-- **Generation profile**: the strict, versioned experiment contract that selects a family and defines run, assets, output, sampling, scene, background synthesis, appearance, telemetry, and reporting behavior.
+- **Composer**: the strict, versioned user configuration that selects subject profiles and optional inline appearance effects.
+- **Profile bundle**: reusable executable YAML plus machine metadata and human documentation for one typed subject.
+- **Resolved generation contract**: the immutable, hashed runtime input produced from a composer, referenced profiles, declared overrides, family definition, and recipes.
 - **Asset catalog**: the validated, fingerprinted inventory of decodable source images, mappings, groups, metadata, and sampling weights available to a run.
 - **Background recipe**: a versioned, typed, acyclic graph that combines one or more catalog backgrounds into one RGB scene canvas.
 - **Scene plan**: deterministic sampled intent for a slot and candidate attempt: asset choices, normalized random draws, placements, camera window, recipe, and one global homography.

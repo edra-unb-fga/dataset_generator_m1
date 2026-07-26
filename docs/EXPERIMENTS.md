@@ -25,15 +25,17 @@ Visual review rejected `RandomFog` for the realistic preset because even low-den
 the complete frame and obscured labels. Realistic weather uses light drizzle instead; fog remains only
 in the disclosed legacy-compatible and stress treatments.
 
-The reviewed realistic-heavy treatment is an explicit opt-in:
+The reviewed realistic-heavy treatment is now the shipped composer default:
 
 ```powershell
 uv run python -m dataset_generator_m1 generate `
   --config examples/configs/landing_minimal.yaml `
-  --appearance-preset realistic-heavy `
   --num-images 20 `
   --output-dir outputs/landing-realistic-heavy
 ```
+
+The report's `current` treatment retains its historical meaning and resolves
+`builtin:appearance/current-fast` explicitly.
 
 ## Interpretation rules
 

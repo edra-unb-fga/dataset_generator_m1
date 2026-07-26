@@ -18,7 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .assets import build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
-from .config import load_profile, load_yaml_strict
+from .config import load_appearance_profile, load_profile, load_yaml_strict
 from .filters import backend_version, validate_appearance
 from .models import AppearanceConfig, ResolvedProfile, TransformSpec
 from .scene import ScenePlan, ScenePlanner, SceneRejected, SceneRenderer, derive_seed
@@ -115,7 +115,9 @@ def resolve_treatments(
         legacy_raw = load_yaml_strict(legacy_path)
         legacy = _load_appearance(legacy_raw["appearance"])
         realistic = _load_appearance(definition["realistic_heavy"])
-        current = resolved.profile.appearance
+        # `current` is the historical compact stack. Shipped composers now default to
+        # realistic-heavy, so resolving it explicitly preserves the paired study meaning.
+        current = load_appearance_profile("builtin:appearance/current-fast", resolved.config_path)
         treatments = {
             "no-appearance": AppearanceConfig(),
             "current": current,

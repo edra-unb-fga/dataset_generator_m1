@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:scene/standard","subject":"scene","status":"standard","performance_risk":"informational","scaling_drivers":["canvas-scale","perspective"]}

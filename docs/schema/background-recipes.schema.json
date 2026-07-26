@@ -3,6 +3,22 @@
     "BackgroundRecipe": {
       "additionalProperties": false,
       "properties": {
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "experimental": {
+          "default": false,
+          "title": "Experimental",
+          "type": "boolean"
+        },
+        "tileable": {
+          "default": false,
+          "title": "Tileable",
+          "type": "boolean"
+        },
         "allowed_cross_group_pairs": {
           "default": [],
           "items": {
@@ -21,11 +37,6 @@
           "title": "Allowed Cross Group Pairs",
           "type": "array"
         },
-        "experimental": {
-          "default": false,
-          "title": "Experimental",
-          "type": "boolean"
-        },
         "nodes": {
           "items": {
             "$ref": "#/$defs/RecipeNode"
@@ -36,17 +47,6 @@
         "output": {
           "title": "Output",
           "type": "string"
-        },
-        "tileable": {
-          "default": false,
-          "title": "Tileable",
-          "type": "boolean"
-        },
-        "version": {
-          "default": 1,
-          "minimum": 1,
-          "title": "Version",
-          "type": "integer"
         }
       },
       "required": [
@@ -65,13 +65,6 @@
           "title": "Id",
           "type": "string"
         },
-        "inputs": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "Inputs",
-          "type": "object"
-        },
         "op": {
           "enum": [
             "sample_asset",
@@ -87,6 +80,13 @@
           ],
           "title": "Op",
           "type": "string"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "object"
         },
         "params": {
           "additionalProperties": true,
@@ -104,17 +104,17 @@
   },
   "additionalProperties": false,
   "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
     "recipes": {
       "additionalProperties": {
         "$ref": "#/$defs/BackgroundRecipe"
       },
       "title": "Recipes",
       "type": "object"
-    },
-    "schema_version": {
-      "const": 1,
-      "title": "Schema Version",
-      "type": "integer"
     }
   },
   "required": [

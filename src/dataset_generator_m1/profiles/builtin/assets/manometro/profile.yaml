@@ -1,0 +1,5 @@
+schema_version: 1
+subject: assets
+value:
+  backgrounds: {paths: [backgrounds], recursive: true}
+  foregrounds: {paths: [foregrounds/manometro_foregrounds], recursive: true}

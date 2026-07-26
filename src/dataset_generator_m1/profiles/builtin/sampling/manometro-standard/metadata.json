@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:sampling/manometro-standard","subject":"sampling","status":"standard","compatible_families":["manometro"],"performance_risk":"none","scaling_drivers":["object-count"]}

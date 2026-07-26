@@ -12,6 +12,7 @@ from rich.panel import Panel
 import psutil
 
 from .config import load_profile
+from .catalog import list_profiles, promote_inline_stack, resolved_contract, show_profile
 from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
 from .generator import GenerationOptions, generate_pool
@@ -29,6 +30,24 @@ def _common(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="dataset-generator-m1", description="Auditable synthetic dataset generation workbench")
     commands = parser.add_subparsers(dest="command", required=True)
+
+    catalog = commands.add_parser("catalog", help="Discover and inspect reusable configuration profiles")
+    catalog_commands = catalog.add_subparsers(dest="catalog_command", required=True)
+    catalog_list = catalog_commands.add_parser("list", help="List built-in profiles")
+    _common(catalog_list)
+    catalog_show = catalog_commands.add_parser("show", help="Show one built-in, workspace, or path profile")
+    catalog_show.add_argument("reference")
+    catalog_show.add_argument("--config")
+    _common(catalog_show)
+    catalog_promote = catalog_commands.add_parser("promote", help="Promote a composer inline appearance stack")
+    catalog_promote.add_argument("--config", required=True)
+    catalog_promote.add_argument("--stage", choices=["background", "foreground", "final"], required=True)
+    catalog_promote.add_argument("--id", required=True)
+    _common(catalog_promote)
+
+    resolve = commands.add_parser("resolve", help="Print the immutable contract resolved from a composer")
+    resolve.add_argument("--config", required=True)
+    _common(resolve)
 
     validate = commands.add_parser("validate", help="Validate a profile, assets, recipes, and capabilities")
     validate.add_argument("--config", required=True)
@@ -111,6 +130,14 @@ def _workers(value: str, resolved: Any | None = None) -> int:
 
 
 def _run(args: argparse.Namespace) -> dict[str, Any]:
+    if args.command == "catalog" and args.catalog_command == "list":
+        return list_profiles()
+    if args.command == "catalog" and args.catalog_command == "show":
+        return show_profile(args.reference, composer=args.config)
+    if args.command == "catalog" and args.catalog_command == "promote":
+        return promote_inline_stack(args.config, args.stage, args.id)
+    if args.command == "resolve":
+        return resolved_contract(args.config)
     if args.command == "validate":
         return validate_project(load_profile(args.config))
     if args.command == "preview" and args.preview_command == "backgrounds":

@@ -29,15 +29,26 @@ def test_cli_exposes_integrated_commands(capsys) -> None:
 
     output = capsys.readouterr().out
     assert exit_code == 0
-    for command in ("validate", "preview", "generate", "experiment", "benchmark", "compare", "export"):
+    for command in ("catalog", "resolve", "validate", "preview", "generate", "experiment", "benchmark", "compare", "export"):
         assert command in output
 
 
-def test_realistic_heavy_is_an_explicit_profile_override() -> None:
+def test_catalog_and_resolve_expose_profile_provenance(capsys) -> None:
+    assert main(["catalog", "list", "--output-format", "json"]) == 0
+    listing = json.loads(capsys.readouterr().out)
+    assert any(item["id"] == "builtin:appearance/realistic-heavy" for item in listing["profiles"])
+
+    assert main(["resolve", "--config", "examples/configs/landing_minimal.yaml", "--output-format", "json"]) == 0
+    resolved = json.loads(capsys.readouterr().out)
+    assert resolved["profile"]["schema_version"] == 2
+    assert resolved["reference_graph"]["appearance"]["preset"]["reference"] == "builtin:appearance/realistic-heavy"
+
+
+def test_realistic_heavy_is_the_shipped_default() -> None:
     from dataset_generator_m1.config import load_profile
 
     default = load_profile("examples/configs/landing_minimal.yaml")
-    heavy = load_profile("examples/configs/landing_minimal.yaml", {"appearance_preset": "realistic-heavy"})
+    metadata_ids = {item["id"] for item in default.profile_metadata}
 
-    assert len(heavy.profile.appearance.final) > len(default.profile.appearance.final)
-    assert heavy.contract_hash != default.contract_hash
+    assert "builtin:appearance/realistic-heavy" in metadata_ids
+    assert any(spec.id == "realistic-final-weather" for spec in default.profile.appearance.final)

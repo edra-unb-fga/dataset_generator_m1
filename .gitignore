@@ -22,6 +22,8 @@ ENV/
 .mypy_cache/
 .ruff_cache/
 .ipynb_checkpoints/
+.worktrees/
+.cache/
 
 # Environment/local config
 .env
