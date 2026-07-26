@@ -3,10 +3,6 @@
     "BackgroundCatalogEntry": {
       "additionalProperties": false,
       "properties": {
-        "path": {
-          "title": "Path",
-          "type": "string"
-        },
         "aliases": {
           "default": [],
           "items": {
@@ -15,18 +11,22 @@
           "title": "Aliases",
           "type": "array"
         },
-        "tags": {
+        "approved_roles": {
           "default": [],
           "items": {
             "type": "string"
           },
-          "title": "Tags",
+          "title": "Approved Roles",
           "type": "array"
         },
         "excluded": {
           "default": false,
           "title": "Excluded",
           "type": "boolean"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
         },
         "seamless": {
           "anyOf": [
@@ -39,6 +39,14 @@
           ],
           "default": null,
           "title": "Seamless"
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
         },
         "texture_kind": {
           "anyOf": [
@@ -55,14 +63,6 @@
           ],
           "default": null,
           "title": "Texture Kind"
-        },
-        "approved_roles": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Approved Roles",
-          "type": "array"
         }
       },
       "required": [
@@ -74,11 +74,6 @@
   },
   "additionalProperties": false,
   "properties": {
-    "schema_version": {
-      "const": 1,
-      "title": "Schema Version",
-      "type": "integer"
-    },
     "assets": {
       "default": [],
       "items": {
@@ -86,6 +81,11 @@
       },
       "title": "Assets",
       "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
     }
   },
   "required": [

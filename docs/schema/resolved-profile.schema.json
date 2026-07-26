@@ -11,20 +11,20 @@
           "title": "Background",
           "type": "array"
         },
-        "foreground": {
-          "default": [],
-          "items": {
-            "$ref": "#/$defs/TransformSpec"
-          },
-          "title": "Foreground",
-          "type": "array"
-        },
         "final": {
           "default": [],
           "items": {
             "$ref": "#/$defs/TransformSpec"
           },
           "title": "Final",
+          "type": "array"
+        },
+        "foreground": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransformSpec"
+          },
+          "title": "Foreground",
           "type": "array"
         }
       },
@@ -34,17 +34,12 @@
     "AssetSourceConfig": {
       "additionalProperties": false,
       "properties": {
-        "paths": {
-          "items": {
-            "type": "string"
+        "asset_weights": {
+          "additionalProperties": {
+            "type": "number"
           },
-          "title": "Paths",
-          "type": "array"
-        },
-        "recursive": {
-          "default": true,
-          "title": "Recursive",
-          "type": "boolean"
+          "title": "Asset Weights",
+          "type": "object"
         },
         "catalog_file": {
           "anyOf": [
@@ -65,12 +60,17 @@
           "title": "Group Weights",
           "type": "object"
         },
-        "asset_weights": {
-          "additionalProperties": {
-            "type": "number"
+        "paths": {
+          "items": {
+            "type": "string"
           },
-          "title": "Asset Weights",
-          "type": "object"
+          "title": "Paths",
+          "type": "array"
+        },
+        "recursive": {
+          "default": true,
+          "title": "Recursive",
+          "type": "boolean"
         }
       },
       "required": [
@@ -200,24 +200,6 @@
     "CameraConfig": {
       "additionalProperties": false,
       "properties": {
-        "crop_scale": {
-          "default": [
-            1.0,
-            1.0
-          ],
-          "maxItems": 2,
-          "minItems": 2,
-          "prefixItems": [
-            {
-              "type": "number"
-            },
-            {
-              "type": "number"
-            }
-          ],
-          "title": "Crop Scale",
-          "type": "array"
-        },
         "center_jitter_x": {
           "default": [
             0.0,
@@ -253,6 +235,24 @@
           ],
           "title": "Center Jitter Y",
           "type": "array"
+        },
+        "crop_scale": {
+          "default": [
+            1.0,
+            1.0
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Crop Scale",
+          "type": "array"
         }
       },
       "title": "CameraConfig",
@@ -261,6 +261,16 @@
     "OutputConfig": {
       "additionalProperties": false,
       "properties": {
+        "image_format": {
+          "default": "jpg",
+          "enum": [
+            "jpg",
+            "jpeg",
+            "png"
+          ],
+          "title": "Image Format",
+          "type": "string"
+        },
         "image_size": {
           "default": [
             1280,
@@ -279,16 +289,6 @@
           "title": "Image Size",
           "type": "array"
         },
-        "image_format": {
-          "default": "jpg",
-          "enum": [
-            "jpg",
-            "jpeg",
-            "png"
-          ],
-          "title": "Image Format",
-          "type": "string"
-        },
         "jpeg_quality": {
           "default": 95,
           "maximum": 100,
@@ -303,13 +303,6 @@
     "PerspectiveConfig": {
       "additionalProperties": false,
       "properties": {
-        "probability": {
-          "default": 0.25,
-          "maximum": 1.0,
-          "minimum": 0.0,
-          "title": "Probability",
-          "type": "number"
-        },
         "corner_offset_x": {
           "default": [
             -0.02,
@@ -352,6 +345,13 @@
           "maximum": 1.0,
           "title": "Min Area Fraction",
           "type": "number"
+        },
+        "probability": {
+          "default": 0.25,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Probability",
+          "type": "number"
         }
       },
       "title": "PerspectiveConfig",
@@ -379,50 +379,11 @@
           "title": "Label",
           "type": "string"
         },
-        "tags": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Tags",
-          "type": "array"
-        },
-        "num_images": {
-          "default": 10,
-          "minimum": 1,
-          "title": "Num Images",
-          "type": "integer"
-        },
-        "seed": {
-          "default": 42,
-          "title": "Seed",
-          "type": "integer"
-        },
-        "negative_fraction": {
-          "default": 0.0,
-          "maximum": 1.0,
-          "minimum": 0.0,
-          "title": "Negative Fraction",
-          "type": "number"
-        },
         "max_candidate_attempts": {
           "default": 10,
           "minimum": 1,
           "title": "Max Candidate Attempts",
           "type": "integer"
-        },
-        "max_wall_seconds": {
-          "anyOf": [
-            {
-              "exclusiveMinimum": 0,
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Max Wall Seconds"
         },
         "max_rejection_rate": {
           "anyOf": [
@@ -437,6 +398,45 @@
           ],
           "default": null,
           "title": "Max Rejection Rate"
+        },
+        "max_wall_seconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Wall Seconds"
+        },
+        "negative_fraction": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Negative Fraction",
+          "type": "number"
+        },
+        "num_images": {
+          "default": 10,
+          "minimum": 1,
+          "title": "Num Images",
+          "type": "integer"
+        },
+        "seed": {
+          "default": 42,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
         }
       },
       "required": [
@@ -448,23 +448,11 @@
     "SamplingConfig": {
       "additionalProperties": false,
       "properties": {
-        "instances_per_image": {
-          "default": [
-            1,
-            2
-          ],
-          "maxItems": 2,
-          "minItems": 2,
-          "prefixItems": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "integer"
-            }
-          ],
-          "title": "Instances Per Image",
-          "type": "array"
+        "bbox_spacing": {
+          "default": 0.015,
+          "minimum": 0.0,
+          "title": "Bbox Spacing",
+          "type": "number"
         },
         "foreground_size": {
           "default": [
@@ -484,17 +472,23 @@
           "title": "Foreground Size",
           "type": "array"
         },
-        "bbox_spacing": {
-          "default": 0.015,
-          "minimum": 0.0,
-          "title": "Bbox Spacing",
-          "type": "number"
-        },
-        "placement_attempts": {
-          "default": 50,
-          "minimum": 1,
-          "title": "Placement Attempts",
-          "type": "integer"
+        "instances_per_image": {
+          "default": [
+            1,
+            2
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "title": "Instances Per Image",
+          "type": "array"
         },
         "min_visible_bbox_fraction": {
           "default": 0.7,
@@ -502,6 +496,12 @@
           "maximum": 1.0,
           "title": "Min Visible Bbox Fraction",
           "type": "number"
+        },
+        "placement_attempts": {
+          "default": 50,
+          "minimum": 1,
+          "title": "Placement Attempts",
+          "type": "integer"
         }
       },
       "title": "SamplingConfig",
@@ -510,20 +510,20 @@
     "SceneConfig": {
       "additionalProperties": false,
       "properties": {
+        "background_affine": {
+          "$ref": "#/$defs/BackgroundAffineConfig"
+        },
+        "camera": {
+          "$ref": "#/$defs/CameraConfig"
+        },
         "canvas_scale": {
           "default": 2.0,
           "minimum": 1.25,
           "title": "Canvas Scale",
           "type": "number"
         },
-        "camera": {
-          "$ref": "#/$defs/CameraConfig"
-        },
         "perspective": {
           "$ref": "#/$defs/PerspectiveConfig"
-        },
-        "background_affine": {
-          "$ref": "#/$defs/BackgroundAffineConfig"
         }
       },
       "title": "SceneConfig",
@@ -532,6 +532,12 @@
     "TelemetryConfig": {
       "additionalProperties": false,
       "properties": {
+        "plain_interval_seconds": {
+          "default": 5.0,
+          "minimum": 0.5,
+          "title": "Plain Interval Seconds",
+          "type": "number"
+        },
         "refresh_hz": {
           "default": 3.0,
           "maximum": 10.0,
@@ -543,12 +549,6 @@
           "default": 1.0,
           "minimum": 0.25,
           "title": "Resource Interval Seconds",
-          "type": "number"
-        },
-        "plain_interval_seconds": {
-          "default": 5.0,
-          "minimum": 0.5,
-          "title": "Plain Interval Seconds",
           "type": "number"
         }
       },
@@ -572,10 +572,10 @@
           "default": null,
           "title": "Id"
         },
-        "type": {
-          "minLength": 1,
-          "title": "Type",
-          "type": "string"
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
         },
         "probability": {
           "default": 1.0,
@@ -584,10 +584,10 @@
           "title": "Probability",
           "type": "number"
         },
-        "params": {
-          "additionalProperties": true,
-          "title": "Params",
-          "type": "object"
+        "type": {
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
         }
       },
       "required": [
@@ -599,10 +599,14 @@
   },
   "additionalProperties": false,
   "properties": {
-    "schema_version": {
-      "const": 2,
-      "title": "Schema Version",
-      "type": "integer"
+    "appearance": {
+      "$ref": "#/$defs/AppearanceConfig"
+    },
+    "assets": {
+      "$ref": "#/$defs/AssetsConfig"
+    },
+    "background_synthesis": {
+      "$ref": "#/$defs/BackgroundSynthesisConfig"
     },
     "family": {
       "enum": [
@@ -612,14 +616,14 @@
       "title": "Family",
       "type": "string"
     },
-    "run": {
-      "$ref": "#/$defs/RunConfig"
-    },
-    "assets": {
-      "$ref": "#/$defs/AssetsConfig"
-    },
     "output": {
       "$ref": "#/$defs/OutputConfig"
+    },
+    "report": {
+      "$ref": "#/$defs/ReportConfig"
+    },
+    "run": {
+      "$ref": "#/$defs/RunConfig"
     },
     "sampling": {
       "$ref": "#/$defs/SamplingConfig"
@@ -627,17 +631,13 @@
     "scene": {
       "$ref": "#/$defs/SceneConfig"
     },
-    "background_synthesis": {
-      "$ref": "#/$defs/BackgroundSynthesisConfig"
-    },
-    "appearance": {
-      "$ref": "#/$defs/AppearanceConfig"
+    "schema_version": {
+      "const": 2,
+      "title": "Schema Version",
+      "type": "integer"
     },
     "telemetry": {
       "$ref": "#/$defs/TelemetryConfig"
-    },
-    "report": {
-      "$ref": "#/$defs/ReportConfig"
     }
   },
   "required": [

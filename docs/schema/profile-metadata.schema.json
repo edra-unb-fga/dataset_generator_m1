@@ -1,32 +1,6 @@
 {
   "additionalProperties": false,
   "properties": {
-    "schema_version": {
-      "const": 1,
-      "title": "Schema Version",
-      "type": "integer"
-    },
-    "id": {
-      "title": "Id",
-      "type": "string"
-    },
-    "subject": {
-      "title": "Subject",
-      "type": "string"
-    },
-    "status": {
-      "enum": [
-        "standard",
-        "fast",
-        "heavy",
-        "diagnostic",
-        "stress",
-        "experimental",
-        "local"
-      ],
-      "title": "Status",
-      "type": "string"
-    },
     "compatible_families": {
       "default": [
         "landing",
@@ -41,6 +15,18 @@
       },
       "title": "Compatible Families",
       "type": "array"
+    },
+    "evidence": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
     },
     "intents": {
       "default": [],
@@ -60,28 +46,42 @@
       "title": "Performance Risk",
       "type": "string"
     },
-    "warning_codes": {
-      "default": [],
-      "items": {
-        "type": "string"
-      },
-      "title": "Warning Codes",
-      "type": "array"
-    },
-    "evidence": {
-      "default": [],
-      "items": {
-        "type": "string"
-      },
-      "title": "Evidence",
-      "type": "array"
-    },
     "scaling_drivers": {
       "default": [],
       "items": {
         "type": "string"
       },
       "title": "Scaling Drivers",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "status": {
+      "enum": [
+        "standard",
+        "fast",
+        "heavy",
+        "diagnostic",
+        "stress",
+        "experimental",
+        "local"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "subject": {
+      "title": "Subject",
+      "type": "string"
+    },
+    "warning_codes": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warning Codes",
       "type": "array"
     }
   },

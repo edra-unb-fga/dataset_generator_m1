@@ -1,6 +1,14 @@
 {
   "additionalProperties": false,
   "properties": {
+    "extends": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Extends",
+      "type": "array"
+    },
     "schema_version": {
       "const": 1,
       "title": "Schema Version",
@@ -9,14 +17,6 @@
     "subject": {
       "title": "Subject",
       "type": "string"
-    },
-    "extends": {
-      "default": [],
-      "items": {
-        "type": "string"
-      },
-      "title": "Extends",
-      "type": "array"
     },
     "value": {
       "additionalProperties": true,

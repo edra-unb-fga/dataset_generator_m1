@@ -11,20 +11,20 @@
           "title": "Background",
           "type": "array"
         },
-        "foreground": {
-          "default": [],
-          "items": {
-            "$ref": "#/$defs/TransformSpec"
-          },
-          "title": "Foreground",
-          "type": "array"
-        },
         "final": {
           "default": [],
           "items": {
             "$ref": "#/$defs/TransformSpec"
           },
           "title": "Final",
+          "type": "array"
+        },
+        "foreground": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransformSpec"
+          },
+          "title": "Foreground",
           "type": "array"
         }
       },
@@ -34,25 +34,12 @@
     "AppearanceSelection": {
       "additionalProperties": false,
       "properties": {
-        "preset": {
-          "default": "builtin:appearance/realistic-heavy",
-          "title": "Preset",
-          "type": "string"
-        },
         "background": {
           "default": [],
           "items": {
             "type": "string"
           },
           "title": "Background",
-          "type": "array"
-        },
-        "foreground": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Foreground",
           "type": "array"
         },
         "final": {
@@ -63,8 +50,21 @@
           "title": "Final",
           "type": "array"
         },
+        "foreground": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Foreground",
+          "type": "array"
+        },
         "inline": {
           "$ref": "#/$defs/AppearanceConfig"
+        },
+        "preset": {
+          "default": "builtin:appearance/realistic-heavy",
+          "title": "Preset",
+          "type": "string"
         }
       },
       "title": "AppearanceSelection",
@@ -87,10 +87,10 @@
           "default": null,
           "title": "Id"
         },
-        "type": {
-          "minLength": 1,
-          "title": "Type",
-          "type": "string"
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
         },
         "probability": {
           "default": 1.0,
@@ -99,10 +99,10 @@
           "title": "Probability",
           "type": "number"
         },
-        "params": {
-          "additionalProperties": true,
-          "title": "Params",
-          "type": "object"
+        "type": {
+          "minLength": 1,
+          "title": "Type",
+          "type": "string"
         }
       },
       "required": [
@@ -114,25 +114,31 @@
   },
   "additionalProperties": false,
   "properties": {
-    "schema_version": {
-      "const": 2,
-      "title": "Schema Version",
-      "type": "integer"
-    },
-    "family": {
-      "title": "Family",
-      "type": "string"
-    },
-    "run": {
-      "title": "Run",
-      "type": "string"
+    "appearance": {
+      "$ref": "#/$defs/AppearanceSelection"
     },
     "assets": {
       "title": "Assets",
       "type": "string"
     },
+    "background_synthesis": {
+      "title": "Background Synthesis",
+      "type": "string"
+    },
+    "family": {
+      "title": "Family",
+      "type": "string"
+    },
     "output": {
       "title": "Output",
+      "type": "string"
+    },
+    "report": {
+      "title": "Report",
+      "type": "string"
+    },
+    "run": {
+      "title": "Run",
       "type": "string"
     },
     "sampling": {
@@ -143,19 +149,13 @@
       "title": "Scene",
       "type": "string"
     },
-    "background_synthesis": {
-      "title": "Background Synthesis",
-      "type": "string"
-    },
-    "appearance": {
-      "$ref": "#/$defs/AppearanceSelection"
+    "schema_version": {
+      "const": 2,
+      "title": "Schema Version",
+      "type": "integer"
     },
     "telemetry": {
       "title": "Telemetry",
-      "type": "string"
-    },
-    "report": {
-      "title": "Report",
       "type": "string"
     }
   },
