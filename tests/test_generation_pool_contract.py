@@ -39,6 +39,9 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert (pool / "metrics.jsonl").exists()
     assert (pool / "summary.json").exists()
     assert (pool / "qa" / "index.html").exists()
+    manifest = json.loads((pool / "run.json").read_text(encoding="utf-8"))
+    assert manifest["preflight"]["status"] == "valid"
+    assert manifest["preflight"]["receipt_binding"]["value"]["workers"] == 1
     samples = [json.loads(line) for line in (pool / "samples.jsonl").read_text(encoding="utf-8").splitlines()]
     assert len(samples) == 1
     assert samples[0]["sample_id"].startswith("pool-test_000000_")

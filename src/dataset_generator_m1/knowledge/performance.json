@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "evidence_version": "native-fog-v1",
+  "reference_megapixels": 1.6384,
+  "profiles": {
+    "builtin:appearance/no-appearance": {
+      "confidence": "medium",
+      "seconds_per_candidate": {"landing": 0.787, "manometro": 0.231},
+      "evidence": ["docs/experiments/augmentation-heavy-v1/conclusion.json"]
+    },
+    "builtin:appearance/current-fast": {
+      "confidence": "medium",
+      "seconds_per_candidate": {"landing": 1.006, "manometro": 0.340},
+      "evidence": ["docs/experiments/augmentation-heavy-v1/conclusion.json"]
+    },
+    "builtin:appearance/realistic-heavy": {
+      "confidence": "medium",
+      "seconds_per_candidate": {"landing": 2.064, "manometro": 0.844},
+      "evidence": ["docs/experiments/augmentation-heavy-v1/conclusion.json"]
+    },
+    "builtin:appearance/random-fog-heavy": {
+      "confidence": "medium",
+      "seconds_per_candidate": {"landing": 2.861, "manometro": 2.415},
+      "evidence": ["docs/experiments/native-fog-v1/conclusion.json"]
+    },
+    "builtin:appearance/legacy-heavy-compatible": {
+      "confidence": "low",
+      "seconds_per_candidate": {"landing": 3.704, "manometro": 1.627},
+      "evidence": ["docs/experiments/augmentation-heavy-v1/conclusion.json", "docs/experiments/native-fog-v1/conclusion.json"],
+      "note": "Archived total used a RandomFog approximation; native AtmosphericFog changes the implementation mix."
+    },
+    "builtin:appearance/all-effects-stress": {
+      "confidence": "low",
+      "seconds_per_candidate": {"landing": 6.0, "manometro": 4.0},
+      "evidence": ["docs/experiments/augmentation-heavy-v1/conclusion.json", "docs/experiments/native-fog-v1/conclusion.json"],
+      "note": "Planning prior only; probe before interpretation."
+    }
+  }
+}

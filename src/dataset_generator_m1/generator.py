@@ -13,27 +13,10 @@ import numpy as np
 from .assets import AssetCatalog, build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
 from .models import ResolvedProfile
+from .preflight import PreflightRequest, require_warning_receipt, run_preflight
 from .runstore import RunStore
 from .scene import ScenePlanner, SceneRejected, SceneRenderer, derive_seed
 from .telemetry import DisplayMode, MetricsAggregator, ResourceSampler, RunReporter, StageTimer
-
-
-def _disk_preflight(output_dir: Path, resolved: ResolvedProfile) -> dict[str, int]:
-    probe = output_dir.resolve()
-    while not probe.exists() and probe.parent != probe:
-        probe = probe.parent
-    width, height = resolved.profile.output.image_size
-    raw_bytes = width * height * 3 * resolved.profile.run.num_images
-    encoding_factor = 1.1 if resolved.profile.output.image_format == "png" else 0.6
-    estimated_bytes = int(raw_bytes * encoding_factor + resolved.profile.run.num_images * 64 * 1024)
-    reserve_bytes = 64 * 1024 * 1024
-    free_bytes = int(shutil.disk_usage(probe).free)
-    if free_bytes < estimated_bytes + reserve_bytes:
-        raise RuntimeError(
-            f"Insufficient disk space: estimated {estimated_bytes} bytes plus {reserve_bytes} bytes reserve, "
-            f"but only {free_bytes} bytes are free"
-        )
-    return {"estimated_output_bytes": estimated_bytes, "free_bytes_at_start": free_bytes, "reserve_bytes": reserve_bytes}
 
 
 @dataclass(frozen=True)
@@ -44,6 +27,8 @@ class GenerationOptions:
     resume: bool = False
     qa_samples: int | None = None
     invocation: tuple[str, ...] = ()
+    preflight_result: dict[str, Any] | None = None
+    receipt_path: Path | None = None
 
 
 def _annotation_record(annotation: Any) -> dict[str, Any]:
@@ -139,14 +124,50 @@ def _produce_slot(
     return {"accepted": False, "image": None, "record": None, "rejections": rejections}
 
 
+def probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float = 60.0) -> list[dict[str, Any]]:
+    """Run one disposable warm-up and up to three production-path candidate measurements."""
+    catalog = build_asset_catalog(resolved)
+    coordinator_pid = os.getpid()
+    observations: list[dict[str, Any]] = []
+    started = perf_counter()
+    for probe_index in range(4):
+        candidate_started = perf_counter()
+        result = _produce_slot(resolved, catalog, probe_index, 0, coordinator_pid)
+        duration = perf_counter() - candidate_started
+        if probe_index:
+            observations.append(
+                {
+                    "duration_seconds": duration,
+                    "accepted": bool(result["accepted"]),
+                    "object_count": len(result["record"]["annotations"]) if result["accepted"] else 0,
+                    "rejection_count": len(result["rejections"]),
+                }
+            )
+        if perf_counter() - started >= timeout_seconds:
+            break
+    return observations
+
+
 def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: GenerationOptions | None = None) -> dict[str, Any]:
     options = options or GenerationOptions()
     started = perf_counter()
-    preflight = _disk_preflight(Path(output_dir), resolved)
-    catalog = build_asset_catalog(resolved)
-    store = RunStore.open(Path(output_dir), resolved, catalog, resume=options.resume, invocation=options.invocation)
-    target = resolved.profile.run.num_images
     workers = int(options.workers)
+    preflight = options.preflight_result or run_preflight(
+        PreflightRequest(resolved, Path(output_dir), workers)
+    )
+    if preflight["status"] != "valid":
+        raise RuntimeError(f"Preflight failed: {preflight['validation_errors']}")
+    require_warning_receipt(preflight, options.receipt_path)
+    catalog = build_asset_catalog(resolved)
+    store = RunStore.open(
+        Path(output_dir),
+        resolved,
+        catalog,
+        resume=options.resume,
+        invocation=options.invocation,
+        preflight=preflight,
+    )
+    target = resolved.profile.run.num_images
     if workers < 1:
         raise ValueError("workers must be >= 1")
     metrics = MetricsAggregator(

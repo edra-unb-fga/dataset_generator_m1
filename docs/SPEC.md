@@ -127,7 +127,7 @@ distributions, warnings, and resource peaks.
 
 The coordinator owns one Rich `Console`, Live display, logging, pool commits, and ordered JSONL output. Process workers never print. Live/full display shows accepted and attempted progress, throughput/ETA, worker/in-flight/queue state, stage p50/p95 bottleneck, rejection causes, recipe mix, and memory. Plain output is periodic and line-oriented; quiet preserves artifacts and fatal status. Resource snapshots use low-rate psutil sampling across coordinator and child processes for CPU, RSS, and process I/O.
 
-The first interrupt stops normal execution, lets the active process-pool shutdown drain completed bounded work, marks the pool interrupted/resumable, and writes a final summary. A second interrupt is allowed to force Python termination. Wall-time and rejection-rate policies are profile fields. Generation performs a conservative free-disk preflight and a remaining-space guard.
+The first interrupt stops normal execution, lets the active process-pool shutdown drain completed bounded work, marks the pool interrupted/resumable, and writes a final summary. A second interrupt is allowed to force Python termination. Wall-time and rejection-rate policies are profile fields. Generation consumes the deep preflight contract described in [PREFLIGHT.md](PREFLIGHT.md): validation, conservative free-disk estimation, evidence-backed ETA range, warnings, optional disposable probes, and exact warning receipts. A remaining-space guard still protects an active run.
 
 ## 7. Generation pool and resume
 
@@ -145,7 +145,7 @@ POOL/
   state/              # internal atomic commit journal
 ```
 
-`run.json` is immutable and contains the resolved profile/family/recipes, run identity, contract and catalog hashes, sanitized invocation, dependency/schema/generator versions, Git commit/dirty state, and sanitized hardware summary. Usernames, hostnames, environment dumps, and absolute source paths are excluded.
+`run.json` is immutable and contains the resolved profile/family/recipes, run identity, contract and catalog hashes, sanitized invocation, preflight result and receipt binding, dependency/schema/generator versions, Git commit/dirty state, and sanitized hardware summary. Usernames, hostnames, environment dumps, and absolute source paths are excluded.
 
 Images are atomically replaced before an fsynced per-record commit journal is updated and the readable JSONL stream is appended. Resume reconciles JSONL from that journal after a partial append. Names combine a readable run label, zero-padded slot, and stable hash. Resume is permitted only when contract and catalog fingerprints match. Completed slots are not regenerated; rejected attempt indices continue deterministically. Summary status is `complete`, `interrupted`, or `failed`.
 

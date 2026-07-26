@@ -9,13 +9,15 @@ from typing import Any
 
 from rich.console import Console
 from rich.panel import Panel
+from rich.prompt import Confirm
 import psutil
 
 from .config import load_profile
 from .catalog import list_profiles, promote_inline_stack, resolved_contract, show_profile
 from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
-from .generator import GenerationOptions, generate_pool
+from .generator import GenerationOptions, generate_pool, probe_profile
+from .preflight import PreflightRequest, confirm_preflight, run_preflight
 from .workflows import benchmark, compare_artifacts, preview_backgrounds, preview_scenes, validate_project
 
 
@@ -49,6 +51,13 @@ def build_parser() -> argparse.ArgumentParser:
     resolve.add_argument("--config", required=True)
     _common(resolve)
 
+    preflight = commands.add_parser("preflight", help="Validate warnings, disk use, and an environment-local ETA")
+    preflight.add_argument("--config", required=True)
+    preflight.add_argument("--output-dir", required=True)
+    preflight.add_argument("--workers", default="1")
+    preflight.add_argument("--write-receipt")
+    _common(preflight)
+
     validate = commands.add_parser("validate", help="Validate a profile, assets, recipes, and capabilities")
     validate.add_argument("--config", required=True)
     _common(validate)
@@ -75,6 +84,7 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--workers", default="1")
     generate.add_argument("--qa-samples", type=int)
     generate.add_argument("--appearance-preset", choices=["realistic-heavy"])
+    generate.add_argument("--receipt")
     _common(generate)
 
     experiment = commands.add_parser("experiment", help="Run controlled experiments")
@@ -138,6 +148,21 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
         return promote_inline_stack(args.config, args.stage, args.id)
     if args.command == "resolve":
         return resolved_contract(args.config)
+    if args.command == "preflight":
+        resolved = load_profile(args.config)
+        workers = _workers(args.workers, resolved)
+        result = run_preflight(
+            PreflightRequest(resolved, Path(args.output_dir), workers),
+            probe_runner=lambda: probe_profile(resolved),
+        )
+        if args.write_receipt:
+            if args.output_format == "json" or args.display == "quiet":
+                raise ValueError("Writing a warning receipt requires an interactive human confirmation")
+            required = result["required_acknowledgements"]
+            if required and not Confirm.ask(f"Acknowledge {', '.join(required)} for this exact run contract?"):
+                raise ValueError("Warning acknowledgement declined")
+            result["receipt"] = confirm_preflight(result, args.write_receipt)
+        return result
     if args.command == "validate":
         return validate_project(load_profile(args.config))
     if args.command == "preview" and args.preview_command == "backgrounds":
@@ -149,16 +174,30 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
             args.config,
             {"num_images": args.num_images, "qa_samples": args.qa_samples, "appearance_preset": args.appearance_preset},
         )
+        workers = _workers(args.workers, resolved)
+        preflight = run_preflight(
+            PreflightRequest(resolved, Path(args.output_dir), workers),
+            probe_runner=lambda: probe_profile(resolved),
+        )
+        receipt_path = Path(args.receipt) if args.receipt else None
+        if preflight["required_acknowledgements"] and receipt_path is None and args.output_format != "json" and args.display != "quiet":
+            codes = ", ".join(preflight["required_acknowledgements"])
+            if not Confirm.ask(f"Acknowledge {codes} for this exact run contract?"):
+                raise ValueError("Warning acknowledgement declined")
+            receipt_path = Path(".cache") / "preflight-receipts" / f"{preflight['receipt_binding']['hash']}.json"
+            confirm_preflight(preflight, receipt_path)
         return generate_pool(
             resolved,
             args.output_dir,
             GenerationOptions(
                 display="quiet" if args.output_format == "json" else args.display,
                 output_format=args.output_format,
-                workers=_workers(args.workers, resolved),
+                workers=workers,
                 resume=args.resume,
                 qa_samples=args.qa_samples,
                 invocation=tuple(getattr(args, "_sanitized_invocation", ())),
+                preflight_result=preflight,
+                receipt_path=receipt_path,
             ),
         )
     if args.command == "experiment" and args.experiment_command == "augmentations":
@@ -204,7 +243,22 @@ def main(argv: list[str] | None = None) -> int:
             message = result.get("fatal_error") or f"Command ended with status {result.get('status', 'unknown')}"
             Console(stderr=True).print(Panel.fit(str(message), title="[red]generation failed[/red]", border_style="red"))
         elif args.display != "quiet":
-            Console().print(Panel.fit(f"[bold]{result.get('status', 'complete')}[/bold]", title=args.command))
+            if args.command == "preflight":
+                runtime = result["runtime"]
+                warning_text = ", ".join(item["code"] for item in result["warnings"]) or "none"
+                Console().print(
+                    Panel.fit(
+                        f"[bold]{result['status']}[/bold]\n"
+                        f"ETA: {runtime['lower_seconds']:.1f}–{runtime['upper_seconds']:.1f} s "
+                        f"({runtime['confidence']})\n"
+                        f"Disk estimate: {result['disk']['estimated_output_bytes']:,} bytes\n"
+                        f"Warnings: {warning_text}\n"
+                        f"Probe: {'yes' if result['probe']['triggered'] else 'no'}",
+                        title="preflight",
+                    )
+                )
+            else:
+                Console().print(Panel.fit(f"[bold]{result.get('status', 'complete')}[/bold]", title=args.command))
         return 0 if result.get("status") in {"valid", "complete"} else 1
     except Exception as exc:
         error = {"schema_version": 1, "status": "error", "error_type": type(exc).__name__, "message": str(exc)}
