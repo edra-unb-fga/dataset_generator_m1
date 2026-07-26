@@ -46,3 +46,37 @@ def test_metrics_include_mix_object_rejections_and_rejection_cost() -> None:
     assert summary["foreground_group_mix"]["gauges"]["configured_fraction"] == 1.0
     assert summary["stage_timings"]["background.node.blend"]["p95_ns"] == 30
     assert summary["background_warnings"] == {"high_edge_seam": 1}
+
+
+def test_metrics_exclude_paused_time_from_elapsed_and_eta() -> None:
+    now = [10.0]
+    metrics = MetricsAggregator(target=4, clock=lambda: now[0])
+    now[0] = 12.0
+    metrics.record_sample({"annotations": [], "background": {}, "stage_timings_ns": {}})
+    metrics.begin_pause()
+    now[0] = 22.0
+
+    assert metrics.active_elapsed_seconds == 2.0
+    assert metrics.paused_seconds == 10.0
+    assert metrics.eta_seconds == 6.0
+
+    metrics.end_pause()
+    now[0] = 24.0
+    summary = metrics.summary()
+    assert summary["elapsed_seconds"] == 4.0
+    assert summary["paused_seconds"] == 10.0
+    assert summary["wall_elapsed_seconds"] == 14.0
+
+
+def test_resume_eta_uses_only_new_session_samples() -> None:
+    now = [0.0]
+    metrics = MetricsAggregator(target=4, clock=lambda: now[0])
+    metrics.record_sample({"annotations": [], "background": {}, "stage_timings_ns": {}})
+    metrics.record_sample({"annotations": [], "background": {}, "stage_timings_ns": {}})
+    metrics.begin_live_measurement()
+    now[0] = 2.0
+
+    assert metrics.throughput == 0.0
+    metrics.record_sample({"annotations": [], "background": {}, "stage_timings_ns": {}})
+    assert metrics.throughput == 0.5
+    assert metrics.eta_seconds == 2.0

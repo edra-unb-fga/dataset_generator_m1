@@ -16,6 +16,7 @@ validate --config COMPOSER
 preview scenes --config COMPOSER [--variants VARIANTS] --samples N --output-dir DIR
 preview backgrounds --config COMPOSER --samples-per-recipe N --output-dir DIR
 generate --config COMPOSER [--num-images N] --output-dir DIR [--resume] [--workers auto|N] [--qa-samples N]
+run status|pause|continue|stop OUTPUT_DIR
 experiment augmentations --config COMPOSER --output-dir DIR [--matrix MATRIX] [--warmups N] [--samples N] [--include-stress]
 benchmark --config COMPOSER --output-dir DIR [--samples N] [--warmup N]
 compare --left ARTIFACT --right ARTIFACT --output-dir DIR
@@ -148,6 +149,8 @@ POOL/
 `run.json` is immutable and contains the resolved profile/family/recipes, run identity, contract and catalog hashes, sanitized invocation, preflight result and receipt binding, dependency/schema/generator versions, Git commit/dirty state, and sanitized hardware summary. Usernames, hostnames, environment dumps, and absolute source paths are excluded.
 
 Images are atomically replaced before an fsynced per-record commit journal is updated and the readable JSONL stream is appended. Resume reconciles JSONL from that journal after a partial append. Names combine a readable run label, zero-padded slot, and stable hash. Resume is permitted only when contract and catalog fingerprints match. Completed slots are not regenerated; rejected attempt indices continue deterministically. Summary status is `complete`, `interrupted`, or `failed`.
+
+`control.json` is the atomically replaced desired/actual state record; `control-events.jsonl` is its fsynced audit stream. Pause drains the current bounded work window before the coordinator idles, continue reuses that coordinator, and stop produces an interrupted/resumable pool. Live ETA excludes paused time and begins a fresh measurement window after resume replay. The normative operator workflow is in [RUN_CONTROL.md](RUN_CONTROL.md).
 
 ## 8. Preview, benchmark, compare, and export
 
