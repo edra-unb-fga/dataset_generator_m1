@@ -1,0 +1,5 @@
+schema_version: 1
+subject: assets
+value:
+  backgrounds: {paths: [backgrounds], recursive: true}
+  foregrounds: {paths: [foregrounds/landing_foregrounds], recursive: true, group_weights: {numeros: 0.75, gabaritos: 0.25}}

@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:family/landing","subject":"family","status":"standard","compatible_families":["landing"],"intents":["landing-annotation"],"performance_risk":"none"}

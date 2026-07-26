@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:family/manometro","subject":"family","status":"standard","compatible_families":["manometro"],"intents":["manometro-annotation"],"performance_risk":"none"}

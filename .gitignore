@@ -22,6 +22,8 @@ ENV/
 .mypy_cache/
 .ruff_cache/
 .ipynb_checkpoints/
+.worktrees/
+.cache/
 
 # Environment/local config
 .env
@@ -38,8 +40,8 @@ ENV/
 Thumbs.db
 
 # Generated datasets and outputs
-output/
-outputs/
+/output/
+/outputs/
 output_gabarito/
 output_gabarito_*/
 roboflow_dataset/

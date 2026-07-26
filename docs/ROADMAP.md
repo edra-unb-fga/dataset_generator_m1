@@ -8,6 +8,7 @@ dependency; unchecked items are not promises that current commands already imple
 - [x] Complete architecture integration and keep schemas, examples, CLI, and generated artifacts aligned.
 - [x] Run the controlled heavy-augmentation study for both families and review visual/cost attribution.
 - [x] Adopt lean PR, issue, experiment, and Windows correctness workflows without release bureaucracy.
+- [ ] Deliver schema-v2 composers, reusable profile catalogs, performance-aware preflight, guided configuration, and durable run control.
 
 ## Next
 

@@ -1,0 +1,3 @@
+schema_version: 1
+subject: sampling
+value: {instances_per_image: [1, 2], foreground_size: [0.10, 0.30], bbox_spacing: 0.015, placement_attempts: 50, min_visible_bbox_fraction: 0.70}

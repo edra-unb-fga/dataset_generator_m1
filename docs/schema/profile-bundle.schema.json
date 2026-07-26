@@ -1,0 +1,34 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "extends": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Extends",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "subject": {
+      "title": "Subject",
+      "type": "string"
+    },
+    "value": {
+      "additionalProperties": true,
+      "title": "Value",
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "subject",
+    "value"
+  ],
+  "title": "ProfileBundle",
+  "type": "object"
+}

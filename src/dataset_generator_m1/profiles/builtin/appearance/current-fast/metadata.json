@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:appearance/current-fast","subject":"appearance","status":"fast","performance_risk":"none","evidence":["docs/experiments/augmentation-heavy-v1/conclusion.json"],"scaling_drivers":["image-megapixels"]}

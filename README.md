@@ -10,10 +10,18 @@ uv sync --extra dev
 
 ## Workflow
 
-Validate the complete profile, catalog, mappings, transforms, hashes, and recipe DAGs:
+Validate the complete composer, profile catalog, mappings, transforms, hashes, and recipe DAGs:
 
 ```powershell
 uv run python -m dataset_generator_m1 validate --config examples/configs/landing_minimal.yaml
+```
+
+Discover profiles or inspect the exact resolved contract:
+
+```powershell
+uv run python -m dataset_generator_m1 catalog list
+uv run python -m dataset_generator_m1 catalog show builtin:appearance/realistic-heavy
+uv run python -m dataset_generator_m1 resolve --config examples/configs/landing_minimal.yaml
 ```
 
 Preview background recipes or compare named variants before committing to a run:
@@ -38,13 +46,15 @@ uv run python -m dataset_generator_m1 compare --left outputs/bench-A --right out
 uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --strategy asset-disjoint --splits train=0.8,val=0.1,test=0.1 --output-dir outputs/landing-yolo
 ```
 
-Run a paired heavy-augmentation study, or explicitly opt a normal generation run into the reviewed
-realistic-heavy appearance preset:
+Run a paired heavy-augmentation study or generate with the reviewed standard appearance:
 
 ```powershell
 uv run python -m dataset_generator_m1 experiment augmentations --config examples/configs/landing_minimal.yaml --output-dir outputs/experiments/landing-heavy
-uv run python -m dataset_generator_m1 generate --config examples/configs/landing_minimal.yaml --appearance-preset realistic-heavy --num-images 20 --output-dir outputs/landing-realistic-heavy
+uv run python -m dataset_generator_m1 generate --config examples/configs/landing_minimal.yaml --num-images 20 --output-dir outputs/landing-realistic-heavy
 ```
+
+`realistic-heavy` is the shipped default. To use `current-fast`, copy a composer and change
+`appearance.preset` to `builtin:appearance/current-fast`; the choice remains visible and versionable.
 
 Every command supports `--display auto|live|full|plain|quiet` and `--output-format human|json`. JSON mode produces one machine-readable result document. Rich follows standard terminal detection and `NO_COLOR`.
 

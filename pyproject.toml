@@ -30,7 +30,7 @@ dataset-generator-m1 = "dataset_generator_m1.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-dataset_generator_m1 = ["family_profiles/*.yaml"]
+dataset_generator_m1 = ["family_profiles/*.yaml", "profiles/builtin/*/*/*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

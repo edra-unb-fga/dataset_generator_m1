@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:sampling/landing-standard","subject":"sampling","status":"standard","compatible_families":["landing"],"performance_risk":"informational","scaling_drivers":["object-count","placement-rejections"]}

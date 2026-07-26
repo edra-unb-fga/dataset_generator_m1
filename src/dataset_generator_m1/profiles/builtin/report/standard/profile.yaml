@@ -1,0 +1,3 @@
+schema_version: 1
+subject: report
+value: {qa_samples: 16}

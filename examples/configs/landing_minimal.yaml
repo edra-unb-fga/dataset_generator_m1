@@ -1,88 +1,12 @@
-schema_version: 1
-family: landing
-
-run:
-  label: landing-minimal
-  num_images: 50
-  seed: 42
-  negative_fraction: 0.0
-  max_candidate_attempts: 10
-
-assets:
-  backgrounds:
-    paths: [backgrounds]
-    recursive: true
-  foregrounds:
-    paths: [foregrounds/landing_foregrounds]
-    recursive: true
-    group_weights: {numeros: 0.75, gabaritos: 0.25}
-
-output:
-  image_size: [1280, 1280]
-  image_format: jpg
-  jpeg_quality: 95
-
-sampling:
-  instances_per_image: [1, 10]
-  foreground_size: [0.175, 0.35]
-  bbox_spacing: 0.008
-  placement_attempts: 50
-  min_visible_bbox_fraction: 0.70
-
-scene:
-  canvas_scale: 2.0
-  camera:
-    crop_scale: [1.0, 1.15]
-    center_jitter_x: [-0.08, 0.08]
-    center_jitter_y: [-0.08, 0.08]
-  perspective:
-    probability: 0.30
-    corner_offset_x: [-0.06, 0.06]
-    corner_offset_y: [-0.06, 0.06]
-    min_area_fraction: 0.70
-  background_affine:
-    rotation_degrees: [-180.0, 180.0]
-    scale: [0.8, 1.1]
-    translation_x: [-0.05, 0.05]
-    translation_y: [-0.05, 0.05]
-
-background_synthesis:
-  recipe_file: examples/configs/background_recipes.yaml
-  recipe_weights:
-    direct: 0.45
-    palette: 0.20
-    mask_multiband: 0.25
-    displaced: 0.10
-
+schema_version: 2
+family: builtin:family/landing
+run: builtin:run/landing-standard
+assets: builtin:assets/landing
+output: builtin:output/standard
+sampling: builtin:sampling/landing-standard
+scene: builtin:scene/standard
+background_synthesis: builtin:background_synthesis/standard
 appearance:
-  background:
-    - id: bg-hsv
-      type: HueSaturationValue
-      probability: 0.8
-      params: {hue_shift_limit: [-40, 40], sat_shift_limit: [-50, 50], val_shift_limit: [-50, 50]}
-    - id: bg-brightness-contrast
-      type: RandomBrightnessContrast
-      probability: 0.7
-      params: {brightness_limit: [-0.32, 0.32], contrast_limit: [-0.32, 0.32], brightness_by_max: true, ensure_safe_range: true}
-  foreground:
-    - id: fg-hsv
-      type: HueSaturationValue
-      probability: 0.7
-      params: {hue_shift_limit: [-3, 3], sat_shift_limit: [-8, 8], val_shift_limit: [-6, 6]}
-  final:
-    - id: final-gamma
-      type: RandomGamma
-      probability: 0.5
-      params: {gamma_limit: [90, 110]}
-    - id: final-motion-blur
-      type: MotionBlur
-      probability: 0.35
-      params: {blur_limit: [13, 17], angle_range: [0, 180], direction_range: [-1, 1]}
-
-telemetry:
-  refresh_hz: 3.0
-  resource_interval_seconds: 1.0
-  plain_interval_seconds: 5.0
-
-report:
-  qa_samples: 16
+  preset: builtin:appearance/realistic-heavy
+telemetry: builtin:telemetry/standard
+report: builtin:report/standard

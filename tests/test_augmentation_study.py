@@ -13,19 +13,22 @@ from dataset_generator_m1.augmentation_study import (
     run_augmentation_study,
     validate_study_artifacts,
 )
-from dataset_generator_m1.config import load_profile, load_yaml_strict
+from dataset_generator_m1.config import load_profile
+from helpers import write_derived_composer
 
 
 def _tiny_profile(tmp_path: Path) -> Path:
-    raw = load_yaml_strict("examples/configs/manometro_minimal.yaml")
-    raw["run"].update({"label": "augmentation-test", "num_images": 1, "max_candidate_attempts": 4})
-    raw["output"].update({"image_size": [96, 96], "image_format": "png"})
-    raw["sampling"].update({"instances_per_image": [1, 1], "foreground_size": [0.2, 0.2]})
-    raw["scene"]["canvas_scale"] = 1.25
-    raw["background_synthesis"]["recipe_weights"] = {"direct": 1.0}
-    path = tmp_path / "tiny.yaml"
-    path.write_text(yaml.safe_dump(raw, sort_keys=False), encoding="utf-8")
-    return path
+    return write_derived_composer(
+        tmp_path,
+        "manometro",
+        {
+            "run": {"label": "augmentation-test", "num_images": 1, "max_candidate_attempts": 4},
+            "output": {"image_size": [96, 96], "image_format": "png"},
+            "sampling": {"instances_per_image": [1, 1], "foreground_size": [0.2, 0.2]},
+            "scene": {"canvas_scale": 1.25},
+            "background_synthesis": {"recipe_weights": {"direct": 1.0}},
+        },
+    )
 
 
 def test_balanced_order_contains_each_treatment_once() -> None:

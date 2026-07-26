@@ -25,26 +25,40 @@ recipes:
     )
 
 
+def write_bundle(root: Path, subject: str, name: str, value: str) -> Path:
+    path = root / subject / name / "profile.yaml"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(f"schema_version: 1\nsubject: {subject}\nvalue:\n{value}", encoding="utf-8")
+    return path
+
+
 def write_profile(path: Path, *, duplicate_family: bool = False) -> None:
-    family_lines = "family: landing\nfamily: manometro" if duplicate_family else "family: landing"
+    root = path.parent / "profiles"
+    family_ref = "profiles/family/landing/profile.yaml"
+    family = f"family: {family_ref}\nfamily: {family_ref}" if duplicate_family else f"family: {family_ref}"
+    write_bundle(root, "family", "landing", "  family: landing\n")
+    write_bundle(root, "run", "run", "  label: contract-test\n  num_images: 2\n  seed: 7\n")
+    write_bundle(root, "assets", "assets", "  backgrounds: {paths: [backgrounds]}\n  foregrounds: {paths: [foregrounds/landing_foregrounds]}\n")
+    write_bundle(root, "output", "output", "  image_size: [320, 192]\n")
+    write_bundle(root, "sampling", "sampling", "  instances_per_image: [1, 2]\n")
+    write_bundle(root, "scene", "scene", "  canvas_scale: 2.0\n")
+    write_bundle(root, "background_synthesis", "background", f"  recipe_file: {path.parent.joinpath('background_recipes.yaml').as_posix()}\n  recipe_weights: {{direct: 1.0}}\n")
+    write_bundle(root, "appearance", "appearance", "  background: []\n  foreground: []\n  final: []\n")
+    write_bundle(root, "telemetry", "telemetry", "  refresh_hz: 3.0\n")
+    write_bundle(root, "report", "report", "  qa_samples: 1\n")
     path.write_text(
-        f"""\
-schema_version: 1
-{family_lines}
-run:
-  label: contract-test
-  num_images: 2
-  seed: 7
-assets:
-  backgrounds:
-    paths: [backgrounds]
-  foregrounds:
-    paths: [foregrounds/landing_foregrounds]
-output:
-  image_size: [320, 192]
-background_synthesis:
-  recipe_file: {path.parent.joinpath('background_recipes.yaml').as_posix()}
-  recipe_weights: {{direct: 1.0}}
+        f"""schema_version: 2
+{family}
+run: profiles/run/run/profile.yaml
+assets: profiles/assets/assets/profile.yaml
+output: profiles/output/output/profile.yaml
+sampling: profiles/sampling/sampling/profile.yaml
+scene: profiles/scene/scene/profile.yaml
+background_synthesis: profiles/background_synthesis/background/profile.yaml
+appearance:
+  preset: profiles/appearance/appearance/profile.yaml
+telemetry: profiles/telemetry/telemetry/profile.yaml
+report: profiles/report/report/profile.yaml
 """,
         encoding="utf-8",
     )
@@ -81,7 +95,7 @@ def test_only_declared_operational_overrides_are_accepted(tmp_path: Path) -> Non
 
     assert resolved.profile.run.num_images == 9
     assert resolved.profile.report.qa_samples == 2
-    with pytest.raises(ValueError, match="Unsupported operational override"):
+    with pytest.raises(ValueError, match="Unknown override path"):
         load_profile(profile_path, {"scene.camera.scale": 0.5})
 
 
@@ -91,7 +105,7 @@ def test_all_shipped_profiles_recipes_variants_and_schemas_validate() -> None:
     RecipeCatalog.model_validate(load_yaml_strict("examples/configs/background_recipes.yaml"))
     VariantCatalog.model_validate(load_yaml_strict("examples/configs/landing_variants.yaml"))
     schemas = generated_json_schemas()
-    assert set(schemas) == {"profile", "background-recipes", "background-catalog", "variants"}
+    assert set(schemas) == {"composer", "resolved-profile", "profile-bundle", "profile-metadata", "background-recipes", "background-catalog", "variants"}
     for name, schema in schemas.items():
         committed = json.loads((Path("docs/schema") / f"{name}.schema.json").read_text(encoding="utf-8"))
         assert committed == schema
