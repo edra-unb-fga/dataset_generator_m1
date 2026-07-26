@@ -126,6 +126,7 @@ class SceneConfig(StrictModel):
 
 
 class TransformSpec(StrictModel):
+    id: str | None = Field(default=None, min_length=1, pattern=r"^[A-Za-z][A-Za-z0-9._-]*$")
     type: str = Field(min_length=1)
     probability: float = Field(default=1.0, ge=0.0, le=1.0)
     params: dict[str, Any] = Field(default_factory=dict)

@@ -68,6 +68,13 @@ def _apply_operational_overrides(raw: dict[str, Any], overrides: dict[str, Any])
             updated.setdefault("run", {})["num_images"] = value
         elif key == "qa_samples":
             updated.setdefault("report", {})["qa_samples"] = value
+        elif key == "appearance_preset":
+            if value != "realistic-heavy":
+                raise ValueError(f"Unsupported appearance preset: {value}")
+            definition = load_yaml_strict(Path(__file__).parents[2] / "examples" / "experiments" / "augmentation_study.yaml")
+            current = updated.setdefault("appearance", {})
+            for stage, specs in definition["realistic_heavy"].items():
+                current.setdefault(stage, []).extend(deepcopy(specs))
         else:
             raise ValueError(f"Unsupported operational override: {key}")
     return updated

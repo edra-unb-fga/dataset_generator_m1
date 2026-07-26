@@ -4,7 +4,8 @@ variants:
   stronger_color:
     appearance:
       final:
-        - type: RandomBrightnessContrast
+        - id: variant-final-brightness
+          type: RandomBrightnessContrast
           probability: 0.75
           params:
             brightness_limit: [-0.15, 0.15]

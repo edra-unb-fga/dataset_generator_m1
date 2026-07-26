@@ -89,6 +89,7 @@ def _produce_slot(
                 background = synthesizer.synthesize(plan.recipe_id, plan.canvas_size, background_rng)
             with StageTimer(timings, "scene_render"):
                 rendered = renderer.render(plan, background)
+            timings.update({f"render.{name}": value for name, value in rendered.exclusive_timings_ns.items()})
             return {
                 "accepted": True,
                 "image": rendered.image,
@@ -117,6 +118,7 @@ def _produce_slot(
                         "warnings": list(background.warnings),
                     },
                     "stage_timings_ns": timings,
+                    "appearance_effects": list(rendered.effect_traces),
                     "execution": {
                         "worker_pid": os.getpid(),
                         "worker_process": os.getpid() != coordinator_pid,

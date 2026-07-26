@@ -1,0 +1,26 @@
+schema_version: 1
+study_id: augmentation-heavy-v1
+legacy:
+  source_commit: a3dec1f
+  archival_file: examples/experiments/legacy_appearance_a3dec1f.yaml
+  unsupported_translation:
+    source: AtmosphericFog
+    replacement: RandomFog
+    fidelity: approximation
+    rationale: Albumentations 2.0.8 does not expose AtmosphericFog.
+realistic_heavy:
+  background:
+    - {id: realistic-bg-blur, type: GaussianBlur, probability: 0.25, params: {blur_limit: [3, 5], sigma_limit: [0.1, 1.0]}}
+    - {id: realistic-bg-noise, type: GaussNoise, probability: 0.25, params: {std_range: [0.01, 0.04], mean_range: [0.0, 0.0], per_channel: false}}
+    - {id: realistic-bg-light, type: Illumination, probability: 0.30, params: {mode: linear, intensity_range: [0.02, 0.10], effect_type: both}}
+  foreground:
+    - {id: realistic-fg-noise, type: AdditiveNoise, probability: 0.20, params: {noise_type: gaussian, spatial_mode: shared}}
+    - {id: realistic-fg-shadow, type: PlasmaShadow, probability: 0.25, params: {shadow_intensity_range: [0.08, 0.18], plasma_size: 256, roughness: 2.0}}
+    - {id: realistic-fg-light, type: PlasmaBrightnessContrast, probability: 0.25, params: {brightness_range: [-0.08, 0.08], contrast_range: [-0.08, 0.08], plasma_size: 256, roughness: 2.0}}
+  final:
+    - {id: realistic-final-temperature, type: PlanckianJitter, probability: 0.30, params: {mode: blackbody, temperature_limit: [4500, 9000], sampling_method: gaussian}}
+    - {id: realistic-final-noise, type: SaltAndPepper, probability: 0.10, params: {amount: [0.005, 0.015], salt_vs_pepper: [0.45, 0.55]}}
+    - {id: realistic-final-shadow, type: PlasmaShadow, probability: 0.20, params: {shadow_intensity_range: [0.08, 0.20], plasma_size: 384, roughness: 2.2}}
+    - {id: realistic-final-light, type: PlasmaBrightnessContrast, probability: 0.25, params: {brightness_range: [-0.12, 0.12], contrast_range: [-0.12, 0.12], plasma_size: 320, roughness: 2.2}}
+    - {id: realistic-final-flare, type: RandomSunFlare, probability: 0.08, params: {flare_roi: [0.0, 0.0, 1.0, 0.7], src_radius: 180, src_color: [190, 190, 190], angle_range: [0.0, 1.0], num_flare_circles_range: [1, 3], method: physics_based}}
+    - {id: realistic-final-weather, type: RandomRain, probability: 0.08, params: {slant_range: [-8.0, 8.0], drop_length: 12, drop_width: 1, drop_color: [190, 190, 190], blur_value: 3, brightness_coefficient: 0.95, rain_type: drizzle}}
