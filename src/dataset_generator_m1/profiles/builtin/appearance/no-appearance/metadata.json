@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:appearance/no-appearance","subject":"appearance","status":"diagnostic","compatible_families":["landing","manometro"],"intents":["appearance-baseline","geometry-diagnostics"],"performance_risk":"none","warning_codes":[],"evidence":["docs/experiments/augmentation-heavy-v1/conclusion.json"],"scaling_drivers":["image-megapixels","foreground-count"]}

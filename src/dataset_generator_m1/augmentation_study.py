@@ -261,7 +261,7 @@ def _summarize(records: list[dict[str, Any]], samples: int) -> dict[str, Any]:
 
 def _contact_sheet(records: list[dict[str, Any]], gallery: Path, destination: Path) -> None:
     selected_fixtures = sorted({record["fixture_index"] for record in records})[:3]
-    treatment_names = [name for name in ("current", "legacy-heavy-compatible", "realistic-heavy-combined") if any(record["treatment"] == name for record in records)]
+    treatment_names = list(dict.fromkeys(record["treatment"] for record in records))
     if not selected_fixtures or not treatment_names:
         return
     thumb = (260, 260)

@@ -1,0 +1,6 @@
+schema_version: 1
+subject: appearance
+value:
+  background: []
+  foreground: []
+  final: []

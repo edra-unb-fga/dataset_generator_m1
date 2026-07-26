@@ -1,0 +1,22 @@
+schema_version: 1
+subject: appearance
+value:
+  background:
+    - {id: stress-bg-hsv, type: HueSaturationValue, probability: 1.0, params: {}}
+    - {id: stress-bg-brightness, type: RandomBrightnessContrast, probability: 1.0, params: {}}
+    - {id: stress-bg-blur, type: GaussianBlur, probability: 1.0, params: {}}
+    - {id: stress-bg-noise, type: GaussNoise, probability: 1.0, params: {}}
+  foreground:
+    - {id: stress-fg-additive, type: AdditiveNoise, probability: 1.0, params: {}}
+    - {id: stress-fg-shadow, type: PlasmaShadow, probability: 1.0, params: {}}
+    - {id: stress-fg-light, type: PlasmaBrightnessContrast, probability: 1.0, params: {}}
+  final:
+    - {id: stress-final-gamma, type: RandomGamma, probability: 1.0, params: {}}
+    - {id: stress-final-temperature, type: PlanckianJitter, probability: 1.0, params: {}}
+    - {id: stress-final-salt-pepper, type: SaltAndPepper, probability: 1.0, params: {}}
+    - {id: stress-final-motion, type: MotionBlur, probability: 1.0, params: {}}
+    - {id: stress-final-flare, type: RandomSunFlare, probability: 1.0, params: {}}
+    - {id: stress-final-illumination, type: Illumination, probability: 1.0, params: {}}
+    - {id: stress-final-atmospheric-fog, type: AtmosphericFog, probability: 1.0, params: {density_range: [1.0, 3.0], fog_color: [180, 185, 195], depth_mode: radial}}
+    - {id: stress-final-random-fog, type: RandomFog, probability: 1.0, params: {}}
+    - {id: stress-final-rain, type: RandomRain, probability: 1.0, params: {}}

@@ -1,0 +1,15 @@
+schema_version: 1
+treatments:
+  current: {}
+  atmospheric-linear:
+    final:
+      - {id: fog-mode-atmospheric, type: AtmosphericFog, probability: 1.0, params: {density_range: [1.5, 2.5], fog_color: [190, 195, 205], depth_mode: linear}}
+  atmospheric-diagonal:
+    final:
+      - {id: fog-mode-atmospheric, type: AtmosphericFog, probability: 1.0, params: {density_range: [1.5, 2.5], fog_color: [190, 195, 205], depth_mode: diagonal}}
+  atmospheric-radial:
+    final:
+      - {id: fog-mode-atmospheric, type: AtmosphericFog, probability: 1.0, params: {density_range: [1.5, 2.5], fog_color: [190, 195, 205], depth_mode: radial}}
+  random-fog-heavy:
+    final:
+      - {id: fog-mode-random-patches, type: RandomFog, probability: 1.0, params: {alpha_coef: 0.08, fog_coef_range: [0.3, 1.0]}}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "study_id": "native-fog-v1",
+  "status": "reviewed",
+  "reviewed_at": "2026-07-26",
+  "environment_fingerprint": "e3c207a55de027a5873512fc4e1cefd8b1471ddd52a46972f419d70efbfe70b7",
+  "warmups": 2,
+  "samples": 20,
+  "decision": {
+    "native_modes_available": ["linear", "diagonal", "radial"],
+    "random_fog_available": true,
+    "random_fog_requires_confirmation": true,
+    "cross_machine_threshold": null
+  },
+  "families": {
+    "landing": {
+      "render_mean_ms": {"current": 505.7, "atmospheric-linear": 637.7, "atmospheric-diagonal": 619.1, "atmospheric-radial": 605.0, "random-fog-heavy": 2860.7},
+      "render_p95_ms": {"current": 832.8, "atmospheric-linear": 1153.9, "atmospheric-diagonal": 878.4, "atmospheric-radial": 811.8, "random-fog-heavy": 4508.7},
+      "exclusive_effect_mean_ms": {"atmospheric-linear": 120.84, "atmospheric-diagonal": 124.65, "atmospheric-radial": 137.78, "random-fog-heavy": 2399.26}
+    },
+    "manometro": {
+      "render_mean_ms": {"current": 230.5, "atmospheric-linear": 336.4, "atmospheric-diagonal": 338.5, "atmospheric-radial": 395.3, "random-fog-heavy": 2414.8},
+      "render_p95_ms": {"current": 349.8, "atmospheric-linear": 410.1, "atmospheric-diagonal": 450.9, "atmospheric-radial": 550.3, "random-fog-heavy": 3557.7},
+      "exclusive_effect_mean_ms": {"atmospheric-linear": 114.44, "atmospheric-diagonal": 118.35, "atmospheric-radial": 132.31, "random-fog-heavy": 2197.07}
+    }
+  },
+  "limitations": [
+    "Performance conclusions are paired and environment-local.",
+    "The study compares one reviewed parameter range, not every possible fog configuration.",
+    "Visual suitability requires human review and cannot be inferred from timing."
+  ]
+}

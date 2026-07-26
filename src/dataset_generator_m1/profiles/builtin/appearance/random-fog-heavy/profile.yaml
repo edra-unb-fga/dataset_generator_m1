@@ -1,0 +1,12 @@
+schema_version: 1
+subject: appearance
+value:
+  background: []
+  foreground: []
+  final:
+    - id: random-fog-heavy-final
+      type: RandomFog
+      probability: 0.8
+      params:
+        alpha_coef: 0.08
+        fog_coef_range: [0.3, 1.0]

@@ -1,0 +1,24 @@
+schema_version: 1
+subject: appearance
+value:
+  background:
+    - {id: legacy-bg-hsv, type: HueSaturationValue, probability: 0.8, params: {hue_shift_limit: [-40, 40], sat_shift_limit: [-50, 50], val_shift_limit: [-50, 50]}}
+    - {id: legacy-bg-brightness, type: RandomBrightnessContrast, probability: 0.7, params: {brightness_limit: [-0.32, 0.32], contrast_limit: [-0.32, 0.32], brightness_by_max: true, ensure_safe_range: true}}
+    - {id: legacy-bg-blur, type: GaussianBlur, probability: 0.15, params: {blur_limit: [3, 5], sigma_limit: [0.0, 0.6]}}
+    - {id: legacy-bg-noise, type: GaussNoise, probability: 0.2, params: {std_range: [0.0, 0.06], mean_range: [0.0, 0.0], per_channel: false}}
+  foreground:
+    - {id: legacy-fg-hsv, type: HueSaturationValue, probability: 0.7, params: {hue_shift_limit: [-3, 3], sat_shift_limit: [-8, 8], val_shift_limit: [-6, 6]}}
+    - {id: legacy-fg-noise, type: AdditiveNoise, probability: 0.5, params: {noise_type: gaussian, spatial_mode: shared}}
+    - {id: legacy-fg-shadow, type: PlasmaShadow, probability: 0.4, params: {shadow_intensity_range: [0.1, 0.25], plasma_size: 1200, roughness: 2.0}}
+    - {id: legacy-fg-light, type: PlasmaBrightnessContrast, probability: 0.7, params: {brightness_range: [-0.08, 0.08], contrast_range: [-0.08, 0.08], plasma_size: 256, roughness: 1.8}}
+    - {id: legacy-fg-flare, type: RandomSunFlare, probability: 0.4, params: {flare_roi: [0.0, 0.0, 1.0, 1.0], src_radius: 120, src_color: [190, 190, 190], angle_range: [0.0, 1.0], num_flare_circles_range: [1, 2], method: physics_based}}
+  final:
+    - {id: legacy-final-gamma, type: RandomGamma, probability: 0.5, params: {gamma_limit: [90, 110]}}
+    - {id: legacy-final-temperature, type: PlanckianJitter, probability: 0.6, params: {mode: blackbody, temperature_limit: [5000, 12000], sampling_method: gaussian}}
+    - {id: legacy-final-salt-pepper, type: SaltAndPepper, probability: 0.3, params: {amount: [0.01, 0.05], salt_vs_pepper: [0.45, 0.55]}}
+    - {id: legacy-final-motion, type: MotionBlur, probability: 0.35, params: {blur_limit: [13, 17], angle_range: [0, 180], direction_range: [-1, 1], allow_shifted: true}}
+    - {id: legacy-final-shadow, type: PlasmaShadow, probability: 0.4, params: {shadow_intensity_range: [0.1, 0.3], plasma_size: 400, roughness: 2.3}}
+    - {id: legacy-final-light, type: PlasmaBrightnessContrast, probability: 0.6, params: {brightness_range: [-0.3, 0.3], contrast_range: [-0.3, 0.3], plasma_size: 300, roughness: 2.2}}
+    - {id: legacy-final-flare, type: RandomSunFlare, probability: 0.15, params: {flare_roi: [0.0, 0.0, 1.0, 1.0], src_radius: 400, src_color: [80, 80, 80], angle_range: [0.0, 0.1], num_flare_circles_range: [1, 6], method: physics_based}}
+    - {id: legacy-final-illumination, type: Illumination, probability: 0.7, params: {mode: linear, intensity_range: [0.01, 0.2], effect_type: both, angle_range: [0, 360], center_range: [0.25, 0.75], sigma_range: [0.2, 1.0]}}
+    - {id: legacy-final-atmospheric-fog, type: AtmosphericFog, probability: 0.35, params: {density_range: [0.1, 1.0], fog_color: [170, 180, 200], depth_mode: diagonal}}
