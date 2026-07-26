@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "study_id": "augmentation-heavy-v1",
+  "status": "reviewed",
+  "decision": {
+    "default_preset": "current",
+    "explicit_opt_in_preset": "realistic-heavy",
+    "benchmark_only": [
+      "legacy-heavy-compatible",
+      "all-effects-stress"
+    ],
+    "report_layout": "synchronized-contact-sheet"
+  },
+  "environment": {
+    "fingerprint": "8049df37dc8a84c1fb34a20f98f2e17ea17d912dea4df3b698361cbac190c5ce",
+    "system": "Windows 11 AMD64",
+    "python": "3.12.13",
+    "albumentations": "2.0.8",
+    "source_commit": "51170e97398cbd8a222cdd920643220fe4b59ec6",
+    "source_dirty": true
+  },
+  "legacy": {
+    "source_commit": "a3dec1f",
+    "unsupported_transform": "AtmosphericFog",
+    "translation": "RandomFog",
+    "fidelity": "approximation"
+  },
+  "studies": {
+    "landing": {
+      "warmups": 2,
+      "samples": 20,
+      "study_wall_seconds": 367.859,
+      "contract_hash": "de63bd092b5799096cf7f8142d5bae330433b347e898507369fe12b82911b6a3",
+      "catalog_fingerprint": "42e4c6242513df1fcc46304a91fea900c04e24af1715999b23e66d2ff53d68cf",
+      "render_seconds": {
+        "current": {"mean": 1.006, "p95": 1.921},
+        "no-appearance": {"mean": 0.787, "p95": 1.124},
+        "realistic-heavy-background": {"mean": 1.375, "p95": 2.790},
+        "realistic-heavy-foreground": {"mean": 1.146, "p95": 1.763},
+        "realistic-heavy-final": {"mean": 1.412, "p95": 2.284},
+        "realistic-heavy-combined": {"mean": 2.064, "p95": 3.813},
+        "legacy-heavy-compatible": {"mean": 3.704, "p95": 9.260}
+      },
+      "dominant_exclusive_effects": [
+        {"id": "legacy-final-fog-approximation", "calls": 4, "mean_seconds": 4.989},
+        {"id": "realistic-bg-noise", "calls": 3, "mean_seconds": 1.584},
+        {"id": "realistic-final-light", "calls": 8, "mean_seconds": 0.542}
+      ]
+    },
+    "manometro": {
+      "warmups": 2,
+      "samples": 20,
+      "study_wall_seconds": 178.133,
+      "contract_hash": "62040e578263ee3b93770850376424bbedc1609f84434a1fbfbd7f9ca850307d",
+      "catalog_fingerprint": "2c029ba724a9209ea17cdedd518d184d976d5f9f06ae8243dfebea8df1b62208",
+      "render_seconds": {
+        "current": {"mean": 0.340, "p95": 0.521},
+        "no-appearance": {"mean": 0.231, "p95": 0.313},
+        "realistic-heavy-background": {"mean": 0.579, "p95": 1.200},
+        "realistic-heavy-foreground": {"mean": 0.356, "p95": 0.467},
+        "realistic-heavy-final": {"mean": 0.604, "p95": 0.819},
+        "realistic-heavy-combined": {"mean": 0.844, "p95": 1.456},
+        "legacy-heavy-compatible": {"mean": 1.627, "p95": 4.598}
+      },
+      "dominant_exclusive_effects": [
+        {"id": "legacy-final-fog-approximation", "calls": 5, "mean_seconds": 2.515},
+        {"id": "realistic-bg-noise", "calls": 3, "mean_seconds": 0.901},
+        {"id": "realistic-final-light", "calls": 9, "mean_seconds": 0.354}
+      ]
+    }
+  },
+  "limitations": [
+    "No cross-machine thresholds are set.",
+    "Rare effects have low activation counts in a 20-fixture study.",
+    "Performance conclusions are causal only for paired treatments in this environment."
+  ]
+}

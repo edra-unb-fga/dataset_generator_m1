@@ -53,3 +53,7 @@ compact conclusions, environment/profile fingerprints, and a small contact sheet
 The retained `codex/prototype-augmentation-report` branch compares three image-first layouts. The
 synchronized contact-sheet design is the production default because it keeps the causal pair visible.
 Slow-sample navigation, stage tabs, and difference views remain secondary investigation tools.
+
+The reviewed landing/manometro conclusion, compact measurements, environment fingerprints, and selected
+visual evidence are stored in [`docs/experiments/augmentation-heavy-v1/`](experiments/augmentation-heavy-v1/).
+Raw study bundles remain ignored under `outputs/experiments/`.

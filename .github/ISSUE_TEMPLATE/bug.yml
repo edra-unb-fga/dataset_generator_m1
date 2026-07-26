@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible correctness or workflow defect.
+title: "[bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What happened, and what should have happened?
+    validations: {required: true}
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Use a minimal config and sanitized paths. Do not attach private datasets.
+    validations: {required: true}
+  - type: dropdown
+    id: contract
+    attributes:
+      label: Affected contract
+      options: [config/schema, assets/catalog, geometry/annotations, appearance, output/resume, telemetry/reporting, documentation]
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and environment
+      description: Include versions, fingerprints, logs, and small reviewed screenshots when relevant.
+    validations: {required: true}
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Data policy
+      options:
+        - label: I confirmed that this issue contains no private dataset assets or sensitive paths.
+          required: true

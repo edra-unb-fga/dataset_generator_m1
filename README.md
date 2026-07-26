@@ -53,5 +53,6 @@ Every command supports `--display auto|live|full|plain|quiet` and `--output-form
 Generation writes `run.json`, `samples.jsonl`, `rejections.jsonl`, `metrics.jsonl`, `summary.json`, atomic images, and a small `qa/index.html` gallery. Resume requires the same resolved contract and asset-catalog fingerprint.
 
 See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.md) for the normative
-contract, [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for paired-study rules, and
-[docs/ROADMAP.md](docs/ROADMAP.md) for measured follow-on work.
+contract, [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for contribution and verification rules,
+[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for paired-study rules, and [docs/ROADMAP.md](docs/ROADMAP.md)
+for measured follow-on work.
