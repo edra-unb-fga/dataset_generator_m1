@@ -41,4 +41,8 @@ uv run python -m dataset_generator_m1 preflight `
 
 Human-mode `generate` can show and confirm the same warnings interactively, then writes a hashed receipt under `.cache/preflight-receipts/`. Quiet and JSON generation never prompt and must receive `--receipt PATH`. There is deliberately no blanket `--accept-warnings` switch. Any relevant contract, count, dimensions, workers, evidence, or environment change invalidates the receipt.
 
+Advanced inline effects remain available. An inline stack is disclosed as unreviewed; adding patch-based
+`RandomFog` makes its known high and variable cost acknowledgement-required. Reviewed reusable bundles carry
+their own curated metadata instead. Local observations may refine ETA but never rewrite tracked warnings.
+
 Preflight estimates are planning aids, not cross-machine performance guarantees. The live run ETA will recalibrate from actual accepted and rejected candidates while excluding paused time.

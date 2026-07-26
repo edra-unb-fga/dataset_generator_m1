@@ -1,5 +1,4 @@
 schema_version: 1
-subject: background_synthesis
+subject: background_mixing
 value:
-  recipe_file: examples/configs/background_recipes.yaml
   recipe_weights: {direct: 0.45, palette: 0.20, mask_multiband: 0.25, displaced: 0.10}

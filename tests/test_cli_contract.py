@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from dataset_generator_m1.cli import main
 
@@ -29,8 +30,32 @@ def test_cli_exposes_integrated_commands(capsys) -> None:
 
     output = capsys.readouterr().out
     assert exit_code == 0
-    for command in ("catalog", "resolve", "preflight", "validate", "preview", "generate", "run", "experiment", "benchmark", "compare", "export"):
+    for command in ("catalog", "configure", "resolve", "preflight", "validate", "preview", "generate", "run", "experiment", "benchmark", "compare", "export"):
         assert command in output
+
+
+def test_resolve_accepts_override_file_common_options_and_repeated_sets(tmp_path, capsys) -> None:
+    overrides = tmp_path / "run-overrides.yaml"
+    overrides.write_text("run:\n  num_images: 7\nexecution:\n  workers: 2\n", encoding="utf-8")
+    assert main(
+        [
+            "resolve",
+            "--config",
+            "examples/configs/landing_minimal.yaml",
+            "--overrides",
+            str(overrides),
+            "--set",
+            "run.num_images=9",
+            "--set",
+            "run.num_images=11",
+            "--output-format",
+            "json",
+        ]
+    ) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["profile"]["run"]["num_images"] == 11
+    assert payload["profile"]["execution"]["workers"] == 2
+    assert Path(overrides).resolve().as_posix() in payload["source_hashes"]
 
 
 def test_run_status_command_supports_json(tmp_path, capsys) -> None:

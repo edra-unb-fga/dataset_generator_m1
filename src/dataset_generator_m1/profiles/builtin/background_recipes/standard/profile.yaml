@@ -1,0 +1,4 @@
+schema_version: 1
+subject: background_recipes
+value:
+  recipe_file: examples/configs/background_recipes.yaml

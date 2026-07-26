@@ -70,6 +70,885 @@
       "title": "AppearanceSelection",
       "type": "object"
     },
+    "AssetSourceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_weights": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Asset Weights",
+          "type": "object"
+        },
+        "catalog_file": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Catalog File"
+        },
+        "group_weights": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Group Weights",
+          "type": "object"
+        },
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Paths",
+          "type": "array"
+        },
+        "recursive": {
+          "default": true,
+          "title": "Recursive",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "paths"
+      ],
+      "title": "AssetSourceConfig",
+      "type": "object"
+    },
+    "AssetsConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "backgrounds": {
+          "$ref": "#/$defs/AssetSourceConfig"
+        },
+        "foregrounds": {
+          "$ref": "#/$defs/AssetSourceConfig"
+        }
+      },
+      "required": [
+        "backgrounds",
+        "foregrounds"
+      ],
+      "title": "AssetsConfig",
+      "type": "object"
+    },
+    "BackgroundAffineInline": {
+      "additionalProperties": false,
+      "properties": {
+        "rotation_degrees": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rotation Degrees"
+        },
+        "scale": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale"
+        },
+        "translation_x": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Translation X"
+        },
+        "translation_y": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Translation Y"
+        }
+      },
+      "title": "BackgroundAffineInline",
+      "type": "object"
+    },
+    "BackgroundMixingInline": {
+      "additionalProperties": false,
+      "properties": {
+        "recipe_weights": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipe Weights"
+        }
+      },
+      "title": "BackgroundMixingInline",
+      "type": "object"
+    },
+    "BackgroundRecipesInline": {
+      "additionalProperties": false,
+      "properties": {
+        "recipe_file": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipe File"
+        }
+      },
+      "title": "BackgroundRecipesInline",
+      "type": "object"
+    },
+    "CameraInline": {
+      "additionalProperties": false,
+      "properties": {
+        "center_jitter_x": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Center Jitter X"
+        },
+        "center_jitter_y": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Center Jitter Y"
+        },
+        "crop_scale": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Crop Scale"
+        }
+      },
+      "title": "CameraInline",
+      "type": "object"
+    },
+    "ComposerInline": {
+      "additionalProperties": false,
+      "properties": {
+        "assets": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AssetsConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "background_mixing": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BackgroundMixingInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "background_recipes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BackgroundRecipesInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExecutionInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "output": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "reporting": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReportInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "run": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sampling": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SamplingInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "scene": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SceneInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "telemetry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TelemetryInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "ComposerInline",
+      "type": "object"
+    },
+    "ExecutionInline": {
+      "additionalProperties": false,
+      "properties": {
+        "workers": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "const": "auto",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workers"
+        }
+      },
+      "title": "ExecutionInline",
+      "type": "object"
+    },
+    "OutputInline": {
+      "additionalProperties": false,
+      "properties": {
+        "image_format": {
+          "anyOf": [
+            {
+              "enum": [
+                "jpg",
+                "jpeg",
+                "png"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image Format"
+        },
+        "image_size": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image Size"
+        },
+        "jpeg_quality": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Jpeg Quality"
+        }
+      },
+      "title": "OutputInline",
+      "type": "object"
+    },
+    "PerspectiveInline": {
+      "additionalProperties": false,
+      "properties": {
+        "corner_offset_x": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Corner Offset X"
+        },
+        "corner_offset_y": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Corner Offset Y"
+        },
+        "min_area_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Area Fraction"
+        },
+        "probability": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Probability"
+        }
+      },
+      "title": "PerspectiveInline",
+      "type": "object"
+    },
+    "ReportInline": {
+      "additionalProperties": false,
+      "properties": {
+        "qa_samples": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Qa Samples"
+        }
+      },
+      "title": "ReportInline",
+      "type": "object"
+    },
+    "RunInline": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "max_candidate_attempts": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Candidate Attempts"
+        },
+        "max_rejection_rate": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Rejection Rate"
+        },
+        "max_wall_seconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Wall Seconds"
+        },
+        "negative_fraction": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Negative Fraction"
+        },
+        "num_images": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Num Images"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tags"
+        }
+      },
+      "title": "RunInline",
+      "type": "object"
+    },
+    "SamplingInline": {
+      "additionalProperties": false,
+      "properties": {
+        "bbox_spacing": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bbox Spacing"
+        },
+        "foreground_size": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Foreground Size"
+        },
+        "instances_per_image": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Instances Per Image"
+        },
+        "min_visible_bbox_fraction": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Visible Bbox Fraction"
+        },
+        "placement_attempts": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Placement Attempts"
+        }
+      },
+      "title": "SamplingInline",
+      "type": "object"
+    },
+    "SceneInline": {
+      "additionalProperties": false,
+      "properties": {
+        "background_affine": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BackgroundAffineInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "camera": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CameraInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "canvas_scale": {
+          "anyOf": [
+            {
+              "minimum": 1.25,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Canvas Scale"
+        },
+        "perspective": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PerspectiveInline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "SceneInline",
+      "type": "object"
+    },
+    "TelemetryInline": {
+      "additionalProperties": false,
+      "properties": {
+        "plain_interval_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.5,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plain Interval Seconds"
+        },
+        "refresh_hz": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.5,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Refresh Hz"
+        },
+        "resource_interval_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.25,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resource Interval Seconds"
+        }
+      },
+      "title": "TelemetryInline",
+      "type": "object"
+    },
     "TransformSpec": {
       "additionalProperties": false,
       "properties": {
@@ -121,20 +1000,31 @@
       "title": "Assets",
       "type": "string"
     },
-    "background_synthesis": {
-      "title": "Background Synthesis",
+    "background_mixing": {
+      "title": "Background Mixing",
+      "type": "string"
+    },
+    "background_recipes": {
+      "title": "Background Recipes",
+      "type": "string"
+    },
+    "execution": {
+      "title": "Execution",
       "type": "string"
     },
     "family": {
       "title": "Family",
       "type": "string"
     },
+    "inline": {
+      "$ref": "#/$defs/ComposerInline"
+    },
     "output": {
       "title": "Output",
       "type": "string"
     },
-    "report": {
-      "title": "Report",
+    "reporting": {
+      "title": "Reporting",
       "type": "string"
     },
     "run": {
@@ -167,9 +1057,11 @@
     "output",
     "sampling",
     "scene",
-    "background_synthesis",
+    "background_recipes",
+    "background_mixing",
+    "execution",
     "telemetry",
-    "report"
+    "reporting"
   ],
   "title": "GenerationComposer",
   "type": "object"

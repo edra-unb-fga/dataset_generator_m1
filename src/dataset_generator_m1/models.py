@@ -159,6 +159,103 @@ class ReportConfig(StrictModel):
     qa_samples: int = Field(default=16, ge=0)
 
 
+class ExecutionConfig(StrictModel):
+    workers: int | Literal["auto"] = 1
+
+    @model_validator(mode="after")
+    def validate_workers(self) -> "ExecutionConfig":
+        if isinstance(self.workers, int) and self.workers < 1:
+            raise ValueError("workers must be auto or an integer >= 1")
+        return self
+
+
+class RunInline(StrictModel):
+    label: str | None = Field(default=None, min_length=1, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+    tags: tuple[str, ...] | None = None
+    num_images: int | None = Field(default=None, ge=1)
+    seed: int | None = None
+    negative_fraction: float | None = Field(default=None, ge=0.0, le=1.0)
+    max_candidate_attempts: int | None = Field(default=None, ge=1)
+    max_wall_seconds: float | None = Field(default=None, gt=0)
+    max_rejection_rate: float | None = Field(default=None, ge=0.0, le=1.0)
+
+
+class OutputInline(StrictModel):
+    image_size: tuple[int, int] | None = None
+    image_format: Literal["jpg", "jpeg", "png"] | None = None
+    jpeg_quality: int | None = Field(default=None, ge=1, le=100)
+
+
+class SamplingInline(StrictModel):
+    instances_per_image: tuple[int, int] | None = None
+    foreground_size: tuple[float, float] | None = None
+    bbox_spacing: float | None = Field(default=None, ge=0.0)
+    placement_attempts: int | None = Field(default=None, ge=1)
+    min_visible_bbox_fraction: float | None = Field(default=None, gt=0.0, le=1.0)
+
+
+class CameraInline(StrictModel):
+    crop_scale: tuple[float, float] | None = None
+    center_jitter_x: tuple[float, float] | None = None
+    center_jitter_y: tuple[float, float] | None = None
+
+
+class PerspectiveInline(StrictModel):
+    probability: float | None = Field(default=None, ge=0.0, le=1.0)
+    corner_offset_x: tuple[float, float] | None = None
+    corner_offset_y: tuple[float, float] | None = None
+    min_area_fraction: float | None = Field(default=None, gt=0.0, le=1.0)
+
+
+class BackgroundAffineInline(StrictModel):
+    rotation_degrees: tuple[float, float] | None = None
+    scale: tuple[float, float] | None = None
+    translation_x: tuple[float, float] | None = None
+    translation_y: tuple[float, float] | None = None
+
+
+class SceneInline(StrictModel):
+    canvas_scale: float | None = Field(default=None, ge=1.25)
+    camera: CameraInline | None = None
+    perspective: PerspectiveInline | None = None
+    background_affine: BackgroundAffineInline | None = None
+
+
+class BackgroundRecipesInline(StrictModel):
+    recipe_file: str | None = None
+
+
+class BackgroundMixingInline(StrictModel):
+    recipe_weights: dict[str, float] | None = None
+
+
+class ExecutionInline(StrictModel):
+    workers: int | Literal["auto"] | None = None
+
+
+class TelemetryInline(StrictModel):
+    refresh_hz: float | None = Field(default=None, ge=0.5, le=10.0)
+    resource_interval_seconds: float | None = Field(default=None, ge=0.25)
+    plain_interval_seconds: float | None = Field(default=None, ge=0.5)
+
+
+class ReportInline(StrictModel):
+    qa_samples: int | None = Field(default=None, ge=0)
+
+
+class ComposerInline(StrictModel):
+    run: RunInline | None = None
+    assets: AssetsConfig | None = None
+    output: OutputInline | None = None
+    sampling: SamplingInline | None = None
+    scene: SceneInline | None = None
+    background_recipes: BackgroundRecipesInline | None = None
+    background_mixing: BackgroundMixingInline | None = None
+    execution: ExecutionInline | None = None
+    telemetry: TelemetryInline | None = None
+    reporting: ReportInline | None = None
+
+
 class GenerationProfile(StrictModel):
     schema_version: Literal[2]
     family: Literal["landing", "manometro"]
@@ -169,6 +266,7 @@ class GenerationProfile(StrictModel):
     scene: SceneConfig = Field(default_factory=SceneConfig)
     background_synthesis: BackgroundSynthesisConfig
     appearance: AppearanceConfig = Field(default_factory=AppearanceConfig)
+    execution: ExecutionConfig = Field(default_factory=ExecutionConfig)
     telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
     report: ReportConfig = Field(default_factory=ReportConfig)
 
@@ -189,10 +287,13 @@ class GenerationComposer(StrictModel):
     output: str
     sampling: str
     scene: str
-    background_synthesis: str
+    background_recipes: str
+    background_mixing: str
     appearance: AppearanceSelection = Field(default_factory=AppearanceSelection)
+    execution: str
     telemetry: str
-    report: str
+    reporting: str
+    inline: ComposerInline = Field(default_factory=ComposerInline)
 
 
 class ProfileBundle(StrictModel):

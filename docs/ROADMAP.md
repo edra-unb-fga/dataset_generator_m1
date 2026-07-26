@@ -8,13 +8,17 @@ dependency; unchecked items are not promises that current commands already imple
 - [x] Complete architecture integration and keep schemas, examples, CLI, and generated artifacts aligned.
 - [x] Run the controlled heavy-augmentation study for both families and review visual/cost attribution.
 - [x] Adopt lean PR, issue, experiment, and Windows correctness workflows without release bureaucracy.
-- [ ] Deliver schema-v2 composers, reusable profile catalogs, performance-aware preflight, guided configuration, and durable run control.
+- [x] [#11](https://github.com/edra-unb-fga/dataset_generator_m1/issues/11): deliver schema-v2 composers, typed inline values, reusable profile catalogs, and deterministic override precedence.
+- [x] [#12](https://github.com/edra-unb-fga/dataset_generator_m1/issues/12): preserve native and patch-based fog plus realistic, fast, legacy, diagnostic, and stress appearance profiles.
+- [x] [#13](https://github.com/edra-unb-fga/dataset_generator_m1/issues/13): deliver performance-aware preflight, local probes, bound warning receipts, and active-time ETA.
+- [x] [#14](https://github.com/edra-unb-fga/dataset_generator_m1/issues/14): deliver durable pause/continue/stop/resume control with atomic state and an auditable event log.
+- [x] [#15](https://github.com/edra-unb-fga/dataset_generator_m1/issues/15): deliver the guided Rich configuration cockpit, complete effect guidance, and explicit profile promotion.
 
 ## Next
 
-- [ ] Measure asset-disjoint split feasibility and balance before changing assignment policy.
-- [ ] Diagnose landing placement and visibility rejections with spatial and object-level evidence.
-- [ ] Sample the complete coordinator/worker process tree continuously enough to capture short peaks.
+- [ ] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure asset-disjoint split feasibility and balance before changing assignment policy.
+- [ ] [#3](https://github.com/edra-unb-fga/dataset_generator_m1/issues/3): diagnose landing placement and visibility rejections with spatial and object-level evidence.
+- [ ] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): sample the complete coordinator/worker process tree continuously enough to capture short peaks.
 - [ ] Calibrate background QA warnings and hard failures through reviewed Monte Carlo previews.
 - [ ] Establish reviewed benchmark baselines by hardware class before setting regression budgets.
 

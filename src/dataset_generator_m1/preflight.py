@@ -45,7 +45,7 @@ def _appearance_metadata(resolved: ResolvedProfile) -> dict[str, Any]:
         primary = next((item for item in reversed(candidates) if item.get("subject") == "appearance"), candidates[-1])
         risks = [item.get("performance_risk", "none") for item in candidates]
         risk = "confirmation" if "confirmation" in risks else "informational" if "informational" in risks else "none"
-        return {
+        result = {
             **dict(primary),
             "profile_ids": [item.get("id") for item in candidates],
             "performance_risk": risk,
@@ -54,6 +54,18 @@ def _appearance_metadata(resolved: ResolvedProfile) -> dict[str, Any]:
             ),
             "evidence": list(dict.fromkeys(path for item in candidates for path in item.get("evidence", ()))),
         }
+        inline = resolved.reference_graph.get("appearance", {}).get("inline", {})
+        inline_effects = [item for stage in ("background", "foreground", "final") for item in inline.get(stage, ())]
+        if inline_effects:
+            result["warning_codes"] = list(dict.fromkeys([*result["warning_codes"], "INLINE_APPEARANCE_UNREVIEWED"]))
+            if any(item.get("type") == "RandomFog" for item in inline_effects):
+                result["id"] = "local:appearance/inline-random-fog"
+                result["performance_risk"] = "confirmation"
+                result["warning_codes"] = list(dict.fromkeys([*result["warning_codes"], "RANDOM_FOG_HIGH_COST"]))
+                result["evidence"] = list(
+                    dict.fromkeys([*result["evidence"], "docs/experiments/native-fog-v1/conclusion.json"])
+                )
+        return result
     return {
         "id": "local:appearance/undocumented",
         "subject": "appearance",

@@ -5,8 +5,10 @@ assets: builtin:assets/landing
 output: builtin:output/standard
 sampling: builtin:sampling/landing-standard
 scene: builtin:scene/standard
-background_synthesis: builtin:background_synthesis/standard
+background_recipes: builtin:background_recipes/standard
+background_mixing: builtin:background_mixing/standard
 appearance:
   preset: builtin:appearance/realistic-heavy
+execution: builtin:execution/standard
 telemetry: builtin:telemetry/standard
-report: builtin:report/standard
+reporting: builtin:reporting/standard

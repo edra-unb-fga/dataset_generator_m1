@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "documentation": "docs/APPEARANCE_EFFECTS.md",
+  "effects": {
+    "HueSaturationValue": {"category": "color", "stages": ["background", "foreground", "final"], "summary": "Shift hue, saturation, and value."},
+    "RandomBrightnessContrast": {"category": "exposure", "stages": ["background", "foreground", "final"], "summary": "Vary brightness and contrast."},
+    "GaussianBlur": {"category": "blur", "stages": ["background", "foreground", "final"], "summary": "Apply Gaussian optical blur."},
+    "GaussNoise": {"category": "noise", "stages": ["background", "foreground", "final"], "summary": "Add Gaussian sensor-like noise."},
+    "AdditiveNoise": {"category": "noise", "stages": ["background", "foreground", "final"], "summary": "Add configurable procedural noise."},
+    "RandomGamma": {"category": "exposure", "stages": ["background", "foreground", "final"], "summary": "Vary nonlinear gamma response."},
+    "PlanckianJitter": {"category": "color", "stages": ["background", "foreground", "final"], "summary": "Vary physically inspired color temperature."},
+    "SaltAndPepper": {"category": "noise", "stages": ["background", "foreground", "final"], "summary": "Add sparse impulse noise."},
+    "MotionBlur": {"category": "blur", "stages": ["background", "foreground", "final"], "summary": "Apply directional motion blur."},
+    "PlasmaShadow": {"category": "lighting", "stages": ["background", "foreground", "final"], "summary": "Add spatially varying soft shadow."},
+    "PlasmaBrightnessContrast": {"category": "lighting", "stages": ["background", "foreground", "final"], "summary": "Vary brightness and contrast spatially."},
+    "RandomSunFlare": {"category": "lighting", "stages": ["background", "final"], "summary": "Add lens-flare artifacts."},
+    "Illumination": {"category": "lighting", "stages": ["background", "foreground", "final"], "summary": "Apply directional or corner illumination."},
+    "RandomFog": {"category": "weather", "stages": ["background", "final"], "summary": "Add patch-based fog; reviewed as high and variable cost.", "performance_risk": "confirmation", "warning_codes": ["RANDOM_FOG_HIGH_COST"]},
+    "RandomRain": {"category": "weather", "stages": ["background", "final"], "summary": "Add rain streaks and associated blur."},
+    "AtmosphericFog": {"category": "weather", "stages": ["background", "foreground", "final"], "summary": "Apply deterministic depth-dependent scattering with linear, diagonal, or radial depth.", "documentation": "docs/APPEARANCE_EFFECTS.md#atmosphericfog"}
+  }
+}

@@ -13,7 +13,14 @@ def write_derived_composer(tmp_path: Path, family: str, changes: dict[str, dict[
     raw = load_yaml_strict(source)
     resolved = load_profile(source)
     for subject, update in changes.items():
-        current = getattr(resolved.profile, subject).model_dump(mode="json")
+        if subject == "background_mixing":
+            current = {"recipe_weights": dict(resolved.profile.background_synthesis.recipe_weights)}
+        elif subject == "background_recipes":
+            current = {"recipe_file": resolved.profile.background_synthesis.recipe_file}
+        elif subject == "reporting":
+            current = resolved.profile.report.model_dump(mode="json")
+        else:
+            current = getattr(resolved.profile, subject).model_dump(mode="json")
         current.update(update)
         bundle = tmp_path / "profiles" / subject / "derived" / "profile.yaml"
         bundle.parent.mkdir(parents=True, exist_ok=True)

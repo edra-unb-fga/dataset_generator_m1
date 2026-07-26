@@ -33,6 +33,11 @@ The installed backend currently supports the following catalog-visible transform
 
 Exact parameters are validated against the installed Albumentations version before output creation. Use `catalog show` for reviewed bundles and the guided configurator for stage-specific construction. Path-only custom YAML is allowed but is treated as undocumented until explicitly promoted and reviewed.
 
+The machine-readable companion `src/dataset_generator_m1/knowledge/effects.json` assigns every supported
+effect a category, valid stages, concise guidance, and any known risk codes. Tests require exact coverage of
+the executable transform set so the guided builder cannot expose an undocumented effect or hide an available
+one.
+
 ## Controlled fog comparison
 
 `examples/experiments/fog_mode_study.yaml` compares no appearance, all three native depth modes, and patch-based RandomFog while holding the scene plan constant:

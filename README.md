@@ -24,6 +24,15 @@ uv run python -m dataset_generator_m1 catalog show builtin:appearance/realistic-
 uv run python -m dataset_generator_m1 resolve --config examples/configs/landing_minimal.yaml
 ```
 
+Create a versionable composer with the guided Rich cockpit:
+
+```powershell
+uv run python -m dataset_generator_m1 configure --family landing --output examples/configs/my-landing.yaml
+```
+
+The cockpit starts from `realistic-heavy`, shows warnings and an ETA range, and supports reviewed profile
+choices plus a stage-by-stage advanced effect builder. See [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
+
 Review warnings, disk use, and an environment-local ETA before generation:
 
 ```powershell
@@ -74,6 +83,12 @@ uv run python -m dataset_generator_m1 generate --config examples/configs/landing
 `realistic-heavy` is the shipped default. To use `current-fast`, copy a composer and change
 `appearance.preset` to `builtin:appearance/current-fast`; the choice remains visible and versionable.
 
+Override files and typed leaves compose without changing code:
+
+```powershell
+uv run python -m dataset_generator_m1 resolve --config examples/configs/landing_minimal.yaml --overrides experiments/run-overrides.yaml --set run.num_images=200 --set execution.workers=4
+```
+
 Every command supports `--display auto|live|full|plain|quiet` and `--output-format human|json`. JSON mode produces one machine-readable result document. Rich follows standard terminal detection and `NO_COLOR`.
 
 ## Pool artifacts
@@ -84,6 +99,7 @@ See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.m
 contract, [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for contribution and verification rules,
 [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for paired-study rules,
 [docs/APPEARANCE_EFFECTS.md](docs/APPEARANCE_EFFECTS.md) for the supported effect catalog, and
-[docs/PREFLIGHT.md](docs/PREFLIGHT.md) for ETA evidence and warning receipts, and
+[docs/PREFLIGHT.md](docs/PREFLIGHT.md) for ETA evidence and warning receipts,
+[docs/CONFIGURATION.md](docs/CONFIGURATION.md) for composer authoring and overrides, and
 [docs/ROADMAP.md](docs/ROADMAP.md)
 for measured follow-on work.
