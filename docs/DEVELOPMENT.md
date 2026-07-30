@@ -31,8 +31,20 @@ Keep PRs reviewable and record:
 - documentation changes;
 - whether generated artifacts are ignored or deliberately reviewed and tracked.
 
-Fast CI runs on pull requests and pushes to `main`. The manual Windows workflow is a correctness and
-artifact smoke test, not a machine-independent latency gate. Merge only after required checks pass.
+Fast CI runs the complete deterministic test suite on Python 3.13 and 3.14 for pull requests and
+pushes to `main`. Python 3.14 additionally checks generated-schema drift and builds the package.
+Superseded commits are cancelled.
+
+Apply the `ci:full` label when a pull request can affect generation, assets, configuration resolution,
+telemetry, QA, run control/resume, or packaging. That opt-in Ubuntu workflow exercises the public CLI
+from catalog discovery through separate exports, generates 10 samples for each maintained family,
+and verifies the compact pool evidence. It is also available through manual dispatch. Do not apply it
+to documentation-only changes. The uploaded evidence expires after seven days and intentionally omits
+the generated image and export directories.
+
+The manual Windows workflow remains a platform-correctness and augmentation-study smoke test. Neither
+full workflow is a machine-independent latency gate. Merge only after the checks required by the
+affected contract pass.
 Repository settings delete merged branches automatically; retained prototype branches are the
 intentional exception.
 
