@@ -8,6 +8,25 @@ Background recipes and background mixing are separate public subjects: the first
 synthesis DAGs, while the second controls their sampling weights. They resolve into one internal renderer
 contract, so users can tune the mix without forking algorithm definitions.
 
+## Start-to-results workflow
+
+```powershell
+uv run python -m dataset_generator_m1 start
+uv run python -m dataset_generator_m1 start --config configs/my-landing.yaml
+```
+
+`start` is the recommended interactive entry point. It checks environment readiness and incomplete runs,
+separates validated `configs/*.yaml` files from shipped examples, copies an example into `configs/` before
+customization, and suggests a collision-free destination under `outputs/runs/<composer>/<timestamp>`.
+Essentials show family, image count, appearance, dimensions, workers, destination, warnings, disk use, and
+**Estimated time remaining**. Advanced keeps every typed subject and documented effect reachable.
+
+The journey always saves a composer before preparation. It reviews the immutable contract, performs one
+full preflight/probe, requests any warning receipt, and then requires a separate final confirmation. The
+prepared result is passed directly into generation. Afterward, a persistent results dashboard can open QA,
+inspect audit evidence, export YOLO, resume an interrupted run, or start another run. Back and cancel choices
+are available before generation. Non-TTY callers receive equivalent atomic commands and are never prompted.
+
 ## Discover and inspect
 
 ```powershell
@@ -43,6 +62,9 @@ not removed.
 
 JSON and quiet modes never prompt; they save the default or explicitly selected appearance and return the
 resolved summary:
+
+`configure` remains the focused authoring command. Use it when you want to edit a composer without continuing
+through preflight and generation; use `start` for the complete guided journey.
 
 ```powershell
 uv run python -m dataset_generator_m1 configure --family landing --output examples/configs/my-landing.yaml --output-format json

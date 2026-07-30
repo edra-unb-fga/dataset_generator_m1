@@ -8,6 +8,7 @@ and export, but cannot be resumed. `CONTEXT.md` defines canonical terminology.
 The stable command surface is:
 
 ```text
+start [--config COMPOSER]
 catalog list
 catalog show PROFILE-REFERENCE [--config COMPOSER]
 catalog promote --config COMPOSER --stage background|foreground|final --id ID
@@ -24,7 +25,11 @@ compare --left ARTIFACT --right ARTIFACT --output-dir DIR
 export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|asset-disjoint --splits ... --output-dir DIR
 ```
 
-Every leaf command accepts `--display auto|live|full|plain|quiet` and `--output-format human|json`. `auto` selects Rich Live only for an interactive terminal. JSON disables generation display and emits exactly one versioned result or error document. Rich follows normal terminal and `NO_COLOR` behavior.
+`start` is an interactive orchestration interface over the same atomic contracts. It discovers composers,
+saves edits, prepares once, requires final approval, delegates generation, and renders persistent results.
+It refuses non-TTY use with equivalent atomic-command guidance.
+
+Every atomic leaf command accepts `--display auto|live|full|plain|quiet` and `--output-format human|json`. `auto` selects a full-screen Rich display for sufficiently large interactive terminals, an inline Live display for smaller terminals, and plain output otherwise. JSON disables generation display and emits exactly one versioned result or error document. Rich follows normal terminal and `NO_COLOR` behavior.
 
 `num_images`, `qa_samples`, and `execution.workers` are ordinary declared leaf overrides. `realistic-heavy` is the shipped
 appearance default and participates in the resolved contract hash.

@@ -19,6 +19,7 @@ from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
 from .execution import resolve_worker_count
 from .generator import GenerationOptions, generate_pool, probe_profile
+from .guided_start import run_guided_start
 from .inspection import inspect_pool
 from .overrides import OverridePlan, build_override_plan
 from .preflight import confirm_preflight
@@ -43,6 +44,9 @@ def _overrides(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="dataset-generator-m1", description="Auditable synthetic dataset generation workbench")
     commands = parser.add_subparsers(dest="command", required=True)
+
+    start = commands.add_parser("start", help="Run the complete guided interactive workflow")
+    start.add_argument("--config", help="Start from a saved composer or arbitrary schema-v2 YAML path")
 
     catalog = commands.add_parser("catalog", help="Discover and inspect reusable configuration profiles")
     catalog_commands = catalog.add_subparsers(dest="catalog_command", required=True)
@@ -160,6 +164,8 @@ def _override_plan(args: argparse.Namespace, common: dict[str, Any] | None = Non
 
 
 def _run(args: argparse.Namespace) -> dict[str, Any]:
+    if args.command == "start":
+        return run_guided_start(args.config)
     if args.command == "catalog" and args.catalog_command == "list":
         return list_profiles(args.config)
     if args.command == "catalog" and args.catalog_command == "show":
