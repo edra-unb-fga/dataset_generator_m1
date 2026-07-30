@@ -234,17 +234,41 @@ class RunController:
 
 
 class TerminalControlAdapter:
-    """Optional Windows key listener; external file commands remain authoritative."""
+    """Optional platform key listener; external file commands remain authoritative."""
 
     def __init__(self, root: str | Path, *, enabled: bool) -> None:
         self.root = Path(root).resolve()
-        self.enabled = enabled and os.name == "nt" and bool(getattr(sys.stdin, "isatty", lambda: False)())
+        self.backend = select_terminal_backend(
+            os_name=os.name,
+            is_tty=enabled and bool(getattr(sys.stdin, "isatty", lambda: False)()),
+        )
+        self.enabled = self.backend != "none"
         self._stopped = threading.Event()
         self._thread: threading.Thread | None = None
+        self._terminal_state: Any = None
+
+    @property
+    def controls_description(self) -> str:
+        if self.enabled:
+            return "p pause/continue | s graceful stop | Ctrl+C interrupt"
+        return "external: run pause|continue|stop OUTPUT_DIR"
 
     def start(self) -> None:
         if not self.enabled:
             return
+        if self.backend == "posix":
+            try:
+                import termios
+                import tty
+
+                descriptor = sys.stdin.fileno()
+                self._terminal_state = termios.tcgetattr(descriptor)
+                tty.setcbreak(descriptor)
+            except Exception:
+                self.backend = "none"
+                self.enabled = False
+                self._terminal_state = None
+                return
         self._thread = threading.Thread(target=self._listen, name="run-control-keys", daemon=True)
         self._thread.start()
 
@@ -252,23 +276,61 @@ class TerminalControlAdapter:
         self._stopped.set()
         if self._thread is not None:
             self._thread.join(timeout=0.5)
+        if self.backend == "posix" and self._terminal_state is not None:
+            try:
+                import termios
+
+                termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, self._terminal_state)
+            except Exception:
+                # Restoration is best-effort during interpreter/terminal teardown;
+                # never replace the run's real terminal status with cleanup noise.
+                pass
+            finally:
+                self._terminal_state = None
 
     def _listen(self) -> None:
-        import msvcrt
+        if self.backend == "windows":
+            self._listen_windows()
+        elif self.backend == "posix":
+            self._listen_posix()
 
+    def _handle_key(self, key: str) -> None:
+        try:
+            if key == "p":
+                desired = self._desired_state()
+                if desired != "stopping":
+                    request_run_action(self.root, "continue" if desired == "paused" else "pause")
+            elif key in {"s", "q"}:
+                request_run_action(self.root, "stop")
+        except (FileNotFoundError, ValueError):
+            self._stopped.set()
+
+    def _listen_windows(self) -> None:
+        import msvcrt
         while not self._stopped.wait(0.05):
             if not msvcrt.kbhit():
                 continue
-            key = msvcrt.getwch().lower()
-            try:
-                if key == "p":
-                    desired = self._desired_state()
-                    if desired != "stopping":
-                        request_run_action(self.root, "continue" if desired == "paused" else "pause")
-                elif key in {"s", "q"}:
-                    request_run_action(self.root, "stop")
-            except (FileNotFoundError, ValueError):
-                return
+            self._handle_key(msvcrt.getwch().lower())
+
+    def _listen_posix(self) -> None:
+        import select
+
+        while not self._stopped.is_set():
+            readable, _, _ = select.select([sys.stdin], [], [], 0.05)
+            if readable:
+                self._handle_key(sys.stdin.read(1).lower())
 
     def _desired_state(self) -> str:
         return str(_read(self.root)["desired_state"])
+
+
+def select_terminal_backend(*, os_name: str | None = None, is_tty: bool | None = None) -> str:
+    os_name = os.name if os_name is None else os_name
+    is_tty = bool(getattr(sys.stdin, "isatty", lambda: False)()) if is_tty is None else is_tty
+    if not is_tty:
+        return "none"
+    if os_name == "nt":
+        return "windows"
+    if os_name == "posix":
+        return "posix"
+    return "none"

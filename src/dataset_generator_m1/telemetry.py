@@ -7,8 +7,10 @@ from time import perf_counter, perf_counter_ns
 from typing import Any, Callable, Literal
 
 import psutil
-from rich.console import Console
+from rich.columns import Columns
+from rich.console import Console, Group
 from rich.live import Live
+from rich.panel import Panel
 from rich.table import Table
 
 
@@ -299,12 +301,22 @@ class RunReporter:
         target: int,
         console: Console | None = None,
         plain_interval_seconds: float = 5.0,
+        controls_description: str = "external run-control commands",
+        pool_path: str | None = None,
     ) -> None:
         self.console = console or Console()
-        self.mode: DisplayMode = "live" if mode == "auto" and self.console.is_interactive else ("plain" if mode == "auto" else mode)
+        if mode == "auto":
+            if self.console.is_interactive:
+                self.mode = "full" if self.console.width >= 100 and self.console.size.height >= 30 else "live"
+            else:
+                self.mode = "plain"
+        else:
+            self.mode = mode
         self.refresh_hz = refresh_hz
         self.target = target
         self.plain_interval_seconds = plain_interval_seconds
+        self.controls_description = controls_description
+        self.pool_path = pool_path
         self.live: Live | None = None
         self.last_plain = 0.0
 
@@ -337,30 +349,60 @@ class RunReporter:
             self.live = None
         if self.mode != "quiet":
             status = summary.get("status", "unknown")
+            color = "green" if status == "complete" else "yellow"
             self.console.print(
-                f"[{ 'green' if status == 'complete' else 'yellow' }]run {status}[/] | "
-                f"accepted {summary.get('accepted_samples', 0)}/{summary.get('target_samples', 0)} | "
-                f"elapsed {summary.get('elapsed_seconds', 0.0):.2f}s"
+                Group(
+                    Panel(
+                        f"[{color}]{status}[/] — {summary.get('accepted_samples', 0)}/{summary.get('target_samples', 0)} samples",
+                        title="Persistent run results",
+                    ),
+                    Columns(
+                        [
+                            Panel(
+                                f"Active {summary.get('elapsed_seconds', 0.0):.2f}s\n"
+                                f"Paused {summary.get('paused_seconds', 0.0):.2f}s\n"
+                                f"{summary.get('throughput_images_per_second', 0.0):.2f} images/s",
+                                title="Performance",
+                            ),
+                            Panel(
+                                f"Rejections {sum(summary.get('rejection_reasons', {}).values())}\n"
+                                f"Object reject rate {summary.get('object_rejection_rate', 0.0):.1%}\n"
+                                f"QA {self.pool_path + '/qa/index.html' if self.pool_path else 'see pool/qa'}",
+                                title="Quality",
+                            ),
+                        ],
+                        expand=True,
+                    ),
+                    Panel(
+                        f"Pool: {self.pool_path or summary.get('pool_path', 'unknown')}\n"
+                        f"Next: run inspect {self.pool_path or summary.get('pool_path', 'OUTPUT_DIR')}",
+                        title="Audit and follow-up",
+                    ),
+                )
             )
 
-    def _render(self, metrics: MetricsAggregator) -> Table:
-        table = Table(title="Dataset Generator M1", expand=True)
-        table.add_column("Metric")
-        table.add_column("Value", justify="right")
+    def _render(self, metrics: MetricsAggregator) -> Group:
+        progress = Table(expand=True, show_header=False)
+        progress.add_column("Metric")
+        progress.add_column("Value", justify="right")
         eta = metrics.eta_seconds
-        table.add_row("Accepted", f"{metrics.accepted}/{metrics.target}")
-        table.add_row("Run state", metrics.run_state)
-        table.add_row("Controls", "p pause/continue | s graceful stop | Ctrl+C interrupt")
-        table.add_row("Attempts", str(metrics.candidate_attempts))
-        table.add_row("Workers", f"{metrics.active_workers}/{metrics.worker_count} active | {metrics.in_flight} in flight | {metrics.queued} queued")
-        table.add_row("Throughput", f"{metrics.throughput:.2f} images/s")
-        table.add_row("ETA", f"{eta:.1f}s" if metrics.throughput > 0 else "—")
-        table.add_row("Rejections", str(sum(metrics.rejection_reasons.values())))
+        progress.add_row("Accepted", f"{metrics.accepted}/{metrics.target}")
+        progress.add_row("Run state", metrics.run_state)
+        progress.add_row("Attempts", str(metrics.candidate_attempts))
+        progress.add_row("Workers", f"{metrics.active_workers}/{metrics.worker_count} active | {metrics.in_flight} in flight | {metrics.queued} queued")
+
+        performance = Table(expand=True, show_header=False)
+        performance.add_column("Metric")
+        performance.add_column("Value", justify="right")
+        performance.add_row("Throughput", f"{metrics.throughput:.2f} images/s")
+        performance.add_row("Estimated time remaining", f"{eta:.1f}s" if metrics.throughput > 0 else "—")
+        quality_lines = [f"Candidate rejections: {sum(metrics.rejection_reasons.values())}"]
         if metrics.object_attempts:
-            table.add_row("Object rejects", f"{metrics.object_rejections}/{metrics.object_attempts} ({metrics.object_rejections / metrics.object_attempts:.1%})")
+            quality_lines.append(f"Object rejects: {metrics.object_rejections}/{metrics.object_attempts} ({metrics.object_rejections / metrics.object_attempts:.1%})")
         if metrics.rejection_reasons:
             top = sorted(metrics.rejection_reasons.items(), key=lambda item: item[1], reverse=True)[:3]
-            table.add_row("Top rejection", ", ".join(f"{key}:{value}" for key, value in top))
+            quality_lines.append("Top: " + ", ".join(f"{key}:{value}" for key, value in top))
+        distributions: list[str] = []
         if metrics.recipe_counts:
             configured_total = sum(metrics.configured_recipe_weights.values())
             recipe_text = []
@@ -368,28 +410,46 @@ class RunReporter:
                 configured = metrics.configured_recipe_weights.get(key, 0.0) / configured_total if configured_total else 0.0
                 observed = metrics.recipe_counts.get(key, 0) / metrics.accepted if metrics.accepted else 0.0
                 recipe_text.append(f"{key} {observed:.0%}/{configured:.0%}")
-            table.add_row("Recipes obs/cfg", ", ".join(recipe_text))
+            distributions.append("Recipes obs/cfg: " + ", ".join(recipe_text))
         if metrics.class_counts:
             top_classes = sorted(metrics.class_counts.items(), key=lambda item: item[1], reverse=True)[:5]
-            table.add_row("Classes", ", ".join(f"{name}:{count}" for name, count in top_classes))
+            distributions.append("Classes: " + ", ".join(f"{name}:{count}" for name, count in top_classes))
         if metrics.foreground_group_counts:
-            table.add_row("Groups", ", ".join(f"{name}:{count}" for name, count in sorted(metrics.foreground_group_counts.items())))
-        table.add_row("Negatives", str(metrics.negative_count))
+            distributions.append("Groups: " + ", ".join(f"{name}:{count}" for name, count in sorted(metrics.foreground_group_counts.items())))
+        distributions.append(f"Negatives: {metrics.negative_count}")
+        warning_lines: list[str] = []
         if metrics.background_warnings:
             top_warnings = sorted(metrics.background_warnings.items(), key=lambda item: item[1], reverse=True)[:3]
-            table.add_row("Warnings", ", ".join(f"{name}:{count}" for name, count in top_warnings))
+            warning_lines.extend(f"{name}: {count}" for name, count in top_warnings)
         if metrics.stage_timings:
             slowest = max(metrics.stage_timings, key=lambda key: sum(metrics.stage_timings[key]) / len(metrics.stage_timings[key]))
             ordered = sorted(metrics.stage_timings[slowest])
             p50 = ordered[len(ordered) // 2] / 1_000_000
             p95 = ordered[min(len(ordered) - 1, round((len(ordered) - 1) * 0.95))] / 1_000_000
-            table.add_row("Bottleneck p50/p95", f"{slowest} {p50:.1f}/{p95:.1f} ms")
+            performance.add_row("Bottleneck p50/p95", f"{slowest} {p50:.1f}/{p95:.1f} ms")
         if metrics.resource_peaks:
-            table.add_row(
+            performance.add_row(
                 "Resources",
                 f"CPU {metrics.resource_peaks.get('cpu_percent', 0):.0f}% | "
                 f"RSS {metrics.resource_peaks.get('rss_bytes', 0) / 1024 / 1024:.1f} MiB | "
                 f"I/O R/W {metrics.resource_peaks.get('read_bytes', 0) / 1024 / 1024:.1f}/"
                 f"{metrics.resource_peaks.get('write_bytes', 0) / 1024 / 1024:.1f} MiB",
             )
-        return table
+        return Group(
+            Panel(progress, title="Progress"),
+            Columns(
+                [
+                    Panel("\n".join(quality_lines), title="Quality"),
+                    Panel(performance, title="Performance"),
+                ],
+                expand=True,
+            ),
+            Panel("\n".join(distributions), title="Distributions"),
+            Columns(
+                [
+                    Panel("\n".join(warning_lines) or "none", title="Warnings"),
+                    Panel(self.controls_description, title="Controls"),
+                ],
+                expand=True,
+            ),
+        )

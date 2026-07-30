@@ -52,6 +52,7 @@ intentional exception.
 
 - Schema/config change: regenerate schemas and run profile/CLI tests.
 - Configurator/catalog change: run configurator, override, profile, CLI, and preflight contracts; confirm every executable effect has file-backed guidance.
+- Guided-start/display change: run `tests/test_guided_start.py`, run-control and telemetry contracts; verify non-TTY refusal and one saved-composer journey.
 - Generation/control change: run `tests/test_run_control.py`, `tests/test_generation_pool_contract.py`, `tests/test_preparation_inspection.py`, and telemetry contracts; exercise an external stop followed by resume and inspect the resulting pool.
 - Geometry/annotation change: run scene, imaging, and export contracts.
 - Appearance change: run filter tests, paired invariant tests, and inspect representative images.

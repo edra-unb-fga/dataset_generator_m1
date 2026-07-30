@@ -13,6 +13,9 @@ dependency; unchecked items are not promises that current commands already imple
 - [x] [#13](https://github.com/edra-unb-fga/dataset_generator_m1/issues/13): deliver performance-aware preflight, local probes, bound warning receipts, and active-time ETA.
 - [x] [#14](https://github.com/edra-unb-fga/dataset_generator_m1/issues/14): deliver durable pause/continue/stop/resume control with atomic state and an auditable event log.
 - [x] [#15](https://github.com/edra-unb-fga/dataset_generator_m1/issues/15): deliver the guided Rich configuration cockpit, complete effect guidance, and explicit profile promotion.
+- [x] [#17](https://github.com/edra-unb-fga/dataset_generator_m1/issues/17): support Python 3.13/3.14 with required fast CI and opt-in full CLI validation.
+- [x] [#18](https://github.com/edra-unb-fga/dataset_generator_m1/issues/18): share preparation, calibrate from sanitized production runs, and inspect pool integrity.
+- [x] [#19](https://github.com/edra-unb-fga/dataset_generator_m1/issues/19): guide one interactive journey from discovery through persistent results.
 
 ## Next
 

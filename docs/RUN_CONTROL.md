@@ -11,8 +11,11 @@ uv run python -m dataset_generator_m1 run continue outputs/my-run
 uv run python -m dataset_generator_m1 run stop outputs/my-run
 ```
 
-Interactive live/full displays also accept `p` to pause or continue and `s` to request a graceful stop.
-`Ctrl+C` interrupts normally; a second interrupt during worker shutdown forces termination.
+Interactive live/full displays on Windows and POSIX terminals accept `p` to pause or continue and `s` to
+request a graceful stop. The Controls panel advertises keys only when the platform adapter is active;
+otherwise it points to the external `run` commands. `Ctrl+C` interrupts normally, and a second interrupt
+during worker shutdown forces termination. POSIX terminal mode is restored after completion, failure, or
+interruption.
 
 ## State and checkpoint behavior
 

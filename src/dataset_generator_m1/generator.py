@@ -206,6 +206,8 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         resolved.profile.telemetry.refresh_hz,
         target,
         plain_interval_seconds=resolved.profile.telemetry.plain_interval_seconds,
+        controls_description=terminal_control.controls_description,
+        pool_path=str(store.root),
     )
     resources = ResourceSampler()
     reporter.start(metrics)

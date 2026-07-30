@@ -10,6 +10,18 @@ uv sync --extra dev
 
 ## Workflow
 
+For an interactive end-to-end journey, start here:
+
+```powershell
+uv run python -m dataset_generator_m1 start
+uv run python -m dataset_generator_m1 start --config configs/my-landing.yaml
+```
+
+`start` discovers saved composers and shipped examples, edits essentials before advanced subjects, saves
+the composer, prepares the exact run once, asks for a mandatory final confirmation, displays live controls,
+and ends on a persistent QA/audit/export dashboard. It is interactive-only; all atomic commands below remain
+stable for scripts and expert use.
+
 Validate the complete composer, profile catalog, mappings, transforms, hashes, and recipe DAGs:
 
 ```powershell

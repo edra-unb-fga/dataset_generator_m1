@@ -1,7 +1,10 @@
 import json
+import sys
+import time
+from types import SimpleNamespace
 from pathlib import Path
 
-from dataset_generator_m1.run_control import RunController, request_run_action, run_status
+from dataset_generator_m1.run_control import RunController, TerminalControlAdapter, request_run_action, run_status
 
 
 class FakeClock:
@@ -79,3 +82,31 @@ def test_terminal_runs_reject_control_requests(tmp_path: Path) -> None:
         assert "terminal" in str(exc).lower()
     else:
         raise AssertionError("terminal run accepted a pause request")
+
+
+def test_posix_terminal_adapter_restores_terminal_state(tmp_path: Path, monkeypatch) -> None:
+    restored: list[object] = []
+    fake_stdin = SimpleNamespace(fileno=lambda: 7, isatty=lambda: True, read=lambda _count: "")
+    fake_termios = SimpleNamespace(
+        TCSADRAIN=1,
+        tcgetattr=lambda _fd: ["saved-state"],
+        tcsetattr=lambda _fd, _when, state: restored.append(state),
+    )
+    fake_tty = SimpleNamespace(setcbreak=lambda _fd: None)
+
+    def no_input(*_args):
+        time.sleep(0.01)
+        return ([], [], [])
+
+    monkeypatch.setattr("dataset_generator_m1.run_control.sys.stdin", fake_stdin)
+    monkeypatch.setitem(sys.modules, "termios", fake_termios)
+    monkeypatch.setitem(sys.modules, "tty", fake_tty)
+    monkeypatch.setitem(sys.modules, "select", SimpleNamespace(select=no_input))
+    adapter = TerminalControlAdapter(tmp_path, enabled=False)
+    adapter.backend = "posix"
+    adapter.enabled = True
+
+    adapter.start()
+    adapter.stop()
+
+    assert restored == [["saved-state"]]
