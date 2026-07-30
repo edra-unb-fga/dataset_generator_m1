@@ -6,7 +6,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 from time import perf_counter
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -15,10 +15,14 @@ from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
 from .execution import resolve_worker_count
 from .models import ResolvedProfile
 from .preflight import PreflightRequest, require_warning_receipt, run_preflight
+from .performance import DEFAULT_OBSERVATION_PATH, append_production_observation
 from .run_control import RunController, TerminalControlAdapter
 from .runstore import RunStore
 from .scene import ScenePlanner, SceneRejected, SceneRenderer, derive_seed
 from .telemetry import DisplayMode, MetricsAggregator, ResourceSampler, RunReporter, StageTimer
+
+if TYPE_CHECKING:
+    from .preparation import PreparedGeneration
 
 
 @dataclass(frozen=True)
@@ -31,6 +35,7 @@ class GenerationOptions:
     invocation: tuple[str, ...] = ()
     preflight_result: dict[str, Any] | None = None
     receipt_path: Path | None = None
+    prepared: "PreparedGeneration | None" = None
 
 
 def _annotation_record(annotation: Any) -> dict[str, Any]:
@@ -152,10 +157,19 @@ def probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float = 60.0) -
 
 def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: GenerationOptions | None = None) -> dict[str, Any]:
     options = options or GenerationOptions()
-    workers = resolve_worker_count(options.workers, resolved)
-    preflight = options.preflight_result or run_preflight(
-        PreflightRequest(resolved, Path(output_dir), workers)
-    )
+    if options.prepared is not None:
+        if options.workers is not None and resolve_worker_count(options.workers, resolved) != options.prepared.workers:
+            raise ValueError("Prepared generation was invalidated by a worker change")
+        options.prepared.require_compatible(resolved, output_dir, options.prepared.workers)
+        workers = options.prepared.workers
+        preflight = options.prepared.preflight
+        observation_path = options.prepared.observation_path
+    else:
+        workers = resolve_worker_count(options.workers, resolved)
+        preflight = options.preflight_result or run_preflight(
+            PreflightRequest(resolved, Path(output_dir), workers)
+        )
+        observation_path = DEFAULT_OBSERVATION_PATH
     if preflight["status"] != "valid":
         raise RuntimeError(f"Preflight failed: {preflight['validation_errors']}")
     require_warning_receipt(preflight, options.receipt_path)
@@ -384,6 +398,22 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
                 },
             }
         )
+        try:
+            observation = append_production_observation(
+                observation_path,
+                resolved,
+                workers=workers,
+                summary=summary,
+            )
+            summary["performance_observation"] = {
+                "status": "recorded" if observation else "skipped",
+                "path": str(observation_path),
+            }
+        except Exception as exc:
+            summary["performance_observation"] = {
+                "status": "ignored-error",
+                "message": f"{type(exc).__name__}: {exc}",
+            }
         store.write_summary(summary)
         store.write_qa_index()
         reporter.update(metrics, force=True)

@@ -57,6 +57,7 @@ Inspect and control a live run from another terminal:
 
 ```powershell
 uv run python -m dataset_generator_m1 run status outputs/landing-expA
+uv run python -m dataset_generator_m1 run inspect outputs/landing-expA
 uv run python -m dataset_generator_m1 run pause outputs/landing-expA
 uv run python -m dataset_generator_m1 run continue outputs/landing-expA
 uv run python -m dataset_generator_m1 run stop outputs/landing-expA

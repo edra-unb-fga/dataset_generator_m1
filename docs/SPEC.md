@@ -17,7 +17,7 @@ validate --config COMPOSER
 preview scenes --config COMPOSER [--variants VARIANTS] --samples N --output-dir DIR
 preview backgrounds --config COMPOSER --samples-per-recipe N --output-dir DIR
 generate --config COMPOSER [--num-images N] --output-dir DIR [--resume] [--workers auto|N] [--qa-samples N]
-run status|pause|continue|stop OUTPUT_DIR
+run status|inspect|pause|continue|stop OUTPUT_DIR
 experiment augmentations --config COMPOSER --output-dir DIR [--matrix MATRIX] [--warmups N] [--samples N] [--include-stress]
 benchmark --config COMPOSER --output-dir DIR [--samples N] [--warmup N]
 compare --left ARTIFACT --right ARTIFACT --output-dir DIR

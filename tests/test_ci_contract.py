@@ -35,7 +35,7 @@ def test_full_cli_workflow_is_opt_in_and_covers_both_families() -> None:
     assert "landing-ci.yaml" in workflow
     assert "manometro-ci.yaml" in workflow
     assert workflow.count("run status") == 2
-    assert workflow.count("verify_ci_pool.py") == 2
+    assert workflow.count("run inspect") == 2
     assert workflow.count(" export ") == 2
     assert "retention-days: 7" in workflow
     assert "outputs/ci/**/images/**" not in workflow

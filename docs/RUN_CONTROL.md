@@ -5,6 +5,7 @@ Generation pools expose a durable coordinator state in `control.json` and an app
 
 ```powershell
 uv run python -m dataset_generator_m1 run status outputs/my-run
+uv run python -m dataset_generator_m1 run inspect outputs/my-run
 uv run python -m dataset_generator_m1 run pause outputs/my-run
 uv run python -m dataset_generator_m1 run continue outputs/my-run
 uv run python -m dataset_generator_m1 run stop outputs/my-run
@@ -31,3 +32,8 @@ instantaneous work.
 Quiet and JSON generation use the same state files but never read terminal keys. Control them from another
 terminal with the `run` commands. The control record is atomically replaced and requests/transitions are
 serialized; the event log records actor, sequence, desired state, actual state, and timestamps.
+
+`run inspect` is read-only but deeper than `status`: it checks manifest, summary, and JSONL consistency;
+decodes every image; verifies dimensions and annotation bounds; compares terminal state; and resolves every
+local QA link. It returns structured findings in JSON mode and is the integrity seam reused by full CI and
+the guided results dashboard.
