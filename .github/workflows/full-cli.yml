@@ -1,0 +1,86 @@
+name: Full CLI validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: full-cli-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  journey:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'ci:full')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.14"
+          enable-cache: true
+      - run: uv sync --locked --extra dev
+      - name: Discover profiles
+        run: uv run python -m dataset_generator_m1 catalog list --output-format json > outputs-catalog.json
+      - name: Configure landing
+        run: >-
+          uv run python -m dataset_generator_m1 configure --family landing
+          --output outputs/ci/landing-ci.yaml --run-output-dir outputs/ci/landing-pool
+          --output-format json
+      - name: Configure manometro
+        run: >-
+          uv run python -m dataset_generator_m1 configure --family manometro
+          --output outputs/ci/manometro-ci.yaml --run-output-dir outputs/ci/manometro-pool
+          --output-format json
+      - name: Resolve, validate, and preflight
+        shell: bash
+        run: |
+          uv run python -m dataset_generator_m1 resolve --config outputs/ci/landing-ci.yaml --output-format json > outputs/ci/landing-resolved.json
+          uv run python -m dataset_generator_m1 validate --config outputs/ci/landing-ci.yaml --output-format json > outputs/ci/landing-validation.json
+          uv run python -m dataset_generator_m1 preflight --config outputs/ci/landing-ci.yaml --output-dir outputs/ci/landing-pool --workers 2 --output-format json > outputs/ci/landing-preflight.json
+          uv run python -m dataset_generator_m1 resolve --config outputs/ci/manometro-ci.yaml --output-format json > outputs/ci/manometro-resolved.json
+          uv run python -m dataset_generator_m1 validate --config outputs/ci/manometro-ci.yaml --output-format json > outputs/ci/manometro-validation.json
+          uv run python -m dataset_generator_m1 preflight --config outputs/ci/manometro-ci.yaml --output-dir outputs/ci/manometro-pool --workers 2 --output-format json > outputs/ci/manometro-preflight.json
+      - name: Generate landing
+        run: >-
+          uv run python -m dataset_generator_m1 generate --config outputs/ci/landing-ci.yaml
+          --num-images 10 --workers 2 --qa-samples 3 --output-dir outputs/ci/landing-pool
+          --display quiet --output-format json
+      - name: Generate manometro
+        run: >-
+          uv run python -m dataset_generator_m1 generate --config outputs/ci/manometro-ci.yaml
+          --num-images 10 --workers 2 --qa-samples 3 --output-dir outputs/ci/manometro-pool
+          --display quiet --output-format json
+      - name: Inspect completed pools
+        shell: bash
+        run: |
+          uv run python -m dataset_generator_m1 run status outputs/ci/landing-pool --output-format json > outputs/ci/landing-status.json
+          uv run python scripts/verify_ci_pool.py outputs/ci/landing-pool
+          uv run python -m dataset_generator_m1 run status outputs/ci/manometro-pool --output-format json > outputs/ci/manometro-status.json
+          uv run python scripts/verify_ci_pool.py outputs/ci/manometro-pool
+      - name: Export landing
+        run: uv run python -m dataset_generator_m1 export --pool outputs/ci/landing-pool --strategy random --output-dir outputs/ci/landing-export --output-format json
+      - name: Export manometro
+        run: uv run python -m dataset_generator_m1 export --pool outputs/ci/manometro-pool --strategy random --output-dir outputs/ci/manometro-export --output-format json
+      - name: Upload compact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-cli-evidence
+          retention-days: 7
+          path: |
+            outputs-catalog.json
+            outputs/ci/*.yaml
+            outputs/ci/*.json
+            outputs/ci/*-pool/run.json
+            outputs/ci/*-pool/summary.json
+            outputs/ci/*-pool/samples.jsonl
+            outputs/ci/*-pool/rejections.jsonl
+            outputs/ci/*-pool/metrics.jsonl
+            outputs/ci/*-pool/control.json
+            outputs/ci/*-pool/control-events.jsonl
+            outputs/ci/*-pool/qa/

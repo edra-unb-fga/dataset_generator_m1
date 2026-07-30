@@ -25,3 +25,11 @@ Compatibility notes:
 - [ ] Relevant docs were updated or no documentation changed.
 - [ ] Generated artifacts are ignored, or tracked evidence is small and intentionally reviewed.
 - [ ] No raw dataset or accidental local output is included.
+
+## Full CLI validation
+
+- [ ] Not required: this change cannot affect generation, assets, configuration resolution, telemetry,
+      QA, run control/resume, or packaging.
+- [ ] Required: the `ci:full` label is applied and the optional workflow passed.
+
+Full CLI validation workflow URL (when required):
