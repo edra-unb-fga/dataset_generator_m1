@@ -59,9 +59,9 @@ jobs:
         shell: bash
         run: |
           uv run python -m dataset_generator_m1 run status outputs/ci/landing-pool --output-format json > outputs/ci/landing-status.json
-          uv run python scripts/verify_ci_pool.py outputs/ci/landing-pool
+          uv run python -m dataset_generator_m1 run inspect outputs/ci/landing-pool --output-format json > outputs/ci/landing-inspection.json
           uv run python -m dataset_generator_m1 run status outputs/ci/manometro-pool --output-format json > outputs/ci/manometro-status.json
-          uv run python scripts/verify_ci_pool.py outputs/ci/manometro-pool
+          uv run python -m dataset_generator_m1 run inspect outputs/ci/manometro-pool --output-format json > outputs/ci/manometro-inspection.json
       - name: Export landing
         run: uv run python -m dataset_generator_m1 export --pool outputs/ci/landing-pool --strategy random --output-dir outputs/ci/landing-export --output-format json
       - name: Export manometro

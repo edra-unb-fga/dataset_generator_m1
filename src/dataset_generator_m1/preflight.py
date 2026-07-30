@@ -3,21 +3,23 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import platform
 import shutil
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from statistics import mean
+from statistics import mean, median
 from typing import Any, Callable
 
 from .models import ResolvedProfile
+from .performance import (
+    DEFAULT_OBSERVATION_PATH,
+    environment_class,
+    performance_fingerprint,
+    read_matching_observations,
+)
 
 
 KNOWLEDGE_PATH = Path(__file__).with_name("knowledge") / "performance.json"
-DEFAULT_OBSERVATION_PATH = Path(".cache/performance-observations.jsonl")
-
-
 @dataclass(frozen=True)
 class PreflightRequest:
     resolved: ResolvedProfile
@@ -29,14 +31,6 @@ class PreflightRequest:
 def _stable_hash(value: Any) -> str:
     payload = json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
-
-
-def environment_class() -> dict[str, Any]:
-    return {
-        "system": platform.system(),
-        "machine": platform.machine(),
-        "logical_cpu_count": os.cpu_count(),
-    }
 
 
 def _appearance_metadata(resolved: ResolvedProfile) -> dict[str, Any]:
@@ -75,23 +69,6 @@ def _appearance_metadata(resolved: ResolvedProfile) -> dict[str, Any]:
     }
 
 
-def _read_observations(path: Path, request: PreflightRequest, environment: dict[str, Any]) -> list[dict[str, Any]]:
-    if not path.exists():
-        return []
-    records: list[dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        record = json.loads(line)
-        if (
-            record.get("contract_hash") == request.resolved.contract_hash
-            and record.get("workers") == request.workers
-            and record.get("environment_class") == environment
-        ):
-            records.append(record)
-    return records
-
-
 def _append_observations(
     path: Path,
     request: PreflightRequest,
@@ -103,9 +80,11 @@ def _append_observations(
     with path.open("a", encoding="utf-8") as handle:
         for observation in observations:
             record = {
-                "schema_version": 1,
+                "schema_version": 2,
+                "kind": "probe",
                 "observed_at": datetime.now(timezone.utc).isoformat(),
                 "contract_hash": request.resolved.contract_hash,
+                "performance_fingerprint": performance_fingerprint(request.resolved),
                 "family": request.resolved.profile.family,
                 "workers": request.workers,
                 "dimensions": [width, height],
@@ -144,18 +123,34 @@ def _runtime_estimate(
     entry = knowledge["profiles"].get(profile_id)
     width, height = request.resolved.profile.output.image_size
     megapixels = width * height / 1_000_000.0
-    if observations:
-        per_candidate = mean(float(item["duration_seconds"]) for item in observations)
-        confidence = "local-observation"
+    production = [item for item in observations if item.get("kind") == "production"]
+    probes = [item for item in observations if item.get("kind") == "probe"]
+    if production:
+        values = [float(item["seconds_per_candidate"]) for item in production]
+        per_candidate = median(values)
+        cross_worker = any(item.get("workers") != request.workers for item in production)
+        confidence = (
+            "local-production-cross-worker"
+            if cross_worker
+            else "local-production" if len(production) >= 3 else "local-production-low-sample"
+        )
+        observation_count = len(production)
+        evidence = [str(request.observation_path)]
+    elif probes:
+        per_candidate = mean(float(item["duration_seconds"]) for item in probes)
+        confidence = "local-probe"
+        observation_count = len(probes)
         evidence = [str(request.observation_path)]
     elif entry:
         per_candidate = float(entry["seconds_per_candidate"][request.resolved.profile.family])
         per_candidate *= max(0.1, megapixels / float(knowledge["reference_megapixels"]))
         confidence = str(entry["confidence"])
+        observation_count = 0
         evidence = list(entry.get("evidence", ()))
     else:
         per_candidate = max(0.25, megapixels)
         confidence = "low"
+        observation_count = 0
         evidence = []
     effective_workers = max(1.0, request.workers * (0.82 if request.workers > 1 else 1.0))
     expected = per_candidate * request.resolved.profile.run.num_images / effective_workers
@@ -163,6 +158,9 @@ def _runtime_estimate(
         "high": (0.85, 1.25),
         "medium": (0.70, 1.55),
         "local-observation": (0.75, 1.45),
+        "local-production": (0.85, 1.20),
+        "local-production-low-sample": (0.60, 1.75),
+        "local-production-cross-worker": (0.50, 2.00),
         "local-probe": (0.75, 1.50),
         "low": (0.50, 2.50),
     }
@@ -174,6 +172,7 @@ def _runtime_estimate(
         "confidence": confidence,
         "seconds_per_candidate": round(per_candidate, 6),
         "evidence": evidence,
+        "observation_count": observation_count,
         "model": "paired-profile-plus-local-observations-v1",
     }
 
@@ -188,7 +187,9 @@ def run_preflight(
     knowledge = json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8"))
     metadata = _appearance_metadata(request.resolved)
     environment = environment_class()
-    observations = _read_observations(request.observation_path, request, environment)
+    observations, observation_warnings = read_matching_observations(
+        request.observation_path, request.resolved, request.workers, environment
+    )
     entry = knowledge["profiles"].get(metadata.get("id"))
     expensive_or_weak = metadata.get("performance_risk") == "confirmation" or not entry or entry.get("confidence") == "low"
     probe_triggered = bool(expensive_or_weak and not observations and probe_runner is not None)
@@ -201,7 +202,7 @@ def run_preflight(
             if float(item.get("duration_seconds", 0)) <= 0:
                 raise ValueError("Probe observations require a positive duration_seconds")
         _append_observations(request.observation_path, request, environment, probe_measurements)
-        observations = probe_measurements
+        observations = [{"kind": "probe", **item} for item in probe_measurements]
     runtime = _runtime_estimate(request, metadata, observations, knowledge)
     if probe_triggered:
         runtime["confidence"] = "local-probe"
@@ -216,6 +217,27 @@ def run_preflight(
         }
         for code in warning_codes
     ]
+    warnings.extend(observation_warnings)
+    production_count = sum(item.get("kind") == "production" for item in observations)
+    if 0 < production_count < 3:
+        warnings.append(
+            {
+                "code": "LOCAL_OBSERVATION_LOW_SAMPLE",
+                "severity": "info",
+                "requires_acknowledgement": False,
+                "evidence": [str(request.observation_path)],
+            }
+        )
+    production_values = [float(item["seconds_per_candidate"]) for item in observations if item.get("kind") == "production"]
+    if len(production_values) >= 2 and max(production_values) / max(min(production_values), 1e-9) > 4:
+        warnings.append(
+            {
+                "code": "LOCAL_OBSERVATION_OUT_OF_RANGE",
+                "severity": "info",
+                "requires_acknowledgement": False,
+                "evidence": [str(request.observation_path)],
+            }
+        )
     disk = estimate_disk(request.output_dir, request.resolved)
     validation = [] if disk["sufficient"] else ["INSUFFICIENT_DISK_SPACE"]
     binding = {

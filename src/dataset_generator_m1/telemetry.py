@@ -40,10 +40,13 @@ class MetricsAggregator:
     paused_total_seconds: float = 0.0
     pause_started_at: float | None = None
     baseline_accepted: int = 0
+    baseline_candidate_attempts: int = 0
+    measurement_active: bool = False
     accepted: int = 0
     candidate_attempts: int = 0
     rejection_reasons: dict[str, int] = field(default_factory=dict)
     stage_timings: dict[str, list[int]] = field(default_factory=dict)
+    session_stage_timings: dict[str, list[int]] = field(default_factory=dict)
     class_counts: dict[str, int] = field(default_factory=dict)
     recipe_counts: dict[str, int] = field(default_factory=dict)
     foreground_group_counts: dict[str, int] = field(default_factory=dict)
@@ -68,6 +71,8 @@ class MetricsAggregator:
         self.candidate_attempts += 1
         for stage, duration in record.get("stage_timings_ns", {}).items():
             self.stage_timings.setdefault(stage, []).append(int(duration))
+            if self.measurement_active:
+                self.session_stage_timings.setdefault(stage, []).append(int(duration))
         for annotation in record.get("annotations", []):
             name = str(annotation["class_name"])
             self.class_counts[name] = self.class_counts.get(name, 0) + 1
@@ -80,6 +85,8 @@ class MetricsAggregator:
         self.recipe_counts[recipe] = self.recipe_counts.get(recipe, 0) + 1
         for node, duration in background.get("node_timings_ns", {}).items():
             self.stage_timings.setdefault(f"background.node.{node}", []).append(int(duration))
+            if self.measurement_active:
+                self.session_stage_timings.setdefault(f"background.node.{node}", []).append(int(duration))
         for key, value in background.get("qa", {}).items():
             if isinstance(value, (int, float)) and not isinstance(value, bool):
                 self.background_qa.setdefault(str(key), []).append(float(value))
@@ -97,6 +104,8 @@ class MetricsAggregator:
         )
         for stage, duration in record.get("stage_timings_ns", {}).items():
             self.stage_timings.setdefault(stage, []).append(int(duration))
+            if self.measurement_active:
+                self.session_stage_timings.setdefault(stage, []).append(int(duration))
 
     def record_resource(self, record: dict[str, Any]) -> None:
         for key in ("cpu_percent", "rss_bytes", "read_bytes", "write_bytes"):
@@ -144,6 +153,9 @@ class MetricsAggregator:
         self.paused_total_seconds = 0.0
         self.pause_started_at = None
         self.baseline_accepted = self.accepted
+        self.baseline_candidate_attempts = self.candidate_attempts
+        self.session_stage_timings = {}
+        self.measurement_active = True
 
     @property
     def throughput(self) -> float:
@@ -155,24 +167,29 @@ class MetricsAggregator:
         return remaining / self.throughput if self.throughput > 0 else 0.0
 
     def summary(self) -> dict[str, Any]:
-        stage_summary: dict[str, dict[str, float | int]] = {}
-        for stage, values in self.stage_timings.items():
-            ordered = sorted(values)
+        def summarize_stages(source: dict[str, list[int]]) -> dict[str, dict[str, float | int]]:
+            result: dict[str, dict[str, float | int]] = {}
+            for stage, values in source.items():
+                ordered = sorted(values)
 
-            def percentile(fraction: float) -> int:
-                if not ordered:
-                    return 0
-                return int(ordered[min(len(ordered) - 1, round((len(ordered) - 1) * fraction))])
+                def percentile(fraction: float) -> int:
+                    if not ordered:
+                        return 0
+                    return int(ordered[min(len(ordered) - 1, round((len(ordered) - 1) * fraction))])
 
-            stage_summary[stage] = {
-                "count": len(values),
-                "total_ns": int(sum(values)),
-                "mean_ns": int(mean(values)),
-                "median_ns": int(median(values)),
-                "p90_ns": percentile(0.90),
-                "p95_ns": percentile(0.95),
-                "p99_ns": percentile(0.99),
-            }
+                result[stage] = {
+                    "count": len(values),
+                    "total_ns": int(sum(values)),
+                    "mean_ns": int(mean(values)),
+                    "median_ns": int(median(values)),
+                    "p90_ns": percentile(0.90),
+                    "p95_ns": percentile(0.95),
+                    "p99_ns": percentile(0.99),
+                }
+            return result
+
+        stage_summary = summarize_stages(self.stage_timings)
+        session_stage_summary = summarize_stages(self.session_stage_timings)
         configured_total = sum(self.configured_recipe_weights.values())
         recipe_mix = {
             recipe: {
@@ -205,8 +222,10 @@ class MetricsAggregator:
         }
         return {
             "accepted_samples": self.accepted,
+            "session_accepted_samples": max(0, self.accepted - self.baseline_accepted),
             "target_samples": self.target,
             "candidate_attempts": self.candidate_attempts,
+            "session_candidate_attempts": max(0, self.candidate_attempts - self.baseline_candidate_attempts),
             "elapsed_seconds": self.elapsed_seconds,
             "wall_elapsed_seconds": self.wall_elapsed_seconds,
             "paused_seconds": self.paused_seconds,
@@ -227,6 +246,7 @@ class MetricsAggregator:
             "background_qa": qa_summary,
             "background_warnings": self.background_warnings,
             "stage_timings": stage_summary,
+            "session_stage_timings": session_stage_summary,
             "resource_peaks": self.resource_peaks,
             "workers": {"configured": self.worker_count, "active": self.active_workers, "in_flight": self.in_flight, "queued": self.queued},
             "run_state": self.run_state,

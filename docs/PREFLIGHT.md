@@ -13,7 +13,9 @@ uv run python -m dataset_generator_m1 preflight `
   --workers 4
 ```
 
-Runtime is always a range with a confidence label. The initial estimate combines versioned paired-study knowledge, image megapixels, run size, family, and worker count. Matching observations in ignored `.cache/performance-observations.jsonl` may improve later estimates. Local observations never rewrite tracked profile metadata.
+Runtime is always a range with a confidence label. The initial estimate combines versioned paired-study knowledge, image megapixels, run size, family, and worker count. Matching observations in ignored `.cache/performance-observations.jsonl` improve later estimates. Successful and cleanly interrupted production runs append sanitized observations there. One or two matching runs produce a deliberately wide low-sample range; three or more exact-worker matches produce an empirical calibrated range. Local observations never rewrite tracked profile metadata.
+
+The cost fingerprint excludes image count and seed, but includes family, dimensions, sampling, recipes, appearance, encoding, and relevant source hashes. Records contain no username, hostname, absolute asset path, or private configuration content. Malformed and obsolete records are ignored with an informational diagnostic instead of breaking preflight. Cross-worker extrapolation remains lower-confidence.
 
 When a profile is novel, weakly evidenced, or marked as confirmation-risk, preflight runs one disposable warm-up and up to three measured candidates through the production render path. The probe does not create the requested output directory. Its accepted and rejected candidate durations are retained only in the local observation cache.
 
@@ -40,6 +42,8 @@ uv run python -m dataset_generator_m1 preflight `
 ```
 
 Human-mode `generate` can show and confirm the same warnings interactively, then writes a hashed receipt under `.cache/preflight-receipts/`. Quiet and JSON generation never prompt and must receive `--receipt PATH`. There is deliberately no blanket `--accept-warnings` switch. Any relevant contract, count, dimensions, workers, evidence, or environment change invalidates the receipt.
+
+`preflight`, `generate`, and the guided workflow share one preparation interface. A prepared result binds the exact contract, output directory, worker count, environment class, warnings, disk estimate, ETA, and receipt requirements. Generation consumes that object directly; it does not repeat an expensive probe. Changing a bound input invalidates preparation.
 
 Advanced inline effects remain available. An inline stack is disclosed as unreviewed; adding patch-based
 `RandomFog` makes its known high and variable cost acknowledgement-required. Reviewed reusable bundles carry

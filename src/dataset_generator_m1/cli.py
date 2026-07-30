@@ -19,8 +19,10 @@ from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
 from .execution import resolve_worker_count
 from .generator import GenerationOptions, generate_pool, probe_profile
+from .inspection import inspect_pool
 from .overrides import OverridePlan, build_override_plan
-from .preflight import PreflightRequest, confirm_preflight, run_preflight
+from .preflight import confirm_preflight
+from .preparation import PreparationRequest, prepare_generation
 from .run_control import request_run_action, run_status
 from .workflows import benchmark, compare_artifacts, preview_backgrounds, preview_scenes, validate_project
 
@@ -108,7 +110,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     run = commands.add_parser("run", help="Inspect or control a generation coordinator")
     run_commands = run.add_subparsers(dest="run_command", required=True)
-    for action in ("status", "pause", "continue", "stop"):
+    for action in ("status", "inspect", "pause", "continue", "stop"):
         run_action = run_commands.add_parser(action, help=f"{action.capitalize()} a generation run")
         run_action.add_argument("output_dir")
         _common(run_action)
@@ -186,10 +188,11 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
         plan = _override_plan(args, {"execution.workers": args.workers})
         resolved = load_profile(args.config, plan.values, override_sources=plan.source_paths)
         workers = resolve_worker_count(None, resolved)
-        result = run_preflight(
-            PreflightRequest(resolved, Path(args.output_dir), workers),
+        prepared = prepare_generation(
+            PreparationRequest(resolved, Path(args.output_dir), workers),
             probe_runner=lambda: probe_profile(resolved),
         )
+        result = prepared.preflight
         if args.write_receipt:
             if args.output_format == "json" or args.display == "quiet":
                 raise ValueError("Writing a warning receipt requires an interactive human confirmation")
@@ -215,10 +218,11 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
         )
         resolved = load_profile(args.config, plan.values, override_sources=plan.source_paths)
         workers = resolve_worker_count(None, resolved)
-        preflight = run_preflight(
-            PreflightRequest(resolved, Path(args.output_dir), workers),
+        prepared = prepare_generation(
+            PreparationRequest(resolved, Path(args.output_dir), workers),
             probe_runner=lambda: probe_profile(resolved),
         )
+        preflight = prepared.preflight
         receipt_path = Path(args.receipt) if args.receipt else None
         if preflight["required_acknowledgements"] and receipt_path is None and args.output_format != "json" and args.display != "quiet":
             codes = ", ".join(preflight["required_acknowledgements"])
@@ -238,11 +242,14 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
                 invocation=tuple(getattr(args, "_sanitized_invocation", ())),
                 preflight_result=preflight,
                 receipt_path=receipt_path,
+                prepared=prepared,
             ),
         )
     if args.command == "run":
         if args.run_command == "status":
             return run_status(args.output_dir)
+        if args.run_command == "inspect":
+            return inspect_pool(args.output_dir)
         return request_run_action(args.output_dir, args.run_command)
     if args.command == "experiment" and args.experiment_command == "augmentations":
         return run_augmentation_study(

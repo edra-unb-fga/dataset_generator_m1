@@ -77,6 +77,11 @@ def test_resume_eta_uses_only_new_session_samples() -> None:
     now[0] = 2.0
 
     assert metrics.throughput == 0.0
-    metrics.record_sample({"annotations": [], "background": {}, "stage_timings_ns": {}})
+    metrics.record_sample({"annotations": [], "background": {}, "stage_timings_ns": {"scene_render": 30}})
     assert metrics.throughput == 0.5
     assert metrics.eta_seconds == 2.0
+    summary = metrics.summary()
+    assert summary["accepted_samples"] == 3
+    assert summary["session_accepted_samples"] == 1
+    assert summary["session_candidate_attempts"] == 1
+    assert summary["session_stage_timings"]["scene_render"]["total_ns"] == 30
