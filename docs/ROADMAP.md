@@ -20,12 +20,13 @@ dependency; unchecked items are not promises that current commands already imple
 
 ## Next
 
-- [ ] [#3](https://github.com/edra-unb-fga/dataset_generator_m1/issues/3): diagnose landing placement and visibility rejections with spatial and object-level evidence.
+- [x] [#3](https://github.com/edra-unb-fga/dataset_generator_m1/issues/3): diagnose landing placement and visibility rejections with spatial and object-level evidence.
 - [ ] [#24](https://github.com/edra-unb-fga/dataset_generator_m1/issues/24): prototype family-declared nested/overlapping placement and compositing rules on the mask foundation.
 - [ ] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure asset-disjoint split feasibility and balance before changing assignment policy.
 - [ ] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): sample the complete coordinator/worker process tree continuously enough to capture short peaks.
-- [ ] Calibrate background QA warnings and hard failures through reviewed Monte Carlo previews.
-- [ ] Establish reviewed benchmark baselines by hardware class before setting regression budgets.
+- [ ] [#29](https://github.com/edra-unb-fga/dataset_generator_m1/issues/29): improve landing requested-count fulfillment using the reviewed #3 evidence without silent policy drift.
+- [ ] [#27](https://github.com/edra-unb-fga/dataset_generator_m1/issues/27): calibrate background QA warnings and hard failures after placement diagnostics.
+- [ ] [#28](https://github.com/edra-unb-fga/dataset_generator_m1/issues/28): establish reviewed benchmark baselines by hardware class after continuous telemetry.
 
 ## Later
 

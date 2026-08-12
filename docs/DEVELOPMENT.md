@@ -59,4 +59,6 @@ intentional exception.
 - Segmentation-export change: exercise detection and segmentation for random, stratified, and asset-disjoint splits; review fidelity warnings and both family QA galleries.
 - Appearance change: run filter tests, paired invariant tests, and inspect representative images.
 - Experiment/report change: validate JSON/HTML consistency and every local artifact link.
+- Placement-diagnostics change: compare geometry/annotation signatures before and after instrumentation,
+  bound serialized record size, and run the production-path placement study.
 - Performance claim: use paired fixtures in one environment and disclose sample size and warmups.

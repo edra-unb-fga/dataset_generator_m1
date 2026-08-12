@@ -25,7 +25,19 @@ def test_metrics_include_mix_object_rejections_and_rejection_cost() -> None:
             "attempted_instances": 2,
             "intentional_negative": False,
             "annotations": [{"class_name": "dial", "source_group": "gauges"}],
-            "rejected_instances": [{"reason": "outside_frame"}],
+            "rejected_instances": [
+                {
+                    "reason": "outside_frame",
+                    "stage": "renderer.visibility",
+                    "asset": "root0/dial.png",
+                    "class_name": "dial",
+                    "group": "gauges",
+                    "scale": 0.22,
+                    "rotation_degrees": 18,
+                    "requested_objects": 2,
+                    "region": "top-left",
+                }
+            ],
             "background": {
                 "recipe_id": "mix",
                 "node_timings_ns": {"blend": 30},
@@ -56,6 +68,10 @@ def test_metrics_include_mix_object_rejections_and_rejection_cost() -> None:
         "maximum_area_error": 0.02,
         "warning_instances": 1,
     }
+    assert summary["placement_diagnostics"]["total_rejections"] == 1
+    assert summary["placement_diagnostics"]["total_object_attempts"] == 2
+    assert summary["placement_diagnostics"]["overall_rejection_rate"] == 0.5
+    assert summary["placement_diagnostics"]["by_stage"]["renderer.visibility"]["rejections"] == 1
 
 
 def test_metrics_exclude_paused_time_from_elapsed_and_eta() -> None:

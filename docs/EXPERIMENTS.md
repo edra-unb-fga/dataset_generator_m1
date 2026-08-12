@@ -66,3 +66,20 @@ visual evidence are stored in [`docs/experiments/augmentation-heavy-v1/`](experi
 Native-fog conclusions and the selected comparison sheet are stored in
 [`docs/experiments/native-fog-v1/`](experiments/native-fog-v1/).
 Raw study bundles remain ignored under `outputs/experiments/`.
+
+## Placement rejection diagnostics
+
+Run the production-path landing study:
+
+```powershell
+uv run python -m dataset_generator_m1 experiment placement `
+  --config examples/configs/landing_minimal.yaml `
+  --samples 200 `
+  --qa-samples 20 `
+  --output-dir outputs/experiments/landing-placement
+```
+
+The pool stores bounded object-attempt evidence. The study adds spatial heatmaps and failed-plan
+overlays without changing the planner. Interpret rates with their attempt denominators; shares of all
+rejections are not conditional rejection rates. Raw output remains ignored. Reviewed conclusions and
+one compact contact sheet may be promoted under `docs/experiments/`.

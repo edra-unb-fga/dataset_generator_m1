@@ -24,6 +24,7 @@ from .inspection import inspect_pool
 from .overrides import OverridePlan, build_override_plan
 from .preflight import confirm_preflight
 from .preparation import PreparationRequest, prepare_generation
+from .placement_study import PlacementStudyRequest, run_placement_study
 from .run_control import request_run_action, run_status
 from .workflows import benchmark, compare_artifacts, preview_backgrounds, preview_scenes, validate_project
 
@@ -129,6 +130,12 @@ def build_parser() -> argparse.ArgumentParser:
     augmentations.add_argument("--samples", type=int, default=20)
     augmentations.add_argument("--include-stress", action="store_true")
     _common(augmentations)
+    placement = experiment_commands.add_parser("placement", help="Diagnose landing placement and visibility rejections")
+    placement.add_argument("--config", required=True)
+    placement.add_argument("--output-dir", required=True)
+    placement.add_argument("--samples", type=int, default=200)
+    placement.add_argument("--qa-samples", type=int, default=20)
+    _common(placement)
 
     bench = commands.add_parser("benchmark", help="Benchmark fixed scene plans")
     bench.add_argument("--config", required=True)
@@ -268,6 +275,15 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
                 warmups=args.warmups,
                 samples=args.samples,
                 include_stress=args.include_stress,
+            )
+        )
+    if args.command == "experiment" and args.experiment_command == "placement":
+        return run_placement_study(
+            PlacementStudyRequest(
+                config=Path(args.config),
+                output_dir=Path(args.output_dir),
+                samples=args.samples,
+                qa_samples=args.qa_samples,
             )
         )
     if args.command == "benchmark":

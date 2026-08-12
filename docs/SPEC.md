@@ -20,6 +20,7 @@ preview backgrounds --config COMPOSER --samples-per-recipe N --output-dir DIR
 generate --config COMPOSER [--num-images N] --output-dir DIR [--resume] [--workers auto|N] [--qa-samples N]
 run status|inspect|pause|continue|stop OUTPUT_DIR
 experiment augmentations --config COMPOSER --output-dir DIR [--matrix MATRIX] [--warmups N] [--samples N] [--include-stress]
+experiment placement --config COMPOSER --samples N --qa-samples N --output-dir DIR
 benchmark --config COMPOSER --output-dir DIR [--samples N] [--warmup N]
 compare --left ARTIFACT --right ARTIFACT --output-dir DIR
 export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|asset-disjoint --splits ... --output-dir DIR
@@ -100,7 +101,7 @@ For each candidate it:
 2. Samples an aspect-preserving rectangular camera window with center jitter.
 3. Samples one constrained corner-offset homography and rejects non-convex or collapsed quadrilaterals.
 4. Samples a background recipe and intentional-negative state.
-5. Treats `instances_per_image` as an attempt count and records exhausted placement attempts.
+5. Treats `instances_per_image` as an attempt count and records bounded structured diagnostics for exhausted placement attempts.
 6. Samples local asset rotation, size, and placement with configured bbox spacing.
 
 The renderer composes each object-local transform with the same `scene_to_output` matrix used for the background. It warps RGB and alpha through the identical composed transform, rejects invisible or excessively truncated instances, and computes an axis-aligned detection box from final visible coverage at the family alpha threshold. It retains full projected coverage before later-object occlusion and visible coverage after later objects are composited. The default clipped/full transformed-box threshold is `0.70`. Incomplete background coverage is a fatal candidate geometry defect. Non-negative candidates with no accepted objects are rejected and retried.
@@ -140,6 +141,13 @@ Candidate rejection records retain incurred stage cost. Aggregates include count
 p90, p95, and p99; run summaries also include throughput, candidate/object/background rejection rates,
 top causes, rejection cost, class/group/negative distributions, configured/observed recipe mix, QA
 distributions, warnings, and resource peaks.
+
+Accepted sample records retain the sampled scale, rotation, requested object count, stable object-attempt
+identity, and output region needed to calculate conditional rejection rates. Rejected object attempts
+retain asset/class/group identity, estimated size, blocking counts, a bounded spatial-bin histogram,
+the best failed placement, projected/clipped boxes, clipped sides, visibility, region, and rejection
+stage. These diagnostics do not participate in scene planning and therefore cannot change geometry or
+annotations.
 
 The coordinator owns one Rich `Console`, Live display, logging, pool commits, and ordered JSONL output. Process workers never print. Live/full display shows accepted and attempted progress, throughput/ETA, worker/in-flight/queue state, stage p50/p95 bottleneck, rejection causes, recipe mix, and memory. Plain output is periodic and line-oriented; quiet preserves artifacts and fatal status. Resource snapshots use low-rate psutil sampling across coordinator and child processes for CPU, RSS, and process I/O.
 
@@ -182,10 +190,15 @@ difference views, and a contact sheet. `AtmosphericFog` from the archived `a3dec
 only by a disclosed `RandomFog` approximation. Timing claims are paired and environment-local; no
 cross-machine thresholds are normative.
 
+The placement study reuses normal pool generation and then reads its committed evidence. It writes a
+JSON/JSONL summary plus an image-first report, spatial heatmap, and bounded failed-plan overlays. Normal
+pools retain compact diagnostics; rejected-plan images exist only in explicit ignored studies. The
+study never tunes spacing, attempts, visibility thresholds, or acceptance policy.
+
 Export validates every source pool before creating its destination, merges compatible pools, builds a union class catalog, remaps class IDs, resolves identity and filename collisions, and writes YOLO images, labels, `data.yaml`, and `export.json`. Detection remains the default. `--task segmentation` projects the selected `family|visible|full` exact mask into one measured polygon per instance. The bounded projection targets rasterized IoU `>= 0.995` and absolute area error `<= 1%`; holes and disconnected components produce deterministic best-effort polygons and `complete_with_warnings`, while exact masks remain canonical. Serialized provenance contains logical pool IDs, schema/contract/catalog hashes, and run-manifest hashes, never absolute source-pool paths. Split assignment is deterministic. `asset-disjoint` unions samples sharing foreground or synthesized-background sources before assigning a component to one split.
 
 ## 9. Acceptance and non-goals
 
 The test suite covers strict profiles, duplicate keys, shipped examples, asset mappings, geometry/mask boxes, RNG isolation, recipe operators and provenance, telemetry fake clocks and aggregates, CLI JSON/display behavior, atomic pools/resume, process equivalence, and collision-safe export.
 
-Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Nested placement, COCO/RLE export, a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, deep hardware monitoring, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract.
+Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Nested placement, COCO/RLE export, a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, continuous process-tree monitoring, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract.

@@ -13,6 +13,8 @@ from rich.live import Live
 from rich.panel import Panel
 from rich.table import Table
 
+from .placement_diagnostics import summarize_placement_diagnostics
+
 
 DisplayMode = Literal["auto", "live", "full", "plain", "quiet"]
 
@@ -59,6 +61,8 @@ class MetricsAggregator:
     segmentation_warning_instances: int = 0
     object_attempts: int = 0
     object_rejections: int = 0
+    placement_rejections: list[dict[str, Any]] = field(default_factory=list)
+    placement_acceptances: list[dict[str, Any]] = field(default_factory=list)
     background_warnings: dict[str, int] = field(default_factory=dict)
     background_qa: dict[str, list[float]] = field(default_factory=dict)
     rejection_costs: dict[str, int] = field(default_factory=dict)
@@ -84,8 +88,23 @@ class MetricsAggregator:
             self.class_counts[name] = self.class_counts.get(name, 0) + 1
             group = str(annotation.get("source_group", "unknown"))
             self.foreground_group_counts[group] = self.foreground_group_counts.get(group, 0) + 1
+            self.placement_acceptances.append(
+                {
+                    "asset": annotation.get("source_asset", "unknown"),
+                    "class_name": annotation.get("class_name", "unknown"),
+                    "group": annotation.get("source_group", "unknown"),
+                    "scale": annotation.get("sampled_scale", 0.0),
+                    "rotation_degrees": annotation.get("sampled_rotation_degrees", 0.0),
+                    "requested_objects": annotation.get("requested_objects", record.get("attempted_instances", 0)),
+                    "region": annotation.get("region", "unknown"),
+                    "stage": "accepted",
+                    "reason": "accepted",
+                }
+            )
         self.object_attempts += int(record.get("attempted_instances", len(record.get("annotations", []))))
-        self.object_rejections += len(record.get("rejected_instances", []))
+        rejected_instances = list(record.get("rejected_instances", []))
+        self.object_rejections += len(rejected_instances)
+        self.placement_rejections.extend(rejected_instances)
         background = record.get("background", {})
         recipe = str(background.get("recipe_id", "unknown"))
         self.recipe_counts[recipe] = self.recipe_counts.get(recipe, 0) + 1
@@ -264,6 +283,9 @@ class MetricsAggregator:
             "object_attempts": self.object_attempts,
             "object_rejections": self.object_rejections,
             "object_rejection_rate": self.object_rejections / self.object_attempts if self.object_attempts else 0.0,
+            "placement_diagnostics": summarize_placement_diagnostics(
+                self.placement_rejections, self.placement_acceptances
+            ),
             "background_qa": qa_summary,
             "background_warnings": self.background_warnings,
             "stage_timings": stage_summary,
