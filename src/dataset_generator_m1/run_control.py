@@ -169,6 +169,7 @@ class RunController:
         poll_seconds: float = 0.2,
         on_pause: Callable[[], None] | None = None,
         on_continue: Callable[[], None] | None = None,
+        on_poll: Callable[[], None] | None = None,
     ) -> Literal["continue", "stop"]:
         desired = self.read()["desired_state"]
         if desired == "stopping":
@@ -186,6 +187,8 @@ class RunController:
             desired = self.read()["desired_state"]
             if desired != "paused":
                 break
+            if on_poll:
+                on_poll()
             sleep(poll_seconds)
         if self._pause_started is not None:
             self._paused_total += self.clock() - self._pause_started

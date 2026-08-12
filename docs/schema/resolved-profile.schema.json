@@ -570,6 +570,15 @@
           "minimum": 0.25,
           "title": "Resource Interval Seconds",
           "type": "number"
+        },
+        "resource_sampling": {
+          "default": "continuous",
+          "enum": [
+            "continuous",
+            "off"
+          ],
+          "title": "Resource Sampling",
+          "type": "string"
         }
       },
       "title": "TelemetryConfig",

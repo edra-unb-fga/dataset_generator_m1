@@ -33,7 +33,10 @@ def parse_set_override(expression: str) -> tuple[str, Any]:
     if not separator or not path or path.startswith(".") or path.endswith(".") or ".." in path:
         raise ValueError(f"Typed override must use path=value: {expression}")
     try:
-        value = yaml.safe_load(raw)
+        # PyYAML's YAML 1.1 resolver treats on/off/yes/no as booleans. Public
+        # typed leaves use true/false for booleans and preserve these words as
+        # enum/string values (notably telemetry.resource_sampling=off).
+        value = raw if raw.lower() in {"on", "off", "yes", "no"} else yaml.safe_load(raw)
     except yaml.YAMLError as exc:
         raise ValueError(f"Invalid YAML value in --set {expression}: {exc}") from exc
     if isinstance(value, dict):

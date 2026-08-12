@@ -944,6 +944,22 @@
           ],
           "default": null,
           "title": "Resource Interval Seconds"
+        },
+        "resource_sampling": {
+          "anyOf": [
+            {
+              "enum": [
+                "continuous",
+                "off"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resource Sampling"
         }
       },
       "title": "TelemetryInline",

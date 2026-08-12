@@ -151,6 +151,7 @@ class BackgroundSynthesisConfig(StrictModel):
 
 class TelemetryConfig(StrictModel):
     refresh_hz: float = Field(default=3.0, ge=0.5, le=10.0)
+    resource_sampling: Literal["continuous", "off"] = "continuous"
     resource_interval_seconds: float = Field(default=1.0, ge=0.25)
     plain_interval_seconds: float = Field(default=5.0, ge=0.5)
 
@@ -235,6 +236,7 @@ class ExecutionInline(StrictModel):
 
 class TelemetryInline(StrictModel):
     refresh_hz: float | None = Field(default=None, ge=0.5, le=10.0)
+    resource_sampling: Literal["continuous", "off"] | None = None
     resource_interval_seconds: float | None = Field(default=None, ge=0.25)
     plain_interval_seconds: float | None = Field(default=None, ge=0.5)
 

@@ -111,3 +111,39 @@ def test_resume_eta_uses_only_new_session_samples() -> None:
     assert summary["session_accepted_samples"] == 1
     assert summary["session_candidate_attempts"] == 1
     assert summary["session_stage_timings"]["scene_render"]["total_ns"] == 30
+
+
+def test_metrics_track_latest_process_tree_peaks_and_dropped_samples() -> None:
+    metrics = MetricsAggregator(target=1)
+    metrics.record_resource(
+        {
+            "metric_type": "process_tree_resource",
+            "session_id": "one",
+            "aggregate": {
+                "process_count": 3,
+                "cpu_percent": 120.0,
+                "rss_bytes": 1024,
+                "read_bytes": 50,
+                "write_bytes": 70,
+            },
+        }
+    )
+    metrics.record_resource(
+        {
+            "metric_type": "resource_monitor_warning",
+            "code": "RESOURCE_SAMPLES_DROPPED",
+            "dropped_samples": 4,
+        }
+    )
+
+    summary = metrics.summary()
+
+    assert summary["resource_latest"]["process_count"] == 3
+    assert summary["resource_peaks"]["process_count"] == 3
+    assert summary["resource_peaks"]["cpu_percent"] == 120.0
+    assert summary["resource_monitor"] == {
+        "samples": 1,
+        "dropped_samples": 4,
+        "sample_errors": 0,
+        "sessions": 1,
+    }

@@ -1,13 +1,14 @@
 import json
 import threading
+import time
 from pathlib import Path
 
 import numpy as np
 
 from dataset_generator_m1.config import load_profile
 from dataset_generator_m1.generator import GenerationOptions, generate_pool
-from dataset_generator_m1.run_control import request_run_action
-from dataset_generator_m1.models import OutputConfig, ReportConfig, RunConfig, SamplingConfig
+from dataset_generator_m1.run_control import request_run_action, run_status
+from dataset_generator_m1.models import OutputConfig, ReportConfig, RunConfig, SamplingConfig, TelemetryConfig
 
 
 def small_resolved():
@@ -70,6 +71,13 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert samples[0]["stage_timings_ns"]["mask_encode"] > 0
     assert samples[0]["stage_timings_ns"]["mask_write"] > 0
     assert Path(samples[0]["image_path"]).name.endswith(".png")
+    resource_records = [
+        json.loads(line)
+        for line in (pool / "metrics.jsonl").read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    assert any(record["metric_type"] == "process_tree_resource" for record in resource_records)
+    assert all("hostname" not in record and "pid" not in record for record in resource_records)
     image_path = pool / samples[0]["image_path"]
     committed_mtime = image_path.stat().st_mtime_ns
 
@@ -81,6 +89,35 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert resumed["status"] == "complete"
     assert len((pool / "samples.jsonl").read_text(encoding="utf-8").splitlines()) == 1
     assert image_path.stat().st_mtime_ns == committed_mtime
+    sessions = {
+        record["session_id"]
+        for record in (
+            json.loads(line)
+            for line in (pool / "metrics.jsonl").read_text(encoding="utf-8").splitlines()
+            if line
+        )
+        if record.get("metric_type") == "process_tree_resource"
+    }
+    assert len(sessions) == 2
+
+
+def test_resource_sampling_can_be_explicitly_disabled(tmp_path: Path) -> None:
+    resolved = small_resolved()
+    profile = resolved.profile.model_copy(
+        update={"telemetry": TelemetryConfig(resource_sampling="off", resource_interval_seconds=1.0)}
+    )
+    resolved = resolved.model_copy(update={"profile": profile})
+    pool = tmp_path / "sampling-off"
+
+    summary = generate_pool(resolved, pool, GenerationOptions(display="quiet", workers=1))
+
+    assert (pool / "metrics.jsonl").read_text(encoding="utf-8") == ""
+    assert summary["resource_monitor"] == {
+        "samples": 0,
+        "dropped_samples": 0,
+        "sample_errors": 0,
+        "sessions": 0,
+    }
 
 
 def test_pool_v1_cannot_resume_as_v2(tmp_path: Path) -> None:
@@ -169,6 +206,96 @@ def test_external_stop_creates_a_resumable_pool(tmp_path: Path, monkeypatch) -> 
 
     assert result["status"] == "interrupted"
     assert result["accepted_samples"] == 1
+    interrupted_resources = [
+        json.loads(line)
+        for line in (pool / "metrics.jsonl").read_text(encoding="utf-8").splitlines()
+        if line and json.loads(line).get("metric_type") == "process_tree_resource"
+    ]
+    assert interrupted_resources[-1]["run_state"] == "interrupted"
     resumed = generate_pool(resolved, pool, GenerationOptions(display="quiet", workers=1, resume=True))
     assert resumed["status"] == "complete"
     assert resumed["accepted_samples"] == 3
+
+
+def test_failed_generation_flushes_terminal_resource_sample(tmp_path: Path, monkeypatch) -> None:
+    import dataset_generator_m1.generator as generator_module
+
+    resolved = small_resolved()
+
+    def failed_slot(_resolved, _catalog, _slot, _starting_attempt, _pid):
+        return {"accepted": False, "image": None, "record": None, "rejections": []}
+
+    monkeypatch.setattr(generator_module, "_produce_slot", failed_slot)
+    pool = tmp_path / "failed"
+
+    summary = generate_pool(resolved, pool, GenerationOptions(display="quiet", workers=1))
+    resources = [
+        json.loads(line)
+        for line in (pool / "metrics.jsonl").read_text(encoding="utf-8").splitlines()
+        if line and json.loads(line).get("metric_type") == "process_tree_resource"
+    ]
+
+    assert summary["status"] == "failed"
+    assert resources[-1]["run_state"] == "failed"
+
+
+def test_resource_sampling_continues_while_coordinator_is_paused(tmp_path: Path, monkeypatch) -> None:
+    import dataset_generator_m1.generator as generator_module
+
+    resolved = small_resolved()
+    profile = resolved.profile.model_copy(
+        update={
+            "run": resolved.profile.run.model_copy(update={"num_images": 2}),
+            "telemetry": TelemetryConfig(resource_sampling="continuous", resource_interval_seconds=0.25),
+        }
+    )
+    resolved = resolved.model_copy(update={"profile": profile})
+    pool = tmp_path / "paused-monitor"
+    entered = threading.Event()
+    release = threading.Event()
+
+    def fake_slot(_resolved, _catalog, slot, starting_attempt, _pid):
+        if slot == 0:
+            entered.set()
+            release.wait(timeout=5)
+        return {
+            "accepted": True,
+            "image": np.zeros((128, 192, 3), dtype=np.uint8),
+            "mask_archive": b"",
+            "rejections": [],
+            "record": {
+                "schema_version": 2,
+                "slot": slot,
+                "candidate_attempt": starting_attempt,
+                "geometry_signature": f"slot-{slot}",
+                "intentional_negative": True,
+                "attempted_instances": 0,
+                "annotations": [],
+                "mask_evidence": {"schema_version": 1, "format": "npz-cropped-alpha-v1", "sha256": __import__("hashlib").sha256(b"").hexdigest(), "byte_count": 0, "image_size": [192, 128], "alpha_threshold": 8, "instances": []},
+                "rejected_instances": [],
+                "background": {"recipe_id": "direct", "node_timings_ns": {}, "qa": {}, "warnings": []},
+                "stage_timings_ns": {"scene_render": 1},
+                "execution": {"worker_pid": 1, "worker_process": False},
+            },
+        }
+
+    monkeypatch.setattr(generator_module, "_produce_slot", fake_slot)
+    result: dict = {}
+    thread = threading.Thread(
+        target=lambda: result.update(generate_pool(resolved, pool, GenerationOptions(display="quiet", workers=1)))
+    )
+    thread.start()
+    assert entered.wait(timeout=10)
+    request_run_action(pool, "pause")
+    release.set()
+    deadline = time.monotonic() + 5
+    while run_status(pool)["actual_state"] != "paused" and time.monotonic() < deadline:
+        time.sleep(0.02)
+    assert run_status(pool)["actual_state"] == "paused"
+    time.sleep(0.35)
+    request_run_action(pool, "continue")
+    thread.join(timeout=15)
+
+    records = [json.loads(line) for line in (pool / "metrics.jsonl").read_text().splitlines() if line]
+    assert result["status"] == "complete"
+    assert any(record.get("run_state") == "paused" for record in records)

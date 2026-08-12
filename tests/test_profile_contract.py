@@ -79,6 +79,7 @@ def test_profile_is_strict_and_resolves_family_contract(tmp_path: Path) -> None:
 
     assert resolved.profile.family == "landing"
     assert resolved.profile.output.image_size == (320, 192)
+    assert resolved.profile.telemetry.resource_sampling == "continuous"
     assert resolved.family.classes[0] == "estrela_3"
     assert resolved.recipes.recipes["direct"].output == "canvas"
 

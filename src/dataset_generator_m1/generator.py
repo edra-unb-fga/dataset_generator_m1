@@ -17,10 +17,11 @@ from .execution import resolve_worker_count
 from .models import ResolvedProfile
 from .preflight import PreflightRequest, require_warning_receipt, run_preflight
 from .performance import DEFAULT_OBSERVATION_PATH, append_production_observation
+from .resource_monitor import ProcessTreeMonitor
 from .run_control import RunController, TerminalControlAdapter
 from .runstore import RunStore
 from .scene import ScenePlanner, SceneRejected, SceneRenderer, derive_seed
-from .telemetry import DisplayMode, MetricsAggregator, ResourceSampler, RunReporter, StageTimer
+from .telemetry import DisplayMode, MetricsAggregator, RunReporter, StageTimer
 
 if TYPE_CHECKING:
     from .preparation import PreparedGeneration
@@ -255,18 +256,42 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         controls_description=terminal_control.controls_description,
         pool_path=str(store.root),
     )
-    resources = ResourceSampler()
+    resource_monitor = (
+        ProcessTreeMonitor(interval_seconds=resolved.profile.telemetry.resource_interval_seconds)
+        if resolved.profile.telemetry.resource_sampling == "continuous"
+        else None
+    )
     reporter.start(metrics)
     terminal_control.start()
+    if resource_monitor is not None:
+        resource_monitor.start()
     qa_limit = resolved.profile.report.qa_samples if options.qa_samples is None else options.qa_samples
     status = "complete"
     interrupted = False
     fatal_error: str | None = None
 
+    def set_run_state(state: str) -> None:
+        metrics.set_run_state(state)
+        if resource_monitor is not None:
+            resource_monitor.set_run_state(state)
+
+    def drain_resource_samples() -> None:
+        if resource_monitor is None:
+            return
+        for resource in resource_monitor.drain():
+            resource.update({"accepted": metrics.accepted, "candidate_attempts": metrics.candidate_attempts})
+            store.append_metric(resource)
+            metrics.record_resource(resource)
+
+    def poll_coordinator_services() -> None:
+        drain_resource_samples()
+        reporter.update(metrics)
+
     def control_checkpoint() -> bool:
+        drain_resource_samples()
         desired = control.read()["desired_state"]
         if desired == "paused":
-            metrics.set_run_state("draining")
+            set_run_state("draining")
             metrics.set_workload(
                 worker_count=workers,
                 active_workers=0,
@@ -277,18 +302,22 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
 
         def paused() -> None:
             metrics.begin_pause()
-            metrics.set_run_state("paused")
+            set_run_state("paused")
             reporter.update(metrics, force=True)
 
         def continued() -> None:
             metrics.end_pause()
-            metrics.set_run_state("running")
+            set_run_state("running")
             reporter.update(metrics, force=True)
 
-        action = control.checkpoint(on_pause=paused, on_continue=continued)
+        action = control.checkpoint(
+            on_pause=paused,
+            on_continue=continued,
+            on_poll=poll_coordinator_services,
+        )
         if action == "stop":
             metrics.end_pause()
-            metrics.set_run_state("stopping")
+            set_run_state("stopping")
             reporter.update(metrics, force=True)
             return False
         return True
@@ -306,11 +335,7 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
             result["record"], result["image"], result["mask_archive"], qa=metrics.accepted < qa_limit
         )
         metrics.record_sample(committed)
-        resource = resources.sample_if_due(resolved.profile.telemetry.resource_interval_seconds)
-        if resource is not None:
-            resource.update({"accepted": metrics.accepted, "candidate_attempts": metrics.candidate_attempts})
-            store.append_metric(resource)
-            metrics.record_resource(resource)
+        drain_resource_samples()
         reporter.update(metrics)
         if shutil.disk_usage(store.root).free < 32 * 1024 * 1024:
             raise RuntimeError("Generation stopped because remaining disk space fell below 32 MiB")
@@ -414,13 +439,11 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
     finally:
         terminal_control.stop()
         metrics.end_pause()
-        metrics.set_run_state(status)
+        set_run_state(status)
         metrics.set_workload(worker_count=workers, active_workers=0, in_flight=0, queued=0)
-        final_resource = resources.sample_if_due(resolved.profile.telemetry.resource_interval_seconds, force=True)
-        if final_resource is not None:
-            final_resource.update({"accepted": metrics.accepted, "candidate_attempts": metrics.candidate_attempts})
-            store.append_metric(final_resource)
-            metrics.record_resource(final_resource)
+        if resource_monitor is not None:
+            resource_monitor.stop()
+            drain_resource_samples()
         summary = metrics.summary()
         summary.update(
             {

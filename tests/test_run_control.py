@@ -54,6 +54,27 @@ def test_pause_waits_without_counting_paused_time(tmp_path: Path) -> None:
     assert [event["event"] for event in events][-4:] == ["draining", "paused", "continue-requested", "continued"]
 
 
+def test_pause_checkpoint_keeps_polling_coordinator_services(tmp_path: Path) -> None:
+    clock = FakeClock()
+    controller = RunController.open(tmp_path, resume=False, clock=clock)
+    request_run_action(tmp_path, "pause", clock=clock)
+    polls: list[float] = []
+
+    def fake_sleep(seconds: float) -> None:
+        clock.advance(seconds)
+        if len(polls) == 3:
+            request_run_action(tmp_path, "continue", clock=clock)
+
+    result = controller.checkpoint(
+        sleep=fake_sleep,
+        poll_seconds=0.5,
+        on_poll=lambda: polls.append(clock()),
+    )
+
+    assert result == "continue"
+    assert len(polls) == 3
+
+
 def test_stop_during_pause_is_graceful_and_resumable(tmp_path: Path) -> None:
     clock = FakeClock()
     controller = RunController.open(tmp_path, resume=False, clock=clock)

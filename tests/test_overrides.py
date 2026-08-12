@@ -37,6 +37,14 @@ def test_set_mapping_is_rejected_because_it_is_not_a_leaf() -> None:
         parse_set_override("run={num_images: 2}")
 
 
+def test_yaml_11_boolean_words_remain_string_enum_values() -> None:
+    assert parse_set_override("telemetry.resource_sampling=off") == (
+        "telemetry.resource_sampling",
+        "off",
+    )
+    assert parse_set_override("appearance.enabled=false") == ("appearance.enabled", False)
+
+
 def test_unknown_or_wrongly_typed_override_fails_during_resolution() -> None:
     with pytest.raises(ValueError, match="Unknown override path"):
         load_profile("examples/configs/landing_minimal.yaml", {"execution.threads": 2})

@@ -155,7 +155,20 @@ the best failed placement, projected/clipped boxes, clipped sides, visibility, r
 stage. These diagnostics do not participate in scene planning and therefore cannot change geometry or
 annotations.
 
-The coordinator owns one Rich `Console`, Live display, logging, pool commits, and ordered JSONL output. Process workers never print. Live/full display shows accepted and attempted progress, throughput/ETA, worker/in-flight/queue state, stage p50/p95 bottleneck, rejection causes, recipe mix, and memory. Plain output is periodic and line-oriented; quiet preserves artifacts and fatal status. Resource snapshots use low-rate psutil sampling across coordinator and child processes for CPU, RSS, and process I/O.
+The coordinator owns one Rich `Console`, Live display, logging, pool commits, and ordered JSONL output.
+Process workers never print. Live/full display shows accepted and attempted progress, throughput/ETA,
+worker/in-flight/queue state, stage p50/p95 bottleneck, rejection causes, recipe mix, and the latest plus
+peak process-tree resources. Plain output is periodic and line-oriented; quiet preserves artifacts and
+fatal status.
+
+Telemetry profiles declare `resource_sampling: continuous|off` and `resource_interval_seconds`.
+`continuous` is the default. A coordinator-owned background monitor samples the coordinator, direct
+workers, and other descendants independently of sample commits. Sanitized records use monotonic session
+elapsed time, aggregate CPU/RSS/process I/O, process counts, and run state; they never include PIDs,
+hostnames, usernames, or absolute paths. The monitor uses a bounded buffer. The coordinator drains it to
+`metrics.jsonl`; overflow and inaccessible/disappearing-process counts remain visible. Sampling continues
+while paused, final samples are flushed for every terminal state, and resume appends a new telemetry
+session without rewriting history. `off` is the explicit controlled-comparison opt-out.
 
 The first interrupt stops normal execution, lets the active process-pool shutdown drain completed bounded work, marks the pool interrupted/resumable, and writes a final summary. A second interrupt is allowed to force Python termination. Wall-time and rejection-rate policies are profile fields. Generation consumes the deep preflight contract described in [PREFLIGHT.md](PREFLIGHT.md): validation, conservative free-disk estimation, evidence-backed ETA range, warnings, optional disposable probes, and exact warning receipts. A remaining-space guard still protects an active run.
 
