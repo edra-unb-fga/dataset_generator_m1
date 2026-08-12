@@ -23,7 +23,7 @@ experiment augmentations --config COMPOSER --output-dir DIR [--matrix MATRIX] [-
 experiment placement --config COMPOSER --samples N --qa-samples N --output-dir DIR
 benchmark --config COMPOSER --output-dir DIR [--samples N] [--warmup N]
 compare --left ARTIFACT --right ARTIFACT --output-dir DIR
-export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|asset-disjoint --splits ... --output-dir DIR
+export --pool DIR [--pool DIR...] --format yolo --strategy random|stratified|asset-disjoint --splits ... [--analyze-only] [--output-dir DIR]
 ```
 
 `start` is an interactive orchestration interface over the same atomic contracts. It discovers composers,
@@ -201,7 +201,15 @@ JSON/JSONL summary plus an image-first report, spatial heatmap, and bounded fail
 pools retain compact diagnostics; rejected-plan images exist only in explicit ignored studies. The
 study never tunes spacing, attempts, visibility thresholds, or acceptance policy.
 
-Export validates every source pool before creating its destination, merges compatible pools, builds a union class catalog, remaps class IDs, resolves identity and filename collisions, and writes YOLO images, labels, `data.yaml`, and `export.json`. Detection remains the default. `--task segmentation` projects the selected `family|visible|full` exact mask into one measured polygon per instance. The bounded projection targets rasterized IoU `>= 0.995` and absolute area error `<= 1%`; holes and disconnected components produce deterministic best-effort polygons and `complete_with_warnings`, while exact masks remain canonical. Serialized provenance contains logical pool IDs, schema/contract/catalog hashes, and run-manifest hashes, never absolute source-pool paths. Split assignment is deterministic. `asset-disjoint` unions samples sharing foreground or synthesized-background sources before assigning a component to one split.
+Export validates every source pool before creating its destination, merges compatible pools, builds a union class catalog, remaps class IDs, resolves identity and filename collisions, and writes YOLO images, labels, `data.yaml`, and `export.json`. Detection remains the default. `--task segmentation` projects the selected `family|visible|full` exact mask into one measured polygon per instance. The bounded projection targets rasterized IoU `>= 0.995` and absolute area error `<= 1%`; holes and disconnected components produce deterministic best-effort polygons and `complete_with_warnings`, while exact masks remain canonical. Serialized provenance contains logical pool IDs, schema/contract/catalog hashes, and run-manifest hashes, never absolute source-pool paths. Split assignment is deterministic.
+
+The deep split-planning module unions samples sharing foreground or synthesized-background sources,
+reports connected component sizes, per-class component support, negatives, requested/achievable sample
+distributions, and deterministic deviation metrics. It compares hash, greedy sample-balance, and greedy
+class-balance assignments. The production policy remains hash assignment. `--analyze-only` requires
+`asset-disjoint`, does not require `--output-dir`, and creates no export tree. Normal asset-disjoint
+exports embed the same analysis; structural fragility or material imbalance yields
+`complete_with_warnings` without changing assignment policy or enforcing quotas.
 
 ## 9. Acceptance and non-goals
 

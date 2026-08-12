@@ -7,6 +7,7 @@ from PIL import Image
 
 from dataset_generator_m1.annotation_evidence import encode_mask_evidence
 from dataset_generator_m1.exporter import ExportOptions, export_pools
+from dataset_generator_m1.split_planning import plan_asset_disjoint_splits
 
 
 def make_pool(root: Path, class_name: str, *, background: str, schema_version: int = 1) -> None:
@@ -155,3 +156,53 @@ def test_lossy_topology_completes_export_with_actionable_warnings(tmp_path: Path
     assert summary["fidelity"]["warning_instances"] == 1
     codes = {item["code"] for item in summary["fidelity"]["findings"][0]["warnings"]}
     assert "MASK_HOLES_FILLED" in codes
+
+
+def test_asset_disjoint_analysis_explains_impossible_and_fragile_splits() -> None:
+    samples = [
+        {"_key": "a", "annotations": [{"class_name": "dial", "source_asset": "fg/shared.png"}], "background": {"sources": ["bg/a.png"]}},
+        {"_key": "b", "annotations": [{"class_name": "dial", "source_asset": "fg/shared.png"}], "background": {"sources": ["bg/b.png"]}},
+        {"_key": "c", "annotations": [], "background": {"sources": ["bg/c.png"]}},
+    ]
+
+    plan = plan_asset_disjoint_splits(samples, {"train": 0.5, "val": 0.25, "test": 0.25}, seed=7)
+
+    assert plan["analysis"]["component_count"] == 2
+    assert plan["analysis"]["component_sizes"] == [2, 1]
+    assert plan["analysis"]["classes"]["dial"]["component_support"] == 1
+    assert plan["analysis"]["negative_samples"] == 1
+    assert plan["analysis"]["feasibility"]["all_splits_populatable"] is False
+    assert plan["analysis"]["feasibility"]["fragile_classes"] == ["dial"]
+    assert "ASSET_DISJOINT_SPLITS_IMPOSSIBLE" in {item["code"] for item in plan["analysis"]["warnings"]}
+    assert "CLASS_PARTITION_FRAGILE" in {item["code"] for item in plan["analysis"]["warnings"]}
+    assert set(plan["comparisons"]) == {"hash", "greedy-sample", "greedy-class"}
+    assert plan["selected_policy"] == "hash"
+    reversed_plan = plan_asset_disjoint_splits(list(reversed(samples)), {"train": 0.5, "val": 0.25, "test": 0.25}, seed=7)
+    assert reversed_plan["analysis"] == plan["analysis"]
+    assert reversed_plan["comparisons"] == plan["comparisons"]
+    assert reversed_plan["assignments"] == plan["assignments"]
+
+
+def test_analyze_only_writes_no_export_tree_and_matches_embedded_analysis(tmp_path: Path) -> None:
+    left, right = tmp_path / "left", tmp_path / "right"
+    make_pool(left, "class-a", background="root0/a.png")
+    make_pool(right, "class-b", background="root0/b.png")
+    output = tmp_path / "unused-export"
+    options = ExportOptions(
+        strategy="asset-disjoint",
+        splits={"train": 0.5, "val": 0.5},
+        analyze_only=True,
+    )
+
+    analysis = export_pools([left, right], None, options)
+    exported = export_pools(
+        [left, right],
+        tmp_path / "actual-export",
+        ExportOptions(strategy="asset-disjoint", splits={"train": 0.5, "val": 0.5}),
+    )
+
+    assert analysis["mode"] == "analyze-only"
+    assert not output.exists()
+    assert analysis["split_analysis"] == exported["split_analysis"]
+    assert exported["status"] == "complete_with_warnings"
+    assert str(left.resolve()) not in json.dumps(analysis)

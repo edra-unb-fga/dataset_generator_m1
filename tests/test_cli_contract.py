@@ -127,3 +127,21 @@ def test_export_cli_exposes_segmentation_task_and_mask_semantics() -> None:
 
     assert args.task == "segmentation"
     assert args.mask_semantics == "full"
+
+
+def test_asset_disjoint_analyze_only_does_not_require_output_directory() -> None:
+    args = build_parser().parse_args(
+        [
+            "export",
+            "--pool",
+            "pool",
+            "--strategy",
+            "asset-disjoint",
+            "--analyze-only",
+            "--output-format",
+            "json",
+        ]
+    )
+
+    assert args.analyze_only is True
+    assert args.output_dir is None

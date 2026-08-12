@@ -83,3 +83,20 @@ The pool stores bounded object-attempt evidence. The study adds spatial heatmaps
 overlays without changing the planner. Interpret rates with their attempt denominators; shares of all
 rejections are not conditional rejection rates. Raw output remains ignored. Reviewed conclusions and
 one compact contact sheet may be promoted under `docs/experiments/`.
+
+## Asset-disjoint feasibility
+
+Analyze a validated pool without creating an export tree:
+
+```powershell
+uv run python -m dataset_generator_m1 export `
+  --pool outputs/pool-a `
+  --strategy asset-disjoint `
+  --splits train=0.8,val=0.1,test=0.1 `
+  --analyze-only `
+  --output-format json
+```
+
+The reviewed [landing/manometro study](experiments/asset-disjoint-v1/README.md) compares current hash,
+greedy sample-balance, and greedy class-balance assignments. It found connectivity—not allocator
+choice—to be the limiting factor. Raw study pools remain ignored.

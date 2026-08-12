@@ -22,7 +22,7 @@ dependency; unchecked items are not promises that current commands already imple
 
 - [x] [#3](https://github.com/edra-unb-fga/dataset_generator_m1/issues/3): diagnose landing placement and visibility rejections with spatial and object-level evidence.
 - [x] [#24](https://github.com/edra-unb-fga/dataset_generator_m1/issues/24): select the family-declared `typed-mixed` nested-placement model through a retained prototype.
-- [ ] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure asset-disjoint split feasibility and balance before changing assignment policy.
+- [x] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure and expose asset-disjoint split feasibility without changing hash assignment policy. The infeasible reviewed pools motivate [#33](https://github.com/edra-unb-fga/dataset_generator_m1/issues/33), a separate pre-generation source/catalog partitioning study.
 - [ ] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): sample the complete coordinator/worker process tree continuously enough to capture short peaks.
 - [ ] [#29](https://github.com/edra-unb-fga/dataset_generator_m1/issues/29): improve landing requested-count fulfillment using the reviewed #3 evidence without silent policy drift.
 - [ ] [#27](https://github.com/edra-unb-fga/dataset_generator_m1/issues/27): calibrate background QA warnings and hard failures after placement diagnostics.
