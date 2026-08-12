@@ -54,6 +54,9 @@ intentional exception.
 - Configurator/catalog change: run configurator, override, profile, CLI, and preflight contracts; confirm every executable effect has file-backed guidance.
 - Guided-start/display change: run `tests/test_guided_start.py`, run-control and telemetry contracts; verify non-TTY refusal and one saved-composer journey.
 - Generation/control change: run `tests/test_run_control.py`, `tests/test_generation_pool_contract.py`, `tests/test_preparation_inspection.py`, and telemetry contracts; exercise an external stop followed by resume and inspect the resulting pool.
+- Resource-monitor change: use fake-clock/tree tests for coordinator/direct/descendant aggregation,
+  disappearing processes, bounded overflow, pause polling, terminal-state flush, opt-out, and resume
+  sessions; pair monitor-on/off production runs before making overhead claims.
 - Geometry/annotation change: run scene, imaging, annotation-evidence, QA, inspection, and export contracts.
 - Pool mask-evidence change: run annotation-evidence, generation-pool, inspection, scene, and export contracts; compare serial/process mask hashes and inspect both maintained families.
 - Segmentation-export change: exercise detection and segmentation for random, stratified, and asset-disjoint splits; review fidelity warnings and both family QA galleries.

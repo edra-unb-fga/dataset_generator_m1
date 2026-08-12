@@ -6,7 +6,6 @@ from statistics import mean, median
 from time import perf_counter, perf_counter_ns
 from typing import Any, Callable, Literal
 
-import psutil
 from rich.columns import Columns
 from rich.console import Console, Group
 from rich.live import Live
@@ -67,6 +66,11 @@ class MetricsAggregator:
     background_qa: dict[str, list[float]] = field(default_factory=dict)
     rejection_costs: dict[str, int] = field(default_factory=dict)
     resource_peaks: dict[str, float] = field(default_factory=dict)
+    resource_latest: dict[str, float | int] = field(default_factory=dict)
+    resource_samples: int = 0
+    resource_dropped_samples: int = 0
+    resource_sample_errors: int = 0
+    resource_sessions: set[str] = field(default_factory=set)
     worker_count: int = 1
     active_workers: int = 0
     in_flight: int = 0
@@ -140,9 +144,30 @@ class MetricsAggregator:
                 self.session_stage_timings.setdefault(stage, []).append(int(duration))
 
     def record_resource(self, record: dict[str, Any]) -> None:
-        for key in ("cpu_percent", "rss_bytes", "read_bytes", "write_bytes"):
-            value = float(record.get(key, 0.0))
+        if record.get("metric_type") == "resource_monitor_warning":
+            self.resource_dropped_samples += int(record.get("dropped_samples", 0))
+            if record.get("code") == "RESOURCE_SAMPLE_FAILED":
+                self.resource_sample_errors += 1
+            session = record.get("session_id")
+            if session:
+                self.resource_sessions.add(str(session))
+            return
+        values = record.get("aggregate", record)
+        for key in ("process_count", "cpu_percent", "rss_bytes", "read_bytes", "write_bytes"):
+            value = float(values.get(key, 0.0))
             self.resource_peaks[key] = max(self.resource_peaks.get(key, 0.0), value)
+        self.resource_latest = {
+            "process_count": int(values.get("process_count", 0)),
+            "cpu_percent": float(values.get("cpu_percent", 0.0)),
+            "rss_bytes": int(values.get("rss_bytes", 0)),
+            "read_bytes": int(values.get("read_bytes", 0)),
+            "write_bytes": int(values.get("write_bytes", 0)),
+        }
+        self.resource_samples += 1
+        self.resource_sample_errors += int(record.get("sample_errors", 0))
+        session = record.get("session_id")
+        if session:
+            self.resource_sessions.add(str(session))
 
     def set_workload(self, *, worker_count: int, active_workers: int, in_flight: int, queued: int) -> None:
         self.worker_count = worker_count
@@ -291,46 +316,15 @@ class MetricsAggregator:
             "stage_timings": stage_summary,
             "session_stage_timings": session_stage_summary,
             "resource_peaks": self.resource_peaks,
+            "resource_latest": self.resource_latest,
+            "resource_monitor": {
+                "samples": self.resource_samples,
+                "dropped_samples": self.resource_dropped_samples,
+                "sample_errors": self.resource_sample_errors,
+                "sessions": len(self.resource_sessions),
+            },
             "workers": {"configured": self.worker_count, "active": self.active_workers, "in_flight": self.in_flight, "queued": self.queued},
             "run_state": self.run_state,
-        }
-
-
-class ResourceSampler:
-    def __init__(self) -> None:
-        self.process = psutil.Process()
-        self.process.cpu_percent(None)
-        self.last_sample_at = float("-inf")
-
-    def sample_if_due(self, interval_seconds: float, *, force: bool = False) -> dict[str, Any] | None:
-        now = perf_counter()
-        if not force and now - self.last_sample_at < interval_seconds:
-            return None
-        self.last_sample_at = now
-        return self.sample()
-
-    def sample(self) -> dict[str, Any]:
-        processes = [self.process, *self.process.children(recursive=True)]
-        cpu_percent = 0.0
-        rss_bytes = 0
-        read_bytes = 0
-        write_bytes = 0
-        for process in processes:
-            try:
-                io = process.io_counters()
-                memory = process.memory_info()
-                cpu_percent += process.cpu_percent(None)
-                rss_bytes += int(memory.rss)
-                read_bytes += int(getattr(io, "read_bytes", 0))
-                write_bytes += int(getattr(io, "write_bytes", 0))
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                continue
-        return {
-            "timestamp_seconds": perf_counter(),
-            "cpu_percent": cpu_percent,
-            "rss_bytes": rss_bytes,
-            "read_bytes": read_bytes,
-            "write_bytes": write_bytes,
         }
 
 
@@ -462,6 +456,10 @@ class RunReporter:
         if metrics.background_warnings:
             top_warnings = sorted(metrics.background_warnings.items(), key=lambda item: item[1], reverse=True)[:3]
             warning_lines.extend(f"{name}: {count}" for name, count in top_warnings)
+        if metrics.resource_dropped_samples:
+            warning_lines.append(f"Resource samples dropped: {metrics.resource_dropped_samples}")
+        if metrics.resource_sample_errors:
+            warning_lines.append(f"Resource sample errors: {metrics.resource_sample_errors}")
         if metrics.stage_timings:
             slowest = max(metrics.stage_timings, key=lambda key: sum(metrics.stage_timings[key]) / len(metrics.stage_timings[key]))
             ordered = sorted(metrics.stage_timings[slowest])
@@ -469,12 +467,13 @@ class RunReporter:
             p95 = ordered[min(len(ordered) - 1, round((len(ordered) - 1) * 0.95))] / 1_000_000
             performance.add_row("Bottleneck p50/p95", f"{slowest} {p50:.1f}/{p95:.1f} ms")
         if metrics.resource_peaks:
+            latest = metrics.resource_latest
             performance.add_row(
-                "Resources",
-                f"CPU {metrics.resource_peaks.get('cpu_percent', 0):.0f}% | "
-                f"RSS {metrics.resource_peaks.get('rss_bytes', 0) / 1024 / 1024:.1f} MiB | "
-                f"I/O R/W {metrics.resource_peaks.get('read_bytes', 0) / 1024 / 1024:.1f}/"
-                f"{metrics.resource_peaks.get('write_bytes', 0) / 1024 / 1024:.1f} MiB",
+                "Resources now/peak",
+                f"CPU {latest.get('cpu_percent', 0):.0f}/{metrics.resource_peaks.get('cpu_percent', 0):.0f}% | "
+                f"RSS {latest.get('rss_bytes', 0) / 1024 / 1024:.1f}/"
+                f"{metrics.resource_peaks.get('rss_bytes', 0) / 1024 / 1024:.1f} MiB | "
+                f"processes {latest.get('process_count', 0)}/{metrics.resource_peaks.get('process_count', 0):.0f}",
             )
         return Group(
             Panel(progress, title="Progress"),

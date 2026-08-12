@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "study": "process-tree-overhead-v1",
+  "family": "landing",
+  "appearance": "builtin:appearance/current-fast",
+  "images_per_run": 20,
+  "workers": 2,
+  "pairs": [
+    {"pair": 1, "continuous_seconds": 55.6961415, "off_seconds": 52.2076705, "delta_percent": 6.681913, "resource_samples": 54, "dropped_samples": 0},
+    {"pair": 2, "continuous_seconds": 48.7273366, "off_seconds": 50.5378245, "delta_percent": -3.582441, "resource_samples": 48, "dropped_samples": 0},
+    {"pair": 3, "continuous_seconds": 54.9396493, "off_seconds": 48.7887344, "delta_percent": 12.607244, "resource_samples": 54, "dropped_samples": 0}
+  ],
+  "continuous_mean_seconds": 53.1210425,
+  "off_mean_seconds": 50.5114098,
+  "paired_delta_median_percent": 6.681913,
+  "paired_delta_range_percent": [-3.582441, 12.607244],
+  "maximum_process_count": 3,
+  "paired_content_identical": {
+    "images": true,
+    "mask_archives": true,
+    "geometry_signatures": true,
+    "annotations": true
+  },
+  "environment": {
+    "system": "Windows 11",
+    "machine": "AMD64",
+    "logical_cpu_count": 8,
+    "python": "3.14.5",
+    "psutil": "7.2.2"
+  },
+  "conclusion": "Keep continuous sampling as the default; evidence is too variable for a universal overhead threshold."
+}

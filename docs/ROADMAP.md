@@ -23,10 +23,10 @@ dependency; unchecked items are not promises that current commands already imple
 - [x] [#3](https://github.com/edra-unb-fga/dataset_generator_m1/issues/3): diagnose landing placement and visibility rejections with spatial and object-level evidence.
 - [x] [#24](https://github.com/edra-unb-fga/dataset_generator_m1/issues/24): select the family-declared `typed-mixed` nested-placement model through a retained prototype.
 - [x] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure and expose asset-disjoint split feasibility without changing hash assignment policy. The infeasible reviewed pools motivate [#33](https://github.com/edra-unb-fga/dataset_generator_m1/issues/33), a separate pre-generation source/catalog partitioning study.
-- [ ] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): sample the complete coordinator/worker process tree continuously enough to capture short peaks.
+- [x] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): continuously sample the coordinator, workers, and descendants with bounded auditable telemetry and an explicit opt-out.
 - [ ] [#29](https://github.com/edra-unb-fga/dataset_generator_m1/issues/29): improve landing requested-count fulfillment using the reviewed #3 evidence without silent policy drift.
 - [ ] [#27](https://github.com/edra-unb-fga/dataset_generator_m1/issues/27): calibrate background QA warnings and hard failures after placement diagnostics.
-- [ ] [#28](https://github.com/edra-unb-fga/dataset_generator_m1/issues/28): establish reviewed benchmark baselines by hardware class after continuous telemetry.
+- [ ] [#28](https://github.com/edra-unb-fga/dataset_generator_m1/issues/28): establish reviewed benchmark baselines by hardware class using the continuous process-tree evidence; no universal timing budget exists yet.
 
 ## Later
 

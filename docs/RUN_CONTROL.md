@@ -32,6 +32,11 @@ Live throughput and ETA use active coordinator time only; paused time is reporte
 the ETA window starts after historical records are replayed, so prior samples are not counted as newly
 instantaneous work.
 
+Continuous resource monitoring remains active during pause and records `run_state: paused`; those samples
+do not add to active generation time. Success, failure, graceful stop, interruption, and resume each flush
+their monitor session into `metrics.jsonl`. The live Performance panel distinguishes latest aggregate
+resources from persistent peaks.
+
 Quiet and JSON generation use the same state files but never read terminal keys. Control them from another
 terminal with the `run` commands. The control record is atomically replaced and requests/transitions are
 serialized; the event log records actor, sequence, desired state, actual state, and timestamps.

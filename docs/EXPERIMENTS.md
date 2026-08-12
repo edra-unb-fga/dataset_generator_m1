@@ -100,3 +100,10 @@ uv run python -m dataset_generator_m1 export `
 The reviewed [landing/manometro study](experiments/asset-disjoint-v1/README.md) compares current hash,
 greedy sample-balance, and greedy class-balance assignments. It found connectivity—not allocator
 choice—to be the limiting factor. Raw study pools remain ignored.
+
+## Process-tree telemetry overhead
+
+The reviewed [three-pair study](experiments/process-tree-overhead-v1/README.md) compares continuous
+one-second process-tree monitoring with the explicit `off` policy using fixed 20-sample landing runs.
+Paired generated content remained identical and no resource samples were dropped. The timing range was
+too variable to establish a universal overhead budget; interpret it only as local evidence.
