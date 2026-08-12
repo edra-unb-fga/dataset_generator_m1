@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Any, Iterable
 
 import numpy as np
+import cv2
 
 
 MASK_FORMAT = "npz-cropped-alpha-v1"
@@ -16,6 +17,20 @@ MASK_FORMAT = "npz-cropped-alpha-v1"
 class EncodedMaskEvidence:
     archive_bytes: bytes
     manifest: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class PolygonProjection:
+    """A measured one-polygon projection of canonical raster mask evidence."""
+
+    polygon: tuple[tuple[int, int], ...]
+    reconstruction: np.ndarray
+    iou: float
+    area_error: float
+    components: int
+    holes: int
+    status: str
+    warnings: tuple[dict[str, str], ...]
 
 
 def visible_coverages(full_coverages: Iterable[np.ndarray]) -> tuple[np.ndarray, ...]:
@@ -33,6 +48,112 @@ def visible_coverages(full_coverages: Iterable[np.ndarray]) -> tuple[np.ndarray,
             contribution *= 1.0 - later.astype(np.float32) / 255.0
         visible.append(np.rint(np.clip(contribution, 0.0, 1.0) * 255.0).astype(np.uint8))
     return tuple(visible)
+
+
+def _mask_iou(left: np.ndarray, right: np.ndarray) -> float:
+    union = int(np.logical_or(left, right).sum())
+    return 1.0 if union == 0 else float(np.logical_and(left, right).sum() / union)
+
+
+def _merged_outer_contour(binary: np.ndarray) -> tuple[np.ndarray, int, int]:
+    contours, hierarchy = cv2.findContours(binary, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+    if not contours:
+        return np.empty((0, 2), dtype=np.int32), 0, 0
+    parents = hierarchy[0] if hierarchy is not None else None
+    outer = [
+        contour[:, 0, :]
+        for index, contour in enumerate(contours)
+        if parents is None or int(parents[index][3]) < 0
+    ]
+    holes = 0 if parents is None else sum(1 for item in parents if int(item[3]) >= 0)
+    outer.sort(
+        key=lambda points: (
+            -abs(float(cv2.contourArea(points))),
+            int(points[:, 1].min()),
+            int(points[:, 0].min()),
+        )
+    )
+    merged = np.asarray(outer[0], dtype=np.int32)
+    for segment in outer[1:]:
+        distances = ((merged[:, None, :].astype(np.int64) - segment[None, :, :].astype(np.int64)) ** 2).sum(axis=2)
+        left, right = np.unravel_index(int(np.argmin(distances)), distances.shape)
+        loop = np.concatenate((segment[right:], segment[: right + 1], merged[left : left + 1]))
+        merged = np.concatenate((merged[: left + 1], loop, merged[left + 1 :]))
+    return merged, len(outer), holes
+
+
+def polygonize_coverage(
+    coverage: np.ndarray,
+    *,
+    alpha_threshold: int,
+    target_iou: float = 0.995,
+    target_area_error: float = 0.01,
+) -> PolygonProjection:
+    """Project exact coverage to one YOLO-compatible polygon with measured loss.
+
+    Holes and disconnected components cannot be represented faithfully by one YOLO
+    polygon. They are deterministically filled/bridged and reported instead of
+    discarding the exact pool evidence or failing an otherwise useful export.
+    """
+    value = _coverage(coverage)
+    binary_canvas = (value > alpha_threshold).astype(np.uint8)
+    ys, xs = np.where(binary_canvas)
+    if not len(xs):
+        raise ValueError("A segmentation instance cannot be empty")
+    x1, x2 = int(xs.min()), int(xs.max()) + 1
+    y1, y2 = int(ys.min()), int(ys.max()) + 1
+    binary = np.ascontiguousarray(binary_canvas[y1:y2, x1:x2])
+    contour, components, holes = _merged_outer_contour(binary)
+    if len(contour) < 3:
+        raise ValueError("A segmentation instance must contain at least three contour points")
+    source_area = max(1, int(binary.sum()))
+    perimeter = float(cv2.arcLength(contour.reshape((-1, 1, 2)), True))
+    epsilons = np.linspace(0.0, max(2.0, perimeter * 0.04), 48)
+    candidates: list[tuple[int, float, float, np.ndarray, np.ndarray]] = []
+    fallback: tuple[float, float, np.ndarray, np.ndarray] | None = None
+    for epsilon in epsilons:
+        candidate = cv2.approxPolyDP(contour.reshape((-1, 1, 2)), float(epsilon), True)[:, 0, :]
+        if len(candidate) < 3:
+            continue
+        reconstructed = np.zeros_like(binary)
+        cv2.fillPoly(reconstructed, [candidate.astype(np.int32)], 1)
+        iou = _mask_iou(binary, reconstructed)
+        area_error = abs(int(reconstructed.sum()) - source_area) / source_area
+        if fallback is None or (iou, -area_error, -len(candidate)) > (fallback[0], -fallback[1], -len(fallback[2])):
+            fallback = (iou, area_error, candidate, reconstructed)
+        if iou >= target_iou and area_error <= target_area_error:
+            candidates.append((len(candidate), -iou, area_error, candidate, reconstructed))
+    if candidates:
+        _points, negative_iou, area_error, polygon, reconstruction = min(candidates, key=lambda item: item[:3])
+        iou = -negative_iou
+    else:
+        assert fallback is not None
+        iou, area_error, polygon, reconstruction = fallback
+    warnings: list[dict[str, str]] = []
+    if components > 1:
+        warnings.append({"code": "MULTIPLE_COMPONENTS", "message": f"One YOLO polygon bridges {components} disconnected components."})
+    if holes:
+        warnings.append({"code": "MASK_HOLES_FILLED", "message": f"One YOLO polygon fills {holes} mask hole(s)."})
+    if iou < target_iou or area_error > target_area_error:
+        warnings.append(
+            {
+                "code": "POLYGON_FIDELITY_BELOW_TARGET",
+                "message": f"Rasterized IoU {iou:.6f}; absolute area error {area_error:.3%}.",
+            }
+        )
+    expanded = np.zeros_like(binary_canvas)
+    expanded[y1:y2, x1:x2] = reconstruction
+    points = tuple((int(point[0]) + x1, int(point[1]) + y1) for point in polygon)
+    return PolygonProjection(
+        polygon=points,
+        reconstruction=expanded,
+        iou=float(iou),
+        area_error=float(area_error),
+        components=components,
+        holes=holes,
+        status="complete_with_warnings" if warnings else "complete",
+        warnings=tuple(warnings),
+    )
 
 
 def _coverage(value: np.ndarray) -> np.ndarray:

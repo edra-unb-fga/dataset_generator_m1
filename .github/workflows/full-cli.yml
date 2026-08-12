@@ -62,10 +62,30 @@ jobs:
           uv run python -m dataset_generator_m1 run inspect outputs/ci/landing-pool --output-format json > outputs/ci/landing-inspection.json
           uv run python -m dataset_generator_m1 run status outputs/ci/manometro-pool --output-format json > outputs/ci/manometro-status.json
           uv run python -m dataset_generator_m1 run inspect outputs/ci/manometro-pool --output-format json > outputs/ci/manometro-inspection.json
-      - name: Export landing
-        run: uv run python -m dataset_generator_m1 export --pool outputs/ci/landing-pool --strategy random --output-dir outputs/ci/landing-export --output-format json
-      - name: Export manometro
-        run: uv run python -m dataset_generator_m1 export --pool outputs/ci/manometro-pool --strategy random --output-dir outputs/ci/manometro-export --output-format json
+      - name: Export landing detection and segmentation
+        shell: bash
+        run: |
+          uv run python -m dataset_generator_m1 export --pool outputs/ci/landing-pool --task detection --strategy random --output-dir outputs/ci/landing-detection-export --output-format json
+          uv run python -m dataset_generator_m1 export --pool outputs/ci/landing-pool --task segmentation --strategy random --output-dir outputs/ci/landing-segmentation-export --output-format json
+      - name: Export manometro detection and segmentation
+        shell: bash
+        run: |
+          uv run python -m dataset_generator_m1 export --pool outputs/ci/manometro-pool --task detection --strategy random --output-dir outputs/ci/manometro-detection-export --output-format json
+          uv run python -m dataset_generator_m1 export --pool outputs/ci/manometro-pool --task segmentation --strategy random --output-dir outputs/ci/manometro-segmentation-export --output-format json
+      - name: Verify segmentation export evidence
+        shell: bash
+        run: |
+          uv run python - <<'PY'
+          import json
+          from pathlib import Path
+          for family in ("landing", "manometro"):
+              root = Path(f"outputs/ci/{family}-segmentation-export")
+              report = json.loads((root / "export.json").read_text())
+              assert report["task"] == "segmentation"
+              assert report["fidelity"]["instances"] > 0
+              assert len(list((root / "labels").rglob("*.txt"))) == 10
+              assert not any(Path(item["source_pool_id"]).is_absolute() for item in report["samples"])
+          PY
       - name: Upload compact evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -84,3 +104,5 @@ jobs:
             outputs/ci/*-pool/control.json
             outputs/ci/*-pool/control-events.jsonl
             outputs/ci/*-pool/qa/
+            outputs/ci/*-export/export.json
+            outputs/ci/*-export/data.yaml

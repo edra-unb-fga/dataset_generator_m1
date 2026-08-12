@@ -146,6 +146,8 @@ def build_parser() -> argparse.ArgumentParser:
     export = commands.add_parser("export", help="Merge generation pools and export YOLO splits")
     export.add_argument("--pool", action="append", required=True)
     export.add_argument("--format", choices=["yolo"], default="yolo")
+    export.add_argument("--task", choices=["detection", "segmentation"], default="detection")
+    export.add_argument("--mask-semantics", choices=["family", "visible", "full"], default="family")
     export.add_argument("--strategy", choices=["random", "stratified", "asset-disjoint"], default="random")
     export.add_argument("--splits", default="train=0.8,val=0.1,test=0.1")
     export.add_argument("--output-dir", required=True)
@@ -276,7 +278,14 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
         return export_pools(
             args.pool,
             args.output_dir,
-            ExportOptions(args.strategy, parse_splits(args.splits), args.preserve_names, args.seed),
+            ExportOptions(
+                strategy=args.strategy,
+                splits=parse_splits(args.splits),
+                preserve_names=args.preserve_names,
+                seed=args.seed,
+                task=args.task,
+                mask_semantics=args.mask_semantics,
+            ),
         )
     raise ValueError("Unsupported command")
 
@@ -296,7 +305,7 @@ def main(argv: list[str] | None = None) -> int:
         result = _run(args)
         if args.output_format == "json":
             sys.stdout.write(json.dumps(result, separators=(",", ":")) + "\n")
-        elif result.get("status") not in {"valid", "complete"}:
+        elif result.get("status") not in {"valid", "complete", "complete_with_warnings"}:
             message = result.get("fatal_error") or f"Command ended with status {result.get('status', 'unknown')}"
             Console(stderr=True).print(Panel.fit(str(message), title="[red]generation failed[/red]", border_style="red"))
         elif args.display != "quiet":
@@ -345,7 +354,7 @@ def main(argv: list[str] | None = None) -> int:
                 )
             else:
                 Console().print(Panel.fit(f"[bold]{result.get('status', 'complete')}[/bold]", title=args.command))
-        return 0 if result.get("status") in {"valid", "complete"} else 1
+        return 0 if result.get("status") in {"valid", "complete", "complete_with_warnings"} else 1
     except Exception as exc:
         error = {"schema_version": 1, "status": "error", "error_type": type(exc).__name__, "message": str(exc)}
         output_format = getattr(locals().get("args", None), "output_format", "human")

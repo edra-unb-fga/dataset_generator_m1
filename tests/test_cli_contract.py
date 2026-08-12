@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from dataset_generator_m1.cli import main
+from dataset_generator_m1.cli import build_parser
 
 
 def test_validate_command_supports_final_json_output(capsys) -> None:
@@ -107,3 +108,22 @@ def test_realistic_heavy_is_the_shipped_default() -> None:
 
     assert "builtin:appearance/realistic-heavy" in metadata_ids
     assert any(spec.id == "realistic-final-weather" for spec in default.profile.appearance.final)
+
+
+def test_export_cli_exposes_segmentation_task_and_mask_semantics() -> None:
+    args = build_parser().parse_args(
+        [
+            "export",
+            "--pool",
+            "pool",
+            "--task",
+            "segmentation",
+            "--mask-semantics",
+            "full",
+            "--output-dir",
+            "export",
+        ]
+    )
+
+    assert args.task == "segmentation"
+    assert args.mask_semantics == "full"

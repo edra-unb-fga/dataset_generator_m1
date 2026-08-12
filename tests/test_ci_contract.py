@@ -36,7 +36,11 @@ def test_full_cli_workflow_is_opt_in_and_covers_both_families() -> None:
     assert "manometro-ci.yaml" in workflow
     assert workflow.count("run status") == 2
     assert workflow.count("run inspect") == 2
-    assert workflow.count(" export ") == 2
+    assert workflow.count("-m dataset_generator_m1 export ") == 4
+    assert workflow.count("--task detection") == 2
+    assert workflow.count("--task segmentation") == 2
+    assert "Verify segmentation export evidence" in workflow
+    assert "report[\"fidelity\"][\"instances\"] > 0" in workflow
     assert "retention-days: 7" in workflow
     assert "outputs/ci/**/images/**" not in workflow
 
