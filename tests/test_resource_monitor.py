@@ -133,18 +133,20 @@ def test_sampler_classifies_tree_and_tolerates_disappearing_children() -> None:
 
 def test_sampler_observes_then_releases_a_short_lived_child() -> None:
     sampler = ProcessTreeSampler()
+    baseline_count = sampler.sample()["direct_workers"]["process_count"]
     child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(0.4)"])
     try:
         deadline = time.monotonic() + 1.0
         while time.monotonic() < deadline:
             active = sampler.sample()
-            if active["direct_workers"]["process_count"] >= 1:
+            if active["direct_workers"]["process_count"] >= baseline_count + 1:
                 break
             time.sleep(0.02)
-        assert active["direct_workers"]["process_count"] >= 1
+        active_count = active["direct_workers"]["process_count"]
+        assert active_count >= baseline_count + 1
     finally:
         child.wait(timeout=2)
 
     after = sampler.sample()
     assert after["aggregate"]["process_count"] >= 1
-    assert after["direct_workers"]["process_count"] == 0
+    assert after["direct_workers"]["process_count"] <= active_count - 1
