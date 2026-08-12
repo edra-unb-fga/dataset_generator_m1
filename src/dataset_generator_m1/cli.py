@@ -157,7 +157,8 @@ def build_parser() -> argparse.ArgumentParser:
     export.add_argument("--mask-semantics", choices=["family", "visible", "full"], default="family")
     export.add_argument("--strategy", choices=["random", "stratified", "asset-disjoint"], default="random")
     export.add_argument("--splits", default="train=0.8,val=0.1,test=0.1")
-    export.add_argument("--output-dir", required=True)
+    export.add_argument("--output-dir")
+    export.add_argument("--analyze-only", action="store_true")
     export.add_argument("--preserve-names", action="store_true")
     export.add_argument("--seed", type=int, default=42)
     _common(export)
@@ -301,6 +302,7 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
                 seed=args.seed,
                 task=args.task,
                 mask_semantics=args.mask_semantics,
+                analyze_only=args.analyze_only,
             ),
         )
     raise ValueError("Unsupported command")

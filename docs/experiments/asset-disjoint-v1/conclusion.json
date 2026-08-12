@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "study": "asset-disjoint-v1",
+  "requested_splits": {"train": 0.8, "val": 0.1, "test": 0.1},
+  "appearance": "builtin:appearance/current-fast",
+  "families": {
+    "landing": {
+      "samples": 200,
+      "components": 1,
+      "component_sizes": [200],
+      "largest_component_fraction": 1.0,
+      "hash_counts": {"train": 0, "val": 200, "test": 0},
+      "hash_l1_fraction_deviation": 1.8,
+      "greedy_sample_counts": {"train": 200, "val": 0, "test": 0},
+      "greedy_sample_l1_fraction_deviation": 0.4
+    },
+    "manometro": {
+      "samples": 200,
+      "components": 9,
+      "component_sizes": [190, 2, 2, 1, 1, 1, 1, 1, 1],
+      "largest_component_fraction": 0.95,
+      "hash_counts": {"train": 8, "val": 2, "test": 190},
+      "hash_l1_fraction_deviation": 1.7,
+      "greedy_sample_counts": {"train": 190, "val": 0, "test": 10},
+      "greedy_sample_l1_fraction_deviation": 0.3
+    }
+  },
+  "production_assignment_changed": false,
+  "recommendation": "Investigate source/catalog partitioning before generation."
+}

@@ -83,9 +83,14 @@ Benchmark, compare, and export:
 ```powershell
 uv run python -m dataset_generator_m1 benchmark --config examples/configs/landing_minimal.yaml --output-dir outputs/bench-A
 uv run python -m dataset_generator_m1 compare --left outputs/bench-A --right outputs/bench-B --output-dir outputs/bench-comparison
+uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --strategy asset-disjoint --splits train=0.8,val=0.1,test=0.1 --analyze-only --output-format json
 uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --strategy asset-disjoint --splits train=0.8,val=0.1,test=0.1 --output-dir outputs/landing-yolo
 uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --task segmentation --mask-semantics family --output-dir outputs/landing-yolo-segmentation
 ```
+
+Analyze-only validates the source pool and explains connected components, class support, achievable
+balance, and deterministic strategy comparisons without creating an export directory. Actual
+asset-disjoint exports preserve the hash policy and embed the same analysis in `export.json`.
 
 Run a paired heavy-augmentation study or generate with the reviewed standard appearance:
 

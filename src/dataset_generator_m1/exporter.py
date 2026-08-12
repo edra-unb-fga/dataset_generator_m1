@@ -11,6 +11,7 @@ import yaml
 
 from .annotation_evidence import decode_mask_evidence, polygonize_coverage
 from .inspection import inspect_pool
+from .split_planning import plan_asset_disjoint_splits
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,7 @@ class ExportOptions:
     seed: int = 42
     task: str = "detection"
     mask_semantics: str = "family"
+    analyze_only: bool = False
 
 
 def parse_splits(value: str) -> dict[str, float]:
@@ -142,48 +144,19 @@ def _assign_stratified(samples: list[dict[str, Any]], splits: dict[str, float], 
     return assignments
 
 
-def _assign_asset_disjoint(samples: list[dict[str, Any]], splits: dict[str, float], seed: int) -> dict[str, str]:
-    parent = list(range(len(samples)))
-
-    def find(index: int) -> int:
-        while parent[index] != index:
-            parent[index] = parent[parent[index]]
-            index = parent[index]
-        return index
-
-    def union(left: int, right: int) -> None:
-        left_root, right_root = find(left), find(right)
-        if left_root != right_root:
-            parent[right_root] = left_root
-
-    asset_owner: dict[str, int] = {}
-    for index, sample in enumerate(samples):
-        assets = [str(annotation["source_asset"]) for annotation in sample.get("annotations", [])]
-        assets.extend(str(asset) for asset in sample.get("background", {}).get("sources", []))
-        for asset in assets:
-            if asset in asset_owner:
-                union(index, asset_owner[asset])
-            else:
-                asset_owner[asset] = index
-    groups: dict[int, list[int]] = {}
-    for index in range(len(samples)):
-        groups.setdefault(find(index), []).append(index)
-    assignments: dict[str, str] = {}
-    for indices in groups.values():
-        key = "|".join(sorted(samples[index]["_key"] for index in indices))
-        split = _split_for_fraction(_hash_value(key, seed), splits)
-        for index in indices:
-            assignments[samples[index]["_key"]] = split
-    return assignments
-
-
-def export_pools(pool_paths: list[str | Path], output_dir: str | Path, options: ExportOptions | None = None) -> dict[str, Any]:
+def export_pools(
+    pool_paths: list[str | Path], output_dir: str | Path | None, options: ExportOptions | None = None
+) -> dict[str, Any]:
     options = options or ExportOptions()
     if options.task not in {"detection", "segmentation"}:
         raise ValueError(f"Unsupported YOLO task: {options.task}")
     splits = options.splits or {"train": 0.8, "val": 0.1, "test": 0.1}
-    output = Path(output_dir).resolve()
-    if output.exists() and any(output.iterdir()):
+    if options.analyze_only and options.strategy != "asset-disjoint":
+        raise ValueError("Analyze-only mode currently requires --strategy asset-disjoint")
+    if not options.analyze_only and output_dir is None:
+        raise ValueError("--output-dir is required unless --analyze-only is used")
+    output = Path(output_dir).resolve() if output_dir is not None else None
+    if output is not None and output.exists() and any(output.iterdir()):
         raise ValueError(f"Export output directory is not empty: {output}")
     pools: list[tuple[Path, dict[str, Any], list[dict[str, Any]]]] = []
     identities: list[dict[str, Any]] = []
@@ -202,21 +175,40 @@ def export_pools(pool_paths: list[str | Path], output_dir: str | Path, options: 
         for class_name in run["family"]["classes"]:
             if class_name not in classes:
                 classes.append(class_name)
-    output.mkdir(parents=True, exist_ok=True)
     class_ids = {name: index for index, name in enumerate(classes)}
     all_samples = [
         dict(sample, _pool=str(path), _pool_index=pool_index, _run=run, _key=f"{pool_index}:{sample['sample_id']}")
         for pool_index, (path, run, samples) in enumerate(pools)
         for sample in samples
     ]
+    split_plan: dict[str, Any] | None = None
     if options.strategy == "random":
         assignments = _assign_random(all_samples, splits, options.seed)
     elif options.strategy == "stratified":
         assignments = _assign_stratified(all_samples, splits, options.seed)
     elif options.strategy == "asset-disjoint":
-        assignments = _assign_asset_disjoint(all_samples, splits, options.seed)
+        split_plan = plan_asset_disjoint_splits(all_samples, splits, options.seed)
+        assignments = split_plan["assignments"]
     else:
         raise ValueError(f"Unsupported export split strategy: {options.strategy}")
+    if options.analyze_only:
+        assert split_plan is not None
+        return {
+            "schema_version": 1,
+            "status": "complete_with_warnings" if split_plan["analysis"]["warnings"] else "complete",
+            "mode": "analyze-only",
+            "strategy": options.strategy,
+            "splits": splits,
+            "source_pools": identities,
+            "split_analysis": {
+                "schema_version": split_plan["schema_version"],
+                "selected_policy": split_plan["selected_policy"],
+                "analysis": split_plan["analysis"],
+                "comparisons": split_plan["comparisons"],
+            },
+        }
+    assert output is not None
+    output.mkdir(parents=True, exist_ok=True)
     counts = {name: 0 for name in splits}
     exported: list[dict[str, Any]] = []
     fidelity_findings: list[dict[str, Any]] = []
@@ -263,7 +255,10 @@ def export_pools(pool_paths: list[str | Path], output_dir: str | Path, options: 
     (output / "data.yaml").write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
     summary = {
         "schema_version": 1,
-        "status": "complete_with_warnings" if any(item["warnings"] for item in fidelity_findings) else "complete",
+        "status": "complete_with_warnings"
+        if any(item["warnings"] for item in fidelity_findings)
+        or bool(split_plan and split_plan["analysis"]["warnings"])
+        else "complete",
         "format": "yolo",
         "task": options.task,
         "requested_mask_semantics": options.mask_semantics if options.task == "segmentation" else None,
@@ -273,6 +268,16 @@ def export_pools(pool_paths: list[str | Path], output_dir: str | Path, options: 
         "split_counts": counts,
         "classes": classes,
         "source_pools": identities,
+        "split_analysis": (
+            {
+                "schema_version": split_plan["schema_version"],
+                "selected_policy": split_plan["selected_policy"],
+                "analysis": split_plan["analysis"],
+                "comparisons": split_plan["comparisons"],
+            }
+            if split_plan
+            else None
+        ),
         "samples": exported,
         "fidelity": {
             "instances": len(fidelity_findings),
