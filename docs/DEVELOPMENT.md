@@ -55,6 +55,7 @@ intentional exception.
 - Guided-start/display change: run `tests/test_guided_start.py`, run-control and telemetry contracts; verify non-TTY refusal and one saved-composer journey.
 - Generation/control change: run `tests/test_run_control.py`, `tests/test_generation_pool_contract.py`, `tests/test_preparation_inspection.py`, and telemetry contracts; exercise an external stop followed by resume and inspect the resulting pool.
 - Geometry/annotation change: run scene, imaging, and export contracts.
+- Pool mask-evidence change: run annotation-evidence, generation-pool, inspection, scene, and export contracts; compare serial/process mask hashes and inspect both maintained families.
 - Appearance change: run filter tests, paired invariant tests, and inspect representative images.
 - Experiment/report change: validate JSON/HTML consistency and every local artifact link.
 - Performance claim: use paired fixtures in one environment and disclose sample size and warmups.

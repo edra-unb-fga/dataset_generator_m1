@@ -5,7 +5,10 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 from PIL import Image
+
+from .annotation_evidence import decode_mask_evidence
 
 
 class _LocalLinks(HTMLParser):
@@ -60,6 +63,8 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
     _jsonl(root / "rejections.jsonl", findings)
     _jsonl(root / "metrics.jsonl", findings)
     _jsonl(root / "control-events.jsonl", findings)
+    pool_schema = int(manifest.get("schema_version", 1)) if manifest else None
+    mask_archives = 0
     if manifest and summary:
         target = int(manifest.get("profile", {}).get("run", {}).get("num_images", -1))
         if int(summary.get("accepted_samples", -1)) != len(samples) or (summary.get("status") == "complete" and target != len(samples)):
@@ -86,6 +91,37 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
                     nx, ny, nw, nh = annotation.get("normalized_bbox", (-1, -1, -1, -1))
                     if not (0 <= nx <= 1 and 0 <= ny <= 1 and 0 < nw <= 1 and 0 < nh <= 1):
                         findings.append(_finding("NORMALIZED_ANNOTATION_INVALID", f"Invalid normalized bbox {annotation.get('normalized_bbox')}", sample.get("sample_id")))
+                if pool_schema == 2:
+                    evidence = sample.get("mask_evidence")
+                    if not isinstance(evidence, dict) or not evidence.get("path"):
+                        findings.append(_finding("MASK_EVIDENCE_MISSING", "Pool-v2 sample lacks mask evidence", sample.get("sample_id")))
+                        continue
+                    mask_path = root / str(evidence["path"])
+                    try:
+                        decoded = decode_mask_evidence(mask_path.read_bytes(), evidence)
+                        mask_archives += 1
+                    except Exception as exc:
+                        findings.append(_finding("MASK_EVIDENCE_INVALID", f"{type(exc).__name__}: {exc}", str(evidence.get("path"))))
+                        continue
+                    annotation_ids = {str(item.get("instance_id", "")) for item in sample.get("annotations", [])}
+                    if annotation_ids != set(decoded):
+                        findings.append(_finding("MASK_INSTANCE_DRIFT", "Mask and annotation instance IDs disagree", sample.get("sample_id")))
+                    threshold = int(evidence.get("alpha_threshold", manifest.get("annotation_policy", {}).get("alpha_threshold", 8)))
+                    for annotation in sample.get("annotations", []):
+                        instance_id = str(annotation.get("instance_id", ""))
+                        if instance_id not in decoded:
+                            continue
+                        full = decoded[instance_id]["full"]
+                        visible = decoded[instance_id]["visible"]
+                        if np.any(visible > full):
+                            findings.append(_finding("MASK_SEMANTICS_INVALID", "Visible coverage exceeds full coverage", instance_id))
+                        ys, xs = np.where(visible > threshold)
+                        if not len(xs):
+                            findings.append(_finding("MASK_EMPTY", "Accepted instance has empty visible coverage", instance_id))
+                            continue
+                        derived = [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
+                        if derived != list(annotation.get("bbox", ())):
+                            findings.append(_finding("MASK_BBOX_MISMATCH", f"Mask-derived bbox {derived} differs from annotation {annotation.get('bbox')}", instance_id))
     if control and summary and control.get("actual_state") != summary.get("status"):
         findings.append(_finding("TERMINAL_STATE_DRIFT", "Control and summary terminal states disagree"))
 
@@ -99,7 +135,9 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
         "schema_version": 1,
         "status": "valid" if not findings else "invalid",
         "pool": str(root),
+        "pool_schema_version": pool_schema,
         "samples": len(samples),
+        "mask_archives": mask_archives,
         "qa_links": len(parser.values),
         "findings": findings,
     }

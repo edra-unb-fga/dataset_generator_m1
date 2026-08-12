@@ -112,7 +112,7 @@ def test_all_shipped_profiles_recipes_variants_and_schemas_validate() -> None:
     RecipeCatalog.model_validate(load_yaml_strict("examples/configs/background_recipes.yaml"))
     VariantCatalog.model_validate(load_yaml_strict("examples/configs/landing_variants.yaml"))
     schemas = generated_json_schemas()
-    assert set(schemas) == {"composer", "resolved-profile", "profile-bundle", "profile-metadata", "background-recipes", "background-catalog", "variants"}
+    assert set(schemas) == {"composer", "resolved-profile", "profile-bundle", "profile-metadata", "family-definition", "background-recipes", "background-catalog", "variants"}
     for name, schema in schemas.items():
         committed = json.loads((Path("docs/schema") / f"{name}.schema.json").read_text(encoding="utf-8"))
         assert committed == schema

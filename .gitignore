@@ -24,6 +24,7 @@ ENV/
 .ipynb_checkpoints/
 .worktrees/
 .cache/
+/configs/local/
 
 # Environment/local config
 .env

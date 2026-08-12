@@ -12,6 +12,8 @@ This file defines the project language. It intentionally describes the domain, n
 - **Scene plan**: deterministic sampled intent for a slot and candidate attempt: asset choices, normalized random draws, placements, camera window, recipe, and one global homography.
 - **Candidate**: one attempt to realize a slot. It either becomes an accepted sample or produces a typed rejection record.
 - **Sample**: an accepted rendered image with annotations, geometry evidence, source lineage, timings, and QA evidence.
+- **Annotation evidence**: durable per-instance projected alpha coverage. Full coverage is the clipped
+  silhouette before later-object occlusion; visible coverage is the final attributable contribution.
 - **Generation pool**: a resumable, auditable collection of compatible samples and rejections. It is not yet a train/validation/test dataset.
 - **Run control record**: the atomic desired/actual coordinator state paired with an append-only event log for pause, continue, stop, completion, and resume.
 - **Variant**: a named, schema-validated overlay used to compare experimental scene or appearance settings while preserving shared choices and random quantiles.
@@ -23,7 +25,7 @@ This file defines the project language. It intentionally describes the domain, n
 ## Invariants
 
 1. Foreground and background inhabit one coplanar scene and use the same scene-to-output homography.
-2. Detection boxes are derived from final transformed visible instance masks.
+2. Detection boxes are derived from final transformed visible instance coverage at the family threshold.
 3. A foreground maps to exactly one declared class; class order is explicit and stable.
 4. Random streams are derived from `(run_seed, slot, candidate_attempt, stream_name)`. Appearance, telemetry, display mode, and worker count cannot alter scene plans or annotations.
 5. Exact Albumentations pixels are not a reproducibility promise. Scene identity, geometry, annotations, lineage, and ordered records are.

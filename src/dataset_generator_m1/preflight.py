@@ -102,11 +102,21 @@ def estimate_disk(output_dir: Path, resolved: ResolvedProfile) -> dict[str, int 
     width, height = resolved.profile.output.image_size
     raw_bytes = width * height * 3 * resolved.profile.run.num_images
     encoding_factor = 1.1 if resolved.profile.output.image_format == "png" else 0.6
-    estimated_bytes = int(raw_bytes * encoding_factor + resolved.profile.run.num_images * 64 * 1024)
+    estimated_image_bytes = int(raw_bytes * encoding_factor)
+    # Coverage archives are sparse and cropped, but preflight intentionally budgets
+    # conservatively from the maximum configured instance count. Current reviewed
+    # fixtures are substantially smaller than this 0.25 byte/pixel/instance ceiling.
+    max_instances = resolved.profile.sampling.instances_per_image[1]
+    estimated_mask_bytes = int(width * height * max_instances * 0.25 * resolved.profile.run.num_images)
+    estimated_metadata_bytes = resolved.profile.run.num_images * 64 * 1024
+    estimated_bytes = estimated_image_bytes + estimated_mask_bytes + estimated_metadata_bytes
     reserve_bytes = 64 * 1024 * 1024
     free_bytes = int(shutil.disk_usage(probe).free)
     return {
         "estimated_output_bytes": estimated_bytes,
+        "estimated_image_bytes": estimated_image_bytes,
+        "estimated_mask_bytes": estimated_mask_bytes,
+        "estimated_metadata_bytes": estimated_metadata_bytes,
         "free_bytes": free_bytes,
         "reserve_bytes": reserve_bytes,
         "sufficient": free_bytes >= estimated_bytes + reserve_bytes,

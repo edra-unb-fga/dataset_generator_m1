@@ -342,6 +342,7 @@ def generated_json_schemas() -> dict[str, dict[str, Any]]:
         "resolved-profile": GenerationProfile.model_json_schema(),
         "profile-bundle": ProfileBundle.model_json_schema(),
         "profile-metadata": ProfileMetadata.model_json_schema(),
+        "family-definition": FamilyDefinition.model_json_schema(),
         "background-recipes": RecipeCatalog.model_json_schema(),
         "background-catalog": BackgroundCatalogMetadata.model_json_schema(),
         "variants": VariantCatalog.model_json_schema(),

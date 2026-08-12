@@ -103,7 +103,7 @@ For each candidate it:
 5. Treats `instances_per_image` as an attempt count and records exhausted placement attempts.
 6. Samples local asset rotation, size, and placement with configured bbox spacing.
 
-The renderer composes each object-local transform with the same `scene_to_output` matrix used for the background. It warps RGB and alpha through the identical composed transform, rejects invisible or excessively truncated instances, and computes an axis-aligned detection box from the final alpha mask. The default clipped/full transformed-box threshold is `0.70`. Incomplete background coverage is a fatal candidate geometry defect. Non-negative candidates with no accepted objects are rejected and retried.
+The renderer composes each object-local transform with the same `scene_to_output` matrix used for the background. It warps RGB and alpha through the identical composed transform, rejects invisible or excessively truncated instances, and computes an axis-aligned detection box from final visible coverage at the family alpha threshold. It retains full projected coverage before later-object occlusion and visible coverage after later objects are composited. The default clipped/full transformed-box threshold is `0.70`. Incomplete background coverage is a fatal candidate geometry defect. Non-negative candidates with no accepted objects are rejected and retried.
 
 Square rotation preserves the full rotated canvas. Circle rotation returns the tight visible-alpha object. Appearance can change pixels but cannot change the plan, scene matrix, or annotations.
 
@@ -133,7 +133,7 @@ Every result records recipe ID/version, graph hash, source logical paths and has
 ## 6. Telemetry and display
 
 Monotonic high-resolution timing is persisted for planning, synthesis, every recipe node, rendering,
-encoding/writing, and coordinator work represented in the pool. Renderer records include exclusive
+mask encoding/writing, image encoding/writing, and coordinator work represented in the pool. Renderer records include exclusive
 background effects/affine/perspective/coverage; foreground decode/effects/rotation/resize/warp/
 visibility/composition/annotation; and final effects. Per-effect traces retain applied parameters.
 Candidate rejection records retain incurred stage cost. Aggregates include count, total, mean, median,
@@ -157,13 +157,14 @@ POOL/
   metrics.jsonl
   summary.json
   images/
+  masks/             # one safe cropped-alpha archive per sample
   qa/index.html
   state/              # internal atomic commit journal
 ```
 
-`run.json` is immutable and contains the resolved profile/family/recipes, run identity, contract and catalog hashes, sanitized invocation, preflight result and receipt binding, dependency/schema/generator versions, Git commit/dirty state, and sanitized hardware summary. Usernames, hostnames, environment dumps, and absolute source paths are excluded.
+Pool schema v2 is mask-capable by default. `run.json` is immutable and contains the resolved profile/family/recipes, run identity, contract and catalog hashes, capabilities, annotation policy, sanitized invocation, preflight result and receipt binding, dependency/schema/generator versions, Git commit/dirty state, and sanitized hardware summary. Usernames, hostnames, environment dumps, and absolute source paths are excluded.
 
-Images are atomically replaced before an fsynced per-record commit journal is updated and the readable JSONL stream is appended. Resume reconciles JSONL from that journal after a partial append. Names combine a readable run label, zero-padded slot, and stable hash. Resume is permitted only when contract and catalog fingerprints match. Completed slots are not regenerated; rejected attempt indices continue deterministically. Summary status is `complete`, `interrupted`, or `failed`.
+Images and mask archives are atomically replaced before an fsynced per-record commit journal is updated and the readable JSONL stream is appended. Each annotation has a deterministic instance ID referencing cropped uint8 full/visible alpha coverage, with identical semantics deduplicated inside a non-pickle NPZ archive. Archive, array, shape, origin, and hash evidence is inspectable. Resume reconciles JSONL from that journal after a partial append. Names combine a readable run label, zero-padded slot, and stable hash. Resume is permitted only when contract, catalog, and pool schema match. Pool-v1 remains inspectable and detection-exportable but cannot resume into v2. Completed slots are not regenerated; rejected attempt indices continue deterministically. Summary status is `complete`, `interrupted`, or `failed`.
 
 `control.json` is the atomically replaced desired/actual state record; `control-events.jsonl` is its fsynced audit stream. Pause drains the current bounded work window before the coordinator idles, continue reuses that coordinator, and stop produces an interrupted/resumable pool. Live ETA excludes paused time and begins a fresh measurement window after resume replay. The normative operator workflow is in [RUN_CONTROL.md](RUN_CONTROL.md).
 
@@ -187,4 +188,4 @@ Export merges compatible pools, builds a union class catalog, remaps class IDs, 
 
 The test suite covers strict profiles, duplicate keys, shipped examples, asset mappings, geometry/mask boxes, RNG isolation, recipe operators and provenance, telemetry fake clocks and aggregates, CLI JSON/display behavior, atomic pools/resume, process equivalence, and collision-safe export.
 
-Initial output is YOLO object detection. Stored instance masks are internal geometry evidence; segmentation export remains a later roadmap item. Also out of scope are a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, deep hardware monitoring, public Python API stability, legacy migration, and unmeasured caching.
+Pool-v2 stores exact annotation evidence; YOLO instance-segmentation export is delivered separately from this pool-contract change. Also out of scope are nested placement, a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, deep hardware monitoring, public Python API stability, legacy migration, and unmeasured caching.
