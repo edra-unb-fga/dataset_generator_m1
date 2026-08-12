@@ -42,8 +42,16 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert (pool / "rejections.jsonl").exists()
     assert (pool / "metrics.jsonl").exists()
     assert (pool / "summary.json").exists()
+    assert (pool / "masks").is_dir()
     assert (pool / "qa" / "index.html").exists()
     manifest = json.loads((pool / "run.json").read_text(encoding="utf-8"))
+    assert manifest["schema_version"] == 2
+    assert manifest["capabilities"] == {
+        "detection_boxes": True,
+        "full_instance_coverage": True,
+        "visible_instance_coverage": True,
+    }
+    assert manifest["annotation_policy"] == {"alpha_threshold": 8, "default_mask_semantics": "visible"}
     assert manifest["preflight"]["status"] == "valid"
     assert manifest["preflight"]["receipt_binding"]["value"]["workers"] == 1
     samples = [json.loads(line) for line in (pool / "samples.jsonl").read_text(encoding="utf-8").splitlines()]
@@ -53,6 +61,13 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert samples[0]["stage_timings_ns"]["image_encode_write"] > 0
     assert samples[0]["attempted_instances"] >= len(samples[0]["annotations"])
     assert samples[0]["annotations"][0]["source_group"]
+    assert samples[0]["schema_version"] == 2
+    assert samples[0]["annotations"][0]["instance_id"].startswith("instance-")
+    evidence = samples[0]["mask_evidence"]
+    assert evidence["path"].startswith("masks/")
+    assert evidence["byte_count"] == (pool / evidence["path"]).stat().st_size
+    assert samples[0]["stage_timings_ns"]["mask_encode"] > 0
+    assert samples[0]["stage_timings_ns"]["mask_write"] > 0
     assert Path(samples[0]["image_path"]).name.endswith(".png")
     image_path = pool / samples[0]["image_path"]
     committed_mtime = image_path.stat().st_mtime_ns
@@ -65,6 +80,22 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert resumed["status"] == "complete"
     assert len((pool / "samples.jsonl").read_text(encoding="utf-8").splitlines()) == 1
     assert image_path.stat().st_mtime_ns == committed_mtime
+
+
+def test_pool_v1_cannot_resume_as_v2(tmp_path: Path) -> None:
+    resolved = small_resolved()
+    pool = tmp_path / "legacy"
+    pool.mkdir()
+    (pool / "run.json").write_text(
+        json.dumps({"schema_version": 1, "contract_hash": resolved.contract_hash}), encoding="utf-8"
+    )
+
+    try:
+        generate_pool(resolved, pool, GenerationOptions(display="quiet", workers=1, resume=True))
+    except ValueError as exc:
+        assert "pool schema v1" in str(exc).lower()
+    else:
+        raise AssertionError("Pool-v1 resume must require a new pool-v2 run")
 
 
 def test_process_workers_preserve_geometry_and_annotations(tmp_path: Path) -> None:
@@ -103,15 +134,17 @@ def test_external_stop_creates_a_resumable_pool(tmp_path: Path, monkeypatch) -> 
         return {
             "accepted": True,
             "image": np.zeros((128, 192, 3), dtype=np.uint8),
+            "mask_archive": b"",
             "rejections": [],
             "record": {
-                "schema_version": 1,
+                "schema_version": 2,
                 "slot": slot,
                 "candidate_attempt": starting_attempt,
                 "geometry_signature": f"slot-{slot}",
                 "intentional_negative": True,
                 "attempted_instances": 0,
                 "annotations": [],
+                "mask_evidence": {"schema_version": 1, "format": "npz-cropped-alpha-v1", "sha256": __import__("hashlib").sha256(b"").hexdigest(), "byte_count": 0, "image_size": [192, 128], "alpha_threshold": 8, "instances": []},
                 "rejected_instances": [],
                 "background": {"recipe_id": "direct", "node_timings_ns": {}, "qa": {}, "warnings": []},
                 "stage_timings_ns": {"scene_render": 1},

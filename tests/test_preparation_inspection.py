@@ -74,6 +74,7 @@ def test_inspection_reuses_generated_pool_contract_and_reports_corruption(tmp_pa
     valid = inspect_pool(tmp_path / "pool")
     assert valid["status"] == "valid"
     assert valid["samples"] == 1
+    assert valid["mask_archives"] == 1
 
     image = next((tmp_path / "pool" / "images").iterdir())
     original_image = image.read_bytes()
@@ -102,6 +103,57 @@ def test_inspection_reuses_generated_pool_contract_and_reports_corruption(tmp_pa
     summary["accepted_samples"] = 99
     summary_path.write_text(json.dumps(summary), encoding="utf-8")
     assert any(item["code"] == "SAMPLE_COUNT_DRIFT" for item in inspect_pool(tmp_path / "pool")["findings"])
+
+
+def test_inspection_rejects_mask_corruption_and_bbox_drift(tmp_path: Path) -> None:
+    resolved = _resolved()
+    pool = tmp_path / "pool"
+    generate_pool(resolved, pool, GenerationOptions(display="quiet", workers=1))
+    sample = json.loads((pool / "samples.jsonl").read_text(encoding="utf-8"))
+    mask_path = pool / sample["mask_evidence"]["path"]
+    original = mask_path.read_bytes()
+    mask_path.write_bytes(original[:-3] + b"bad")
+    findings = inspect_pool(pool)["findings"]
+    assert any(item["code"] == "MASK_EVIDENCE_INVALID" for item in findings)
+
+    mask_path.write_bytes(original)
+    record_path = pool / "state" / "samples" / "00000000.json"
+    state = json.loads(record_path.read_text(encoding="utf-8"))
+    state["annotations"][0]["bbox"] = [0, 0, 1, 1]
+    record_path.write_text(json.dumps(state), encoding="utf-8")
+    # Rebuild readable JSONL from the modified state to simulate internally
+    # consistent record corruption rather than journal drift.
+    (pool / "samples.jsonl").write_text(json.dumps(state) + "\n", encoding="utf-8")
+    findings = inspect_pool(pool)["findings"]
+    assert any(item["code"] == "MASK_BBOX_MISMATCH" for item in findings)
+
+
+def test_pool_v1_remains_inspectable_without_mask_capability(tmp_path: Path) -> None:
+    pool = tmp_path / "legacy"
+    (pool / "images").mkdir(parents=True)
+    (pool / "qa").mkdir()
+    from PIL import Image
+
+    Image.new("RGB", (8, 8), "white").save(pool / "images" / "sample.png")
+    manifest = {
+        "schema_version": 1,
+        "contract_hash": "legacy",
+        "profile": {"run": {"num_images": 1}, "output": {"image_size": [8, 8]}},
+    }
+    sample = {"sample_id": "legacy", "image_path": "images/sample.png", "annotations": []}
+    summary = {"status": "complete", "accepted_samples": 1, "contract_hash": "legacy"}
+    control = {"actual_state": "complete"}
+    for name, value in (("run.json", manifest), ("summary.json", summary), ("control.json", control)):
+        (pool / name).write_text(json.dumps(value), encoding="utf-8")
+    (pool / "samples.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
+    for name in ("rejections.jsonl", "metrics.jsonl", "control-events.jsonl"):
+        (pool / name).write_text("", encoding="utf-8")
+    (pool / "qa" / "index.html").write_text("<html></html>", encoding="utf-8")
+
+    result = inspect_pool(pool)
+    assert result["status"] == "valid"
+    assert result["pool_schema_version"] == 1
+    assert result["mask_archives"] == 0
 
 
 def test_malformed_observation_cache_is_visible_but_not_fatal(tmp_path: Path) -> None:

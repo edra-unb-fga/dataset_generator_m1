@@ -53,6 +53,7 @@ class MetricsAggregator:
     recipe_counts: dict[str, int] = field(default_factory=dict)
     foreground_group_counts: dict[str, int] = field(default_factory=dict)
     negative_count: int = 0
+    mask_archive_bytes: int = 0
     object_attempts: int = 0
     object_rejections: int = 0
     background_warnings: dict[str, int] = field(default_factory=dict)
@@ -96,6 +97,7 @@ class MetricsAggregator:
             self.background_warnings[str(warning)] = self.background_warnings.get(str(warning), 0) + 1
         if record.get("intentional_negative"):
             self.negative_count += 1
+        self.mask_archive_bytes += int(record.get("mask_evidence", {}).get("byte_count", 0))
 
     def record_rejection(self, record: dict[str, Any]) -> None:
         self.candidate_attempts += 1
@@ -242,6 +244,8 @@ class MetricsAggregator:
             "recipe_counts": self.recipe_counts,
             "recipe_mix": recipe_mix,
             "negative_count": self.negative_count,
+            "mask_archive_bytes": self.mask_archive_bytes,
+            "mean_mask_archive_bytes": self.mask_archive_bytes / self.accepted if self.accepted else 0.0,
             "object_attempts": self.object_attempts,
             "object_rejections": self.object_rejections,
             "object_rejection_rate": self.object_rejections / self.object_attempts if self.object_attempts else 0.0,

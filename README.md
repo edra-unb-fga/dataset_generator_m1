@@ -1,6 +1,6 @@
 # Dataset Generator M1
 
-Auditable synthetic YOLO generation for the `landing` and `manometro` families. The generator uses deterministic scene plans, one shared foreground/background homography, mask-derived boxes, versioned background-mixing recipes, resumable pools, Rich live analytics, and deterministic process workers.
+Auditable synthetic YOLO generation for the `landing` and `manometro` families. The generator uses deterministic scene plans, one shared foreground/background homography, alpha-evidence-derived annotations, versioned background-mixing recipes, resumable pools, Rich live analytics, and deterministic process workers.
 
 ## Install
 

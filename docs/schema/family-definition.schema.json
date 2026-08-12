@@ -1,0 +1,131 @@
+{
+  "$defs": {
+    "AnnotationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "alpha_threshold": {
+          "default": 8,
+          "maximum": 254,
+          "minimum": 0,
+          "title": "Alpha Threshold",
+          "type": "integer"
+        },
+        "default_mask_semantics": {
+          "default": "visible",
+          "enum": [
+            "visible",
+            "full"
+          ],
+          "title": "Default Mask Semantics",
+          "type": "string"
+        }
+      },
+      "title": "AnnotationPolicy",
+      "type": "object"
+    },
+    "ClassMappingRule": {
+      "additionalProperties": false,
+      "properties": {
+        "class_template": {
+          "title": "Class Template",
+          "type": "string"
+        },
+        "pattern": {
+          "title": "Pattern",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pattern",
+        "class_template"
+      ],
+      "title": "ClassMappingRule",
+      "type": "object"
+    },
+    "RotationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "angle_degrees": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Angle Degrees",
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "square",
+            "circle"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "probability": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Probability",
+          "type": "number"
+        }
+      },
+      "required": [
+        "mode",
+        "angle_degrees"
+      ],
+      "title": "RotationPolicy",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "annotation": {
+      "$ref": "#/$defs/AnnotationPolicy"
+    },
+    "class_mapping": {
+      "items": {
+        "$ref": "#/$defs/ClassMappingRule"
+      },
+      "title": "Class Mapping",
+      "type": "array"
+    },
+    "classes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Classes",
+      "type": "array"
+    },
+    "name": {
+      "enum": [
+        "landing",
+        "manometro"
+      ],
+      "title": "Name",
+      "type": "string"
+    },
+    "rotation": {
+      "$ref": "#/$defs/RotationPolicy"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "name",
+    "classes",
+    "class_mapping",
+    "rotation"
+  ],
+  "title": "FamilyDefinition",
+  "type": "object"
+}

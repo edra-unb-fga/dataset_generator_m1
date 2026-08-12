@@ -41,10 +41,13 @@ def test_scene_uses_one_global_homography_and_boxes_visible_masks() -> None:
     assert rendered.image.shape == (160, 256, 3)
     assert rendered.annotations
     assert rendered.coverage_fraction == 1.0
-    for annotation, mask in zip(rendered.annotations, rendered.instance_masks):
+    assert len({annotation.instance_id for annotation in rendered.annotations}) == len(rendered.annotations)
+    assert len(rendered.full_coverages) == len(rendered.visible_coverages) == len(rendered.annotations)
+    for annotation, mask, full in zip(rendered.annotations, rendered.visible_coverages, rendered.full_coverages):
         ys, xs = np.where(mask > 8)
         assert annotation.bbox == (int(xs.min()), int(ys.min()), int(xs.max() + 1), int(ys.max() + 1))
         assert np.allclose(annotation.asset_to_output, rendered.scene_to_output @ annotation.asset_to_scene)
+        assert np.array_equal(mask, full)
 
 
 def test_geometry_plan_isolated_from_appearance_configuration() -> None:

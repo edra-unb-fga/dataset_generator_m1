@@ -8,3 +8,6 @@ rotation:
   mode: square
   angle_degrees: [-180.0, 180.0]
   probability: 1.0
+annotation:
+  alpha_threshold: 8
+  default_mask_semantics: visible

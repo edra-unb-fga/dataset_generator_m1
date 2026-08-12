@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from time import perf_counter_ns
 from typing import Any
 
@@ -10,6 +10,7 @@ import cv2
 import numpy as np
 
 from .assets import AssetCatalog, AssetRecord
+from .annotation_evidence import visible_coverages
 from .backgrounds import BackgroundSample
 from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox
@@ -74,6 +75,7 @@ class ScenePlan:
 
 @dataclass(frozen=True)
 class Annotation:
+    instance_id: str
     class_id: int
     class_name: str
     bbox: BBox
@@ -89,12 +91,18 @@ class Annotation:
 class RenderedScene:
     image: np.ndarray
     annotations: tuple[Annotation, ...]
-    instance_masks: tuple[np.ndarray, ...]
+    full_coverages: tuple[np.ndarray, ...]
+    visible_coverages: tuple[np.ndarray, ...]
     scene_to_output: np.ndarray
     coverage_fraction: float
     rejected_instances: tuple[dict[str, Any], ...]
     exclusive_timings_ns: dict[str, int]
     effect_traces: tuple[dict[str, Any], ...]
+
+    @property
+    def instance_masks(self) -> tuple[np.ndarray, ...]:
+        """Compatibility alias for consumers that historically used final visible masks."""
+        return self.visible_coverages
 
 
 def _weighted_choice(
@@ -396,7 +404,7 @@ class SceneRenderer:
             )
             timings["foreground_warp"] = timings.get("foreground_warp", 0) + max(0, self.clock() - started)
             started = self.clock()
-            clipped_bbox = _bbox_from_mask(warped_alpha)
+            clipped_bbox = _bbox_from_mask(warped_alpha, self.resolved.family.annotation.alpha_threshold)
             if clipped_bbox is None:
                 timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
                 rejected.append({"source": instance.asset.logical_path, "reason": "outside_frame"})
@@ -430,6 +438,7 @@ class SceneRenderer:
             )
             annotations.append(
                 Annotation(
+                    instance_id=f"instance-{index:03d}",
                     class_id=int(instance.asset.class_id),
                     class_name=str(instance.asset.class_name),
                     bbox=clipped_bbox,
@@ -446,6 +455,26 @@ class SceneRenderer:
 
         if not annotations and not plan.intentional_negative:
             raise SceneRejected("candidate has no accepted foreground annotations")
+        final_visible = visible_coverages(masks)
+        visible_annotations: list[Annotation] = []
+        for annotation, coverage in zip(annotations, final_visible):
+            final_bbox = _bbox_from_mask(coverage, self.resolved.family.annotation.alpha_threshold)
+            if final_bbox is None:
+                visible_annotations.append(annotation)
+                continue
+            x1, y1, x2, y2 = final_bbox
+            visible_annotations.append(
+                replace(
+                    annotation,
+                    bbox=final_bbox,
+                    normalized_bbox=(
+                        ((x1 + x2) / 2.0) / out_w,
+                        ((y1 + y2) / 2.0) / out_h,
+                        (x2 - x1) / out_w,
+                        (y2 - y1) / out_h,
+                    ),
+                )
+            )
         rendered, traces = apply_pipeline_traced(
             rendered,
             self.profile.appearance.final,
@@ -457,8 +486,9 @@ class SceneRenderer:
         effect_traces.extend(self._trace_record(trace) for trace in traces)
         return RenderedScene(
             image=rendered,
-            annotations=tuple(annotations),
-            instance_masks=tuple(masks),
+            annotations=tuple(visible_annotations),
+            full_coverages=tuple(masks),
+            visible_coverages=final_visible,
             scene_to_output=plan.scene_to_output,
             coverage_fraction=coverage_fraction,
             rejected_instances=tuple(rejected),

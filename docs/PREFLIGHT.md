@@ -6,6 +6,9 @@ Preflight resolves one immutable composer contract and answers three separate qu
 2. Is there enough estimated disk capacity?
 3. What environment-local runtime range and performance warnings are supported by current evidence?
 
+The disk estimate reports image, pool-metadata, and default-on pool-v2 mask-evidence budgets separately.
+Mask evidence is not silently disabled to save space; insufficient capacity remains a hard failure.
+
 ```powershell
 uv run python -m dataset_generator_m1 preflight `
   --config examples/configs/landing_minimal.yaml `

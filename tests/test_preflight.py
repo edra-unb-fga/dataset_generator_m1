@@ -41,6 +41,8 @@ def test_reviewed_standard_profile_returns_range_without_receipt_or_probe(tmp_pa
     assert result["runtime"]["lower_seconds"] < result["runtime"]["upper_seconds"]
     assert result["runtime"]["confidence"] in {"medium", "high"}
     assert result["required_acknowledgements"] == []
+    assert result["disk"]["estimated_mask_bytes"] > 0
+    assert result["disk"]["estimated_output_bytes"] > result["disk"]["estimated_image_bytes"]
     assert result["probe"]["triggered"] is False
     assert called is False
 

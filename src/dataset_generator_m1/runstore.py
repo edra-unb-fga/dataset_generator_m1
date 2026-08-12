@@ -119,6 +119,7 @@ class RunStore:
             raise ValueError(f"Output directory is not empty; use --resume: {root}")
         root.mkdir(parents=True, exist_ok=True)
         (root / "images").mkdir(exist_ok=True)
+        (root / "masks").mkdir(exist_ok=True)
         (root / "qa").mkdir(exist_ok=True)
         (root / "state" / "samples").mkdir(parents=True, exist_ok=True)
         (root / "state" / "rejections").mkdir(parents=True, exist_ok=True)
@@ -126,6 +127,8 @@ class RunStore:
             (root / name).touch(exist_ok=True)
         if run_path.exists():
             existing = json.loads(run_path.read_text(encoding="utf-8"))
+            if existing.get("schema_version", 1) != 2:
+                raise ValueError("Pool schema v1 remains auditable/exportable but cannot resume as pool schema v2; generate a new pool")
             if existing.get("contract_hash") != resolved.contract_hash or existing.get("catalog_fingerprint") != catalog.fingerprint:
                 raise ValueError("Resume contract or asset catalog fingerprint does not match the existing run")
         else:
@@ -149,7 +152,7 @@ class RunStore:
             _atomic_json(
                 run_path,
                 {
-                    "schema_version": 1,
+                    "schema_version": 2,
                     "run_id": run_id,
                     "label": resolved.profile.run.label,
                     "tags": list(resolved.profile.run.tags),
@@ -162,6 +165,12 @@ class RunStore:
                     "profile_metadata": list(resolved.profile_metadata),
                     "applied_overrides": resolved.applied_overrides,
                     "preflight": preflight,
+                    "capabilities": {
+                        "detection_boxes": True,
+                        "full_instance_coverage": True,
+                        "visible_instance_coverage": True,
+                    },
+                    "annotation_policy": resolved.family.annotation.model_dump(mode="json"),
                     "family": resolved.family.model_dump(mode="json"),
                     "recipes": resolved.recipes.model_dump(mode="json"),
                     "provenance": provenance,
@@ -196,7 +205,9 @@ class RunStore:
         extension = "jpg" if self.resolved.profile.output.image_format == "jpeg" else self.resolved.profile.output.image_format
         return sample_id, f"{sample_id}.{extension}"
 
-    def commit_sample(self, record: dict[str, Any], image: np.ndarray, *, qa: bool) -> dict[str, Any]:
+    def commit_sample(
+        self, record: dict[str, Any], image: np.ndarray, mask_archive: bytes, *, qa: bool
+    ) -> dict[str, Any]:
         sample_id, filename = self.sample_identity(int(record["slot"]))
         image_path = self.root / "images" / filename
         temporary = image_path.with_name(image_path.stem + ".tmp" + image_path.suffix)
@@ -206,15 +217,29 @@ class RunStore:
         else:
             Image.fromarray(image).save(temporary)
         os.replace(temporary, image_path)
+        image_encode_write_ns = perf_counter_ns() - started
         record = dict(record)
         record["sample_id"] = sample_id
         record["image_path"] = f"images/{filename}"
+        mask_path = self.root / "masks" / f"{sample_id}.npz"
+        mask_temporary = mask_path.with_suffix(".npz.tmp")
+        mask_started = perf_counter_ns()
+        with mask_temporary.open("wb") as handle:
+            handle.write(mask_archive)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(mask_temporary, mask_path)
+        record["mask_evidence"] = {
+            **dict(record["mask_evidence"]),
+            "path": f"masks/{sample_id}.npz",
+        }
         if qa:
             overlay = _draw_overlay(image, record.get("annotations", []))
             qa_path = self.root / "qa" / f"{sample_id}_overlay.jpg"
             Image.fromarray(overlay).save(qa_path, quality=90)
         timings = dict(record.get("stage_timings_ns", {}))
-        timings["image_encode_write"] = perf_counter_ns() - started
+        timings["mask_write"] = perf_counter_ns() - mask_started
+        timings["image_encode_write"] = image_encode_write_ns
         record["stage_timings_ns"] = timings
         _atomic_json(self.root / "state" / "samples" / f"{int(record['slot']):08d}.json", record)
         _append_jsonl(self.root / "samples.jsonl", record)

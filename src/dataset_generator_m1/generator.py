@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
+from .annotation_evidence import encode_mask_evidence
 from .assets import AssetCatalog, build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
 from .execution import resolve_worker_count
@@ -40,6 +41,7 @@ class GenerationOptions:
 
 def _annotation_record(annotation: Any) -> dict[str, Any]:
     return {
+        "instance_id": annotation.instance_id,
         "class_id": annotation.class_id,
         "class_name": annotation.class_name,
         "bbox": list(annotation.bbox),
@@ -82,12 +84,21 @@ def _produce_slot(
             with StageTimer(timings, "scene_render"):
                 rendered = renderer.render(plan, background)
             timings.update({f"render.{name}": value for name, value in rendered.exclusive_timings_ns.items()})
+            with StageTimer(timings, "mask_encode"):
+                mask_evidence = encode_mask_evidence(
+                    rendered.full_coverages,
+                    rendered.visible_coverages,
+                    (annotation.instance_id for annotation in rendered.annotations),
+                    image_size=resolved.profile.output.image_size,
+                    alpha_threshold=resolved.family.annotation.alpha_threshold,
+                )
             return {
                 "accepted": True,
                 "image": rendered.image,
+                "mask_archive": mask_evidence.archive_bytes,
                 "rejections": rejections,
                 "record": {
-                    "schema_version": 1,
+                    "schema_version": 2,
                     "slot": slot,
                     "candidate_attempt": candidate_attempt,
                     "geometry_signature": plan.geometry_signature(),
@@ -98,6 +109,7 @@ def _produce_slot(
                     "perspective_quad": plan.perspective_quad.tolist(),
                     "coverage_fraction": rendered.coverage_fraction,
                     "annotations": [_annotation_record(annotation) for annotation in rendered.annotations],
+                    "mask_evidence": mask_evidence.manifest,
                     "rejected_instances": [*plan.planning_rejections, *rendered.rejected_instances],
                     "background": {
                         "recipe_id": background.recipe_id,
@@ -256,7 +268,9 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
             status = "failed"
             fatal_error = f"Slot {slot} exhausted its candidate-attempt budget"
             return False
-        committed = store.commit_sample(result["record"], result["image"], qa=metrics.accepted < qa_limit)
+        committed = store.commit_sample(
+            result["record"], result["image"], result["mask_archive"], qa=metrics.accepted < qa_limit
+        )
         metrics.record_sample(committed)
         resource = resources.sample_if_due(resolved.profile.telemetry.resource_interval_seconds)
         if resource is not None:

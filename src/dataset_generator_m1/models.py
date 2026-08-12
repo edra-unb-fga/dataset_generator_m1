@@ -327,12 +327,18 @@ class RotationPolicy(StrictModel):
     probability: float = Field(default=1.0, ge=0.0, le=1.0)
 
 
+class AnnotationPolicy(StrictModel):
+    alpha_threshold: int = Field(default=8, ge=0, le=254)
+    default_mask_semantics: Literal["visible", "full"] = "visible"
+
+
 class FamilyDefinition(StrictModel):
     schema_version: Literal[1]
     name: Literal["landing", "manometro"]
     classes: tuple[str, ...]
     class_mapping: tuple[ClassMappingRule, ...]
     rotation: RotationPolicy
+    annotation: AnnotationPolicy = Field(default_factory=AnnotationPolicy)
 
     @model_validator(mode="after")
     def validate_classes(self) -> "FamilyDefinition":
