@@ -33,6 +33,10 @@ def test_metrics_include_mix_object_rejections_and_rejection_cost() -> None:
                 "warnings": ["high_edge_seam"],
             },
             "stage_timings_ns": {"scene_render": 40},
+            "segmentation_quality": {
+                "warning_instances": 1,
+                "instances": [{"semantics": {"visible": {"iou": 0.99, "area_error": 0.02}}}],
+            },
         }
     )
 
@@ -46,6 +50,12 @@ def test_metrics_include_mix_object_rejections_and_rejection_cost() -> None:
     assert summary["foreground_group_mix"]["gauges"]["configured_fraction"] == 1.0
     assert summary["stage_timings"]["background.node.blend"]["p95_ns"] == 30
     assert summary["background_warnings"] == {"high_edge_seam": 1}
+    assert summary["segmentation_qa"] == {
+        "projections": 1,
+        "minimum_iou": 0.99,
+        "maximum_area_error": 0.02,
+        "warning_instances": 1,
+    }
 
 
 def test_metrics_exclude_paused_time_from_elapsed_and_eta() -> None:

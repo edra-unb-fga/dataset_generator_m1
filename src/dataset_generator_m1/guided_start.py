@@ -415,7 +415,7 @@ def run_guided_start(
     session = session.advance("complete")
     inspection = inspect_pool(output_dir)
     console.print(render_results_dashboard(summary, inspection))
-    actions = ["qa", "inspect", "export", "another", "exit"]
+    actions = ["qa", "inspect", "export-detection", "export-segmentation", "another", "exit"]
     if summary["status"] in {"interrupted", "failed"}:
         actions.insert(3, "resume")
     while True:
@@ -425,10 +425,22 @@ def run_guided_start(
         elif action == "inspect":
             inspection = inspect_pool(output_dir)
             console.print(render_results_dashboard(summary, inspection))
-        elif action == "export":
-            destination = output_dir.with_name(output_dir.name + "-yolo")
-            export_pools([output_dir], destination, ExportOptions("random", parse_splits("train=0.8,val=0.1,test=0.1"), False, 42))
-            console.print(Panel(str(destination), title="YOLO export"))
+        elif action in {"export-detection", "export-segmentation"}:
+            task = action.removeprefix("export-")
+            destination = output_dir.with_name(output_dir.name + f"-yolo-{task}")
+            export_pools(
+                [output_dir],
+                destination,
+                ExportOptions(
+                    strategy="random",
+                    splits=parse_splits("train=0.8,val=0.1,test=0.1"),
+                    preserve_names=False,
+                    seed=42,
+                    task=task,
+                    mask_semantics="family",
+                ),
+            )
+            console.print(Panel(str(destination), title=f"YOLO {task} export"))
         elif action == "resume":
             summary = generate_pool(
                 resolved,

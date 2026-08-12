@@ -84,6 +84,7 @@ Benchmark, compare, and export:
 uv run python -m dataset_generator_m1 benchmark --config examples/configs/landing_minimal.yaml --output-dir outputs/bench-A
 uv run python -m dataset_generator_m1 compare --left outputs/bench-A --right outputs/bench-B --output-dir outputs/bench-comparison
 uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --strategy asset-disjoint --splits train=0.8,val=0.1,test=0.1 --output-dir outputs/landing-yolo
+uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --task segmentation --mask-semantics family --output-dir outputs/landing-yolo-segmentation
 ```
 
 Run a paired heavy-augmentation study or generate with the reviewed standard appearance:
@@ -106,7 +107,7 @@ Every command supports `--display auto|live|full|plain|quiet` and `--output-form
 
 ## Pool artifacts
 
-Generation writes `run.json`, `samples.jsonl`, `rejections.jsonl`, `metrics.jsonl`, `summary.json`, atomic images, and a small `qa/index.html` gallery. Resume requires the same resolved contract and asset-catalog fingerprint.
+Generation writes `run.json`, `samples.jsonl`, `rejections.jsonl`, `metrics.jsonl`, `summary.json`, atomic images, exact cropped-alpha mask archives, and a small `qa/index.html` gallery. Detection export remains the default; pool-v2 also supports YOLO instance segmentation without rerendering. See [docs/SEGMENTATION.md](docs/SEGMENTATION.md). Resume requires the same resolved contract and asset-catalog fingerprint.
 
 See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.md) for the normative
 contract, [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for contribution and verification rules,

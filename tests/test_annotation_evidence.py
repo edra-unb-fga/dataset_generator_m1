@@ -8,6 +8,7 @@ import pytest
 from dataset_generator_m1.annotation_evidence import (
     decode_mask_evidence,
     encode_mask_evidence,
+    polygonize_coverage,
     visible_coverages,
 )
 
@@ -63,3 +64,37 @@ def test_mask_evidence_validates_identity_and_shape_contract() -> None:
         encode_mask_evidence((mask,), (mask,), (), image_size=(8, 8), alpha_threshold=8)
     with pytest.raises(ValueError, match="shape"):
         encode_mask_evidence((mask,), (np.ones((9, 8), np.uint8),), ("instance-000",), image_size=(8, 8), alpha_threshold=8)
+
+
+def test_polygonization_meets_fidelity_targets_for_current_family_shapes() -> None:
+    circle = np.zeros((256, 256), dtype=np.uint8)
+    import cv2
+
+    cv2.circle(circle, (128, 128), 91, 255, -1, lineType=cv2.LINE_AA)
+    square = np.zeros_like(circle)
+    cv2.fillConvexPoly(square, np.array([[35, 60], [218, 31], [229, 216], [48, 224]]), 255, lineType=cv2.LINE_AA)
+
+    for mask in (circle, square):
+        result = polygonize_coverage(mask, alpha_threshold=8)
+        assert len(result.polygon) >= 3
+        assert result.iou >= 0.995
+        assert result.area_error <= 0.01
+        assert result.status == "complete"
+        assert result.warnings == ()
+
+
+def test_polygonization_warns_but_returns_best_effort_for_lossy_topology() -> None:
+    import cv2
+
+    mask = np.zeros((128, 128), dtype=np.uint8)
+    cv2.circle(mask, (42, 64), 24, 255, -1)
+    cv2.circle(mask, (94, 64), 18, 255, -1)
+    cv2.circle(mask, (42, 64), 8, 0, -1)
+
+    result = polygonize_coverage(mask, alpha_threshold=8)
+
+    assert len(result.polygon) >= 3
+    assert result.components == 2
+    assert result.holes == 1
+    assert result.status == "complete_with_warnings"
+    assert {item["code"] for item in result.warnings} >= {"MULTIPLE_COMPONENTS", "MASK_HOLES_FILLED"}

@@ -15,6 +15,7 @@ import numpy as np
 from PIL import Image
 
 from .assets import AssetCatalog
+from .annotation_evidence import decode_mask_evidence, polygonize_coverage
 from .models import ResolvedProfile
 
 
@@ -92,6 +93,60 @@ def _draw_overlay(image: np.ndarray, annotations: list[dict[str, Any]]) -> np.nd
         cv2.rectangle(output, (x1, y1), (x2, y2), (45, 212, 191), 2)
         cv2.putText(output, annotation["class_name"], (x1, max(15, y1 - 4)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (45, 212, 191), 1)
     return output
+
+
+def _mask_panel(masks: list[np.ndarray]) -> np.ndarray:
+    if not masks:
+        raise ValueError("QA mask panel requires at least one instance")
+    output = np.zeros((*masks[0].shape, 3), dtype=np.uint8)
+    colors = ((45, 212, 191), (244, 114, 182), (250, 204, 21), (96, 165, 250))
+    for index, mask in enumerate(masks):
+        strength = mask.astype(np.float32)[:, :, None] / 255.0
+        color = np.asarray(colors[index % len(colors)], dtype=np.float32)
+        output = np.maximum(output, np.rint(strength * color).astype(np.uint8))
+    return output
+
+
+def _draw_segmentation_qa(
+    image: np.ndarray,
+    annotations: list[dict[str, Any]],
+    decoded: dict[str, dict[str, np.ndarray]],
+    *,
+    alpha_threshold: int,
+    semantics: str,
+) -> np.ndarray:
+    overlay = image.copy()
+    if not annotations:
+        blank = np.zeros_like(image)
+        return np.concatenate((overlay, blank, blank, blank), axis=1)
+    full = [decoded[item["instance_id"]]["full"] for item in annotations]
+    visible = [decoded[item["instance_id"]]["visible"] for item in annotations]
+    differences: list[np.ndarray] = []
+    for item in annotations:
+        coverage = decoded[item["instance_id"]][semantics]
+        projection = polygonize_coverage(coverage, alpha_threshold=alpha_threshold)
+        points = np.asarray(projection.polygon, dtype=np.int32).reshape((-1, 1, 2))
+        cv2.polylines(overlay, [points], True, (244, 114, 182), 2)
+        exact = (coverage > alpha_threshold).astype(np.uint8)
+        differences.append((np.abs(exact.astype(np.int16) - projection.reconstruction.astype(np.int16)) * 255).astype(np.uint8))
+    difference = np.maximum.reduce(differences) if differences else np.zeros(image.shape[:2], dtype=np.uint8)
+    heatmap = cv2.applyColorMap(difference, cv2.COLORMAP_INFERNO)
+    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+    panel = np.concatenate((overlay, _mask_panel(full), _mask_panel(visible), heatmap), axis=1)
+    width = image.shape[1]
+    panel = cv2.copyMakeBorder(panel, 36, 0, 0, 0, cv2.BORDER_CONSTANT, value=(17, 24, 39))
+    for index, label in enumerate(("image + polygon", "full coverage", "visible coverage", "polygon disagreement")):
+        cv2.putText(
+            panel,
+            label,
+            (index * width + 12, 24),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.65,
+            (240, 244, 248),
+            1,
+            cv2.LINE_AA,
+        )
+    return panel
 
 
 @dataclass
@@ -229,16 +284,35 @@ class RunStore:
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(mask_temporary, mask_path)
+        mask_write_ns = perf_counter_ns() - mask_started
         record["mask_evidence"] = {
             **dict(record["mask_evidence"]),
             "path": f"masks/{sample_id}.npz",
         }
         if qa:
+            qa_started = perf_counter_ns()
             overlay = _draw_overlay(image, record.get("annotations", []))
             qa_path = self.root / "qa" / f"{sample_id}_overlay.jpg"
             Image.fromarray(overlay).save(qa_path, quality=90)
+            policy = self.resolved.family.annotation
+            decoded = (
+                decode_mask_evidence(mask_archive, record["mask_evidence"])
+                if record.get("annotations")
+                else {}
+            )
+            segmentation = _draw_segmentation_qa(
+                image,
+                record.get("annotations", []),
+                decoded,
+                alpha_threshold=policy.alpha_threshold,
+                semantics=policy.default_mask_semantics,
+            )
+            Image.fromarray(segmentation).save(self.root / "qa" / f"{sample_id}_segmentation.jpg", quality=90)
+            qa_render_ns = perf_counter_ns() - qa_started
         timings = dict(record.get("stage_timings_ns", {}))
-        timings["mask_write"] = perf_counter_ns() - mask_started
+        timings["mask_write"] = mask_write_ns
+        if qa:
+            timings["qa_render"] = qa_render_ns
         timings["image_encode_write"] = image_encode_write_ns
         record["stage_timings_ns"] = timings
         _atomic_json(self.root / "state" / "samples" / f"{int(record['slot']):08d}.json", record)
@@ -258,7 +332,7 @@ class RunStore:
         _atomic_json(self.root / "summary.json", summary)
 
     def write_qa_index(self) -> None:
-        images = sorted((self.root / "qa").glob("*_overlay.jpg"))
+        images = sorted((self.root / "qa").glob("*.jpg"))
         cards = "\n".join(
             f'<figure><img src="{image.name}" loading="lazy"><figcaption>{image.stem}</figcaption></figure>' for image in images
         )

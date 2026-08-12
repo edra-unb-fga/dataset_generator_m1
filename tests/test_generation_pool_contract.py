@@ -44,6 +44,7 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert (pool / "summary.json").exists()
     assert (pool / "masks").is_dir()
     assert (pool / "qa" / "index.html").exists()
+    assert list((pool / "qa").glob("*_segmentation.jpg"))
     manifest = json.loads((pool / "run.json").read_text(encoding="utf-8"))
     assert manifest["schema_version"] == 2
     assert manifest["capabilities"] == {

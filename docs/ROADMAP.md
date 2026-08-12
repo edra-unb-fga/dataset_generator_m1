@@ -16,11 +16,13 @@ dependency; unchecked items are not promises that current commands already imple
 - [x] [#17](https://github.com/edra-unb-fga/dataset_generator_m1/issues/17): support Python 3.13/3.14 with required fast CI and opt-in full CLI validation.
 - [x] [#18](https://github.com/edra-unb-fga/dataset_generator_m1/issues/18): share preparation, calibrate from sanitized production runs, and inspect pool integrity.
 - [x] [#19](https://github.com/edra-unb-fga/dataset_generator_m1/issues/19): guide one interactive journey from discovery through persistent results.
+- [x] [#23](https://github.com/edra-unb-fga/dataset_generator_m1/issues/23): retain pool-v2 full/visible mask evidence and export measured YOLO instance segmentation.
 
 ## Next
 
-- [ ] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure asset-disjoint split feasibility and balance before changing assignment policy.
 - [ ] [#3](https://github.com/edra-unb-fga/dataset_generator_m1/issues/3): diagnose landing placement and visibility rejections with spatial and object-level evidence.
+- [ ] [#24](https://github.com/edra-unb-fga/dataset_generator_m1/issues/24): prototype family-declared nested/overlapping placement and compositing rules on the mask foundation.
+- [ ] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure asset-disjoint split feasibility and balance before changing assignment policy.
 - [ ] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): sample the complete coordinator/worker process tree continuously enough to capture short peaks.
 - [ ] Calibrate background QA warnings and hard failures through reviewed Monte Carlo previews.
 - [ ] Establish reviewed benchmark baselines by hardware class before setting regression budgets.
@@ -28,7 +30,7 @@ dependency; unchecked items are not promises that current commands already imple
 ## Later
 
 - [ ] Add bounded decoded-asset and synthesized-background caches only after measured reuse justifies them.
-- [ ] Persist compressed instance masks and add segmentation export/QA.
+- [ ] Add COCO/RLE export only when real mask topology evidence justifies the additional format.
 - [ ] Add family scaffolding and narrow hooks only after declarative rules prove insufficient.
 - [ ] Evaluate random-phase synthesis for approved homogeneous microtextures.
 - [ ] Evaluate patch quilting for structured textures after current mixer diversity is measured.

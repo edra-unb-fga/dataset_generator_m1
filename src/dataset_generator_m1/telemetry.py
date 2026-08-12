@@ -54,6 +54,9 @@ class MetricsAggregator:
     foreground_group_counts: dict[str, int] = field(default_factory=dict)
     negative_count: int = 0
     mask_archive_bytes: int = 0
+    segmentation_ious: list[float] = field(default_factory=list)
+    segmentation_area_errors: list[float] = field(default_factory=list)
+    segmentation_warning_instances: int = 0
     object_attempts: int = 0
     object_rejections: int = 0
     background_warnings: dict[str, int] = field(default_factory=dict)
@@ -98,6 +101,12 @@ class MetricsAggregator:
         if record.get("intentional_negative"):
             self.negative_count += 1
         self.mask_archive_bytes += int(record.get("mask_evidence", {}).get("byte_count", 0))
+        quality = record.get("segmentation_quality", {})
+        self.segmentation_warning_instances += int(quality.get("warning_instances", 0))
+        for instance in quality.get("instances", []):
+            for result in instance.get("semantics", {}).values():
+                self.segmentation_ious.append(float(result.get("iou", 0.0)))
+                self.segmentation_area_errors.append(float(result.get("area_error", 1.0)))
 
     def record_rejection(self, record: dict[str, Any]) -> None:
         self.candidate_attempts += 1
@@ -246,6 +255,12 @@ class MetricsAggregator:
             "negative_count": self.negative_count,
             "mask_archive_bytes": self.mask_archive_bytes,
             "mean_mask_archive_bytes": self.mask_archive_bytes / self.accepted if self.accepted else 0.0,
+            "segmentation_qa": {
+                "projections": len(self.segmentation_ious),
+                "minimum_iou": min(self.segmentation_ious, default=None),
+                "maximum_area_error": max(self.segmentation_area_errors, default=None),
+                "warning_instances": self.segmentation_warning_instances,
+            },
             "object_attempts": self.object_attempts,
             "object_rejections": self.object_rejections,
             "object_rejection_rate": self.object_rejections / self.object_attempts if self.object_attempts else 0.0,

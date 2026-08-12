@@ -24,7 +24,7 @@ Essentials show family, image count, appearance, dimensions, workers, destinatio
 The journey always saves a composer before preparation. It reviews the immutable contract, performs one
 full preflight/probe, requests any warning receipt, and then requires a separate final confirmation. The
 prepared result is passed directly into generation. Afterward, a persistent results dashboard can open QA,
-inspect audit evidence, export YOLO, resume an interrupted run, or start another run. Back and cancel choices
+inspect audit evidence, export YOLO detection or segmentation, resume an interrupted run, or start another run. Back and cancel choices
 are available before generation. Non-TTY callers receive equivalent atomic commands and are never prompted.
 
 ## Discover and inspect
@@ -113,3 +113,10 @@ values and applied leaf overrides are saved in `run.json`.
 Use `resolve` with the same `--overrides` and `--set` arguments to inspect the exact contract before running.
 Use `preflight` to obtain disk, warning, probe, and ETA evidence; warning receipt semantics are documented in
 [PREFLIGHT.md](PREFLIGHT.md).
+
+## Versionable user composers
+
+Treat `configs/*.yaml` as reviewed, versionable user source. Use `configs/local/` for ignored scratch composers,
+temporary comparisons, and cockpit experiments. Promote a local composer into the tracked root only after
+resolving it, reviewing its references/overrides, and choosing a stable name. Generated pools and exports do
+not belong under `configs/`.

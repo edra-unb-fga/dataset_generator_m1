@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from .annotation_evidence import encode_mask_evidence
+from .annotation_evidence import encode_mask_evidence, polygonize_coverage
 from .assets import AssetCatalog, build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
 from .execution import resolve_worker_count
@@ -92,6 +92,28 @@ def _produce_slot(
                     image_size=resolved.profile.output.image_size,
                     alpha_threshold=resolved.family.annotation.alpha_threshold,
                 )
+            with StageTimer(timings, "mask_polygonization"):
+                segmentation_instances = []
+                for annotation, full, visible in zip(
+                    rendered.annotations, rendered.full_coverages, rendered.visible_coverages
+                ):
+                    semantics = {}
+                    for name, coverage in (("full", full), ("visible", visible)):
+                        projection = polygonize_coverage(
+                            coverage, alpha_threshold=resolved.family.annotation.alpha_threshold
+                        )
+                        semantics[name] = {
+                            "iou": projection.iou,
+                            "area_error": projection.area_error,
+                            "points": len(projection.polygon),
+                            "components": projection.components,
+                            "holes": projection.holes,
+                            "status": projection.status,
+                            "warnings": list(projection.warnings),
+                        }
+                    segmentation_instances.append(
+                        {"instance_id": annotation.instance_id, "semantics": semantics}
+                    )
             return {
                 "accepted": True,
                 "image": rendered.image,
@@ -110,6 +132,13 @@ def _produce_slot(
                     "coverage_fraction": rendered.coverage_fraction,
                     "annotations": [_annotation_record(annotation) for annotation in rendered.annotations],
                     "mask_evidence": mask_evidence.manifest,
+                    "segmentation_quality": {
+                        "instances": segmentation_instances,
+                        "warning_instances": sum(
+                            any(value["warnings"] for value in item["semantics"].values())
+                            for item in segmentation_instances
+                        ),
+                    },
                     "rejected_instances": [*plan.planning_rejections, *rendered.rejected_instances],
                     "background": {
                         "recipe_id": background.recipe_id,
