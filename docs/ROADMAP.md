@@ -21,7 +21,7 @@ dependency; unchecked items are not promises that current commands already imple
 ## Next
 
 - [x] [#3](https://github.com/edra-unb-fga/dataset_generator_m1/issues/3): diagnose landing placement and visibility rejections with spatial and object-level evidence.
-- [ ] [#24](https://github.com/edra-unb-fga/dataset_generator_m1/issues/24): prototype family-declared nested/overlapping placement and compositing rules on the mask foundation.
+- [x] [#24](https://github.com/edra-unb-fga/dataset_generator_m1/issues/24): select the family-declared `typed-mixed` nested-placement model through a retained prototype.
 - [ ] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure asset-disjoint split feasibility and balance before changing assignment policy.
 - [ ] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): sample the complete coordinator/worker process tree continuously enough to capture short peaks.
 - [ ] [#29](https://github.com/edra-unb-fga/dataset_generator_m1/issues/29): improve landing requested-count fulfillment using the reviewed #3 evidence without silent policy drift.
@@ -30,6 +30,7 @@ dependency; unchecked items are not promises that current commands already imple
 
 ## Later
 
+- [ ] [#31](https://github.com/edra-unb-fga/dataset_generator_m1/issues/31): implement reviewed typed nested placement without changing landing/manometro controls.
 - [ ] Add bounded decoded-asset and synthesized-background caches only after measured reuse justifies them.
 - [ ] Add COCO/RLE export only when real mask topology evidence justifies the additional format.
 - [ ] Add family scaffolding and narrow hooks only after declarative rules prove insufficient.
