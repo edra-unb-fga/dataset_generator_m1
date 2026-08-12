@@ -115,6 +115,7 @@ def test_process_workers_preserve_geometry_and_annotations(tmp_path: Path) -> No
     assert process_sample["geometry_signature"] == serial_sample["geometry_signature"]
     assert process_sample["scene_to_output"] == serial_sample["scene_to_output"]
     assert process_sample["annotations"] == serial_sample["annotations"]
+    assert process_sample["rejected_instances"] == serial_sample["rejected_instances"]
 
 
 def test_external_stop_creates_a_resumable_pool(tmp_path: Path, monkeypatch) -> None:

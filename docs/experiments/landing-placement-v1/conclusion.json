@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "study": "landing-placement-v1",
+  "family": "landing",
+  "config": "landing_minimal.yaml",
+  "contract_hash": "9f43ca4cdbb749b243a8aff1b7397489faf253b3de1edde1c021f1bec226744e",
+  "accepted_samples": 200,
+  "candidate_attempts": 211,
+  "candidate_retry_rate": 0.0521327014,
+  "object_attempts": 1117,
+  "accepted_objects": 501,
+  "object_rejections": 616,
+  "object_rejection_rate": 0.551477171,
+  "stage_rates": {
+    "planner.placement": 0.1709937332,
+    "renderer.visibility": 0.3804834378
+  },
+  "scale_band_rates": {
+    "0.10-0.20": 0.3566878981,
+    "0.20-0.30": 0.5453074434,
+    "0.30-0.40": 0.6520467836
+  },
+  "requested_object_count_rates": {
+    "1": 0.0,
+    "5": 0.4769230769,
+    "10": 0.72
+  },
+  "region_rates": {
+    "middle-center": 0.0769230769,
+    "top-left": 0.6866666667,
+    "top-right": 0.630952381,
+    "bottom-left": 0.6325301205,
+    "bottom-right": 0.7314285714
+  },
+  "policy_changed": false,
+  "recommendation": "Create a separate evidence-driven landing fulfillment tuning issue."
+}

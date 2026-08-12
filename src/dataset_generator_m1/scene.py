@@ -15,6 +15,12 @@ from .backgrounds import BackgroundSample
 from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox
 from .models import ResolvedProfile
+from .placement_diagnostics import (
+    bounded_spatial_histogram,
+    build_rejection_record,
+    clipped_sides,
+    spatial_region,
+)
 
 
 BBox = tuple[int, int, int, int]
@@ -35,6 +41,7 @@ class PlannedInstance:
     center: tuple[float, float]
     width_fraction: float
     angle_degrees: float
+    object_attempt: int = 0
 
     def signature(self) -> dict[str, Any]:
         return {
@@ -85,6 +92,11 @@ class Annotation:
     source_group: str
     asset_to_scene: np.ndarray
     asset_to_output: np.ndarray
+    object_attempt: int
+    sampled_scale: float
+    sampled_rotation_degrees: float
+    requested_objects: int
+    region: str
 
 
 @dataclass(frozen=True)
@@ -194,7 +206,7 @@ class ScenePlanner:
             low, high = self.profile.sampling.instances_per_image
             count = int(geometry_rng.integers(low, high + 1))
             attempted_instances = count
-            for _ in range(count):
+            for object_attempt in range(count):
                 foreground_source = self.profile.assets.foregrounds
                 asset = _weighted_choice(
                     self.catalog.foregrounds,
@@ -213,6 +225,9 @@ class ScenePlanner:
                 spacing_x = self.profile.sampling.bbox_spacing * camera_w
                 spacing_y = self.profile.sampling.bbox_spacing * camera_h
                 placed = False
+                attempted_centers: list[tuple[float, float]] = []
+                blocking_count = 0
+                best_failed: dict[str, Any] | None = None
                 for _placement_attempt in range(self.profile.sampling.placement_attempts):
                     margin_x = radius_w * 0.15
                     margin_y = radius_h * 0.15
@@ -224,14 +239,59 @@ class ScenePlanner:
                         center_x + radius_w + spacing_x,
                         center_y + radius_h + spacing_y,
                     )
-                    if any(not (bbox[2] <= other[0] or other[2] <= bbox[0] or bbox[3] <= other[1] or other[3] <= bbox[1]) for other in occupied):
+                    attempted_centers.append(
+                        ((center_x - camera_x) / max(camera_w, 1.0), (center_y - camera_y) / max(camera_h, 1.0))
+                    )
+                    blockers = sum(
+                        not (bbox[2] <= other[0] or other[2] <= bbox[0] or bbox[3] <= other[1] or other[3] <= bbox[1])
+                        for other in occupied
+                    )
+                    if blockers:
+                        blocking_count += blockers
+                        candidate = {"bbox": [round(value, 3) for value in bbox], "blocking_count": blockers}
+                        if best_failed is None or blockers < best_failed["blocking_count"]:
+                            best_failed = candidate
                         continue
                     occupied.append(bbox)
-                    instances.append(PlannedInstance(asset, (center_x, center_y), width_fraction, angle))
+                    instances.append(PlannedInstance(asset, (center_x, center_y), width_fraction, angle, object_attempt))
                     placed = True
                     break
                 if not placed:
-                    planning_rejections.append({"source": asset.logical_path, "reason": "placement_attempts_exhausted"})
+                    best_projected = (
+                        _transform_bbox(scene_to_output, tuple(best_failed["bbox"])) if best_failed else None
+                    )
+                    planning_rejections.append(
+                        build_rejection_record(
+                            slot=slot,
+                            candidate_attempt=candidate_attempt,
+                            object_attempt=object_attempt,
+                            asset=asset.logical_path,
+                            class_name=asset.class_name,
+                            group=asset.group,
+                            scale=width_fraction,
+                            rotation_degrees=angle,
+                            estimated_size=(estimated_w, estimated_h),
+                            requested_objects=count,
+                            stage="planner.placement",
+                            reason="placement_attempts_exhausted",
+                            placement_attempts=len(attempted_centers),
+                            blocking_counts={"overlap": blocking_count},
+                            spatial_histogram=bounded_spatial_histogram(attempted_centers),
+                            best_failed=best_failed,
+                            projected_bbox=best_projected,
+                            clipped_sides=clipped_sides(best_projected, out_w, out_h) if best_projected else (),
+                            region=(
+                                spatial_region(
+                                    (best_projected[0] + best_projected[2]) / 2,
+                                    (best_projected[1] + best_projected[3]) / 2,
+                                    out_w,
+                                    out_h,
+                                )
+                                if best_projected
+                                else "unplaced"
+                            ),
+                        )
+                    )
 
         return ScenePlan(
             slot=slot,
@@ -352,6 +412,19 @@ class SceneRenderer:
         rejected: list[dict[str, Any]] = []
         camera_w = plan.camera_rect[2]
         for index, instance in enumerate(plan.instances):
+            estimated_height = camera_w * instance.width_fraction * instance.asset.height / max(instance.asset.width, 1)
+            common_rejection = {
+                "slot": plan.slot,
+                "candidate_attempt": plan.candidate_attempt,
+                "object_attempt": instance.object_attempt,
+                "asset": instance.asset.logical_path,
+                "class_name": instance.asset.class_name,
+                "group": instance.asset.group,
+                "scale": instance.width_fraction,
+                "rotation_degrees": instance.angle_degrees,
+                "estimated_size": (camera_w * instance.width_fraction, estimated_height),
+                "requested_objects": plan.attempted_instances,
+            }
             started = self.clock()
             rgba = read_rgba(instance.asset.path)
             timings["foreground_decode"] = timings.get("foreground_decode", 0) + max(0, self.clock() - started)
@@ -377,7 +450,7 @@ class SceneRenderer:
             local_bbox = visible_bbox(rgba)
             if local_bbox is None:
                 timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
-                rejected.append({"source": instance.asset.logical_path, "reason": "empty_alpha"})
+                rejected.append(build_rejection_record(**common_rejection, stage="renderer.alpha", reason="empty_alpha"))
                 continue
             height, width = rgba.shape[:2]
             top_left_x = instance.center[0] - width / 2.0
@@ -407,7 +480,18 @@ class SceneRenderer:
             clipped_bbox = _bbox_from_mask(warped_alpha, self.resolved.family.annotation.alpha_threshold)
             if clipped_bbox is None:
                 timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
-                rejected.append({"source": instance.asset.logical_path, "reason": "outside_frame"})
+                projected = _transform_bbox(asset_to_output, local_bbox)
+                rejected.append(
+                    build_rejection_record(
+                        **common_rejection,
+                        stage="renderer.visibility",
+                        reason="outside_frame",
+                        projected_bbox=projected,
+                        clipped_sides=clipped_sides(projected, out_w, out_h),
+                        visibility=0.0,
+                        region=spatial_region((projected[0] + projected[2]) / 2, (projected[1] + projected[3]) / 2, out_w, out_h),
+                    )
+                )
                 continue
             full_bbox = _transform_bbox(asset_to_output, local_bbox)
             full_area = max(1e-9, (full_bbox[2] - full_bbox[0]) * (full_bbox[3] - full_bbox[1]))
@@ -416,11 +500,16 @@ class SceneRenderer:
             if visible_fraction < self.profile.sampling.min_visible_bbox_fraction:
                 timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
                 rejected.append(
-                    {
-                        "source": instance.asset.logical_path,
-                        "reason": "visible_bbox_fraction",
-                        "value": visible_fraction,
-                    }
+                    build_rejection_record(
+                        **common_rejection,
+                        stage="renderer.visibility",
+                        reason="visible_bbox_fraction",
+                        projected_bbox=full_bbox,
+                        clipped_bbox=clipped_bbox,
+                        clipped_sides=clipped_sides(full_bbox, out_w, out_h),
+                        visibility=visible_fraction,
+                        region=spatial_region((clipped_bbox[0] + clipped_bbox[2]) / 2, (clipped_bbox[1] + clipped_bbox[3]) / 2, out_w, out_h),
+                    )
                 )
                 continue
             timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
@@ -448,6 +537,11 @@ class SceneRenderer:
                     source_group=instance.asset.group,
                     asset_to_scene=asset_to_scene,
                     asset_to_output=asset_to_output,
+                    object_attempt=instance.object_attempt,
+                    sampled_scale=instance.width_fraction,
+                    sampled_rotation_degrees=instance.angle_degrees,
+                    requested_objects=plan.attempted_instances,
+                    region=spatial_region((x1 + x2) / 2, (y1 + y2) / 2, out_w, out_h),
                 )
             )
             masks.append(warped_alpha)

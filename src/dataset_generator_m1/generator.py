@@ -51,6 +51,11 @@ def _annotation_record(annotation: Any) -> dict[str, Any]:
         "source_group": annotation.source_group,
         "asset_to_scene": annotation.asset_to_scene.tolist(),
         "asset_to_output": annotation.asset_to_output.tolist(),
+        "object_attempt": annotation.object_attempt,
+        "sampled_scale": annotation.sampled_scale,
+        "sampled_rotation_degrees": annotation.sampled_rotation_degrees,
+        "requested_objects": annotation.requested_objects,
+        "region": annotation.region,
     }
 
 
