@@ -108,6 +108,12 @@ The renderer composes each object-local transform with the same `scene_to_output
 
 Square rotation preserves the full rotated canvas. Circle rotation returns the tight visible-alpha object. Appearance can change pixels but cannot change the plan, scene matrix, or annotations.
 
+Nested placement is not implemented. Its accepted future model is family-declared `typed-mixed`:
+`attached-local` composes child and parent transforms, while `projected-contained` independently places
+a child inside the parent projected silhouette. See
+[Decision 001](decisions/001-typed-nested-placement.md). Landing and manometro currently declare no
+nested compatibility and remain flat scenes.
+
 ## 5. Background recipes
 
 Recipes are a separate versioned YAML catalog. A profile assigns probabilistic recipe weights; weights are normalized and never enforced as quotas. Each recipe is a curated typed DAG with a version, output node, optional tileability capability, and explicit allowed cross-material group pairs. Arbitrary expressions, Python callables, recursive includes, unknown operators, cycles, and forward references are invalid.
@@ -201,4 +207,4 @@ Export validates every source pool before creating its destination, merges compa
 
 The test suite covers strict profiles, duplicate keys, shipped examples, asset mappings, geometry/mask boxes, RNG isolation, recipe operators and provenance, telemetry fake clocks and aggregates, CLI JSON/display behavior, atomic pools/resume, process equivalence, and collision-safe export.
 
-Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Nested placement, COCO/RLE export, a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, continuous process-tree monitoring, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract.
+Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Production nested placement (#31), COCO/RLE export, a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, continuous process-tree monitoring, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract.
