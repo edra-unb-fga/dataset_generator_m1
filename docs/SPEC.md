@@ -171,6 +171,9 @@ peak process-tree resources. Plain output is periodic and line-oriented; quiet p
 fatal status.
 
 Telemetry profiles declare `resource_sampling: continuous|off` and `resource_interval_seconds`.
+The coordinator periodically drains bounded process-tree samples while workers run; counters are bound
+when a sample is captured, and monitor shutdown never claims completion while its sampler thread is
+still alive.
 `continuous` is the default. A coordinator-owned background monitor samples the coordinator, direct
 workers, and other descendants independently of sample commits. Sanitized records use monotonic session
 elapsed time, aggregate CPU/RSS/process I/O, process counts, and run state; they never include PIDs,

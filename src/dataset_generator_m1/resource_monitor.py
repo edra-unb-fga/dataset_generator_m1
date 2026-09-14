@@ -39,11 +39,20 @@ class ProcessTreeSampler:
 
     def __init__(self, root_process: Any | None = None) -> None:
         self.root = root_process or psutil.Process()
-        self._process_cache: dict[int, Any] = {self.root.pid: self.root}
+        self._process_cache: dict[tuple[int, float | None], Any] = {self._identity(self.root): self.root}
         try:
             self.root.cpu_percent(None)
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
+
+    @staticmethod
+    def _identity(process: Any) -> tuple[int, float | None]:
+        """PID alone is not stable: combine it with creation time when available."""
+        try:
+            created = float(process.create_time())
+        except (AttributeError, psutil.NoSuchProcess, psutil.AccessDenied, OSError):
+            created = None
+        return int(process.pid), created
 
     def sample(self) -> dict[str, Any]:
         groups = {
@@ -58,25 +67,26 @@ class ProcessTreeSampler:
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             direct, descendants = [], []
             errors += 1
-        direct_ids = {process.pid for process in direct}
-        seen: set[int] = set()
+        direct_ids = {self._identity(process) for process in direct}
+        seen: set[tuple[int, float | None]] = set()
         classified = [("coordinator", self.root)]
         classified.extend(
             (
-                "direct_workers" if process.pid in direct_ids else "other_descendants",
-                self._process_cache.setdefault(process.pid, process),
+                "direct_workers" if self._identity(process) in direct_ids else "other_descendants",
+                self._process_cache.setdefault(self._identity(process), process),
             )
             for process in descendants
         )
         for group_name, process in classified:
-            if process.pid in seen:
+            identity = self._identity(process)
+            if identity in seen:
                 continue
-            seen.add(process.pid)
+            seen.add(identity)
             try:
                 _add_process(groups[group_name], process)
             except (psutil.NoSuchProcess, psutil.AccessDenied, OSError):
                 errors += 1
-                self._process_cache.pop(process.pid, None)
+                self._process_cache.pop(identity, None)
         self._process_cache = {
             pid: process for pid, process in self._process_cache.items() if pid in seen
         }
@@ -114,6 +124,7 @@ class ProcessTreeMonitor:
         self.started_at = clock()
         self.run_state = "running"
         self.sequence = 0
+        self._progress = {"accepted": 0, "candidate_attempts": 0}
         self._buffer: deque[dict[str, Any]] = deque()
         self._dropped = 0
         self._lock = Lock()
@@ -128,6 +139,11 @@ class ProcessTreeMonitor:
         with self._lock:
             self.run_state = state
 
+    def set_progress(self, *, accepted: int, candidate_attempts: int) -> None:
+        """Bind counters at sample time, not later when the coordinator drains."""
+        with self._lock:
+            self._progress = {"accepted": int(accepted), "candidate_attempts": int(candidate_attempts)}
+
     def _append(self, record: dict[str, Any]) -> None:
         with self._lock:
             if len(self._buffer) >= self.capacity:
@@ -139,6 +155,7 @@ class ProcessTreeMonitor:
         with self._lock:
             state = self.run_state
             sequence = self.sequence
+            progress = dict(self._progress)
             self.sequence += 1
         try:
             snapshot = self.sampler()
@@ -149,6 +166,7 @@ class ProcessTreeMonitor:
                 "sequence": sequence,
                 "elapsed_seconds": max(0.0, self.clock() - self.started_at),
                 "run_state": state,
+                **progress,
                 **snapshot,
             }
         except Exception as exc:
@@ -176,13 +194,18 @@ class ProcessTreeMonitor:
         self._thread = Thread(target=self._run, name="resource-monitor", daemon=True)
         self._thread.start()
 
-    def stop(self) -> None:
+    def stop(self) -> bool:
         if self._thread is None:
-            return
+            return True
         self._stop.set()
         self._thread.join(timeout=max(1.0, self.interval_seconds * 2))
+        if self._thread.is_alive():
+            # Keep the handle truthful: callers must not report the monitor as
+            # stopped while its sampler may still write a record.
+            return False
         self._thread = None
         self.sample_once()
+        return True
 
     def drain(self) -> list[dict[str, Any]]:
         with self._lock:
