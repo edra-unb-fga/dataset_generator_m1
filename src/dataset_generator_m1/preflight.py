@@ -135,9 +135,19 @@ def _runtime_estimate(
     megapixels = width * height / 1_000_000.0
     production = [item for item in observations if item.get("kind") == "production"]
     probes = [item for item in observations if item.get("kind") == "probe"]
+    effective_workers = max(1.0, request.workers * (0.82 if request.workers > 1 else 1.0))
     if production:
-        values = [float(item["seconds_per_candidate"]) for item in production]
-        per_candidate = median(values)
+        candidate_values = [
+            float(item.get("seconds_per_candidate", item["active_seconds"] * item.get("workers", 1) / max(item.get("candidate_attempts", 1), 1)))
+            for item in production
+        ]
+        accepted_values = [
+            float(item.get("seconds_per_accepted_output", item["active_seconds"] / max(item.get("accepted_samples", 0), 1)))
+            for item in production
+            if int(item.get("accepted_samples", 0)) > 0
+        ]
+        per_candidate = median(candidate_values)
+        per_accepted = median(accepted_values) if accepted_values else per_candidate
         cross_worker = any(item.get("workers") != request.workers for item in production)
         confidence = (
             "local-production-cross-worker"
@@ -146,24 +156,33 @@ def _runtime_estimate(
         )
         observation_count = len(production)
         evidence = [str(request.observation_path)]
+        expected = per_accepted * request.resolved.profile.run.num_images
+        if cross_worker:
+            source_workers = median(float(item.get("workers", 1)) for item in production)
+            expected *= max(1.0, source_workers) / effective_workers
     elif probes:
         per_candidate = mean(float(item["duration_seconds"]) for item in probes)
+        accepted_fraction = sum(bool(item.get("accepted")) for item in probes) / len(probes)
+        per_accepted = per_candidate / max(accepted_fraction, 0.1)
         confidence = "local-probe"
         observation_count = len(probes)
         evidence = [str(request.observation_path)]
+        expected = per_accepted * request.resolved.profile.run.num_images / effective_workers
     elif entry:
         per_candidate = float(entry["seconds_per_candidate"][request.resolved.profile.family])
         per_candidate *= max(0.1, megapixels / float(knowledge["reference_megapixels"]))
+        per_accepted = per_candidate
         confidence = str(entry["confidence"])
         observation_count = 0
         evidence = list(entry.get("evidence", ()))
+        expected = per_accepted * request.resolved.profile.run.num_images / effective_workers
     else:
         per_candidate = max(0.25, megapixels)
+        per_accepted = per_candidate
         confidence = "low"
         observation_count = 0
         evidence = []
-    effective_workers = max(1.0, request.workers * (0.82 if request.workers > 1 else 1.0))
-    expected = per_candidate * request.resolved.profile.run.num_images / effective_workers
+        expected = per_accepted * request.resolved.profile.run.num_images / effective_workers
     bands = {
         "high": (0.85, 1.25),
         "medium": (0.70, 1.55),
@@ -181,6 +200,7 @@ def _runtime_estimate(
         "upper_seconds": round(expected * high, 3),
         "confidence": confidence,
         "seconds_per_candidate": round(per_candidate, 6),
+        "seconds_per_accepted_output": round(per_accepted, 6),
         "evidence": evidence,
         "observation_count": observation_count,
         "model": "paired-profile-plus-local-observations-v1",
