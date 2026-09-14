@@ -21,6 +21,10 @@ This file defines the project language. It intentionally describes the domain, n
 - **Effect trace**: the stable transform ID, independent seed, activation, sampled parameters, pixel count, and exclusive call duration recorded by the production renderer.
 - **Modeled production-equivalent cost**: shared synthesis plus rendering, encoding, and writing assigned to one treatment so experimental cost can be compared with normal sample work.
 - **Exported dataset**: one or more compatible pools remapped and split into a training format such as YOLO.
+- **Content-disjoint identity**: the source-content hash used to prevent byte-identical foreground or background assets from crossing a strict asset-disjoint split; logical paths remain provenance only.
+- **Accepted-output ETA**: an environment-local completion range based on accepted throughput and rejection behavior, rather than candidate rendering cost alone.
+- **Observation record**: a sanitized local performance record keyed by cost-relevant contract inputs and environment class; it never includes private paths, usernames, or hostnames.
+- **Diagnostic completeness**: preservation of bounded object-attempt evidence for every rejected candidate, including candidates with zero accepted objects.
 
 ## Invariants
 

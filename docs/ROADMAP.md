@@ -17,6 +17,11 @@ dependency; unchecked items are not promises that current commands already imple
 - [x] [#18](https://github.com/edra-unb-fga/dataset_generator_m1/issues/18): share preparation, calibrate from sanitized production runs, and inspect pool integrity.
 - [x] [#19](https://github.com/edra-unb-fga/dataset_generator_m1/issues/19): guide one interactive journey from discovery through persistent results.
 - [x] [#23](https://github.com/edra-unb-fga/dataset_generator_m1/issues/23): retain pool-v2 full/visible mask evidence and export measured YOLO instance segmentation.
+- [x] [#36](https://github.com/edra-unb-fga/dataset_generator_m1/issues/36): retain complete placement diagnostics before any placement-policy tuning.
+- [x] [#37](https://github.com/edra-unb-fga/dataset_generator_m1/issues/37): use content hashes for strict asset-disjoint identity.
+- [x] [#38](https://github.com/edra-unb-fga/dataset_generator_m1/issues/38): harden coordinator-owned telemetry polling and monitor shutdown.
+- [x] [#39](https://github.com/edra-unb-fga/dataset_generator_m1/issues/39): estimate completion from accepted-output throughput and handle malformed local observations safely.
+- [x] [#40](https://github.com/edra-unb-fga/dataset_generator_m1/issues/40): harden composer resolution, guided-start tests, and pool-path inspection.
 
 ## Next
 
@@ -24,9 +29,9 @@ dependency; unchecked items are not promises that current commands already imple
 - [x] [#24](https://github.com/edra-unb-fga/dataset_generator_m1/issues/24): select the family-declared `typed-mixed` nested-placement model through a retained prototype.
 - [x] [#4](https://github.com/edra-unb-fga/dataset_generator_m1/issues/4): measure and expose asset-disjoint split feasibility without changing hash assignment policy. The infeasible reviewed pools motivate [#33](https://github.com/edra-unb-fga/dataset_generator_m1/issues/33), a separate pre-generation source/catalog partitioning study.
 - [x] [#6](https://github.com/edra-unb-fga/dataset_generator_m1/issues/6): continuously sample the coordinator, workers, and descendants with bounded auditable telemetry and an explicit opt-out.
-- [ ] [#29](https://github.com/edra-unb-fga/dataset_generator_m1/issues/29): improve landing requested-count fulfillment using the reviewed #3 evidence without silent policy drift.
-- [ ] [#27](https://github.com/edra-unb-fga/dataset_generator_m1/issues/27): calibrate background QA warnings and hard failures after placement diagnostics.
-- [ ] [#28](https://github.com/edra-unb-fga/dataset_generator_m1/issues/28): establish reviewed benchmark baselines by hardware class using the continuous process-tree evidence; no universal timing budget exists yet.
+- [ ] [#29](https://github.com/edra-unb-fga/dataset_generator_m1/issues/29): improve landing requested-count fulfillment using complete placement evidence without silent policy drift.
+- [ ] [#27](https://github.com/edra-unb-fga/dataset_generator_m1/issues/27): calibrate background QA warnings and hard failures after complete placement diagnostics.
+- [ ] [#28](https://github.com/edra-unb-fga/dataset_generator_m1/issues/28): establish reviewed benchmark baselines by hardware class using hardened continuous process-tree evidence; no universal timing budget exists yet.
 
 ## Later
 
