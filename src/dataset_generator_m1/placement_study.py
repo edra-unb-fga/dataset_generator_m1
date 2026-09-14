@@ -94,13 +94,46 @@ def _accepted_object_attempts(samples: list[dict[str, Any]]) -> list[dict[str, A
     ]
 
 
-def _summary(generation: dict[str, Any], samples: list[dict[str, Any]], rejections: list[dict[str, Any]]) -> dict[str, Any]:
+def collect_study_diagnostics(
+    samples: list[dict[str, Any]], candidate_rejections: list[dict[str, Any]], pool: Path
+) -> dict[str, Any]:
+    """Collect candidate and object evidence without discarding zero-object failures.
+
+    Candidate failures and object attempts intentionally have different
+    denominators.  A failed candidate can carry multiple object rejections, or
+    none at all when it failed before foreground rendering.
+    """
+    object_rejections = _normalized_object_rejections(samples, pool)
+    for candidate in candidate_rejections:
+        for original in candidate.get("object_rejections", []):
+            record = dict(original)
+            record.setdefault("slot", candidate.get("slot"))
+            record.setdefault("candidate_attempt", candidate.get("candidate_attempt"))
+            object_rejections.append(record)
+    accepted = _accepted_object_attempts(samples)
+    return {
+        "candidate_failures": candidate_rejections,
+        "object_rejections": object_rejections,
+        "accepted_object_attempts": accepted,
+        "diagnostics": summarize_placement_diagnostics(object_rejections, accepted),
+    }
+
+
+def _summary(
+    generation: dict[str, Any], evidence: dict[str, Any]
+) -> dict[str, Any]:
     return {
         "schema_version": 1,
         "status": generation["status"],
         "accepted_samples": generation["accepted_samples"],
         "candidate_attempts": generation["candidate_attempts"],
-        "diagnostics": summarize_placement_diagnostics(rejections, _accepted_object_attempts(samples)),
+        "candidate_failures": len(evidence["candidate_failures"]),
+        "candidate_failure_rate": (
+            len(evidence["candidate_failures"]) / generation["candidate_attempts"]
+            if generation["candidate_attempts"]
+            else 0.0
+        ),
+        "diagnostics": evidence["diagnostics"],
         "policy_changed": False,
     }
 
@@ -192,9 +225,9 @@ def run_placement_study(request: PlacementStudyRequest) -> dict[str, Any]:
     )
     samples = _read_jsonl(pool / "samples.jsonl")
     candidate_rejections = _read_jsonl(pool / "rejections.jsonl")
-    object_rejections = _normalized_object_rejections(samples, pool)
-    records = [*object_rejections, *candidate_rejections]
-    summary = _summary(generation, samples, object_rejections)
+    evidence = collect_study_diagnostics(samples, candidate_rejections, pool)
+    records = [*evidence["object_rejections"], *candidate_rejections]
+    summary = _summary(generation, evidence)
     study = {
         "schema_version": 1,
         "kind": "placement-rejection-diagnostics",
@@ -236,10 +269,10 @@ def rebuild_placement_study(output_dir: str | Path) -> dict[str, Any]:
     pool = root / "pool"
     samples = _read_jsonl(pool / "samples.jsonl")
     generation = json.loads((pool / "summary.json").read_text(encoding="utf-8"))
-    object_rejections = _normalized_object_rejections(samples, pool)
     candidate_rejections = _read_jsonl(pool / "rejections.jsonl")
-    summary = _summary(generation, samples, object_rejections)
-    records = [*object_rejections, *candidate_rejections]
+    evidence = collect_study_diagnostics(samples, candidate_rejections, pool)
+    summary = _summary(generation, evidence)
+    records = [*evidence["object_rejections"], *candidate_rejections]
     _write_jsonl(root / "rejections.jsonl", records)
     _write_json(root / "summary.json", summary)
     _report(samples, records, pool, root / "report")

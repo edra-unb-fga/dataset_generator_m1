@@ -165,16 +165,17 @@ def _produce_slot(
                 },
             }
         except (SceneRejected, BackgroundSynthesisError) as exc:
-            rejections.append(
-                {
-                    "schema_version": 1,
-                    "slot": slot,
-                    "candidate_attempt": candidate_attempt,
-                    "reason": type(exc).__name__,
-                    "message": str(exc),
-                    "stage_timings_ns": timings,
-                }
-            )
+            rejection = {
+                "schema_version": 1,
+                "slot": slot,
+                "candidate_attempt": candidate_attempt,
+                "reason": type(exc).__name__,
+                "message": str(exc),
+                "stage_timings_ns": timings,
+            }
+            if isinstance(exc, SceneRejected) and exc.rejected_instances:
+                rejection["object_rejections"] = list(exc.rejected_instances)
+            rejections.append(rejection)
     return {"accepted": False, "image": None, "record": None, "rejections": rejections}
 
 
