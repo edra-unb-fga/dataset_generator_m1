@@ -123,3 +123,69 @@ def test_promoting_inline_stack_preserves_resolved_behavior(tmp_path: Path) -> N
     after = [item.model_dump(mode="json") for item in load_profile(path).profile.appearance.background]
     assert after == before
     assert any(item["id"] == promoted["profile"] for item in list_profiles(path)["profiles"])
+
+
+def test_save_composer_does_not_replace_existing_file_when_resolution_fails(tmp_path: Path) -> None:
+    destination = save_composer(default_composer("landing"), tmp_path / "composer.yaml")
+    original = destination.read_text(encoding="utf-8")
+    invalid = default_composer("landing")
+    invalid["execution"] = "missing-execution.yaml"
+
+    try:
+        save_composer(invalid, destination)
+    except ValueError as exc:
+        assert "does not exist" in str(exc)
+    else:
+        raise AssertionError("invalid composer replaced a valid destination")
+
+    assert destination.read_text(encoding="utf-8") == original
+
+
+def test_composer_relative_paths_win_over_current_working_directory(tmp_path: Path, monkeypatch) -> None:
+    composer_dir = tmp_path / "composer"
+    cwd_dir = tmp_path / "cwd"
+    (composer_dir / "profiles").mkdir(parents=True)
+    (cwd_dir / "profiles").mkdir(parents=True)
+    local_bundle = "schema_version: 1\nsubject: execution\nvalue: {workers: 1}\n"
+    cwd_bundle = "schema_version: 1\nsubject: execution\nvalue: {workers: 7}\n"
+    (composer_dir / "profiles" / "execution.yaml").write_text(local_bundle, encoding="utf-8")
+    (cwd_dir / "profiles" / "execution.yaml").write_text(cwd_bundle, encoding="utf-8")
+    recipes = composer_dir / "examples" / "configs"
+    recipes.mkdir(parents=True)
+    (recipes / "background_recipes.yaml").write_text(
+        Path("examples/configs/background_recipes.yaml").read_text(encoding="utf-8"), encoding="utf-8"
+    )
+    document = default_composer("landing")
+    document["execution"] = "profiles/execution.yaml"
+    destination = save_composer(document, composer_dir / "landing.yaml")
+
+    monkeypatch.chdir(cwd_dir)
+    assert load_profile(destination).profile.execution.workers == 1
+
+
+def test_profile_metadata_compatibility_is_enforced(tmp_path: Path) -> None:
+    (tmp_path / "profiles").mkdir()
+    (tmp_path / "profiles" / "execution.yaml").write_text(
+        "schema_version: 1\nsubject: execution\nvalue: {workers: 1}\n", encoding="utf-8"
+    )
+    (tmp_path / "profiles" / "metadata.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "id": "workspace:execution/manometro-only",
+                "subject": "execution",
+                "status": "local",
+                "compatible_families": ["manometro"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    document = default_composer("landing")
+    document["execution"] = "profiles/execution.yaml"
+
+    try:
+        save_composer(document, tmp_path / "landing.yaml")
+    except ValueError as exc:
+        assert "not compatible" in str(exc)
+    else:
+        raise AssertionError("incompatible profile metadata was accepted")

@@ -90,9 +90,16 @@ def save_composer(document: dict[str, Any], destination: str | Path) -> Path:
     path = Path(destination).resolve()
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(yaml.safe_dump(validated, sort_keys=False), encoding="utf-8")
-    os.replace(temporary, path)
-    load_profile(path)
+    try:
+        temporary.write_text(yaml.safe_dump(validated, sort_keys=False), encoding="utf-8")
+        # Resolve the exact temporary file first.  This checks every referenced
+        # profile and metadata compatibility while the existing destination is
+        # still intact; only a complete contract is atomically promoted.
+        load_profile(temporary)
+        os.replace(temporary, path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
     return path
 
 

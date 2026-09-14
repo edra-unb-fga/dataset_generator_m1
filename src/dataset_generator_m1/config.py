@@ -85,10 +85,15 @@ def _resolve_reference(value: str, config_path: Path, expected_subject: str | No
     candidate = Path(value)
     if candidate.is_absolute():
         return candidate
+    # A composer owns its relative references.  Retain a CWD lookup only as an
+    # explicit compatibility fallback for historical invocation patterns.
+    composer_candidate = config_path.parent / candidate
+    if composer_candidate.exists():
+        return composer_candidate.resolve()
     cwd_candidate = Path.cwd() / candidate
     if cwd_candidate.exists():
         return cwd_candidate.resolve()
-    return (config_path.parent / candidate).resolve()
+    return composer_candidate.resolve()
 
 
 def _merge_bundle_value(subject: str, base: dict[str, Any], extra: dict[str, Any]) -> dict[str, Any]:
@@ -292,6 +297,15 @@ def load_profile(
         raise ValueError(str(exc)) from exc
     if family.name != profile.family:
         raise ValueError(f"Family definition {family.name} does not match profile family {profile.family}")
+    incompatible = [
+        item.get("id", "local profile")
+        for item in metadata
+        if profile.family not in set(item.get("compatible_families", ("landing", "manometro")))
+    ]
+    if incompatible:
+        raise ValueError(
+            f"Profile metadata is not compatible with family {profile.family}: {', '.join(sorted(incompatible))}"
+        )
     unknown_recipes = set(profile.background_synthesis.recipe_weights) - set(recipes.recipes)
     if unknown_recipes:
         raise ValueError(f"Unknown background recipe weights: {sorted(unknown_recipes)}")

@@ -123,6 +123,7 @@ def test_guided_journey_saves_prepares_generates_and_inspects(tmp_path: Path, mo
         console=console,
         ask=lambda *_args, **_kwargs: next(answers),
         confirm=lambda *_args, **_kwargs: next(confirmations),
+        interactive=True,
     )
 
     assert result["status"] == "complete"
