@@ -112,14 +112,32 @@ def discover_composers(root: str | Path = ".") -> dict[str, list[dict[str, Any]]
 
 
 def discover_incomplete_runs(root: str | Path = ".") -> list[dict[str, Any]]:
+    root_path = Path(root).resolve()
     runs: list[dict[str, Any]] = []
-    for control_path in sorted((Path(root) / "outputs" / "runs").glob("**/control.json"), reverse=True):
+    for control_path in sorted((root_path / "outputs" / "runs").glob("**/control.json"), reverse=True):
         try:
             control = json.loads(control_path.read_text(encoding="utf-8"))
         except Exception:
             continue
         if control.get("actual_state") in {"running", "draining", "paused", "stopping", "interrupted", "failed"}:
-            runs.append({"path": control_path.parent, "state": control.get("actual_state")})
+            config_path: Path | None = None
+            try:
+                invocation = json.loads((control_path.parent / "run.json").read_text(encoding="utf-8")).get("invocation", [])
+                if "--config" in invocation:
+                    raw = Path(str(invocation[invocation.index("--config") + 1]))
+                    candidate = raw if raw.is_absolute() else root_path / "configs" / raw.name
+                    if candidate.is_file():
+                        config_path = candidate.resolve()
+            except (IndexError, OSError, ValueError, json.JSONDecodeError):
+                pass
+            runs.append(
+                {
+                    "path": control_path.parent,
+                    "state": control.get("actual_state"),
+                    "resumable": config_path is not None,
+                    "config_path": config_path,
+                }
+            )
     return runs[:10]
 
 
@@ -359,24 +377,38 @@ def run_guided_start(
     session = GuidedSession()
     _readiness(console, root)
     session = session.advance("ready")
-    provided = config
-    while True:
-        chosen = _select_config(root, provided, console, ask)
-        selection_action = ask("Continue with this composer?", choices=["continue", "back", "cancel"], default="continue")
-        if selection_action == "cancel":
-            return {"schema_version": 1, "status": "cancelled", "stage": "selection"}
-        if selection_action == "back":
-            provided = None
-            _readiness(console, root)
-            continue
-        break
-    if root / "examples" / "configs" in chosen.parents:
-        chosen = _copy_example(chosen, root)
-        console.print(f"Copied shipped example to managed composer: [bold]{chosen}[/bold]")
+    resumable = [item for item in discover_incomplete_runs(root) if item["resumable"]]
+    resume_item: dict[str, Any] | None = None
+    if config is None and resumable and ask("Start a new run or resume one?", choices=["new", "resume"], default="new") == "resume":
+        for index, item in enumerate(resumable, 1):
+            console.print(f"{index}. {item['state']}: {item['path']}")
+        selected = int(ask("Run to resume", default="1")) - 1
+        if selected not in range(len(resumable)):
+            raise ValueError("Resume selection is out of range")
+        resume_item = resumable[selected]
+        chosen = Path(resume_item["config_path"])
+    else:
+        provided = config
+        while True:
+            chosen = _select_config(root, provided, console, ask)
+            selection_action = ask("Continue with this composer?", choices=["continue", "back", "cancel"], default="continue")
+            if selection_action == "cancel":
+                return {"schema_version": 1, "status": "cancelled", "stage": "selection"}
+            if selection_action == "back":
+                provided = None
+                _readiness(console, root)
+                continue
+            break
+        if root / "examples" / "configs" in chosen.parents:
+            chosen = _copy_example(chosen, root)
+            console.print(f"Copied shipped example to managed composer: [bold]{chosen}[/bold]")
     session = session.advance("select")
-    output_dir = suggest_output_dir(root, chosen.stem)
+    output_dir = Path(resume_item["path"]) if resume_item else suggest_output_dir(root, chosen.stem)
     while True:
-        chosen, output_dir = _edit_composer(chosen, output_dir, console, ask, confirm)
+        if resume_item:
+            console.print(Panel(f"Resuming unchanged contract from {output_dir}", title="Resumable run"))
+        else:
+            chosen, output_dir = _edit_composer(chosen, output_dir, console, ask, confirm)
         session = session.advance("edit") if session.stage == "essentials" else GuidedSession("advanced")
         session = session.advance("review")
         console.print(_review_panel(chosen, output_dir))
@@ -409,12 +441,13 @@ def run_guided_start(
     summary = generate_pool(
         resolved,
         output_dir,
-        GenerationOptions(
+            GenerationOptions(
             display=display,
             workers=workers,
             prepared=prepared,
             receipt_path=receipt_path,
-            invocation=("start", "--config", chosen.name),
+                invocation=("start", "--config", chosen.name),
+                resume=resume_item is not None,
         ),
     )
     session = session.advance("complete")
