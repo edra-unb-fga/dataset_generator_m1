@@ -156,3 +156,37 @@ def test_inline_random_fog_requires_cost_acknowledgement(tmp_path: Path) -> None
     assert "RANDOM_FOG_HIGH_COST" in result["required_acknowledgements"]
     assert result["profile"] == "local:appearance/inline-random-fog"
     assert result["runtime"]["confidence"] == "low"
+
+
+def test_preflight_estimates_accepted_outputs_not_candidate_cost(tmp_path: Path) -> None:
+    resolved = load_profile("examples/configs/landing_minimal.yaml", {"num_images": 10})
+    cache = tmp_path / "observations.jsonl"
+    record = {
+        "schema_version": 2,
+        "kind": "production",
+        "performance_fingerprint": __import__("dataset_generator_m1.performance", fromlist=["performance_fingerprint"]).performance_fingerprint(resolved),
+        "environment_class": __import__("dataset_generator_m1.performance", fromlist=["environment_class"]).environment_class(),
+        "workers": 1,
+        "active_seconds": 20.0,
+        "candidate_attempts": 20,
+        "accepted_samples": 10,
+        "seconds_per_candidate": 1.0,
+    }
+    cache.write_text("\n".join(json.dumps(record) for _ in range(3)) + "\n", encoding="utf-8")
+
+    result = run_preflight(PreflightRequest(resolved, tmp_path / "pool", 1, cache))
+
+    assert result["runtime"]["expected_seconds"] == 20.0
+    assert result["runtime"]["seconds_per_candidate"] == 1.0
+    assert result["runtime"]["seconds_per_accepted_output"] == 2.0
+
+
+def test_scalar_observation_records_are_ignored_with_an_information_warning(tmp_path: Path) -> None:
+    resolved = load_profile("examples/configs/landing_minimal.yaml")
+    cache = tmp_path / "observations.jsonl"
+    cache.write_text("[]\nnull\n", encoding="utf-8")
+
+    result = run_preflight(PreflightRequest(resolved, tmp_path / "pool", 1, cache))
+
+    assert result["status"] == "valid"
+    assert sum(item["code"] == "IGNORED_MALFORMED_OBSERVATION" for item in result["warnings"]) == 2

@@ -81,6 +81,9 @@ def read_matching_observations(
         except (json.JSONDecodeError, TypeError):
             warnings.append({"code": "IGNORED_MALFORMED_OBSERVATION", "severity": "info", "line": line_number})
             continue
+        if not isinstance(record, dict):
+            warnings.append({"code": "IGNORED_MALFORMED_OBSERVATION", "severity": "info", "line": line_number})
+            continue
         if record.get("schema_version") != 2 or not record.get("performance_fingerprint"):
             warnings.append({"code": "IGNORED_STALE_OBSERVATION", "severity": "info", "line": line_number})
             continue
@@ -133,6 +136,7 @@ def append_production_observation(
         "accepted_samples": accepted,
         "throughput_images_per_second": accepted / active_seconds,
         "seconds_per_candidate": active_seconds * workers / attempts,
+        "seconds_per_accepted_output": active_seconds / accepted if accepted else None,
         "stage_work": summary.get("session_stage_timings", summary.get("stage_timings", {})),
     }
     path.parent.mkdir(parents=True, exist_ok=True)

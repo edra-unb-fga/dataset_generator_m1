@@ -148,6 +148,10 @@ p90, p95, and p99; run summaries also include throughput, candidate/object/backg
 top causes, rejection cost, class/group/negative distributions, configured/observed recipe mix, QA
 distributions, warnings, and resource peaks.
 
+Preflight estimates time to accepted-output completion. Candidate/render cost remains a secondary
+diagnostic; exact-worker production observations use accepted throughput, while cross-worker and
+low-sample estimates widen confidence ranges rather than asserting machine-independent budgets.
+
 Accepted sample records retain the sampled scale, rotation, requested object count, stable object-attempt
 identity, and output region needed to calculate conditional rejection rates. Rejected object attempts
 retain asset/class/group identity, estimated size, blocking counts, a bounded spatial-bin histogram,
