@@ -19,9 +19,30 @@ def _split_for_fraction(value: float, splits: dict[str, float]) -> str:
     return next(reversed(splits))
 
 
+def _content_identity(value: Any, *, context: str, key: str = "content_hash") -> str:
+    """Return strict content identity while retaining paths only as provenance."""
+    content_hash = value.get(key) if isinstance(value, dict) else None
+    if not isinstance(content_hash, str) or not content_hash:
+        raise ValueError(
+            "Strict asset-disjoint splitting requires source content hashes; "
+            f"missing hash for {context}. Legacy pools remain inspectable and detection-exportable."
+        )
+    return f"sha256:{content_hash}"
+
+
 def _sample_assets(sample: dict[str, Any]) -> tuple[str, ...]:
-    assets = {str(annotation["source_asset"]) for annotation in sample.get("annotations", [])}
-    assets.update(str(asset) for asset in sample.get("background", {}).get("sources", []))
+    assets = {
+        _content_identity(
+            annotation,
+            context=f"foreground annotation in {sample.get('_key', sample.get('sample_id', 'sample'))}",
+            key="source_content_hash",
+        )
+        for annotation in sample.get("annotations", [])
+    }
+    assets.update(
+        _content_identity(asset, context=f"background source in {sample.get('_key', sample.get('sample_id', 'sample'))}")
+        for asset in sample.get("background", {}).get("sources", [])
+    )
     return tuple(sorted(assets))
 
 
@@ -94,13 +115,24 @@ def _greedy_assign(
     ordered = sorted(components, key=lambda item: (-item["size"], _hash_value(item["key"], seed), item["id"]))
     for component in ordered:
         def score(name: str) -> tuple[float, float, str]:
-            proposed_samples = sample_counts[name] + component["size"]
-            sample_error = abs(proposed_samples - target_samples[name]) / max(total_samples, 1)
+            proposed_samples = sample_counts.copy()
+            proposed_classes = {split: values.copy() for split, values in class_counts.items()}
+            proposed_samples[name] += component["size"]
+            proposed_classes[name].update(component["classes"])
+            # Score the complete requested distribution, not merely the one
+            # split being considered.  This makes the comparison a meaningful
+            # globally-aware greedy baseline rather than a local heuristic.
+            sample_error = sum(
+                abs(proposed_samples[split] - target_samples[split]) for split in names
+            ) / max(total_samples, 1)
             class_error = 0.0
             if class_aware:
-                for class_name, count in component["classes"].items():
-                    target = class_totals[class_name] * splits[name]
-                    class_error += abs(class_counts[name][class_name] + count - target) / max(class_totals[class_name], 1)
+                for class_name, total in class_totals.items():
+                    class_error += sum(
+                        abs(proposed_classes[split][class_name] - total * splits[split])
+                        for split in names
+                    ) / max(total, 1)
+                class_error /= max(len(class_totals), 1)
             return sample_error + class_error, sample_counts[name] / max(splits[name], 1e-9), name
 
         selected = min(names, key=score)

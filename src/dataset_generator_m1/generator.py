@@ -49,6 +49,7 @@ def _annotation_record(annotation: Any) -> dict[str, Any]:
         "normalized_bbox": list(annotation.normalized_bbox),
         "visible_bbox_fraction": annotation.visible_bbox_fraction,
         "source_asset": annotation.source_asset,
+        "source_content_hash": annotation.source_content_hash,
         "source_group": annotation.source_group,
         "asset_to_scene": annotation.asset_to_scene.tolist(),
         "asset_to_output": annotation.asset_to_output.tolist(),

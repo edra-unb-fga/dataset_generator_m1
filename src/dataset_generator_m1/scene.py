@@ -89,6 +89,7 @@ class Annotation:
     normalized_bbox: tuple[float, float, float, float]
     visible_bbox_fraction: float
     source_asset: str
+    source_content_hash: str
     source_group: str
     asset_to_scene: np.ndarray
     asset_to_output: np.ndarray
@@ -534,6 +535,7 @@ class SceneRenderer:
                     normalized_bbox=normalized_bbox,
                     visible_bbox_fraction=visible_fraction,
                     source_asset=instance.asset.logical_path,
+                    source_content_hash=instance.asset.content_hash,
                     source_group=instance.asset.group,
                     asset_to_scene=asset_to_scene,
                     asset_to_output=asset_to_output,

@@ -1,4 +1,5 @@
 import json
+import hashlib
 from pathlib import Path
 
 import numpy as np
@@ -29,11 +30,12 @@ def make_pool(root: Path, class_name: str, *, background: str, schema_version: i
     sample = {
         "sample_id": "duplicate-id",
         "image_path": "images/same.png",
-        "background": {"sources": [background]},
+        "background": {"sources": [{"logical_path": background, "content_hash": hashlib.sha256(background.encode()).hexdigest()}]},
         "annotations": [
             {
                 "class_name": class_name,
                 "source_asset": "root0/shared-foreground.png",
+                "source_content_hash": "shared-foreground-content-hash",
                 "bbox": [2, 2, 6, 6],
                 "normalized_bbox": [0.5, 0.5, 0.5, 0.5],
             }
@@ -160,9 +162,9 @@ def test_lossy_topology_completes_export_with_actionable_warnings(tmp_path: Path
 
 def test_asset_disjoint_analysis_explains_impossible_and_fragile_splits() -> None:
     samples = [
-        {"_key": "a", "annotations": [{"class_name": "dial", "source_asset": "fg/shared.png"}], "background": {"sources": ["bg/a.png"]}},
-        {"_key": "b", "annotations": [{"class_name": "dial", "source_asset": "fg/shared.png"}], "background": {"sources": ["bg/b.png"]}},
-        {"_key": "c", "annotations": [], "background": {"sources": ["bg/c.png"]}},
+        {"_key": "a", "annotations": [{"class_name": "dial", "source_asset": "fg/shared.png", "source_content_hash": "shared"}], "background": {"sources": [{"content_hash": "a"}]}},
+        {"_key": "b", "annotations": [{"class_name": "dial", "source_asset": "fg/shared.png", "source_content_hash": "shared"}], "background": {"sources": [{"content_hash": "b"}]}},
+        {"_key": "c", "annotations": [], "background": {"sources": [{"content_hash": "c"}]}},
     ]
 
     plan = plan_asset_disjoint_splits(samples, {"train": 0.5, "val": 0.25, "test": 0.25}, seed=7)
@@ -206,3 +208,31 @@ def test_analyze_only_writes_no_export_tree_and_matches_embedded_analysis(tmp_pa
     assert analysis["split_analysis"] == exported["split_analysis"]
     assert exported["status"] == "complete_with_warnings"
     assert str(left.resolve()) not in json.dumps(analysis)
+
+
+def test_asset_disjoint_uses_content_identity_and_rejects_legacy_missing_hashes() -> None:
+    duplicate = "same-bytes"
+    samples = [
+        {"_key": "renamed-a", "annotations": [{"class_name": "dial", "source_asset": "one.png", "source_content_hash": duplicate}], "background": {"sources": [{"logical_path": "a.jpg", "content_hash": "background-a"}]}},
+        {"_key": "renamed-b", "annotations": [{"class_name": "dial", "source_asset": "copied.png", "source_content_hash": duplicate}], "background": {"sources": [{"logical_path": "b.jpg", "content_hash": "background-b"}]}},
+    ]
+    plan = plan_asset_disjoint_splits(samples, {"train": 0.5, "test": 0.5}, seed=2)
+    assert plan["analysis"]["component_count"] == 1
+
+    with pytest.raises(ValueError, match="content hashes"):
+        plan_asset_disjoint_splits(
+            [{"_key": "legacy", "annotations": [{"class_name": "dial", "source_asset": "old.png"}], "background": {"sources": []}}],
+            {"train": 1.0},
+            seed=2,
+        )
+
+
+def test_greedy_sample_comparison_optimizes_global_requested_distribution() -> None:
+    samples = [
+        {"_key": str(index), "annotations": [{"class_name": "dial", "source_content_hash": f"foreground-{index}"}], "background": {"sources": [{"content_hash": f"background-{index}"}]}}
+        for index in range(100)
+    ]
+
+    plan = plan_asset_disjoint_splits(samples, {"train": 0.8, "val": 0.1, "test": 0.1}, seed=7)
+
+    assert plan["comparisons"]["greedy-sample"]["sample_counts"] == {"train": 80, "val": 10, "test": 10}
