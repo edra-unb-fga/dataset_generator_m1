@@ -87,6 +87,18 @@ def test_threaded_monitor_stops_and_flushes() -> None:
     assert monitor.is_running is False
 
 
+def test_monitor_binds_progress_at_sampling_time() -> None:
+    monitor = ProcessTreeMonitor(interval_seconds=1.0, sampler=snapshot, session_id="progress")
+    monitor.set_progress(accepted=2, candidate_attempts=5)
+    monitor.sample_once()
+    monitor.set_progress(accepted=3, candidate_attempts=7)
+    monitor.sample_once()
+
+    records = [item for item in monitor.drain() if item["metric_type"] == "process_tree_resource"]
+
+    assert [(item["accepted"], item["candidate_attempts"]) for item in records] == [(2, 5), (3, 7)]
+
+
 class FakeProcess:
     def __init__(self, pid: int, *, children: list["FakeProcess"] | None = None, missing: bool = False) -> None:
         self.pid = pid

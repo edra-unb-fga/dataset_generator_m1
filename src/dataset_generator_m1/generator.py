@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import shutil
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from dataclasses import dataclass
 from pathlib import Path
 from time import perf_counter
@@ -264,6 +264,7 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
     reporter.start(metrics)
     terminal_control.start()
     if resource_monitor is not None:
+        resource_monitor.set_progress(accepted=metrics.accepted, candidate_attempts=metrics.candidate_attempts)
         resource_monitor.start()
     qa_limit = resolved.profile.report.qa_samples if options.qa_samples is None else options.qa_samples
     status = "complete"
@@ -279,9 +280,12 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         if resource_monitor is None:
             return
         for resource in resource_monitor.drain():
-            resource.update({"accepted": metrics.accepted, "candidate_attempts": metrics.candidate_attempts})
             store.append_metric(resource)
             metrics.record_resource(resource)
+
+    def sync_resource_progress() -> None:
+        if resource_monitor is not None:
+            resource_monitor.set_progress(accepted=metrics.accepted, candidate_attempts=metrics.candidate_attempts)
 
     def poll_coordinator_services() -> None:
         drain_resource_samples()
@@ -327,6 +331,7 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         for rejection in result["rejections"]:
             store.append_rejection(rejection)
             metrics.record_rejection(rejection)
+        sync_resource_progress()
         if not result["accepted"]:
             status = "failed"
             fatal_error = f"Slot {slot} exhausted its candidate-attempt budget"
@@ -335,6 +340,7 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
             result["record"], result["image"], result["mask_archive"], qa=metrics.accepted < qa_limit
         )
         metrics.record_sample(committed)
+        sync_resource_progress()
         drain_resource_samples()
         reporter.update(metrics)
         if shutil.disk_usage(store.root).free < 32 * 1024 * 1024:
@@ -394,7 +400,23 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
                         ): slot
                         for slot in batch
                     }
-                    results = {active_futures[future]: future.result() for future in as_completed(active_futures)}
+                    # Poll rather than blocking on an entire process-pool
+                    # window. The coordinator remains the sole Rich owner,
+                    # but now drains telemetry and refreshes the display while
+                    # workers are still producing results.
+                    results: dict[int, dict[str, Any]] = {}
+                    pending = set(active_futures)
+                    while pending:
+                        done, pending = wait(
+                            pending,
+                            timeout=max(0.05, 1.0 / resolved.profile.telemetry.refresh_hz),
+                            return_when=FIRST_COMPLETED,
+                        )
+                        poll_coordinator_services()
+                        if not done:
+                            continue
+                        for future in done:
+                            results[active_futures[future]] = future.result()
                     for slot in sorted(results):
                         if not commit_result(slot, results[slot]):
                             for future in active_futures:
@@ -442,7 +464,17 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         set_run_state(status)
         metrics.set_workload(worker_count=workers, active_workers=0, in_flight=0, queued=0)
         if resource_monitor is not None:
-            resource_monitor.stop()
+            if not resource_monitor.stop():
+                warning = {
+                    "schema_version": 1,
+                    "metric_type": "resource_monitor_warning",
+                    "session_id": resource_monitor.session_id,
+                    "run_state": status,
+                    "code": "RESOURCE_MONITOR_STOPPING",
+                    "message": "Sampler thread did not stop within the bounded shutdown interval.",
+                }
+                store.append_metric(warning)
+                metrics.record_resource(warning)
             drain_resource_samples()
         summary = metrics.summary()
         summary.update(
