@@ -155,6 +155,11 @@ the best failed placement, projected/clipped boxes, clipped sides, visibility, r
 stage. These diagnostics do not participate in scene planning and therefore cannot change geometry or
 annotations.
 
+Candidate failures retain any bounded object-attempt diagnostics accumulated before rejection,
+including candidates with zero accepted objects. Placement reports keep candidate, object, and stage
+denominators separate so rates describe all observed attempts rather than only eventually accepted
+samples.
+
 The coordinator owns one Rich `Console`, Live display, logging, pool commits, and ordered JSONL output.
 Process workers never print. Live/full display shows accepted and attempted progress, throughput/ETA,
 worker/in-flight/queue state, stage p50/p95 bottleneck, rejection causes, recipe mix, and the latest plus

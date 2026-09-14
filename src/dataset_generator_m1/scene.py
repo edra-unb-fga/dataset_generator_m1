@@ -27,7 +27,17 @@ BBox = tuple[int, int, int, int]
 
 
 class SceneRejected(RuntimeError):
-    pass
+    """Reject a candidate while retaining bounded object-attempt evidence.
+
+    Candidate-level failures can happen after the renderer has already learned why
+    every foreground object was rejected.  Keeping that evidence on the exception
+    prevents retry accounting from silently biasing placement studies toward only
+    eventually accepted candidates.
+    """
+
+    def __init__(self, message: str, rejected_instances: list[dict[str, Any]] | tuple[dict[str, Any], ...] = ()) -> None:
+        super().__init__(message)
+        self.rejected_instances = tuple(rejected_instances)
 
 
 def derive_seed(seed: int, slot: int, candidate_attempt: int, stream_name: str) -> int:
@@ -548,7 +558,7 @@ class SceneRenderer:
             timings["foreground_annotation"] = timings.get("foreground_annotation", 0) + max(0, self.clock() - started)
 
         if not annotations and not plan.intentional_negative:
-            raise SceneRejected("candidate has no accepted foreground annotations")
+            raise SceneRejected("candidate has no accepted foreground annotations", rejected)
         final_visible = visible_coverages(masks)
         visible_annotations: list[Annotation] = []
         for annotation, coverage in zip(annotations, final_visible):
