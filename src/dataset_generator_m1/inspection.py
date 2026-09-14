@@ -40,10 +40,27 @@ def _jsonl(path: Path, findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
         if not line.strip():
             continue
         try:
-            records.append(json.loads(line))
+            record = json.loads(line)
+            if not isinstance(record, dict):
+                findings.append(_finding("INVALID_JSONL_RECORD", f"line {number}: expected an object", path.name))
+                continue
+            records.append(record)
         except json.JSONDecodeError as exc:
             findings.append(_finding("INVALID_JSONL", f"line {number}: {exc}", path.name))
     return records
+
+
+def _pool_artifact(root: Path, value: object, findings: list[dict[str, Any]], *, code: str) -> Path | None:
+    """Resolve a pool-relative artifact without allowing pool-root escape."""
+    raw = str(value or "")
+    candidate = Path(raw)
+    resolved = candidate.resolve() if candidate.is_absolute() else (root / candidate).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError:
+        findings.append(_finding(code, f"Artifact path escapes the pool root: {raw}", raw))
+        return None
+    return resolved
 
 
 def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
@@ -75,12 +92,20 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
         if len(expected_size) == 2:
             width, height = expected_size
             for sample in samples:
-                image_path = root / str(sample.get("image_path", ""))
+                image_path = _pool_artifact(root, sample.get("image_path"), findings, code="ARTIFACT_OUTSIDE_POOL")
+                if image_path is None:
+                    continue
                 try:
                     with Image.open(image_path) as image:
                         image.load()
                         if image.size != expected_size:
-                            findings.append(_finding("IMAGE_DIMENSION_MISMATCH", f"Expected {expected_size}, got {image.size}", str(image_path.relative_to(root))))
+                            findings.append(
+                                _finding(
+                                    "IMAGE_DIMENSION_MISMATCH",
+                                    f"Expected {expected_size}, got {image.size}",
+                                    str(image_path.relative_to(root)),
+                                )
+                            )
                 except Exception as exc:
                     findings.append(_finding("IMAGE_DECODE_FAILED", f"{type(exc).__name__}: {exc}", str(image_path.relative_to(root))))
                     continue
@@ -96,7 +121,9 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
                     if not isinstance(evidence, dict) or not evidence.get("path"):
                         findings.append(_finding("MASK_EVIDENCE_MISSING", "Pool-v2 sample lacks mask evidence", sample.get("sample_id")))
                         continue
-                    mask_path = root / str(evidence["path"])
+                    mask_path = _pool_artifact(root, evidence["path"], findings, code="ARTIFACT_OUTSIDE_POOL")
+                    if mask_path is None:
+                        continue
                     try:
                         decoded = decode_mask_evidence(mask_path.read_bytes(), evidence)
                         mask_archives += 1
@@ -129,7 +156,8 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
     parser = _LocalLinks()
     parser.feed(qa_index.read_text(encoding="utf-8"))
     for value in parser.values:
-        if not (qa_index.parent / value).resolve().is_file():
+        target = _pool_artifact(root, qa_index.parent.relative_to(root) / value, findings, code="QA_LINK_OUTSIDE_POOL")
+        if target is not None and not target.is_file():
             findings.append(_finding("BROKEN_QA_LINK", f"QA link does not resolve: {value}", f"qa/{value}"))
     return {
         "schema_version": 1,

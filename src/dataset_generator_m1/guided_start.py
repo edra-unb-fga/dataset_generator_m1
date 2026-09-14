@@ -346,9 +346,14 @@ def run_guided_start(
     console: Console | None = None,
     ask: Callable[..., str] = Prompt.ask,
     confirm: Callable[..., bool] = Confirm.ask,
+    interactive: bool | None = None,
 ) -> dict[str, Any]:
     console = console or Console()
-    if not (console.is_interactive and sys.stdin.isatty()):
+    # Production derives this solely from the actual console and stdin.  Tests
+    # may inject the seam to exercise the guided state machine without
+    # weakening the CLI's non-TTY refusal.
+    is_interactive = console.is_interactive and sys.stdin.isatty() if interactive is None else interactive
+    if not is_interactive:
         raise RuntimeError(_non_tty_message(config))
     root = Path(root).resolve()
     session = GuidedSession()
