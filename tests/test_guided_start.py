@@ -10,6 +10,7 @@ from dataset_generator_m1.guided_start import (
     GuidedSession,
     choose_live_mode,
     discover_composers,
+    discover_incomplete_runs,
     profile_help,
     render_results_dashboard,
     run_guided_start,
@@ -52,6 +53,21 @@ def test_output_suggestion_is_collision_free(tmp_path: Path) -> None:
     second = suggest_output_dir(tmp_path, "my composer", timestamp="20260730-120000")
     assert first.name == "20260730-120000"
     assert second.name == "20260730-120000-02"
+
+
+def test_incomplete_run_discovery_resolves_a_resumable_managed_composer(tmp_path: Path) -> None:
+    config = tmp_path / "configs" / "landing.yaml"
+    config.parent.mkdir()
+    config.write_text(Path("examples/configs/landing_minimal.yaml").read_text(encoding="utf-8"), encoding="utf-8")
+    run = tmp_path / "outputs" / "runs" / "landing" / "incomplete"
+    run.mkdir(parents=True)
+    (run / "control.json").write_text('{"actual_state":"interrupted"}', encoding="utf-8")
+    (run / "run.json").write_text('{"invocation":["start","--config","landing.yaml"]}', encoding="utf-8")
+
+    discovered = discover_incomplete_runs(tmp_path)
+
+    assert discovered[0]["resumable"] is True
+    assert discovered[0]["config_path"] == config
 
 
 def test_non_tty_start_refuses_with_atomic_command_guidance(capsys) -> None:
