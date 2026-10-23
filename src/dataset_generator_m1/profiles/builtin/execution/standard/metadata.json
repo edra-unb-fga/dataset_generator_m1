@@ -3,7 +3,7 @@
   "id": "builtin:execution/standard",
   "subject": "execution",
   "status": "standard",
-  "compatible_families": ["landing", "manometro"],
+  "compatible_families": ["landing","manometro","landing-pad"],
   "intents": ["portable-default"],
   "performance_risk": "none",
   "warning_codes": [],

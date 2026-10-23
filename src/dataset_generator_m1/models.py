@@ -63,6 +63,7 @@ def _ordered_range(value: tuple[float, float], name: str, minimum: float | None 
 
 
 class SamplingConfig(StrictModel):
+    count_policy: Literal["best-effort", "require-count"] = "best-effort"
     instances_per_image: tuple[int, int] = (1, 2)
     foreground_size: tuple[float, float] = (0.20, 0.45)
     bbox_spacing: float = Field(default=0.015, ge=0.0)
@@ -188,6 +189,7 @@ class OutputInline(StrictModel):
 
 
 class SamplingInline(StrictModel):
+    count_policy: Literal["best-effort", "require-count"] | None = None
     instances_per_image: tuple[int, int] | None = None
     foreground_size: tuple[float, float] | None = None
     bbox_spacing: float | None = Field(default=None, ge=0.0)
@@ -260,7 +262,7 @@ class ComposerInline(StrictModel):
 
 class GenerationProfile(StrictModel):
     schema_version: Literal[2]
-    family: Literal["landing", "manometro"]
+    family: str = Field(pattern=r"^[a-z][a-z0-9-]*$")
     run: RunConfig
     assets: AssetsConfig
     output: OutputConfig = Field(default_factory=OutputConfig)
@@ -310,7 +312,7 @@ class ProfileMetadata(StrictModel):
     id: str
     subject: str
     status: Literal["standard", "fast", "heavy", "diagnostic", "stress", "experimental", "local"]
-    compatible_families: tuple[Literal["landing", "manometro"], ...] = ("landing", "manometro")
+    compatible_families: tuple[str, ...] = ()
     intents: tuple[str, ...] = ()
     performance_risk: Literal["none", "informational", "confirmation"] = "none"
     warning_codes: tuple[str, ...] = ()
@@ -336,7 +338,7 @@ class AnnotationPolicy(StrictModel):
 
 class FamilyDefinition(StrictModel):
     schema_version: Literal[1]
-    name: Literal["landing", "manometro"]
+    name: str = Field(pattern=r"^[a-z][a-z0-9-]*$")
     classes: tuple[str, ...]
     class_mapping: tuple[ClassMappingRule, ...]
     rotation: RotationPolicy

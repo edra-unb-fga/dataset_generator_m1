@@ -21,6 +21,7 @@ from .catalog import list_profiles, resolved_contract, show_profile
 from .config import load_profile, load_yaml_strict
 from .configurator import (
     APPEARANCE_IDS,
+    appearance_references,
     add_inline_effect,
     default_composer,
     effect_catalog,
@@ -29,6 +30,7 @@ from .configurator import (
     set_subject_reference,
 )
 from .execution import resolve_worker_count
+from .families import family_names
 from .exporter import ExportOptions, export_pools, parse_splits
 from .generator import GenerationOptions, generate_pool, probe_profile
 from .inspection import inspect_pool
@@ -76,6 +78,18 @@ def choose_live_mode(interactive: bool, width: int, height: int) -> str:
 
 def _slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-") or "run"
+
+
+def _choose_index(prompt: str, count: int, console: Console, ask: Callable[..., str]) -> int:
+    while True:
+        value = ask(prompt, default="1")
+        try:
+            selected = int(value) - 1
+            if selected in range(count):
+                return selected
+        except ValueError:
+            pass
+        console.print(f"Enter a number from 1 to {count}.", style="yellow")
 
 
 def suggest_output_dir(root: str | Path, composer_name: str, *, timestamp: str | None = None) -> Path:
@@ -206,7 +220,7 @@ def _select_config(root: Path, provided: str | Path | None, console: Console, as
     discovery = discover_composers(root)
     choices = [*discovery["managed"], *discovery["examples"]]
     if not choices:
-        family = ask("No composers found. Create family", choices=["landing", "manometro"], default="landing")
+        family = ask("No composers found. Create family", choices=list(family_names()), default="landing")
         path = root / "configs" / f"{family}.yaml"
         return save_composer(default_composer(family), path)
     table = Table(title="Saved composers and shipped examples", expand=True)
@@ -219,9 +233,7 @@ def _select_config(root: Path, provided: str | Path | None, console: Console, as
     console.print(table)
     if discovery["invalid"]:
         console.print(Panel("\n".join(f"{item['name']}: {item['error']}" for item in discovery["invalid"]), title="Invalid managed files", border_style="yellow"))
-    selected = int(ask("Composer number", default="1")) - 1
-    if selected not in range(len(choices)):
-        raise ValueError("Composer selection is out of range")
+    selected = _choose_index("Composer number", len(choices), console, ask)
     item = choices[selected]
     return item["path"]
 
@@ -277,13 +289,12 @@ def _advanced_editor(document: dict[str, Any], config: Path, console: Console, a
         if action == "done":
             return document
         if action == "appearance":
-            for index, reference in enumerate(APPEARANCE_IDS, 1):
+            choices = appearance_references(config)
+            for index, reference in enumerate(choices, 1):
                 console.print(f"{index}. {reference}")
-            selected = int(ask("Appearance number", default="1")) - 1
-            if selected not in range(len(APPEARANCE_IDS)):
-                raise ValueError("Appearance selection is out of range")
-            document.setdefault("appearance", {})["preset"] = APPEARANCE_IDS[selected]
-            console.print(Markdown(profile_help(APPEARANCE_IDS[selected], config)))
+            selected = _choose_index("Appearance number", len(choices), console, ask)
+            document.setdefault("appearance", {})["preset"] = choices[selected]
+            console.print(Markdown(profile_help(choices[selected], config)))
         elif action == "help":
             reference = ask("Profile ID", default="builtin:appearance/realistic-heavy")
             console.print(Markdown(profile_help(reference, config)))
@@ -301,7 +312,7 @@ def _advanced_editor(document: dict[str, Any], config: Path, console: Console, a
             available = [name for name in sorted(docs) if stage in docs[name]["stages"]]
             for index, name in enumerate(available, 1):
                 console.print(f"{index}. {name}: {docs[name]['summary']}")
-            effect_type = available[int(ask("Effect number", default="1")) - 1]
+            effect_type = available[_choose_index("Effect number", len(available), console, ask)]
             documentation = docs[effect_type].get("documentation", effect_catalog()["documentation"])
             console.print(Panel(f"{docs[effect_type]['summary']}\nDocumentation: {documentation}", title=effect_type))
             document = add_inline_effect(
@@ -394,9 +405,7 @@ def run_guided_start(
     if config is None and resumable and ask("Start a new run or resume one?", choices=["new", "resume"], default="new") == "resume":
         for index, item in enumerate(resumable, 1):
             console.print(f"{index}. {item['state']}: {item['path']}")
-        selected = int(ask("Run to resume", default="1")) - 1
-        if selected not in range(len(resumable)):
-            raise ValueError("Resume selection is out of range")
+        selected = _choose_index("Run to resume", len(resumable), console, ask)
         resume_item = resumable[selected]
         chosen = Path(resume_item["config_path"])
     else:
@@ -458,7 +467,7 @@ def run_guided_start(
             workers=workers,
             prepared=prepared,
             receipt_path=receipt_path,
-                invocation=("start", "--config", chosen.name),
+                invocation=("start", "--config", str(chosen.resolve())),
                 resume=resume_item is not None,
         ),
     )

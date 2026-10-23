@@ -18,6 +18,7 @@ from .configurator import APPEARANCE_IDS, configure_interactive, configure_nonin
 from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
 from .execution import resolve_worker_count
+from .families import family_names
 from .generator import GenerationOptions, generate_pool, probe_profile
 from .guided_start import run_guided_start
 from .inspection import inspect_pool
@@ -65,10 +66,10 @@ def build_parser() -> argparse.ArgumentParser:
     _common(catalog_promote)
 
     configure = commands.add_parser("configure", help="Author a saved schema-v2 composer in a guided cockpit")
-    configure.add_argument("--family", choices=["landing", "manometro"], required=True)
+    configure.add_argument("--family", choices=family_names(), required=True)
     configure.add_argument("--output", required=True, help="Composer YAML to create or replace")
     configure.add_argument("--run-output-dir", help="Output directory used for the cockpit preflight estimate")
-    configure.add_argument("--appearance", choices=list(APPEARANCE_IDS), default=APPEARANCE_IDS[0])
+    configure.add_argument("--appearance", default=APPEARANCE_IDS[0], help="Built-in/workspace profile ID or YAML path")
     _common(configure)
 
     resolve = commands.add_parser("resolve", help="Print the immutable contract resolved from a composer")

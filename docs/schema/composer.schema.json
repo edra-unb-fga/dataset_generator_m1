@@ -774,6 +774,22 @@
           "default": null,
           "title": "Bbox Spacing"
         },
+        "count_policy": {
+          "anyOf": [
+            {
+              "enum": [
+                "best-effort",
+                "require-count"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Count Policy"
+        },
         "foreground_size": {
           "anyOf": [
             {

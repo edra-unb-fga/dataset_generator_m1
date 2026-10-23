@@ -474,6 +474,15 @@
           "title": "Bbox Spacing",
           "type": "number"
         },
+        "count_policy": {
+          "default": "best-effort",
+          "enum": [
+            "best-effort",
+            "require-count"
+          ],
+          "title": "Count Policy",
+          "type": "string"
+        },
         "foreground_size": {
           "default": [
             0.2,
@@ -641,10 +650,7 @@
       "$ref": "#/$defs/ExecutionConfig"
     },
     "family": {
-      "enum": [
-        "landing",
-        "manometro"
-      ],
+      "pattern": "^[a-z][a-z0-9-]*$",
       "title": "Family",
       "type": "string"
     },
