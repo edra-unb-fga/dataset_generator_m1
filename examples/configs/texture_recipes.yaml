@@ -1,0 +1,13 @@
+schema_version: 1
+recipes:
+  planar:
+    version: 1
+    experimental: true
+    tileable: true
+    nodes:
+      - {id: source, op: sample_asset, params: {role: base}}
+      - id: mapped
+        op: texture_map
+        inputs: {image: source}
+        params: {repeats_x: [1.0, 3.0], repeats_y: [1.0, 3.0], rotation_degrees: [-180.0, 180.0], offset_x: [0.0, 1.0], offset_y: [0.0, 1.0]}
+    output: mapped

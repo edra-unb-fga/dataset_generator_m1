@@ -118,6 +118,11 @@ Every command supports `--display auto|live|full|plain|quiet` and `--output-form
 
 ## Pool artifacts
 
+The experimental [drone scenario screen](docs/experiments/drone-screen-v1/README.md) compares natural
+and forced effects without changing defaults. [Pinned materials and planar UV mapping](docs/MATERIALS.md)
+support offline reuse and keep colour maps separate from normal/roughness data. Use `materials --help`
+and `catalog show builtin:appearance/drone-daylight-candidate` to explore them.
+
 Generation writes `run.json`, `samples.jsonl`, `rejections.jsonl`, `metrics.jsonl`, `summary.json`, atomic images, exact cropped-alpha mask archives, and a small `qa/index.html` gallery. Detection export remains the default; pool-v2 also supports YOLO instance segmentation without rerendering. See [docs/SEGMENTATION.md](docs/SEGMENTATION.md). Resume requires the same resolved contract and asset-catalog fingerprint.
 
 See [CONTEXT.md](CONTEXT.md) for the domain language, [docs/SPEC.md](docs/SPEC.md) for the normative

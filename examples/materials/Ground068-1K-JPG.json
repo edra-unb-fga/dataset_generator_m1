@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "asset_id": "Ground068",
+  "material_id": "ambientcg/Ground068",
+  "provider": "ambientCG",
+  "source_page": "https://ambientcg.com/a/Ground068",
+  "license": "CC0-1.0",
+  "license_url": "https://docs.ambientcg.com/license/",
+  "resolution": "1K-JPG",
+  "physical_dimensions": {
+    "width": 0,
+    "height": 0,
+    "depth": 0
+  },
+  "normal_convention": "OpenGL",
+  "archive": {
+    "url": "https://ambientcg.com/get?file=Ground068_1K-JPG.zip",
+    "sha256": "f2404d148ba3fd04c753bd84e2c5bfd1743bf439ae147d8114308ce96336d91d",
+    "size_bytes": 10148987
+  },
+  "maps": {
+    "color": {
+      "member": "Ground068_1K-JPG_Color.jpg",
+      "sha256": "027f180023f33e6435ed8cf3f94481904612151360964e134de710b1b52f7a2d",
+      "size_bytes": 1906391
+    },
+    "normal": {
+      "member": "Ground068_1K-JPG_NormalGL.jpg",
+      "sha256": "ed5550f1016acca78276e8055e4677604763818846e43d0fee94778aaf5ce424",
+      "size_bytes": 2303772
+    },
+    "roughness": {
+      "member": "Ground068_1K-JPG_Roughness.jpg",
+      "sha256": "1fbc95dbbbb022c673169d883a722033f9ad2bbb46708ed2b089250d4aab1367",
+      "size_bytes": 717978
+    },
+    "displacement": {
+      "member": "Ground068_1K-JPG_Displacement.jpg",
+      "sha256": "5cdc817155a9bc56b63ebc262bd51f32b8f095409d99a50c1a93659e944013d3",
+      "size_bytes": 554937
+    },
+    "ambient-occlusion": {
+      "member": "Ground068_1K-JPG_AmbientOcclusion.jpg",
+      "sha256": "3e64a85b87108462e4c170f208ee9f8238233db5489b7b018f051a20da151ba5",
+      "size_bytes": 750491
+    }
+  }
+}

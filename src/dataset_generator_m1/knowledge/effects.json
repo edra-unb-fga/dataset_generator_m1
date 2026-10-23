@@ -2,6 +2,7 @@
   "schema_version": 1,
   "documentation": "docs/APPEARANCE_EFFECTS.md",
   "effects": {
+    "ImageCompression": {"category":"camera","stages":["final"],"summary":"Vary JPEG/WebP compression quality after scene composition; preserves instance alpha evidence."},
     "HueSaturationValue": {"category": "color", "stages": ["background", "foreground", "final"], "summary": "Shift hue, saturation, and value."},
     "RandomBrightnessContrast": {"category": "exposure", "stages": ["background", "foreground", "final"], "summary": "Vary brightness and contrast."},
     "GaussianBlur": {"category": "blur", "stages": ["background", "foreground", "final"], "summary": "Apply Gaussian optical blur."},

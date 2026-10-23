@@ -70,6 +70,20 @@ def _rgb_to_space(image: np.ndarray, color_space: str) -> np.ndarray:
     raise BackgroundSynthesisError(f"Unsupported color space: {color_space}")
 
 
+def map_planar_texture(image: np.ndarray, size: tuple[int, int], *, repeats_x: float = 2.0, repeats_y: float = 2.0,
+                       rotation_degrees: float = 0.0, offset_x: float = 0.0, offset_y: float = 0.0) -> np.ndarray:
+    params = (repeats_x, repeats_y, rotation_degrees, offset_x, offset_y)
+    if not all(np.isfinite(value) for value in params) or min(repeats_x, repeats_y) <= 0:
+        raise ValueError("Texture coordinates must be finite with positive repetition")
+    width, height = size
+    x = (np.arange(width, dtype=np.float32)[None, :] / width - 0.5) * repeats_x
+    y = (np.arange(height, dtype=np.float32)[:, None] / height - 0.5) * repeats_y
+    angle = np.deg2rad(rotation_degrees)
+    u = np.asarray(((np.cos(angle)*x - np.sin(angle)*y + offset_x + .5) % 1) * image.shape[1], dtype=np.float32)
+    v = np.asarray(((np.sin(angle)*x + np.cos(angle)*y + offset_y + .5) % 1) * image.shape[0], dtype=np.float32)
+    return cv2.remap(image, u, v, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_WRAP)
+
+
 def _space_to_rgb(image: np.ndarray, color_space: str) -> np.ndarray:
     normalized = color_space.lower()
     if normalized == "rgb":
@@ -380,6 +394,13 @@ class BackgroundSynthesizer:
             chosen = candidates[int(rng.choice(len(candidates), p=weights))]
             sampled.update({"group": chosen.group, "logical_path": chosen.logical_path, "role": role})
             return chosen
+        if node.op == "texture_map":
+            source = inputs["image"]
+            image = _load_rgb_float(source) if isinstance(source, AssetRecord) else source
+            params = {key: _sample_range(node.params.get(key), rng, default) for key, default in
+                      (("repeats_x", 2.0), ("repeats_y", 2.0), ("rotation_degrees", 0.0), ("offset_x", 0.0), ("offset_y", 0.0))}
+            sampled.update(params)
+            return map_planar_texture(image, size, **params)
         if node.op == "resize_crop":
             source = inputs["image"]
             image = _load_rgb_float(source) if isinstance(source, AssetRecord) else source

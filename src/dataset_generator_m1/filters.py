@@ -19,6 +19,7 @@ from .native_effects import apply_atmospheric_fog, validate_atmospheric_fog_para
 
 
 SUPPORTED_TRANSFORMS = {
+    "ImageCompression",
     "HueSaturationValue",
     "RandomBrightnessContrast",
     "GaussianBlur",

@@ -1,0 +1,3 @@
+schema_version: 1
+subject: appearance
+value: {"background":[],"foreground":[],"final":[{"id":"daylight-illumination","type":"Illumination","probability":0.7,"params":{"mode":"linear","intensity_range":[0.02,0.12],"effect_type":"both"}},{"id":"daylight-camera","type":"RandomBrightnessContrast","probability":0.3,"params":{"brightness_limit":0.06,"contrast_limit":0.08}}]}

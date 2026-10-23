@@ -75,6 +75,7 @@
         "op": {
           "enum": [
             "sample_asset",
+            "texture_map",
             "resize_crop",
             "colorspace_convert",
             "channel_extract",

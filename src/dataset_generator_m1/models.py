@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import math
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -359,6 +360,7 @@ class FamilyDefinition(StrictModel):
 
 RecipeOp = Literal[
     "sample_asset",
+    "texture_map",
     "resize_crop",
     "colorspace_convert",
     "channel_extract",
@@ -389,6 +391,7 @@ class BackgroundRecipe(StrictModel):
     @model_validator(mode="after")
     def validate_graph(self) -> "BackgroundRecipe":
         required_inputs = {
+            "texture_map": {"image"},
             "sample_asset": set(),
             "resize_crop": {"image"},
             "colorspace_convert": {"image"},
@@ -401,6 +404,7 @@ class BackgroundRecipe(StrictModel):
             "displace": {"image", "map_x", "map_y"},
         }
         allowed_params = {
+            "texture_map": {"repeats_x", "repeats_y", "rotation_degrees", "offset_x", "offset_y"},
             "sample_asset": {"group", "same_group_as", "distinct_from", "role"},
             "resize_crop": set(),
             "colorspace_convert": {"from", "to"},
@@ -413,6 +417,7 @@ class BackgroundRecipe(StrictModel):
             "displace": {"amplitude_fraction", "blur_fraction"},
         }
         input_types = {
+            "texture_map": {"image": {"asset", "image"}},
             "resize_crop": {"image": {"asset", "image"}},
             "colorspace_convert": {"image": {"image"}},
             "channel_extract": {"image": {"image"}},
@@ -424,6 +429,7 @@ class BackgroundRecipe(StrictModel):
             "displace": {"image": {"image"}, "map_x": {"scalar"}, "map_y": {"scalar"}},
         }
         output_types = {
+            "texture_map": "image",
             "sample_asset": "asset",
             "resize_crop": "image",
             "colorspace_convert": "image",
@@ -456,6 +462,15 @@ class BackgroundRecipe(StrictModel):
             unknown_params = set(node.params) - allowed_params[node.op]
             if unknown_params:
                 raise ValueError(f"recipe node {node.id} has unsupported parameters: {sorted(unknown_params)}")
+            if node.op == "texture_map":
+                for key, value in node.params.items():
+                    values = value if isinstance(value, (list, tuple)) else (value,)
+                    if len(values) not in {1, 2} or any(not isinstance(v, (int, float)) or isinstance(v, bool) or not math.isfinite(v) for v in values):
+                        raise ValueError(f"Texture parameter {key} must be finite scalar or ordered range")
+                    if len(values) == 2 and values[0] > values[1]:
+                        raise ValueError(f"Texture range {key} must be ordered")
+                    if key.startswith("repeats") and min(values) <= 0:
+                        raise ValueError("Texture repetition must be positive")
             for reference in [node.params.get("same_group_as"), *node.params.get("distinct_from", [])]:
                 if reference is not None and str(reference) not in seen:
                     raise ValueError(f"recipe node {node.id} parameter references later or unknown node: {reference}")

@@ -203,6 +203,11 @@ def _summarize(records: list[dict[str, Any]], samples: int) -> dict[str, Any]:
         modeled_values = [record["modeled_production_ns"] for record in selected]
         effect_rows = [effect for record in selected for effect in record["effects"] if effect["applied"]]
         effect_groups: dict[str, list[int]] = {}
+        eligible_counts: dict[str, int] = {}
+        for record in selected:
+            for effect in record["effects"]:
+                eligible_counts[effect["id"]] = eligible_counts.get(effect["id"], 0) + 1
+                effect_groups.setdefault(effect["id"], [])
         for effect in effect_rows:
             effect_groups.setdefault(effect["id"], []).append(effect["duration_ns"])
         by_treatment[treatment] = {
@@ -215,14 +220,18 @@ def _summarize(records: list[dict[str, Any]], samples: int) -> dict[str, Any]:
             "per_object_mean_ns": int(sum(render_values) / max(1, sum(record["object_count"] for record in selected))),
             "per_megapixel_mean_ns": int(sum(render_values) / max(1e-9, sum(record["megapixels"] for record in selected))),
             "effects": {
-                effect_id: {"calls": len(values), "total_ns": sum(values), "mean_ns": int(mean(values)), "p95_ns": _percentile(values, 95)}
+                effect_id: {"calls": len(values), "eligible_calls": eligible_counts[effect_id],
+                            "activation_rate": len(values) / eligible_counts[effect_id],
+                            "cost_estimate_available": bool(values), "low_activation_count": len(values) < 5,
+                            "total_ns": sum(values), "mean_ns": int(mean(values)) if values else 0, "p95_ns": _percentile(values, 95)}
                 for effect_id, values in sorted(effect_groups.items())
             },
         }
-    current = {record["fixture_index"]: record for record in records if record["treatment"] == "current"}
+    baseline = "current" if "current" in by_treatment else "current-fast"
+    current = {record["fixture_index"]: record for record in records if record["treatment"] == baseline}
     paired: dict[str, Any] = {}
     for treatment in sorted(by_treatment):
-        if treatment == "current" or not current:
+        if treatment == baseline or not current:
             continue
         deltas = [
             record["render_only_ns"] - current[record["fixture_index"]]["render_only_ns"]
@@ -248,6 +257,10 @@ def _summarize(records: list[dict[str, Any]], samples: int) -> dict[str, Any]:
     warnings = []
     if samples < 20:
         warnings.append("low_sample_count: use at least 20 measured fixtures before drawing performance conclusions")
+    for treatment, value in by_treatment.items():
+        for effect_id, effect in value["effects"].items():
+            if effect["low_activation_count"]:
+                warnings.append(f"low_activation_count: {treatment}/{effect_id} activated {effect['calls']} times; inspect forced fixtures and collect more evidence before cost conclusions")
     return {
         "treatments": by_treatment,
         "paired_deltas_vs_current": paired,
@@ -284,7 +297,7 @@ def _contact_sheet(records: list[dict[str, Any]], gallery: Path, destination: Pa
 def _add_difference_images(records: list[dict[str, Any]], gallery: Path) -> None:
     for fixture in sorted({record["fixture_index"] for record in records}):
         current = next(
-            (record for record in records if record["fixture_index"] == fixture and record["treatment"] == "current"),
+            (record for record in records if record["fixture_index"] == fixture and record["treatment"] in {"current", "current-fast"}),
             None,
         )
         if current is None:

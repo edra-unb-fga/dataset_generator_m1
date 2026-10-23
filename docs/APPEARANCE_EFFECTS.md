@@ -30,6 +30,7 @@ The installed backend currently supports the following catalog-visible transform
 - blur and noise: `GaussianBlur`, `MotionBlur`, `GaussNoise`, `AdditiveNoise`, `SaltAndPepper`;
 - lighting and shadow: `PlasmaShadow`, `RandomSunFlare`;
 - weather: `RandomFog`, `RandomRain`.
+- camera encoding: `ImageCompression` (final RGB stage, JPEG quality bounds).
 
 Exact parameters are validated against the installed Albumentations version before output creation. Use `catalog show` for reviewed bundles and the guided configurator for stage-specific construction. Path-only custom YAML is allowed but is treated as undocumented until explicitly promoted and reviewed.
 
