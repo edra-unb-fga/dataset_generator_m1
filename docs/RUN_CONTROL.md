@@ -19,6 +19,12 @@ interruption.
 
 ## State and checkpoint behavior
 
+Generation holds an OS-backed exclusive lease in `coordinator.lock` before recovering journals or
+writing pool artifacts. The lock file persists; do not delete it to recover a run. The operating system
+releases ownership when the coordinator exits or is terminated. `run status` reports active, inactive,
+uncertain, or historical unrecorded ownership. Resume refuses an active owner; after termination,
+explicit `generate --resume` reacquires ownership before recovery. Cross-machine resume is not supported.
+
 - `pause` changes the desired state immediately. The coordinator finishes its current sample or bounded
   process-worker batch, reports `draining`, checkpoints committed results, and then becomes `paused`.
 - A paused coordinator stays alive but schedules no work. `continue` resumes that same process.

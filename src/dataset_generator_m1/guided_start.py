@@ -32,6 +32,7 @@ from .execution import resolve_worker_count
 from .exporter import ExportOptions, export_pools, parse_splits
 from .generator import GenerationOptions, generate_pool, probe_profile
 from .inspection import inspect_pool
+from .ownership import coordinator_ownership
 from .preflight import confirm_preflight
 from .preparation import PreparationRequest, prepare_generation
 
@@ -119,6 +120,8 @@ def discover_incomplete_runs(root: str | Path = ".") -> list[dict[str, Any]]:
             control = json.loads(control_path.read_text(encoding="utf-8"))
         except Exception:
             continue
+        if not isinstance(control, dict):
+            continue
         if control.get("actual_state") in {"running", "draining", "paused", "stopping", "interrupted", "failed"}:
             config_path: Path | None = None
             try:
@@ -128,13 +131,22 @@ def discover_incomplete_runs(root: str | Path = ".") -> list[dict[str, Any]]:
                     candidate = raw if raw.is_absolute() else root_path / "configs" / raw.name
                     if candidate.is_file():
                         config_path = candidate.resolve()
-            except (IndexError, OSError, ValueError, json.JSONDecodeError):
+            except (IndexError, OSError, ValueError, AttributeError, TypeError):
                 pass
+            ownership = coordinator_ownership(control_path.parent)
+            compatible = False
+            if config_path is not None:
+                try:
+                    manifest = json.loads((control_path.parent / "run.json").read_text(encoding="utf-8"))
+                    compatible = load_profile(config_path).contract_hash == manifest.get("contract_hash")
+                except (OSError, ValueError, AttributeError, TypeError):
+                    pass
             runs.append(
                 {
                     "path": control_path.parent,
                     "state": control.get("actual_state"),
-                    "resumable": config_path is not None,
+                    "resumable": compatible and ownership["state"] not in {"active", "uncertain"},
+                    "ownership": ownership,
                     "config_path": config_path,
                 }
             )

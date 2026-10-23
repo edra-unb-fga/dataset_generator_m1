@@ -105,6 +105,31 @@ def test_terminal_runs_reject_control_requests(tmp_path: Path) -> None:
         raise AssertionError("terminal run accepted a pause request")
 
 
+def test_second_process_cannot_resume_until_owner_is_terminated(tmp_path: Path) -> None:
+    import subprocess
+
+    program = (
+        "import sys,time; from dataset_generator_m1.run_control import RunController; "
+        "c=RunController.open(sys.argv[1],resume=False); print('ready',flush=True); time.sleep(60)"
+    )
+    child = subprocess.Popen([sys.executable, "-c", program, str(tmp_path)], stdout=subprocess.PIPE, text=True)
+    try:
+        assert child.stdout.readline().strip() == "ready"
+        assert run_status(tmp_path)["ownership"]["state"] == "active"
+        try:
+            RunController.open(tmp_path, resume=True)
+        except RuntimeError as exc:
+            assert "active coordinator" in str(exc)
+        else:
+            raise AssertionError("Second writer acquired the active pool")
+    finally:
+        child.terminate()
+        child.wait(timeout=10)
+    resumed = RunController.open(tmp_path, resume=True)
+    resumed.finish("interrupted")
+    assert run_status(tmp_path)["ownership"]["state"] == "inactive"
+
+
 def test_posix_terminal_adapter_restores_terminal_state(tmp_path: Path, monkeypatch) -> None:
     restored: list[object] = []
     fake_stdin = SimpleNamespace(fileno=lambda: 7, isatty=lambda: True, read=lambda _count: "")

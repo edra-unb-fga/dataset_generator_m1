@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from io import StringIO
 from pathlib import Path
 
@@ -62,7 +64,8 @@ def test_incomplete_run_discovery_resolves_a_resumable_managed_composer(tmp_path
     run = tmp_path / "outputs" / "runs" / "landing" / "incomplete"
     run.mkdir(parents=True)
     (run / "control.json").write_text('{"actual_state":"interrupted"}', encoding="utf-8")
-    (run / "run.json").write_text('{"invocation":["start","--config","landing.yaml"]}', encoding="utf-8")
+    from dataset_generator_m1.config import load_profile
+    (run / "run.json").write_text(json.dumps({"invocation": ["start", "--config", "landing.yaml"], "contract_hash": load_profile(config).contract_hash}), encoding="utf-8")
 
     discovered = discover_incomplete_runs(tmp_path)
 
