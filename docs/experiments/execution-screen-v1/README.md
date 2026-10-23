@@ -1,6 +1,6 @@
 # Local execution screen v1
 
-Three balanced-order repetitions of five execution policies, twenty measured outputs each and two
+Three rotating-order repetitions of five execution policies, twenty measured outputs each and two
 separate warmup outputs per policy/repetition. Total: 300 measured and 30 warmup images. The fixed
 landing composer is 320×240, current-fast, 1–2 requested objects, one QA sample. This is intentionally
 small diagnostic work, not the intended production workload or a hardware-class recommendation.

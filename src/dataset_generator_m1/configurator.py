@@ -131,9 +131,7 @@ def copy_composer(source: str | Path, destination: str | Path) -> Path:
     if recipes.get("recipe_file"):
         recipes["recipe_file"] = rebase(recipes["recipe_file"])
     # Recipe paths may be supplied by a referenced bundle, not only inline YAML.
-    document.setdefault("inline", {}).setdefault("background_recipes", {})["recipe_file"] = Path(
-        os.path.relpath(original.recipe_path, destination.parent)
-    ).as_posix()
+    document.setdefault("inline", {}).setdefault("background_recipes", {})["recipe_file"] = rebase(str(original.recipe_path))
     return save_composer(document, destination)
 
 

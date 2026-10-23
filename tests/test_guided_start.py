@@ -119,6 +119,18 @@ def test_copy_composer_keeps_relative_profile_meaning(tmp_path):
     assert load_profile(copied).profile.execution.workers == 2
 
 
+def test_copy_composer_handles_different_windows_volumes(tmp_path, monkeypatch):
+    from dataset_generator_m1.configurator import copy_composer
+    from dataset_generator_m1.config import load_profile, load_yaml_strict
+    source = Path("examples/configs/landing_minimal.yaml")
+    def different_mount(*_args):
+        raise ValueError("path is on a different mount")
+    monkeypatch.setattr("dataset_generator_m1.configurator.os.path.relpath", different_mount)
+    copied = copy_composer(source, tmp_path / "composer.yaml")
+    assert Path(load_yaml_strict(copied)["inline"]["background_recipes"]["recipe_file"]).is_absolute()
+    assert load_profile(copied).recipes == load_profile(source).recipes
+
+
 def test_terminal_backend_advertises_only_available_controls() -> None:
     assert select_terminal_backend(os_name="nt", is_tty=True) == "windows"
     assert select_terminal_backend(os_name="posix", is_tty=True) == "posix"
