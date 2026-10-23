@@ -56,6 +56,19 @@ def test_native_threads_restored_after_failure():
     assert cv2.getNumThreads() == before
 
 
+def test_probe_uses_configured_native_threads_and_restores_them(monkeypatch):
+    from dataset_generator_m1.generator import probe_profile
+    before = cv2.getNumThreads()
+    calls = []
+    def produce(*_args):
+        calls.append(cv2.getNumThreads())
+        return {"accepted": True, "record": {"annotations": []}, "rejections": []}
+    monkeypatch.setattr("dataset_generator_m1.generator._produce_slot", produce)
+    assert len(probe_profile(_resolved(native_threads=1), timeout_seconds=60)) == 3
+    assert calls == [1, 1, 1, 1]
+    assert cv2.getNumThreads() == before
+
+
 def test_portable_content_identity_distinguishes_execution_and_provenance(tmp_path):
     r = _resolved()
     catalog = build_asset_catalog(r)

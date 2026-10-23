@@ -198,6 +198,11 @@ def _produce_slot(
 
 def probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float = 60.0) -> list[dict[str, Any]]:
     """Run one disposable warm-up and up to three production-path candidate measurements."""
+    with execution_scope(plan_execution(resolved)):
+        return _probe_profile(resolved, timeout_seconds=timeout_seconds)
+
+
+def _probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float) -> list[dict[str, Any]]:
     catalog = build_asset_catalog(resolved)
     coordinator_pid = os.getpid()
     observations: list[dict[str, Any]] = []
