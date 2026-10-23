@@ -11,6 +11,17 @@ from dataset_generator_m1.exporter import ExportOptions, export_pools
 from dataset_generator_m1.split_planning import plan_asset_disjoint_splits
 
 
+def _content_hashed(samples):
+    for sample in samples:
+        for source in sample.get("annotations", []):
+            if "source_content_hash" in source:
+                source["source_content_hash"] = hashlib.sha256(source["source_content_hash"].encode()).hexdigest()
+        for source in sample.get("background", {}).get("sources", []):
+            if "content_hash" in source:
+                source["content_hash"] = hashlib.sha256(source["content_hash"].encode()).hexdigest()
+    return samples
+
+
 def make_pool(root: Path, class_name: str, *, background: str, schema_version: int = 1) -> None:
     (root / "images").mkdir(parents=True)
     (root / "qa").mkdir()
@@ -35,7 +46,7 @@ def make_pool(root: Path, class_name: str, *, background: str, schema_version: i
             {
                 "class_name": class_name,
                 "source_asset": "root0/shared-foreground.png",
-                "source_content_hash": "shared-foreground-content-hash",
+                "source_content_hash": hashlib.sha256(b"shared-foreground-content").hexdigest(),
                 "bbox": [2, 2, 6, 6],
                 "normalized_bbox": [0.5, 0.5, 0.5, 0.5],
             }
@@ -167,6 +178,7 @@ def test_asset_disjoint_analysis_explains_impossible_and_fragile_splits() -> Non
         {"_key": "c", "annotations": [], "background": {"sources": [{"content_hash": "c"}]}},
     ]
 
+    samples = _content_hashed(samples)
     plan = plan_asset_disjoint_splits(samples, {"train": 0.5, "val": 0.25, "test": 0.25}, seed=7)
 
     assert plan["analysis"]["component_count"] == 2
@@ -216,6 +228,7 @@ def test_asset_disjoint_uses_content_identity_and_rejects_legacy_missing_hashes(
         {"_key": "renamed-a", "annotations": [{"class_name": "dial", "source_asset": "one.png", "source_content_hash": duplicate}], "background": {"sources": [{"logical_path": "a.jpg", "content_hash": "background-a"}]}},
         {"_key": "renamed-b", "annotations": [{"class_name": "dial", "source_asset": "copied.png", "source_content_hash": duplicate}], "background": {"sources": [{"logical_path": "b.jpg", "content_hash": "background-b"}]}},
     ]
+    samples = _content_hashed(samples)
     plan = plan_asset_disjoint_splits(samples, {"train": 0.5, "test": 0.5}, seed=2)
     assert plan["analysis"]["component_count"] == 1
 
@@ -233,6 +246,7 @@ def test_greedy_sample_comparison_optimizes_global_requested_distribution() -> N
         for index in range(100)
     ]
 
+    samples = _content_hashed(samples)
     plan = plan_asset_disjoint_splits(samples, {"train": 0.8, "val": 0.1, "test": 0.1}, seed=7)
 
     assert plan["comparisons"]["greedy-sample"]["sample_counts"] == {"train": 80, "val": 10, "test": 10}

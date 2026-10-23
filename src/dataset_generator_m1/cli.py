@@ -22,7 +22,7 @@ from .generator import GenerationOptions, generate_pool, probe_profile
 from .guided_start import run_guided_start
 from .inspection import inspect_pool
 from .overrides import OverridePlan, build_override_plan
-from .preflight import confirm_preflight
+from .preflight import confirm_preflight, format_runtime
 from .preparation import PreparationRequest, prepare_generation
 from .placement_study import PlacementStudyRequest, run_placement_study
 from .run_control import request_run_action, run_status
@@ -333,7 +333,7 @@ def main(argv: list[str] | None = None) -> int:
                 Console().print(
                     Panel.fit(
                         f"[bold]{result['status']}[/bold]\n"
-                        f"ETA: {runtime['lower_seconds']:.1f}–{runtime['upper_seconds']:.1f} s "
+                        f"ETA: {format_runtime(runtime)} "
                         f"({runtime['confidence']})\n"
                         f"Disk estimate: {result['disk']['estimated_output_bytes']:,} bytes\n"
                         f"Warnings: {warning_text}\n"
@@ -365,7 +365,7 @@ def main(argv: list[str] | None = None) -> int:
                 Console().print(
                     Panel.fit(
                         f"Saved: {result['config']}\nContract: {result['contract_hash'][:12]}\n"
-                        f"ETA: {runtime['lower_seconds']:.1f}–{runtime['upper_seconds']:.1f}s ({runtime['confidence']})\n"
+                        f"ETA: {format_runtime(runtime)}\n"
                         f"Next: {result['suggested_next']}",
                         title="composer ready",
                     )

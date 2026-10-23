@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from collections import Counter
 from typing import Any
 
@@ -22,7 +23,7 @@ def _split_for_fraction(value: float, splits: dict[str, float]) -> str:
 def _content_identity(value: Any, *, context: str, key: str = "content_hash") -> str:
     """Return strict content identity while retaining paths only as provenance."""
     content_hash = value.get(key) if isinstance(value, dict) else None
-    if not isinstance(content_hash, str) or not content_hash:
+    if not isinstance(content_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", content_hash):
         raise ValueError(
             "Strict asset-disjoint splitting requires source content hashes; "
             f"missing hash for {context}. Legacy pools remain inspectable and detection-exportable."
@@ -31,6 +32,9 @@ def _content_identity(value: Any, *, context: str, key: str = "content_hash") ->
 
 
 def _sample_assets(sample: dict[str, Any]) -> tuple[str, ...]:
+    background = sample.get("background")
+    if not isinstance(background, dict) or not isinstance(background.get("sources"), list) or not background["sources"]:
+        raise ValueError("Strict asset-disjoint splitting requires complete background source lineage and content hashes")
     assets = {
         _content_identity(
             annotation,
@@ -174,7 +178,8 @@ def plan_asset_disjoint_splits(
     all_classes = sorted({name for component in components for name in component["classes"]})
     for class_name in all_classes:
         class_support[class_name] = {
-            "sample_support": sum(component["classes"].get(class_name, 0) for component in components),
+            "sample_support": sum(any(annotation["class_name"] == class_name for annotation in sample.get("annotations", [])) for sample in samples),
+            "instance_support": sum(component["classes"].get(class_name, 0) for component in components),
             "component_support": sum(class_name in component["classes"] for component in components),
         }
     warnings: list[dict[str, Any]] = []
