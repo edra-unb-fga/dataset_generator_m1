@@ -13,7 +13,7 @@ from rich.prompt import Prompt
 from rich.table import Table
 
 from .catalog import list_profiles, show_profile
-from .config import load_profile
+from .config import load_profile, load_yaml_strict, _resolve_reference
 from .filters import SUPPORTED_TRANSFORMS, validate_transform_specs
 from .execution import resolve_worker_count
 from .families import family_names
@@ -101,6 +101,40 @@ def save_composer(document: dict[str, Any], destination: str | Path) -> Path:
         if temporary.exists():
             temporary.unlink()
     return path
+
+
+def copy_composer(source: str | Path, destination: str | Path) -> Path:
+    """Rebase references, not their meaning, when moving a composer within a checkout."""
+    source, destination = Path(source).resolve(), Path(destination).resolve()
+    original = load_profile(source)
+    document = load_yaml_strict(source)
+
+    def rebase(reference):
+        if reference.startswith("builtin:"):
+            return reference
+        target = _resolve_reference(reference, source)
+        try:
+            return Path(os.path.relpath(target, destination.parent)).as_posix()
+        except ValueError:  # Different Windows volumes cannot have a relative path.
+            return target.as_posix()
+
+    for subject in ("family", "run", "assets", "output", "sampling", "scene", "background_recipes",
+                    "background_mixing", "execution", "telemetry", "reporting"):
+        document[subject] = rebase(document[subject])
+    appearance = document.get("appearance", {})
+    if "preset" in appearance:
+        appearance["preset"] = rebase(appearance["preset"])
+    for stage in ("background", "foreground", "final"):
+        if stage in appearance:
+            appearance[stage] = [rebase(reference) for reference in appearance[stage]]
+    recipes = document.get("inline", {}).get("background_recipes", {})
+    if recipes.get("recipe_file"):
+        recipes["recipe_file"] = rebase(recipes["recipe_file"])
+    # Recipe paths may be supplied by a referenced bundle, not only inline YAML.
+    document.setdefault("inline", {}).setdefault("background_recipes", {})["recipe_file"] = Path(
+        os.path.relpath(original.recipe_path, destination.parent)
+    ).as_posix()
+    return save_composer(document, destination)
 
 
 def set_inline_values(document: dict[str, Any], subject: str, values: dict[str, Any]) -> dict[str, Any]:

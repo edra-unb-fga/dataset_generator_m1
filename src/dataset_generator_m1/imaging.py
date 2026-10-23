@@ -10,13 +10,13 @@ from .types import BBox
 
 
 def read_rgb(path: Path) -> np.ndarray:
-    with Image.open(path) as image:
-        return np.array(image.convert("RGB"))
+    from .decoded_cache import decode
+    return decode(path, "RGB")
 
 
 def read_rgba(path: Path) -> np.ndarray:
-    with Image.open(path) as image:
-        return np.array(image.convert("RGBA"))
+    from .decoded_cache import decode
+    return decode(path, "RGBA")
 
 
 def write_image(path: Path, image: np.ndarray, image_format: str) -> None:

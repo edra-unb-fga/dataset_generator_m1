@@ -133,3 +133,7 @@ contract, [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for contribution and verifi
 [docs/CONFIGURATION.md](docs/CONFIGURATION.md) for composer authoring and overrides, and
 [docs/ROADMAP.md](docs/ROADMAP.md)
 for measured follow-on work.
+
+For a new computer or a different CPU/RAM budget, follow [execution and benchmark guidance](docs/EXECUTION.md).
+Local tuning stays under ignored `configs/local/` and `.cache/`; generation does not silently lower
+quality to satisfy hardware budgets.

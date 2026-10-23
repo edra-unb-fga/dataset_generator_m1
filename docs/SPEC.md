@@ -254,6 +254,17 @@ exports embed the same analysis; structural fragility or material imbalance yiel
 
 ## 9. Acceptance and non-goals
 
+### Execution and identity
+
+Execution planning is shared by preflight, generation and the production benchmark. CPU/RAM budgets
+are advisory planning inputs, while decoded-cache payload bytes and in-flight work counts are bounded.
+OpenCV native threads, workers, queue and cache choices are explicit and recorded; they never reduce
+visual/annotation quality. The default decoded cache remains disabled. See [EXECUTION.md](EXECUTION.md).
+
+New run manifests distinguish normalized generation identity from execution/software identity and
+exact-file provenance. Equivalent fresh runs can be compared across checkout roots; historical resume
+continues to require strict contract/catalog equality. No cross-machine resume is promised.
+
 ### Experimental drone scenarios and materials
 
 The four catalog-visible `drone-*-candidate` appearance bundles are experimental, compatible with

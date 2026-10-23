@@ -120,3 +120,8 @@ Treat `configs/*.yaml` as reviewed, versionable user source. Use `configs/local/
 temporary comparisons, and cockpit experiments. Promote a local composer into the tracked root only after
 resolving it, reviewing its references/overrides, and choosing a stable name. Generated pools and exports do
 not belong under `configs/`.
+
+`start` stages edits and shows a change summary before an explicit save. Declining leaves the previous
+composer intact. Numeric essentials retry locally; Advanced offers schema-backed typed inline values
+and catalog/file-backed profile guidance. Copying a shipped composer rebases non-builtin references
+instead of silently retargeting them. For execution budgets and local machine policy, read EXECUTION.md.

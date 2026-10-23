@@ -40,8 +40,8 @@ def _sample_range(value: Any, rng: np.random.Generator, default: float) -> float
 
 
 def _load_rgb_float(asset: AssetRecord) -> np.ndarray:
-    with Image.open(asset.path) as image:
-        return np.asarray(image.convert("RGB"), dtype=np.float32) / 255.0
+    from .imaging import read_rgb
+    return read_rgb(asset.path).astype(np.float32) / 255.0
 
 
 def _resize_cover_crop(image: np.ndarray, size: tuple[int, int], rng: np.random.Generator) -> np.ndarray:

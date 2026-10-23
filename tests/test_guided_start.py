@@ -90,6 +90,35 @@ def test_profile_help_is_file_backed_and_layout_adapts() -> None:
     assert choose_live_mode(False, 120, 35) == "plain"
 
 
+def test_guided_staged_edit_decline_preserves_original(tmp_path):
+    from dataset_generator_m1.guided_start import _edit_composer, GuidedCancelled
+    import pytest
+    config = tmp_path / "composer.yaml"
+    original = Path("examples/configs/landing_minimal.yaml").read_bytes()
+    config.write_bytes(original)
+    answers = iter(["bad", "0", "2", "42", "1", "192", "128", str(tmp_path / "pool")])
+    confirmations = iter([True, False, False])
+    console = Console(file=StringIO())
+    with pytest.raises(GuidedCancelled):
+        _edit_composer(config, tmp_path / "pool", console, lambda *a, **kw: next(answers), lambda *a, **kw: next(confirmations))
+    assert config.read_bytes() == original
+    assert "Staged changes" in console.file.getvalue()
+
+
+def test_copy_composer_keeps_relative_profile_meaning(tmp_path):
+    from dataset_generator_m1.configurator import copy_composer
+    from dataset_generator_m1.config import load_profile
+    import yaml
+    source = tmp_path / "source" / "composer.yaml"
+    source.parent.mkdir()
+    raw = yaml.safe_load(Path("examples/configs/landing_minimal.yaml").read_text())
+    raw["execution"] = "execution.yaml"
+    (source.parent / "execution.yaml").write_text("schema_version: 1\nsubject: execution\nvalue: {workers: 2}\n")
+    source.write_text(yaml.safe_dump(raw))
+    copied = copy_composer(source, tmp_path / "different" / "composer.yaml")
+    assert load_profile(copied).profile.execution.workers == 2
+
+
 def test_terminal_backend_advertises_only_available_controls() -> None:
     assert select_terminal_backend(os_name="nt", is_tty=True) == "windows"
     assert select_terminal_backend(os_name="posix", is_tty=True) == "posix"
@@ -127,7 +156,7 @@ def test_guided_journey_saves_prepares_generates_and_inspects(tmp_path: Path, mo
     config.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
     output = tmp_path / "guided-output"
     answers = iter(["continue", "1", "42", "1", "192", "128", str(output), "prepare", "exit"])
-    confirmations = iter([True, False, True])
+    confirmations = iter([True, False, True, True])
 
     class _TTY:
         @staticmethod

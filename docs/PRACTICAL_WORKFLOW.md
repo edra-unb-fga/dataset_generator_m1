@@ -14,6 +14,11 @@ must not be presented as implemented.
 5. Reviewed drone presets, reproducible colour-material acquisition and planar mapping.
 6. Hardware-aware execution plans, portable benchmark bundles and individually measured optimizations (#28).
 
+The review stack is PRs #51, #53, #54, #55, #58, then the execution-planning PR. Later branches include
+earlier commits; merge/review in dependency order. Read each PR's behavioral evidence rather than
+assuming an open stack has already landed on `main`. Cross-computer instructions: EXECUTION.md and
+the handoff section in the PR descriptions.
+
 Keep each delivery in a bounded PR with its required behavioral evidence and ci:full. Historical
 issues and studies remain intact. A closed issue is not evidence that every acceptance guarantee has
 been verified; repairs link back to the delivery they complete.

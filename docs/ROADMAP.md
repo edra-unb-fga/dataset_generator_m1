@@ -5,6 +5,19 @@ dependency; unchecked items are not promises that current commands already imple
 
 ## Now
 
+### Practical workflow review stack
+
+- [ ] #49 / PR #51: exclusive coordinator ownership and malformed-input safety.
+- [ ] #50 / PR #53: complete diagnostics, resume telemetry and accepted-output calibration.
+- [ ] #52 / PR #54: declarative rectangular-pad family, explicit count policy and family discovery.
+- [ ] #33 / PR #55: pre-generation source feasibility and verified background/content isolation.
+- [ ] #56 / PR #58: experimental drone screens, pinned colour materials and planar mapping.
+- [ ] #57: execution budgets, isolated portable production benchmarks and local tuning guidance.
+
+These changes are implemented in the stacked branches but remain unchecked here until review/merge.
+Read docs/PRACTICAL_WORKFLOW.md for acceptance scope. The historical checklist below records earlier
+deliveries; the follow-ups above repair acceptance gaps rather than rewriting their historical reports.
+
 - [x] Complete architecture integration and keep schemas, examples, CLI, and generated artifacts aligned.
 - [x] Run the controlled heavy-augmentation study for both families and review visual/cost attribution.
 - [x] Adopt lean PR, issue, experiment, and Windows correctness workflows without release bureaucracy.
@@ -36,7 +49,7 @@ dependency; unchecked items are not promises that current commands already imple
 ## Later
 
 - [ ] [#31](https://github.com/edra-unb-fga/dataset_generator_m1/issues/31): implement reviewed typed nested placement without changing landing/manometro controls.
-- [ ] Add bounded decoded-asset and synthesized-background caches only after measured reuse justifies them.
+- [ ] Promote bounded decoded-asset caching only under measured representative reuse; synthesized-background caching remains experimental.
 - [ ] Add COCO/RLE export only when real mask topology evidence justifies the additional format.
 - [ ] Add family scaffolding and narrow hooks only after declarative rules prove insufficient.
 - [ ] Evaluate random-phase synthesis for approved homogeneous microtextures.
@@ -44,6 +57,11 @@ dependency; unchecked items are not promises that current commands already imple
 
 ## Deferred
 
-GUI, model training/evaluation, GPU or distributed execution, multi-family generation, exact quotas,
+GUI, model training, GPU or distributed execution, multi-family generation, exact quotas,
 vendor-specific telemetry, and general legacy-config migration are deliberately outside the current
 product boundary.
+
+[External model-prediction evaluation/failure analysis (#59)](https://github.com/edra-unb-fga/dataset_generator_m1/issues/59) is a later analytical track, not a generator
+training dependency: preserve sample/manifests and configured versus measured conditions, compare real
+evaluation separately from synthetic regression, and analyze scale, perspective, visibility, material
+and camera slices without inferring training benefit from visual attractiveness.

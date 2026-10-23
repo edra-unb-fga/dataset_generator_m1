@@ -45,40 +45,18 @@ def environment_class() -> dict[str, Any]:
 
 
 def performance_fingerprint(resolved: ResolvedProfile) -> str:
-    """Identify work cost without coupling estimates to count, seed, or private paths."""
-    profile = resolved.profile
-    referenced_paths: set[str] = set()
-
-    def collect_paths(value: Any) -> None:
-        if isinstance(value, dict):
-            if isinstance(value.get("path"), str):
-                referenced_paths.add(value["path"])
-            for nested in value.values():
-                collect_paths(nested)
-        elif isinstance(value, list):
-            for nested in value:
-                collect_paths(nested)
-
-    collect_paths(resolved.reference_graph)
-    relevant_source_hashes = sorted(
-        digest for path, digest in resolved.source_hashes.items() if path in referenced_paths
-    )
-    value = {
-        "schema_version": 1,
-        "family": profile.family,
-        "dimensions": list(profile.output.image_size),
-        "assets": profile.assets.model_dump(mode="json"),
-        "sampling": profile.sampling.model_dump(mode="json"),
-        "scene": profile.scene.model_dump(mode="json"),
-        "recipe_selection": profile.background_synthesis.model_dump(mode="json"),
-        "recipe_catalog": resolved.recipes.model_dump(mode="json"),
-        "appearance": profile.appearance.model_dump(mode="json"),
-        "encoding": {
-            "format": profile.output.image_format,
-            "jpeg_quality": profile.output.jpeg_quality,
-        },
-        "source_hashes": relevant_source_hashes,
-    }
+    """Cost identity: portable content, relevant software/policy, never count or seed."""
+    from .assets import build_asset_catalog
+    from .identities import generation_contract, software_identity
+    value = generation_contract(resolved, build_asset_catalog(resolved))
+    value["profile"].pop("run", None)
+    value["candidate_attempt_budget"] = resolved.profile.run.max_candidate_attempts
+    policy = resolved.profile.execution.model_dump(mode="json")
+    # Worker-count matching/extrapolation is explicit in observation selection.
+    for key in ("workers", "cpu_budget", "ram_budget_mb"):
+        policy.pop(key, None)
+    value["execution_cost_policy"] = policy
+    value["software"] = software_identity()
     return _hash(value)
 
 
