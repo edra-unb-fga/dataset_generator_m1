@@ -291,6 +291,7 @@ class BackgroundSynthesizer:
                         "node": node.id,
                         "logical_path": value.logical_path,
                         "content_hash": value.content_hash,
+                        "material_id": value.material_id,
                         "perceptual_hash": value.perceptual_hash,
                         "group": value.group,
                         "reused": any(item["content_hash"] == value.content_hash for item in sources),

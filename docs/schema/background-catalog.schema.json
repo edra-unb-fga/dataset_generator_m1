@@ -24,6 +24,18 @@
           "title": "Excluded",
           "type": "boolean"
         },
+        "material_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Material Id"
+        },
         "path": {
           "title": "Path",
           "type": "string"

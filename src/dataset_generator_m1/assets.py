@@ -36,6 +36,7 @@ class AssetRecord:
     seamless: bool | None = None
     texture_kind: str | None = None
     approved_roles: tuple[str, ...] = ()
+    material_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -54,6 +55,7 @@ class AssetCatalog:
     class_names: tuple[str, ...]
     fingerprint: str
     quality: CatalogQuality
+    partition: dict | None = None
 
 
 def discover_images(paths: str | list[str], recursive: bool = True) -> list[Path]:
@@ -217,6 +219,7 @@ def build_asset_catalog(resolved: ResolvedProfile) -> AssetCatalog:
                 seamless=getattr(meta, "seamless", None) if meta else None,
                 texture_kind=getattr(meta, "texture_kind", None) if meta else None,
                 approved_roles=tuple(getattr(meta, "approved_roles", ())) if meta else (),
+                material_id=getattr(meta, "material_id", None) if meta else None,
             )
         )
 
@@ -259,10 +262,32 @@ def build_asset_catalog(resolved: ResolvedProfile) -> AssetCatalog:
             "group": record.group,
             "class_name": record.class_name,
             "tags": record.tags,
+            "material_id": record.material_id,
         }
         for record in all_records
     ]
     fingerprint = hashlib.sha256(json.dumps(fingerprint_payload, sort_keys=True).encode("utf-8")).hexdigest()
+    partition_evidence = None
+    if resolved.profile.assets.partition is not None:
+        from .partitions import read_partition
+        selection = resolved.profile.assets.partition
+        manifest_path = Path(selection.manifest_file)
+        if not manifest_path.is_absolute():
+            manifest_path = resolved.config_path.parent / manifest_path
+        manifest = read_partition(manifest_path)
+        if manifest["catalog_fingerprint"] != fingerprint:
+            raise ValueError("Partition catalog changed; rebuild and review source feasibility before generation")
+        for role, records in (("foreground", foregrounds), ("background", backgrounds)):
+            if set(manifest["assignments"][role]) != {asset.content_hash for asset in records}:
+                raise ValueError("Partition assignments do not cover the complete source catalog")
+        if selection.split not in manifest["splits"] or not manifest["support"][selection.split]["feasible"]:
+            raise ValueError("Requested partition has insufficient background or class support")
+        backgrounds = [asset for asset in backgrounds if manifest["assignments"]["background"][asset.content_hash] == selection.split]
+        foregrounds = [asset for asset in foregrounds if manifest["assignments"]["foreground"][asset.content_hash] in {selection.split, "shared"}]
+        partition_evidence = {**manifest, "selected_split": selection.split}
+        fingerprint = hashlib.sha256(f"{fingerprint}:{manifest['sha256']}:{selection.split}".encode()).hexdigest()
+        all_records = tuple(backgrounds + foregrounds)
+        class_counts = _counts(tuple(foregrounds), "class_name")
     quality = CatalogQuality(
         exact_duplicate_groups=_duplicate_groups(all_records, "content_hash"),
         perceptual_duplicate_groups=_duplicate_groups(all_records, "perceptual_hash"),
@@ -276,6 +301,7 @@ def build_asset_catalog(resolved: ResolvedProfile) -> AssetCatalog:
         class_names=resolved.family.classes,
         fingerprint=fingerprint,
         quality=quality,
+        partition=partition_evidence,
     )
 
 

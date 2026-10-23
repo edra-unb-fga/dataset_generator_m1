@@ -214,6 +214,7 @@ class RunStore:
                     "invocation": list(invocation),
                     "contract_hash": resolved.contract_hash,
                     "catalog_fingerprint": catalog.fingerprint,
+                    "source_partition": catalog.partition,
                     "profile": _sanitized_profile(resolved),
                     "reference_graph": resolved.reference_graph,
                     "source_hashes": resolved.source_hashes,

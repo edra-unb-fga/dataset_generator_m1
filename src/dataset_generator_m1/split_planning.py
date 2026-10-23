@@ -31,7 +31,7 @@ def _content_identity(value: Any, *, context: str, key: str = "content_hash") ->
     return f"sha256:{content_hash}"
 
 
-def _sample_assets(sample: dict[str, Any]) -> tuple[str, ...]:
+def _sample_assets(sample: dict[str, Any], policy: str = "asset-disjoint") -> tuple[str, ...]:
     background = sample.get("background")
     if not isinstance(background, dict) or not isinstance(background.get("sources"), list) or not background["sources"]:
         raise ValueError("Strict asset-disjoint splitting requires complete background source lineage and content hashes")
@@ -43,14 +43,17 @@ def _sample_assets(sample: dict[str, Any]) -> tuple[str, ...]:
         )
         for annotation in sample.get("annotations", [])
     }
+    if policy == "background-disjoint":
+        assets = set()
     assets.update(
         _content_identity(asset, context=f"background source in {sample.get('_key', sample.get('sample_id', 'sample'))}")
         for asset in sample.get("background", {}).get("sources", [])
     )
+    assets.update("material:" + str(asset["material_id"]) for asset in background["sources"] if asset.get("material_id"))
     return tuple(sorted(assets))
 
 
-def _components(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _components(samples: list[dict[str, Any]], policy: str = "asset-disjoint") -> list[dict[str, Any]]:
     parent = list(range(len(samples)))
 
     def find(index: int) -> int:
@@ -66,7 +69,7 @@ def _components(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
     owners: dict[str, int] = {}
     for index, sample in enumerate(samples):
-        for asset in _sample_assets(sample):
+        for asset in _sample_assets(sample, policy):
             if asset in owners:
                 union(index, owners[asset])
             else:
@@ -85,7 +88,7 @@ def _components(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
             if not annotations:
                 negatives += 1
             class_counts.update(str(item["class_name"]) for item in annotations)
-            assets.update(_sample_assets(samples[index]))
+            assets.update(_sample_assets(samples[index], policy))
         result.append(
             {
                 "id": hashlib.sha256("|".join(keys).encode("utf-8")).hexdigest()[:12],
@@ -169,10 +172,12 @@ def _comparison(
 
 
 def plan_asset_disjoint_splits(
-    samples: list[dict[str, Any]], splits: dict[str, float], seed: int
+    samples: list[dict[str, Any]], splits: dict[str, float], seed: int, *, policy: str = "asset-disjoint"
 ) -> dict[str, Any]:
     """Analyze source-connected components and return the unchanged hash assignment plus alternatives."""
-    components = _components(samples)
+    if policy not in {"asset-disjoint", "background-disjoint"}:
+        raise ValueError("Unknown source-disjoint policy")
+    components = _components(samples, policy)
     nonempty_splits = sum(fraction > 0 for fraction in splits.values())
     class_support: dict[str, dict[str, int]] = {}
     all_classes = sorted({name for component in components for name in component["classes"]})
@@ -214,6 +219,30 @@ def plan_asset_disjoint_splits(
         for component in components
         for index in component["indices"]
     }
+    planned = [sample.get("_planned_partition") for sample in samples]
+    if any(planned):
+        if not all(isinstance(item, dict) and item.get("policy") == policy for item in planned):
+            raise ValueError("Do not mix partitioned and unpartitioned pools or different partition policies")
+        owners: dict[str, str] = {}
+        for sample, partition in zip(samples, planned):
+            split = partition["selected_split"]
+            if split not in splits or partition["splits"] != splits:
+                raise ValueError("Export splits must match the pre-generation partition manifest")
+            for identity in _sample_assets(sample, policy):
+                if identity in owners and owners[identity] != split:
+                    raise ValueError("Partition leakage: a source identity crosses declared splits")
+                owners[identity] = split
+            for role, sources in (("foreground", sample.get("annotations", [])), ("background", sample["background"]["sources"])):
+                for source in sources:
+                    key = "source_content_hash" if role == "foreground" else "content_hash"
+                    assigned = partition["assignments"][role].get(source[key])
+                    if assigned not in {split, "shared"} or (assigned == "shared" and (role != "foreground" or policy != "background-disjoint")):
+                        raise ValueError("Sample uses a source outside its pre-generation partition")
+            sample_assignments[sample["_key"]] = split
+        assignment_sets["pre-generation"] = {
+            component["id"]: sample_assignments[samples[component["indices"][0]]["_key"]]
+            for component in components
+        }
     public_components = [
         {
             "component_id": item["id"],
@@ -228,7 +257,8 @@ def plan_asset_disjoint_splits(
         name: _comparison(components, assignments, splits)
         for name, assignments in assignment_sets.items()
     }
-    selected_deviation = comparisons["hash"]["sample_deviation"]
+    selected_policy = "pre-generation" if any(planned) else "hash"
+    selected_deviation = comparisons[selected_policy]["sample_deviation"]
     if any(abs(value) >= 1.0 for value in selected_deviation.values()):
         warnings.append(
             {
@@ -239,9 +269,12 @@ def plan_asset_disjoint_splits(
         )
     return {
         "schema_version": 1,
-        "selected_policy": "hash",
+        "selected_policy": selected_policy,
         "assignments": sample_assignments,
         "analysis": {
+            "isolation_policy": policy,
+            "pre_generation": bool(any(planned)),
+            "shared_foreground_identities": sorted({annotation["source_content_hash"] for sample in samples for annotation in sample.get("annotations", [])}) if policy == "background-disjoint" else [],
             "sample_count": len(samples),
             "component_count": len(components),
             "component_sizes": sorted((item["size"] for item in components), reverse=True),

@@ -14,6 +14,13 @@ The new pad starter distribution is explicitly uncalibrated. Current geometry/sp
 
 ## 1. Public commands
 
+`partition --config COMPOSER --policy asset-disjoint|background-disjoint --splits ... --output-file MANIFEST`
+analyzes source support before rendering. See SOURCE_PARTITIONS.md. A composer may select
+`inline.assets.partition: {manifest_file: FILE, split: train}` while retaining its asset roots.
+The manifest digest and selected split are captured in pool evidence. Background-disjoint allows
+shared foreground artwork and isolates background content/known material groups. Export validates
+actual source lineage and preserves pre-generation assignments; it never silently changes the policy.
+
 The stable command surface is:
 
 ```text

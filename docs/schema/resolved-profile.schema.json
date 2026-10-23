@@ -87,6 +87,17 @@
         },
         "foregrounds": {
           "$ref": "#/$defs/AssetSourceConfig"
+        },
+        "partition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PartitionSelection"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -318,6 +329,26 @@
         }
       },
       "title": "OutputConfig",
+      "type": "object"
+    },
+    "PartitionSelection": {
+      "additionalProperties": false,
+      "properties": {
+        "manifest_file": {
+          "title": "Manifest File",
+          "type": "string"
+        },
+        "split": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$",
+          "title": "Split",
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest_file",
+        "split"
+      ],
+      "title": "PartitionSelection",
       "type": "object"
     },
     "PerspectiveConfig": {
