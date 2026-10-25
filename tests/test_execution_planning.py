@@ -96,3 +96,18 @@ def test_production_benchmark_uses_real_masks_and_preserves_content(tmp_path):
     assert len({row["content_signature"] for row in result["records"]}) == 1
     assert all("mask_encode" in row["stage_work"] for row in result["records"])
     assert result["low_sample"]
+
+
+def test_cost_revision_changes_execution_and_observation_identity_only(monkeypatch):
+    from dataset_generator_m1 import performance_version
+    from dataset_generator_m1.identities import execution_identity
+    resolved=_resolved(native_threads=1)
+    catalog=build_asset_catalog(resolved)
+    plan=plan_execution(resolved)
+    generation=generation_identity(resolved,catalog)
+    fingerprint=performance_fingerprint(resolved)
+    execution=execution_identity(plan)
+    monkeypatch.setattr(performance_version,'IMPLEMENTATION','different-cost-implementation')
+    assert generation_identity(resolved,catalog)==generation
+    assert performance_fingerprint(resolved)!=fingerprint
+    assert execution_identity(plan)['sha256']!=execution['sha256']

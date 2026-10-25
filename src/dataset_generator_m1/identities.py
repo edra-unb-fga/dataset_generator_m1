@@ -45,5 +45,7 @@ def generation_identity(resolved, catalog) -> dict:
 def execution_identity(plan) -> dict:
     import cv2
     policy = {key: value for key, value in plan.as_dict().items() if key not in {"warnings", "requested"}}
-    value = {"policy": policy, "software": software_identity(), "effective_opencv_threads": plan.native_threads or cv2.getNumThreads()}
+    from .performance_version import IMPLEMENTATION
+    value = {"policy": policy, "software": software_identity(), "performance_implementation": IMPLEMENTATION,
+             "effective_opencv_threads": plan.native_threads or cv2.getNumThreads()}
     return {"schema_version": 1, "sha256": digest(value), **value}

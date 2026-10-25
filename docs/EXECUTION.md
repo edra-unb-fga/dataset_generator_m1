@@ -74,3 +74,7 @@ Worker setup reuse, duplicate full/visible polygonization avoidance, rolling sch
 transport and synthesized-background caching remain separate candidates. The bounded decoded cache
 and explicit native/queue controls enable comparisons without making them universal defaults. #28
 requires additional stable hardware measurements; CI correctness evidence is not a latency budget.
+
+## Pixel-preserving implementation upgrades
+
+A separate performance-implementation revision participates in execution identities and cost-observation fingerprints. A cost change that preserves generated pixels/geometry need not change renderer semantics or invalidate compatible pool resume, but old timing observations must not be mixed into the new implementation's ETA calibration. Existing observations remain readable; nonmatching fingerprints are excluded. Revision changes do not promote any thread/worker/cache default.

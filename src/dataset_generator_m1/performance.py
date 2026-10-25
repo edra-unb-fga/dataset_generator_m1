@@ -56,6 +56,8 @@ def performance_fingerprint(resolved: ResolvedProfile) -> str:
     for key in ("workers", "cpu_budget", "ram_budget_mb"):
         policy.pop(key, None)
     value["execution_cost_policy"] = policy
+    from .performance_version import IMPLEMENTATION
+    value["performance_implementation"] = IMPLEMENTATION
     value["software"] = software_identity()
     return _hash(value)
 
