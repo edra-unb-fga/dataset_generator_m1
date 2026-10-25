@@ -1,0 +1,121 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "annotation_semantics": {
+      "default": "unknown",
+      "enum": [
+        "visible",
+        "full",
+        "unknown"
+      ],
+      "title": "Annotation Semantics",
+      "type": "string"
+    },
+    "domain": {
+      "enum": [
+        "real",
+        "synthetic"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "format": {
+      "enum": [
+        "coco",
+        "pool",
+        "yolo-export"
+      ],
+      "title": "Format",
+      "type": "string"
+    },
+    "ground_truth": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ground Truth"
+    },
+    "images_root": {
+      "default": ".",
+      "title": "Images Root",
+      "type": "string"
+    },
+    "metadata_file": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Metadata File"
+    },
+    "pool_bindings": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Pool Bindings",
+      "type": "object"
+    },
+    "role": {
+      "enum": [
+        "development",
+        "held-out",
+        "regression"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "source": {
+      "default": ".",
+      "title": "Source",
+      "type": "string"
+    },
+    "split": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Split"
+    },
+    "training_provenance": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "const": "unknown",
+          "type": "string"
+        }
+      ],
+      "default": "unknown",
+      "title": "Training Provenance"
+    }
+  },
+  "required": [
+    "schema_version",
+    "format",
+    "domain",
+    "role"
+  ],
+  "title": "EvaluationManifest",
+  "type": "object"
+}

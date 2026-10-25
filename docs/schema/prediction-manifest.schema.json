@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "allow_partial": {
+      "default": false,
+      "title": "Allow Partial",
+      "type": "boolean"
+    },
+    "dataset_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Dataset Sha256",
+      "type": "string"
+    },
+    "image_ids": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Image Ids",
+      "type": "array"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model"
+    },
+    "predictions": {
+      "minLength": 1,
+      "title": "Predictions",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "dataset_sha256",
+    "predictions",
+    "image_ids"
+  ],
+  "title": "PredictionManifest",
+  "type": "object"
+}

@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
-      - run: uv sync --locked --extra dev
+      - run: uv sync --locked --extra dev --extra evaluation
       - if: matrix.python-version == '3.14'
         run: uv run python scripts/generate_schemas.py
       - if: matrix.python-version == '3.14'

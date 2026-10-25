@@ -1,0 +1,108 @@
+{
+  "$defs": {
+    "ReferenceImage": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Annotations",
+          "type": "array"
+        },
+        "capture_session": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Capture Session"
+        },
+        "conditions": {
+          "additionalProperties": true,
+          "title": "Conditions",
+          "type": "object"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        },
+        "path": {
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path"
+      ],
+      "title": "ReferenceImage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "domain": {
+      "enum": [
+        "real",
+        "synthetic"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "images": {
+      "items": {
+        "$ref": "#/$defs/ReferenceImage"
+      },
+      "minItems": 1,
+      "title": "Images",
+      "type": "array"
+    },
+    "physical_measurements": {
+      "additionalProperties": true,
+      "title": "Physical Measurements",
+      "type": "object"
+    },
+    "role": {
+      "enum": [
+        "development",
+        "held-out",
+        "regression"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "domain",
+    "role",
+    "images"
+  ],
+  "title": "ReferenceManifest",
+  "type": "object"
+}

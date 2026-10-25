@@ -359,7 +359,12 @@ def generated_json_schema() -> dict[str, Any]:
 
 
 def generated_json_schemas() -> dict[str, dict[str, Any]]:
+    from .analysis_contracts import EvaluationManifest, PredictionManifest, ReferenceManifest, ProjectionManifest
     return {
+        "evaluation-manifest": EvaluationManifest.model_json_schema(),
+        "prediction-manifest": PredictionManifest.model_json_schema(),
+        "reference-manifest": ReferenceManifest.model_json_schema(),
+        "projection-manifest": ProjectionManifest.model_json_schema(),
         "composer": GenerationComposer.model_json_schema(),
         "resolved-profile": GenerationProfile.model_json_schema(),
         "profile-bundle": ProfileBundle.model_json_schema(),

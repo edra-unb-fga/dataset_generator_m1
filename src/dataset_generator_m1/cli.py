@@ -53,6 +53,34 @@ def build_parser() -> argparse.ArgumentParser:
     start = commands.add_parser("start", help="Run the complete guided interactive workflow")
     start.add_argument("--config", help="Start from a saved composer or arbitrary schema-v2 YAML path")
 
+    evaluate = commands.add_parser("evaluate", help="Prepare datasets and score external COCO predictions offline")
+    evaluation_commands = evaluate.add_subparsers(dest="evaluation_command", required=True)
+    evaluation_prepare = evaluation_commands.add_parser("prepare", help="Normalize a declared evaluation dataset")
+    evaluation_prepare.add_argument("--manifest", required=True)
+    evaluation_prepare.add_argument("--output-dir", required=True)
+    _common(evaluation_prepare)
+    evaluation_score = evaluation_commands.add_parser("score", help="Score detection and instance masks without model execution")
+    evaluation_score.add_argument("--dataset", required=True)
+    evaluation_score.add_argument("--predictions", required=True, help="Prediction coverage manifest")
+    evaluation_score.add_argument("--tasks", nargs="+", choices=["bbox", "segm"], default=["bbox", "segm"])
+    evaluation_score.add_argument("--confidence", type=float, default=.25)
+    evaluation_score.add_argument("--iou", type=float, default=.5)
+    evaluation_score.add_argument("--output-dir", required=True)
+    _common(evaluation_score)
+    evaluation_compare = evaluation_commands.add_parser("compare", help="Compare compatible evaluator artifacts")
+    evaluation_compare.add_argument("--left", required=True)
+    evaluation_compare.add_argument("--right", required=True)
+    evaluation_compare.add_argument("--output-dir", required=True)
+    _common(evaluation_compare)
+
+    reference = commands.add_parser("reference", help="Audit evidence and check supplied planar camera projections")
+    reference_commands = reference.add_subparsers(dest="reference_command", required=True)
+    for action in ("audit", "project"):
+        analysis = reference_commands.add_parser(action)
+        analysis.add_argument("--manifest", required=True)
+        analysis.add_argument("--output-dir", required=True)
+        _common(analysis)
+
     materials = commands.add_parser("materials", help="Acquire pinned colour/data-map material bundles")
     material_commands = materials.add_subparsers(dest="material_command", required=True)
     acquire = material_commands.add_parser("acquire", help="Pin an ambientCG material and retain its maps locally")
@@ -202,6 +230,19 @@ def _override_plan(args: argparse.Namespace, common: dict[str, Any] | None = Non
 
 
 def _run(args: argparse.Namespace) -> dict[str, Any]:
+    if args.command == "evaluate":
+        if args.evaluation_command == "prepare":
+            from .evaluation_io import prepare_dataset
+            return prepare_dataset(args.manifest, args.output_dir)
+        from .evaluation import compare_scores, score_dataset
+        if args.evaluation_command == "score":
+            return score_dataset(args.dataset, args.predictions, args.output_dir, tasks=tuple(args.tasks),
+                                 confidence=args.confidence, diagnostic_iou=args.iou)
+        return compare_scores(args.left, args.right, args.output_dir)
+    if args.command == "reference":
+        from .reference_analysis import audit_references, check_projection
+        operation = audit_references if args.reference_command == "audit" else check_projection
+        return operation(args.manifest, args.output_dir)
     if args.command == "materials":
         if args.material_command == "acquire":
             return acquire_material(args.asset, args.output_dir, args.manifest_file, resolution=args.resolution)
