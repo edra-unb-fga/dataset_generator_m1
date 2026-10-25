@@ -41,6 +41,16 @@ def _sanitized_profile(resolved: ResolvedProfile) -> dict[str, Any]:
     return profile
 
 
+def _sanitized_invocation(invocation) -> list[str]:
+    """Portable evidence never contains caller-local path components."""
+    return [
+        Path(str(token).replace("\\", "/")).name
+        if not str(token).startswith("--") and ("/" in str(token) or "\\" in str(token))
+        else str(token)
+        for token in invocation
+    ]
+
+
 def _atomic_json(path: Path, value: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -213,7 +223,7 @@ class RunStore:
                     "run_id": run_id,
                     "label": resolved.profile.run.label,
                     "tags": list(resolved.profile.run.tags),
-                    "invocation": list(invocation),
+                "invocation": _sanitized_invocation(invocation),
                     "contract_hash": resolved.contract_hash,
                     "catalog_fingerprint": catalog.fingerprint,
                     "source_partition": catalog.partition,
