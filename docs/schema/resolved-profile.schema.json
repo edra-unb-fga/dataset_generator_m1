@@ -651,6 +651,17 @@
           ],
           "default": null
         },
+        "occlusion": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SceneOcclusionConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "perspective": {
           "$ref": "#/$defs/PerspectiveConfig"
         }
@@ -723,6 +734,109 @@
         }
       },
       "title": "SceneLightingConfig",
+      "type": "object"
+    },
+    "SceneOcclusionConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "default": [
+            6,
+            18
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "title": "Count",
+          "type": "array"
+        },
+        "kind": {
+          "default": "mixed",
+          "enum": [
+            "blade",
+            "debris",
+            "mixed"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "length_fraction": {
+          "default": [
+            0.04,
+            0.22
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Length Fraction",
+          "type": "array"
+        },
+        "min_visible_support": {
+          "default": 0.25,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Min Visible Support",
+          "type": "number"
+        },
+        "opacity": {
+          "default": [
+            1.0,
+            1.0
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Opacity",
+          "type": "array"
+        },
+        "probability": {
+          "default": 0.6,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Probability",
+          "type": "number"
+        },
+        "width_fraction": {
+          "default": [
+            0.005,
+            0.025
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Width Fraction",
+          "type": "array"
+        }
+      },
+      "title": "SceneOcclusionConfig",
       "type": "object"
     },
     "TelemetryConfig": {

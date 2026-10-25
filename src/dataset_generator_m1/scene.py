@@ -14,6 +14,7 @@ from .annotation_evidence import visible_coverages
 from .backgrounds import BackgroundSample
 from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox
+from .scene_occlusion import SceneOccluder, composite_occluders, sample_occluders
 from .surface_effects import apply_scene_lighting, sample_lighting
 from .models import ResolvedProfile
 from .placement_diagnostics import (
@@ -77,6 +78,7 @@ class ScenePlan:
     planning_rejections: tuple[dict[str, Any], ...]
     intentional_negative: bool
     appearance_seed: int
+    occluders: tuple[SceneOccluder, ...] = ()
 
     def geometry_signature(self) -> str:
         payload = {
@@ -88,6 +90,8 @@ class ScenePlan:
             "instances": [instance.signature() for instance in self.instances],
             "negative": self.intentional_negative,
         }
+        if self.occluders:
+            payload["occluders"] = [layer.geometry() for layer in self.occluders]
         return hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
 
 
@@ -109,6 +113,7 @@ class Annotation:
     sampled_rotation_degrees: float
     requested_objects: int
     region: str
+    visible_support_fraction: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -319,6 +324,9 @@ class ScenePlanner:
             planning_rejections=tuple(planning_rejections),
             intentional_negative=intentional_negative,
             appearance_seed=appearance_seed,
+            occluders=sample_occluders(self.profile.scene.occlusion,
+                                      (float(camera_x),float(camera_y),float(camera_w),float(camera_h)),
+                                      np.random.default_rng(derive_seed(seed,slot,candidate_attempt,"scene-occlusion"))),
         )
 
 
@@ -561,46 +569,64 @@ class SceneRenderer:
             masks.append(warped_alpha)
             timings["foreground_annotation"] = timings.get("foreground_annotation", 0) + max(0, self.clock() - started)
 
-        if not annotations and not plan.intentional_negative:
-            raise SceneRejected("candidate has no accepted foreground annotations", rejected)
-        if self.profile.sampling.count_policy == "require-count" and len(annotations) != plan.attempted_instances:
-            for annotation in annotations:
-                x1, y1, x2, y2 = annotation.bbox
-                rejected.append(build_rejection_record(
-                    slot=plan.slot, candidate_attempt=plan.candidate_attempt, object_attempt=annotation.object_attempt,
-                    asset=annotation.source_asset, class_name=annotation.class_name, group=annotation.source_group,
-                    scale=annotation.sampled_scale, rotation_degrees=annotation.sampled_rotation_degrees,
-                    estimated_size=(x2-x1, y2-y1), requested_objects=plan.attempted_instances,
-                    stage="candidate.count_policy", reason="valid_object_discarded_with_incomplete_candidate",
-                    projected_bbox=annotation.bbox,
-                ))
-            raise SceneRejected("require-count: accepted object count differs from requested count", rejected)
-        final_visible = visible_coverages(masks)
+        started = self.clock()
+        try:
+            rendered, external_coverage = composite_occluders(rendered, plan.occluders, plan.scene_to_output)
+        except ValueError as exc:
+            raise SceneRejected(f"occluder projection rejected: {exc}",rejected) from exc
+        timings["scene_occlusion"] = max(0,self.clock()-started)
+        started = self.clock()
+        final_visible = visible_coverages(masks,external_coverage if plan.occluders else None)
         visible_annotations: list[Annotation] = []
-        for annotation, coverage in zip(annotations, final_visible):
-            final_bbox = _bbox_from_mask(coverage, self.resolved.family.annotation.alpha_threshold)
-            if final_bbox is None:
-                visible_annotations.append(annotation)
+        kept_full: list[np.ndarray] = []
+        kept_visible: list[np.ndarray] = []
+        threshold = self.resolved.family.annotation.alpha_threshold
+        floor = self.profile.scene.occlusion.min_visible_support if self.profile.scene.occlusion is not None else 0.
+        for annotation, full, coverage in zip(annotations, masks, final_visible):
+            final_bbox = _bbox_from_mask(coverage, threshold)
+            fraction = float(np.count_nonzero(coverage > threshold)/max(1,np.count_nonzero(full > threshold)))
+            if final_bbox is None or fraction < floor:
+                x1,y1,x2,y2 = annotation.bbox
+                rejected.append(build_rejection_record(
+                    slot=plan.slot,candidate_attempt=plan.candidate_attempt,object_attempt=annotation.object_attempt,
+                    asset=annotation.source_asset,class_name=annotation.class_name,group=annotation.source_group,
+                    scale=annotation.sampled_scale,rotation_degrees=annotation.sampled_rotation_degrees,
+                    estimated_size=(x2-x1,y2-y1),requested_objects=plan.attempted_instances,
+                    stage="renderer.occlusion",reason="fully_occluded" if final_bbox is None else "visible_support_below_floor",
+                    projected_bbox=annotation.bbox, visibility=fraction))
                 continue
-            x1, y1, x2, y2 = final_bbox
-            visible_annotations.append(
-                replace(
-                    annotation,
-                    bbox=final_bbox,
-                    normalized_bbox=(
-                        ((x1 + x2) / 2.0) / out_w,
-                        ((y1 + y2) / 2.0) / out_h,
-                        (x2 - x1) / out_w,
-                        (y2 - y1) / out_h,
-                    ),
-                )
-            )
+            x1,y1,x2,y2 = final_bbox
+            visible_annotations.append(replace(annotation,bbox=final_bbox,visible_support_fraction=fraction,
+                normalized_bbox=(((x1+x2)/2)/out_w,((y1+y2)/2)/out_h,(x2-x1)/out_w,(y2-y1)/out_h)))
+            kept_full.append(full)
+            kept_visible.append(coverage)
+        timings["post_occlusion_annotation"] = max(0,self.clock()-started)
+        if not visible_annotations and not plan.intentional_negative:
+            raise SceneRejected("candidate has no accepted foreground annotations after occlusion",rejected)
+        if self.profile.sampling.count_policy == "require-count" and len(visible_annotations) != plan.attempted_instances:
+            for annotation in visible_annotations:
+                x1,y1,x2,y2 = annotation.bbox
+                rejected.append(build_rejection_record(
+                    slot=plan.slot,candidate_attempt=plan.candidate_attempt,object_attempt=annotation.object_attempt,
+                    asset=annotation.source_asset,class_name=annotation.class_name,group=annotation.source_group,
+                    scale=annotation.sampled_scale,rotation_degrees=annotation.sampled_rotation_degrees,
+                    estimated_size=(x2-x1,y2-y1),requested_objects=plan.attempted_instances,
+                    stage="candidate.count_policy",reason="valid_object_discarded_with_incomplete_candidate",
+                    projected_bbox=annotation.bbox))
+            raise SceneRejected("require-count: accepted object count differs from requested count after occlusion",rejected)
         lighting_seed = derive_seed(self.profile.run.seed, plan.slot, plan.candidate_attempt, "scene-lighting")
         started = self.clock()
         lighting = sample_lighting(self.profile.scene.lighting, np.random.default_rng(lighting_seed))
         rendered = apply_scene_lighting(rendered, plan.scene_to_output, plan.canvas_size, lighting)
         timings["scene_lighting"] = max(0, self.clock()-started)
-        scene_effects = {"lighting": {"seed": lighting_seed, **lighting} if lighting is not None else None}
+        scene_effects = {
+            "lighting": {"seed": lighting_seed, **lighting} if lighting is not None else None,
+            "occlusion": {"seed": derive_seed(self.profile.run.seed,plan.slot,plan.candidate_attempt,"scene-occlusion"),
+                          "configured": self.profile.scene.occlusion is not None,
+                          "applied": bool(plan.occluders), "layers": [layer.evidence() for layer in plan.occluders],
+                          "output_support_fraction": float(np.mean(external_coverage > threshold)) if external_coverage is not None else 0.,
+                          "min_visible_support": floor},
+        }
         rendered, traces = apply_pipeline_traced(
             rendered,
             self.profile.appearance.final,
@@ -613,8 +639,8 @@ class SceneRenderer:
         return RenderedScene(
             image=rendered,
             annotations=tuple(visible_annotations),
-            full_coverages=tuple(masks),
-            visible_coverages=final_visible,
+            full_coverages=tuple(kept_full),
+            visible_coverages=tuple(kept_visible),
             scene_to_output=plan.scene_to_output,
             coverage_fraction=coverage_fraction,
             rejected_instances=tuple(rejected),
