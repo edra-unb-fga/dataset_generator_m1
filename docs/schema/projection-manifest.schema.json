@@ -1,0 +1,102 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "camera_matrix": {
+      "items": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "title": "Camera Matrix",
+      "type": "array"
+    },
+    "image_size": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "title": "Image Size",
+      "type": "array"
+    },
+    "image_space": {
+      "const": "undistorted",
+      "default": "undistorted",
+      "title": "Image Space",
+      "type": "string"
+    },
+    "observed_corners_px": {
+      "anyOf": [
+        {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed Corners Px"
+    },
+    "provenance": {
+      "default": "configured",
+      "enum": [
+        "measured",
+        "configured",
+        "inferred",
+        "unknown"
+      ],
+      "title": "Provenance",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "target_size_m": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Target Size M",
+      "type": "array"
+    },
+    "world_to_camera": {
+      "items": {
+        "items": {
+          "type": "number"
+        },
+        "type": "array"
+      },
+      "title": "World To Camera",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "camera_matrix",
+    "world_to_camera",
+    "target_size_m",
+    "image_size"
+  ],
+  "title": "ProjectionManifest",
+  "type": "object"
+}

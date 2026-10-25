@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "format": "pool",
+  "domain": "synthetic",
+  "role": "regression",
+  "source": "../../outputs/pool",
+  "annotation_semantics": "visible"
+}

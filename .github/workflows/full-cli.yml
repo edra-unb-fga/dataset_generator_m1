@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: "3.14"
           enable-cache: true
-      - run: uv sync --locked --extra dev
+      - run: uv sync --locked --extra dev --extra evaluation
       - name: Discover profiles
         run: uv run python -m dataset_generator_m1 catalog list --output-format json > outputs-catalog.json
       - name: Configure landing
@@ -98,6 +98,10 @@ jobs:
               assert len(list((root / "labels").rglob("*.txt"))) == 10
               assert not any(Path(item["source_pool_id"]).is_absolute() for item in report["samples"])
           PY
+      - name: Offline exact-mask evaluation and reference correctness
+        run: >-
+          uv run python scripts/smoke_analysis.py --pool outputs/ci/landing-pad-pool
+          --output-dir outputs/ci/analysis
       # Execution policy correctness only: this tiny screen is not a timing gate.
       - name: Portable production benchmark correctness
         run: >-

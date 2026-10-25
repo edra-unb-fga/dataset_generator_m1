@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "camera_matrix": [[100, 0, 100], [0, 100, 100], [0, 0, 1]],
+  "world_to_camera": [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 2], [0, 0, 0, 1]],
+  "target_size_m": [2, 2],
+  "image_size": [200, 200],
+  "observed_corners_px": [[50, 50], [150, 50], [150, 150], [50, 150]],
+  "image_space": "undistorted",
+  "provenance": "configured"
+}

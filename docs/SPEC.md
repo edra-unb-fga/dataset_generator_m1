@@ -280,4 +280,18 @@ See [MATERIALS.md](MATERIALS.md).
 
 The test suite covers strict profiles, duplicate keys, shipped examples, asset mappings, geometry/mask boxes, RNG isolation, recipe operators and provenance, telemetry fake clocks and aggregates, CLI JSON/display behavior, atomic pools/resume, process equivalence, and collision-safe export.
 
-Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Production nested placement (#31), COCO/RLE export, a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract. Continuous process-tree monitoring is implemented and its lifecycle hardening remains tracked separately.
+### Offline evaluation and reference analysis
+
+`evaluate prepare|score|compare` normalizes COCO or repository pool/export annotations, scores external
+COCO boxes/masks with the optional canonical backend, and compares compatible evaluation identities.
+Exact visible pool masks are the primary synthetic segmentation reference; exported polygons retain
+their explicit fidelity limitations. Known synthetic sources cannot be declared real. Prediction
+coverage, dataset and raw/normalized prediction identities, annotation policies and scorer settings
+are recorded. Missing conditions and unsupported scores remain unknown/null. No model is executed.
+
+`reference audit|project` reports supplied evidence and image/target observables or checks an explicit
+undistorted pinhole projection. It neither estimates deployment parameters nor fits calibration.
+Both workflows write offline HTML/JSON with bounded visual artifacts. Input contracts and details:
+[EVALUATION.md](EVALUATION.md). Synthetic correctness is not detector accuracy or physical realism.
+
+Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Production nested placement (#31), general COCO/RLE export, a GUI, model training/inference, multi-family generation runs, exact recipe quotas, GPU/distributed execution, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract. Continuous process-tree monitoring is implemented and its lifecycle hardening remains tracked separately.

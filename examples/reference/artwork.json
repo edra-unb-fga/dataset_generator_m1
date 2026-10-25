@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "domain": "synthetic",
+  "role": "development",
+  "image_root": "../..",
+  "images": [
+    {"id": "landing-artwork", "path": "foregrounds/landing_pad_foregrounds/landing-base.png", "annotations": [{"class_name": "pad", "bbox": [0, 0, 500, 500]}], "conditions": {"source_kind": "clean artwork, not a camera capture"}},
+    {"id": "takeoff-artwork", "path": "foregrounds/landing_pad_foregrounds/takeoff-base.png", "annotations": [{"class_name": "pad", "bbox": [0, 0, 1000, 750]}], "conditions": {"source_kind": "clean artwork, not a camera capture"}}
+  ]
+}
