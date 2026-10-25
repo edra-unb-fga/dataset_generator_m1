@@ -53,3 +53,7 @@ Advanced inline effects remain available. An inline stack is disclosed as unrevi
 their own curated metadata instead. Local observations may refine ETA but never rewrite tracked warnings.
 
 Preflight estimates are planning aids, not cross-machine performance guarantees. The live run ETA will recalibrate from actual accepted and rejected candidates while excluding paused time.
+
+Render-only study priors have low confidence for accepted-output completion. A valid production
+observation with no accepted samples produces an unavailable completion estimate, not an optimistic
+candidate-cost estimate. Partial, non-finite and malformed observation records are ignored visibly.

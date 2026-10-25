@@ -99,6 +99,8 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
         if record.get("metric_type") == "process_tree_resource"
     }
     assert len(sessions) == 2
+    assert resumed["resource_monitor"]["sessions"] == 2
+    assert resumed["resource_peaks"]["rss_bytes"] >= first["resource_peaks"]["rss_bytes"]
 
 
 def test_resource_sampling_can_be_explicitly_disabled(tmp_path: Path) -> None:
@@ -113,6 +115,7 @@ def test_resource_sampling_can_be_explicitly_disabled(tmp_path: Path) -> None:
 
     assert (pool / "metrics.jsonl").read_text(encoding="utf-8") == ""
     assert summary["resource_monitor"] == {
+        "complete": True,
         "samples": 0,
         "dropped_samples": 0,
         "sample_errors": 0,

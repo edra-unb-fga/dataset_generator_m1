@@ -17,7 +17,7 @@ from .config import load_profile
 from .filters import SUPPORTED_TRANSFORMS, validate_transform_specs
 from .execution import resolve_worker_count
 from .models import GenerationComposer, TransformSpec
-from .preflight import PreflightRequest, run_preflight
+from .preflight import PreflightRequest, run_preflight, format_runtime
 
 
 APPEARANCE_IDS = (
@@ -191,7 +191,7 @@ def _render_cockpit(console: Console, config: Path, output_dir: Path) -> dict[st
     console.print(table)
     console.print(
         Panel.fit(
-            f"Warnings: {warnings}\nETA: {runtime['lower_seconds']:.1f}–{runtime['upper_seconds']:.1f}s ({runtime['confidence']})\n"
+            f"Warnings: {warnings}\nETA: {format_runtime(runtime)}\n"
             f"Next: {summary['suggested_next']}",
             title="Preflight snapshot",
         )

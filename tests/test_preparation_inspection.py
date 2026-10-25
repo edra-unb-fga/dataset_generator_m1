@@ -164,6 +164,20 @@ def test_malformed_observation_cache_is_visible_but_not_fatal(tmp_path: Path) ->
     assert any(item["code"] == "IGNORED_MALFORMED_OBSERVATION" for item in prepared.preflight["warnings"])
 
 
+def test_partial_and_zero_acceptance_observations_are_honest(tmp_path: Path) -> None:
+    from dataset_generator_m1.performance import environment_class
+    resolved = _resolved()
+    cache = tmp_path / "observations.jsonl"
+    base = {"schema_version": 2, "kind": "production", "workers": 1,
+            "environment_class": environment_class(), "performance_fingerprint": performance_fingerprint(resolved)}
+    partial = {**base, "accepted_samples": 1}
+    zero = {**base, "active_seconds": 100.0, "candidate_attempts": 30, "accepted_samples": 0}
+    cache.write_text(json.dumps(partial) + "\n" + json.dumps(zero) + "\n", encoding="utf-8")
+    prepared = prepare_generation(PreparationRequest(resolved, tmp_path / "pool", 1, cache))
+    assert prepared.preflight["runtime"]["expected_seconds"] is None
+    assert any(w["code"] == "IGNORED_MALFORMED_OBSERVATION" for w in prepared.preflight["warnings"])
+
+
 def test_inspection_reports_scalar_jsonl_records_without_crashing(tmp_path: Path) -> None:
     pool = tmp_path / "pool"
     generate_pool(_resolved(), pool, GenerationOptions(display="quiet", workers=1))

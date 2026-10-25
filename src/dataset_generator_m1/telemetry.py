@@ -133,6 +133,10 @@ class MetricsAggregator:
 
     def record_rejection(self, record: dict[str, Any]) -> None:
         self.candidate_attempts += 1
+        object_records = list(record.get("object_rejections", []))
+        self.object_attempts += len(object_records)
+        self.object_rejections += len(object_records)
+        self.placement_rejections.extend(object_records)
         reason = str(record.get("reason", "unknown"))
         self.rejection_reasons[reason] = self.rejection_reasons.get(reason, 0) + 1
         self.rejection_costs[reason] = self.rejection_costs.get(reason, 0) + sum(
@@ -144,6 +148,8 @@ class MetricsAggregator:
                 self.session_stage_timings.setdefault(stage, []).append(int(duration))
 
     def record_resource(self, record: dict[str, Any]) -> None:
+        if record.get("metric_type") not in {"resource_monitor_warning", "process_tree_resource"}:
+            return
         if record.get("metric_type") == "resource_monitor_warning":
             self.resource_dropped_samples += int(record.get("dropped_samples", 0))
             if record.get("code") == "RESOURCE_SAMPLE_FAILED":

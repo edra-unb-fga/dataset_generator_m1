@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import platform
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,27 @@ from .models import ResolvedProfile
 
 
 DEFAULT_OBSERVATION_PATH = Path(".cache/performance-observations.jsonl")
+
+
+def _valid_observation(record: dict[str, Any]) -> bool:
+    def number(key: str, *, positive: bool = False, integer: bool = False) -> bool:
+        value = record.get(key)
+        return (
+            isinstance(value, (int, float)) and not isinstance(value, bool)
+            and math.isfinite(value) and (value > 0 if positive else value >= 0)
+            and (not integer or isinstance(value, int))
+        )
+    if not number("workers", positive=True, integer=True):
+        return False
+    if record.get("kind") == "probe":
+        return number("duration_seconds", positive=True) and isinstance(record.get("accepted"), bool)
+    if record.get("kind") != "production":
+        return False
+    return (
+        number("active_seconds", positive=True) and number("candidate_attempts", positive=True, integer=True)
+        and number("accepted_samples", integer=True)
+        and record["accepted_samples"] <= record["candidate_attempts"]
+    )
 
 
 def _hash(value: Any) -> str:
@@ -87,6 +109,14 @@ def read_matching_observations(
         if record.get("schema_version") != 2 or not record.get("performance_fingerprint"):
             warnings.append({"code": "IGNORED_STALE_OBSERVATION", "severity": "info", "line": line_number})
             continue
+        if not _valid_observation(record):
+            warnings.append({"code": "IGNORED_MALFORMED_OBSERVATION", "severity": "info", "line": line_number})
+            continue
+        # Derive rates from validated counters; cached derived values may be stale
+        # or malformed even when the underlying measurements remain usable.
+        if record["kind"] == "production":
+            record["seconds_per_candidate"] = record["active_seconds"] * record["workers"] / record["candidate_attempts"]
+            record["seconds_per_accepted_output"] = record["active_seconds"] / record["accepted_samples"] if record["accepted_samples"] else None
         if record["performance_fingerprint"] == fingerprint and record.get("environment_class") == environment:
             if record.get("workers") == workers:
                 exact_records.append(record)

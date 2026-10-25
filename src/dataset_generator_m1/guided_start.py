@@ -33,7 +33,7 @@ from .exporter import ExportOptions, export_pools, parse_splits
 from .generator import GenerationOptions, generate_pool, probe_profile
 from .inspection import inspect_pool
 from .ownership import coordinator_ownership
-from .preflight import confirm_preflight
+from .preflight import confirm_preflight, format_runtime
 from .preparation import PreparationRequest, prepare_generation
 
 
@@ -333,7 +333,7 @@ def _preflight_panel(preflight: dict[str, Any]) -> Panel:
     runtime = preflight["runtime"]
     warnings = "\n".join(f"• {item['code']} ({item['severity']})" for item in preflight["warnings"]) or "none"
     return Panel(
-        f"Estimated time remaining: {runtime['lower_seconds']:.1f}–{runtime['upper_seconds']:.1f}s ({runtime['confidence']})\n"
+        f"Estimated time remaining: {format_runtime(runtime)}\n"
         f"Disk estimate: {preflight['disk']['estimated_output_bytes']:,} bytes\nWarnings:\n{warnings}",
         title="Full preflight",
         border_style="yellow" if preflight["warnings"] else "green",

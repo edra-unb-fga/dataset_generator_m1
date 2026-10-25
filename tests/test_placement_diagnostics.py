@@ -84,7 +84,7 @@ def test_rejected_candidate_retains_object_diagnostics_for_studies(monkeypatch) 
             pass
 
         def plan(self, *_args):
-            return SimpleNamespace(recipe_id="direct", canvas_size=(1, 1))
+            return SimpleNamespace(recipe_id="direct", canvas_size=(1, 1), planning_rejections=(diagnostic,), attempted_instances=2)
 
     class Synthesizer:
         def __init__(self, *_args):
@@ -108,7 +108,7 @@ def test_rejected_candidate_retains_object_diagnostics_for_studies(monkeypatch) 
     result = generator_module._produce_slot(resolved, object(), 0, 0, 1)
 
     assert result["accepted"] is False
-    assert result["rejections"][0]["object_rejections"] == [diagnostic]
+    assert result["rejections"][0]["object_rejections"] == [diagnostic, diagnostic]
 
 
 def test_study_summary_counts_embedded_candidate_object_diagnostics() -> None:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import json
 import shutil
 from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from dataclasses import dataclass
@@ -81,15 +82,19 @@ def _produce_slot(
     rejections: list[dict[str, Any]] = []
     for candidate_attempt in range(starting_attempt, resolved.profile.run.max_candidate_attempts):
         timings: dict[str, int] = {}
+        plan = None
+        failure_stage = "planner"
         try:
             with StageTimer(timings, "scene_plan"):
                 plan = planner.plan(slot, candidate_attempt)
             with StageTimer(timings, "background_synthesis"):
+                failure_stage = "background_synthesis"
                 background_rng = np.random.default_rng(
                     derive_seed(resolved.profile.run.seed, slot, candidate_attempt, "background-synthesis")
                 )
                 background = synthesizer.synthesize(plan.recipe_id, plan.canvas_size, background_rng)
             with StageTimer(timings, "scene_render"):
+                failure_stage = "renderer"
                 rendered = renderer.render(plan, background)
             timings.update({f"render.{name}": value for name, value in rendered.exclusive_timings_ns.items()})
             with StageTimer(timings, "mask_encode"):
@@ -174,9 +179,17 @@ def _produce_slot(
                 "reason": type(exc).__name__,
                 "message": str(exc),
                 "stage_timings_ns": timings,
+                "rejection_stage": failure_stage,
+                "requested_objects": plan.attempted_instances if plan else None,
+                "object_evidence_state": "observed" if plan else "not_reached",
             }
-            if isinstance(exc, SceneRejected) and exc.rejected_instances:
-                rejection["object_rejections"] = list(exc.rejected_instances)
+            rejection["object_rejections"] = [
+                *(plan.planning_rejections if plan else ()),
+                *(exc.rejected_instances if isinstance(exc, SceneRejected) else ()),
+            ]
+            rejection["unobserved_objects"] = max(0, plan.attempted_instances - len(rejection["object_rejections"])) if plan else None
+            if rejection["unobserved_objects"]:
+                rejection["object_evidence_state"] = "partial"
             rejections.append(rejection)
     return {"accepted": False, "image": None, "record": None, "rejections": rejections}
 
@@ -259,6 +272,12 @@ def _generate_owned_pool(
         metrics.record_sample(sample)
     for rejection in store.rejections:
         metrics.record_rejection(rejection)
+    for line in (store.root / "metrics.jsonl").read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            resource = json.loads(line)
+            if not isinstance(resource, dict):
+                raise ValueError("Pool metrics records must be JSON objects")
+            metrics.record_resource(resource)
     metrics.begin_live_measurement()
     reporter = RunReporter(
         options.display,
@@ -282,6 +301,7 @@ def _generate_owned_pool(
     status = "complete"
     interrupted = False
     fatal_error: str | None = None
+    telemetry_complete = True
 
     def set_run_state(state: str) -> None:
         metrics.set_run_state(state)
@@ -477,6 +497,7 @@ def _generate_owned_pool(
         metrics.set_workload(worker_count=workers, active_workers=0, in_flight=0, queued=0)
         if resource_monitor is not None:
             if not resource_monitor.stop():
+                telemetry_complete = False
                 warning = {
                     "schema_version": 1,
                     "metric_type": "resource_monitor_warning",
@@ -489,6 +510,7 @@ def _generate_owned_pool(
                 metrics.record_resource(warning)
             drain_resource_samples()
         summary = metrics.summary()
+        summary["resource_monitor"]["complete"] = telemetry_complete
         summary.update(
             {
                 "schema_version": 1,

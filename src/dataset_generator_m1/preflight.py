@@ -20,6 +20,14 @@ from .performance import (
 
 
 KNOWLEDGE_PATH = Path(__file__).with_name("knowledge") / "performance.json"
+
+
+def format_runtime(runtime: dict[str, Any]) -> str:
+    if runtime.get("expected_seconds") is None:
+        return "unavailable: no accepted outputs observed"
+    return f"{runtime['lower_seconds']:.1f}–{runtime['upper_seconds']:.1f}s ({runtime['confidence']})"
+
+
 @dataclass(frozen=True)
 class PreflightRequest:
     resolved: ResolvedProfile
@@ -147,7 +155,7 @@ def _runtime_estimate(
             if int(item.get("accepted_samples", 0)) > 0
         ]
         per_candidate = median(candidate_values)
-        per_accepted = median(accepted_values) if accepted_values else per_candidate
+        per_accepted = median(accepted_values) if accepted_values else None
         cross_worker = any(item.get("workers") != request.workers for item in production)
         confidence = (
             "local-production-cross-worker"
@@ -156,6 +164,14 @@ def _runtime_estimate(
         )
         observation_count = len(production)
         evidence = [str(request.observation_path)]
+        if per_accepted is None:
+            return {
+                "lower_seconds": None, "expected_seconds": None, "upper_seconds": None,
+                "confidence": "unavailable-no-acceptances", "seconds_per_candidate": per_candidate,
+                "seconds_per_accepted_output": None, "evidence": evidence,
+                "observation_count": observation_count, "model": "accepted-output-v2",
+                "diagnostic": "No observed candidate produced an accepted output; completion cannot be estimated.",
+            }
         expected = per_accepted * request.resolved.profile.run.num_images
         if cross_worker:
             source_workers = median(float(item.get("workers", 1)) for item in production)
@@ -168,11 +184,11 @@ def _runtime_estimate(
         observation_count = len(probes)
         evidence = [str(request.observation_path)]
         expected = per_accepted * request.resolved.profile.run.num_images / effective_workers
-    elif entry:
+    elif entry and request.resolved.profile.family in entry["seconds_per_candidate"]:
         per_candidate = float(entry["seconds_per_candidate"][request.resolved.profile.family])
         per_candidate *= max(0.1, megapixels / float(knowledge["reference_megapixels"]))
         per_accepted = per_candidate
-        confidence = str(entry["confidence"])
+        confidence = "low"
         observation_count = 0
         evidence = list(entry.get("evidence", ()))
         expected = per_accepted * request.resolved.profile.run.num_images / effective_workers
