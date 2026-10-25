@@ -35,10 +35,23 @@ def _sanitized_profile(resolved: ResolvedProfile) -> dict[str, Any]:
         source["paths"] = [Path(value).name if Path(value).is_absolute() else value for value in source["paths"]]
         if source.get("catalog_file") and Path(source["catalog_file"]).is_absolute():
             source["catalog_file"] = Path(source["catalog_file"]).name
+    partition = profile["assets"].get("partition")
+    if partition and Path(partition["manifest_file"]).is_absolute():
+        partition["manifest_file"] = Path(partition["manifest_file"]).name
     recipe_file = profile["background_synthesis"]["recipe_file"]
     if Path(recipe_file).is_absolute():
         profile["background_synthesis"]["recipe_file"] = Path(recipe_file).name
     return profile
+
+
+def _sanitized_invocation(invocation) -> list[str]:
+    """Portable evidence never contains caller-local path components."""
+    return [
+        Path(str(token).replace("\\", "/")).name
+        if not str(token).startswith("--") and ("/" in str(token) or "\\" in str(token))
+        else str(token)
+        for token in invocation
+    ]
 
 
 def _atomic_json(path: Path, value: dict[str, Any]) -> None:
@@ -213,7 +226,7 @@ class RunStore:
                     "run_id": run_id,
                     "label": resolved.profile.run.label,
                     "tags": list(resolved.profile.run.tags),
-                    "invocation": list(invocation),
+                "invocation": _sanitized_invocation(invocation),
                     "contract_hash": resolved.contract_hash,
                     "catalog_fingerprint": catalog.fingerprint,
                     "source_partition": catalog.partition,

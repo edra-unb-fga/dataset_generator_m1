@@ -132,6 +132,10 @@ def copy_composer(source: str | Path, destination: str | Path) -> Path:
         recipes["recipe_file"] = rebase(recipes["recipe_file"])
     # Recipe paths may be supplied by a referenced bundle, not only inline YAML.
     document.setdefault("inline", {}).setdefault("background_recipes", {})["recipe_file"] = rebase(str(original.recipe_path))
+    if original.profile.assets.partition is not None:
+        assets = original.profile.assets.model_dump(mode="json")
+        assets["partition"]["manifest_file"] = rebase(assets["partition"]["manifest_file"])
+        document["inline"]["assets"] = assets
     return save_composer(document, destination)
 
 
