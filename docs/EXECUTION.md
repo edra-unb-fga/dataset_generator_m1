@@ -74,3 +74,14 @@ Worker setup reuse, duplicate full/visible polygonization avoidance, rolling sch
 transport and synthesized-background caching remain separate candidates. The bounded decoded cache
 and explicit native/queue controls enable comparisons without making them universal defaults. #28
 requires additional stable hardware measurements; CI correctness evidence is not a latency budget.
+
+## Pixel-preserving implementation upgrades
+
+A separate performance-implementation revision participates in execution identities and cost-observation fingerprints. A cost change that preserves generated pixels/geometry need not change renderer semantics or invalidate compatible pool resume, but old timing observations must not be mixed into the new implementation's ETA calibration. Existing observations remain readable; nonmatching fingerprints are excluded. Revision changes do not promote any thread/worker/cache default.
+
+The [background performance study](experiments/background-performance-v1/README.md) records local
+cache/thread/worker/queue measurements and exact-content implementation comparisons. A256 MiB decoded
+cache was slower in this workload despite hits; native threading helped this particular host. Keep
+these as local choices until #28 has additional-machine evidence. Observed process-tree RSS exceeded
+the advisory planner estimate in this study; do not treat that estimate as a hard memory limit or
+infer a safe worker count from throughput alone.

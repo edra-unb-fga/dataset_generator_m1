@@ -125,3 +125,21 @@ too variable to establish a universal overhead budget; interpret it only as loca
 The [round-one evidence](experiments/planar-surfaces-v1/README.md) isolates lighting, wear and capture effects on20 paired fixtures per natural/forced treatment (+2 warmups), then compares four selected production configurations in3 rotating-order repetitions of20 accepted images (+2 warmups). Appearance-only mask/box/content invariants stay strict; occlusion deliberately changes annotations. `scripts/study_planar_surfaces.py` reproduces the study, and `scripts/report_planar_surfaces.py` adds static Matplotlib charts/offline HTML without adding a generation dependency.
 
 Background synthesis dominates this host's measured total cost; scene lighting, source-local wear and procedural raster layers add distinct work. Keep defaults unchanged. Bounded optimizations and hardware-class promotion require additional evidence. Current procedural occluders are geometry fixtures, not demonstrated photographic realism. Real references/predictions remain missing; use `BLENDERPROC_COMPARISON.md` for the future matched-engine protocol.
+
+## Background performance and execution controls
+
+The [round-two report](experiments/background-performance-v1/README.md) measures recipe hotspots,
+existing cache/thread/worker/queue controls, and interleaved original/optimized production runs.
+Redundant float copies, expired DAG arrays, materialized multiband intermediates and duplicate polygon
+projections were removed with exact output/evidence checks. Three repetitions of20 accepted images
+(+2 warmups) per case show local median paired throughput gains of7.7–10.8%; the two-worker range
+includes a slower optimized repetition. Sampled process memory also fell. These are one-host results,
+not generic default recommendations or real-model quality evidence.
+
+Native threading helped here; the256 MiB decoded cache did not, despite recorded hits. Defaults stay
+unchanged. Large Gaussian smoothing remains the dominant recipe cost; approximation/fidelity changes
+or a scheduling/transport redesign require the next planning decision. Reproduce with
+`scripts/study_background_optimizations.py`, `scripts/study_execution_controls.py`,
+`scripts/probe_multiband_allocations.py` and the optional Matplotlib authoring script
+`scripts/report_background_performance.py`. Raw evidence remains ignored. #28 still needs additional
+hardware-class evidence.

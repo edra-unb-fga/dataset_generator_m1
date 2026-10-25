@@ -113,10 +113,12 @@ def _produce_slot(
                     rendered.annotations, rendered.full_coverages, rendered.visible_coverages
                 ):
                     semantics = {}
-                    for name, coverage in (("full", full), ("visible", visible)):
-                        projection = polygonize_coverage(
-                            coverage, alpha_threshold=resolved.family.annotation.alpha_threshold
-                        )
+                    full_projection = polygonize_coverage(full, alpha_threshold=resolved.family.annotation.alpha_threshold)
+                    visible_projection = (
+                        full_projection if np.array_equal(full, visible)
+                        else polygonize_coverage(visible, alpha_threshold=resolved.family.annotation.alpha_threshold)
+                    )
+                    for name, projection in (("full", full_projection), ("visible", visible_projection)):
                         semantics[name] = {
                             "iou": projection.iou,
                             "area_error": projection.area_error,

@@ -64,9 +64,9 @@ def _rgb_to_space(image: np.ndarray, color_space: str) -> np.ndarray:
     if normalized == "rgb":
         return image
     if normalized == "lab":
-        return cv2.cvtColor(image.astype(np.float32), cv2.COLOR_RGB2LAB)
+        return cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_RGB2LAB)
     if normalized == "hsv":
-        return cv2.cvtColor(image.astype(np.float32), cv2.COLOR_RGB2HSV)
+        return cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_RGB2HSV)
     raise BackgroundSynthesisError(f"Unsupported color space: {color_space}")
 
 
@@ -89,9 +89,9 @@ def _space_to_rgb(image: np.ndarray, color_space: str) -> np.ndarray:
     if normalized == "rgb":
         return image
     if normalized == "lab":
-        return cv2.cvtColor(image.astype(np.float32), cv2.COLOR_LAB2RGB)
+        return cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_LAB2RGB)
     if normalized == "hsv":
-        return cv2.cvtColor(image.astype(np.float32), cv2.COLOR_HSV2RGB)
+        return cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_HSV2RGB)
     raise BackgroundSynthesisError(f"Unsupported color space: {color_space}")
 
 
@@ -100,12 +100,12 @@ def _normalize_channel(channel: np.ndarray) -> np.ndarray:
     high = float(np.percentile(channel, 99))
     if high - low < 1e-8:
         return np.zeros_like(channel, dtype=np.float32)
-    return np.clip((channel.astype(np.float32) - low) / (high - low), 0.0, 1.0)
+    return np.clip((np.asarray(channel, dtype=np.float32) - low) / (high - low), 0.0, 1.0)
 
 
 def _palette_transfer(image: np.ndarray, palette: np.ndarray, strength: float) -> np.ndarray:
-    source_lab = cv2.cvtColor(image.astype(np.float32), cv2.COLOR_RGB2LAB)
-    palette_lab = cv2.cvtColor(palette.astype(np.float32), cv2.COLOR_RGB2LAB)
+    source_lab = cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_RGB2LAB)
+    palette_lab = cv2.cvtColor(np.asarray(palette, dtype=np.float32), cv2.COLOR_RGB2LAB)
     source_flat = source_lab.reshape(-1, 3)
     palette_flat = palette_lab.reshape(-1, 3)
     source_mean = source_flat.mean(axis=0)
@@ -114,7 +114,7 @@ def _palette_transfer(image: np.ndarray, palette: np.ndarray, strength: float) -
     palette_std = np.maximum(palette_flat.std(axis=0), 1e-5)
     transferred = (source_lab - source_mean) * (palette_std / source_std) + palette_mean
     mixed = source_lab * (1.0 - strength) + transferred * strength
-    return np.clip(cv2.cvtColor(mixed.astype(np.float32), cv2.COLOR_LAB2RGB), 0.0, 1.0)
+    return np.clip(cv2.cvtColor(np.asarray(mixed, dtype=np.float32), cv2.COLOR_LAB2RGB), 0.0, 1.0)
 
 
 def _normalize_mask(mask: np.ndarray, params: dict[str, Any], size: tuple[int, int]) -> np.ndarray:
@@ -123,7 +123,7 @@ def _normalize_mask(mask: np.ndarray, params: dict[str, Any], size: tuple[int, i
     if high - low < 1e-8:
         normalized = np.full(mask.shape, 0.5, dtype=np.float32)
     else:
-        normalized = np.clip((mask.astype(np.float32) - low) / (high - low), 0.0, 1.0)
+        normalized = np.clip((np.asarray(mask, dtype=np.float32) - low) / (high - low), 0.0, 1.0)
     if params.get("invert", False):
         normalized = 1.0 - normalized
     gamma = float(params.get("gamma", 1.0))
@@ -145,26 +145,29 @@ def _normalize_mask(mask: np.ndarray, params: dict[str, Any], size: tuple[int, i
 def _multiband_blend(first: np.ndarray, second: np.ndarray, mask: np.ndarray, levels: int) -> np.ndarray:
     max_levels = max(1, int(np.floor(np.log2(max(2, min(first.shape[:2]))))) - 3)
     levels = max(1, min(levels, max_levels))
-    gp_first = [first.astype(np.float32)]
-    gp_second = [second.astype(np.float32)]
-    gp_mask = [mask.astype(np.float32)]
+    gp_first = [np.asarray(first, dtype=np.float32)]
+    gp_second = [np.asarray(second, dtype=np.float32)]
+    gp_mask = [np.asarray(mask, dtype=np.float32)]
     for _ in range(levels):
         gp_first.append(cv2.pyrDown(gp_first[-1]))
         gp_second.append(cv2.pyrDown(gp_second[-1]))
         gp_mask.append(cv2.pyrDown(gp_mask[-1]))
-    lp_first = [gp_first[-1]]
-    lp_second = [gp_second[-1]]
+    # Blend/reconstruct from coarse to fine using the same arithmetic as the
+    # materialized Laplacian pyramids. Only the current level/result survives.
+    weight = gp_mask[-1][:, :, None]
+    result = gp_first[-1] * weight + gp_second[-1] * (1.0 - weight)
     for index in range(levels, 0, -1):
         size = (gp_first[index - 1].shape[1], gp_first[index - 1].shape[0])
-        lp_first.append(gp_first[index - 1] - cv2.pyrUp(gp_first[index], dstsize=size))
-        lp_second.append(gp_second[index - 1] - cv2.pyrUp(gp_second[index], dstsize=size))
-    blended_levels: list[np.ndarray] = []
-    for first_level, second_level, mask_level in zip(lp_first, lp_second, reversed(gp_mask)):
-        weight = mask_level[:, :, None]
-        blended_levels.append(first_level * weight + second_level * (1.0 - weight))
-    result = blended_levels[0]
-    for level in blended_levels[1:]:
-        result = cv2.pyrUp(result, dstsize=(level.shape[1], level.shape[0])) + level
+        first_level = gp_first[index - 1] - cv2.pyrUp(gp_first[index], dstsize=size)
+        second_level = gp_second[index - 1] - cv2.pyrUp(gp_second[index], dstsize=size)
+        weight = gp_mask[index - 1][:, :, None]
+        blended = first_level * weight + second_level * (1.0 - weight)
+        result = cv2.pyrUp(result, dstsize=size) + blended
+        gp_first.pop()
+        gp_second.pop()
+        gp_mask.pop()
+        del first_level, second_level, blended, weight
+
     return np.clip(result, 0.0, 1.0)
 
 
@@ -185,8 +188,8 @@ def _displace(
     dx *= max_displacement
     dy *= max_displacement
     grid_x, grid_y = np.meshgrid(np.arange(width, dtype=np.float32), np.arange(height, dtype=np.float32))
-    map_x = grid_x + dx.astype(np.float32)
-    map_y = grid_y + dy.astype(np.float32)
+    map_x = grid_x + np.asarray(dx, dtype=np.float32)
+    map_y = grid_y + np.asarray(dy, dtype=np.float32)
     grad_x_x = np.gradient(map_x, axis=1)
     grad_x_y = np.gradient(map_x, axis=0)
     grad_y_x = np.gradient(map_y, axis=1)
@@ -211,7 +214,7 @@ def _qa(image: np.ndarray) -> tuple[dict[str, Any], tuple[str, ...]]:
         raise BackgroundSynthesisError("Background contains NaN or infinite values")
     clipped = np.logical_or(image <= 1e-5, image >= 1.0 - 1e-5)
     clipping_fraction = float(clipped.mean())
-    luminance = cv2.cvtColor(image.astype(np.float32), cv2.COLOR_RGB2GRAY)
+    luminance = cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_RGB2GRAY)
     luminance_std = float(luminance.std())
     if luminance_std < 0.003:
         raise BackgroundSynthesisError("Background is near-constant")
@@ -219,8 +222,8 @@ def _qa(image: np.ndarray) -> tuple[dict[str, Any], tuple[str, ...]]:
         raise BackgroundSynthesisError("Background is severely clipped")
     edge_horizontal = float(np.mean(np.abs(image[:, 0] - image[:, -1])))
     edge_vertical = float(np.mean(np.abs(image[0] - image[-1])))
-    lab = cv2.cvtColor(image.astype(np.float32), cv2.COLOR_RGB2LAB)
-    hsv = cv2.cvtColor(image.astype(np.float32), cv2.COLOR_RGB2HSV)
+    lab = cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_RGB2LAB)
+    hsv = cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_RGB2HSV)
     reduced = cv2.resize(luminance, (max(1, luminance.shape[1] // 4), max(1, luminance.shape[0] // 4)))
     low_frequency = float(cv2.resize(reduced, (luminance.shape[1], luminance.shape[0])).std())
     high_frequency = float(cv2.Laplacian(luminance, cv2.CV_32F).std())
@@ -247,10 +250,31 @@ def _qa(image: np.ndarray) -> tuple[dict[str, Any], tuple[str, ...]]:
 
 
 def _perceptual_hash(image: np.ndarray) -> int:
-    gray = cv2.cvtColor(image.astype(np.float32), cv2.COLOR_RGB2GRAY)
+    gray = cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_RGB2GRAY)
     values = cv2.resize(gray, (8, 8), interpolation=cv2.INTER_AREA)
     bits = (values >= values.mean()).reshape(-1)
     return int("".join("1" if bit else "0" for bit in bits), 2)
+
+
+def _release_schedule(recipe: BackgroundRecipe) -> tuple[tuple[str, ...], ...]:
+    """Retain each DAG value through its last data/asset-parameter consumer.
+
+    Every declared node still executes and records evidence, even if unused. The
+    configured output can precede other nodes and must survive until final QA.
+    """
+    last_use = {node.id: index for index, node in enumerate(recipe.nodes)}
+    for index, node in enumerate(recipe.nodes):
+        references = [*node.inputs.values(), node.params.get("same_group_as"),
+                      *node.params.get("distinct_from", [])]
+        for reference in references:
+            if reference is not None:
+                last_use[str(reference)] = index
+    last_use[recipe.output] = len(recipe.nodes)
+    releases: list[list[str]] = [[] for _ in recipe.nodes]
+    for name, index in last_use.items():
+        if index < len(releases):
+            releases[index].append(name)
+    return tuple(tuple(names) for names in releases)
 
 
 class BackgroundSynthesizer:
@@ -275,6 +299,7 @@ class BackgroundSynthesizer:
         if recipe_id not in self.recipes.recipes:
             raise BackgroundSynthesisError(f"Unknown background recipe: {recipe_id}")
         recipe = self.recipes.recipes[recipe_id]
+        releases = _release_schedule(recipe)
         graph_hash = hashlib.sha256(
             json.dumps(recipe.model_dump(mode="json"), sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
@@ -284,7 +309,7 @@ class BackgroundSynthesizer:
         sources: list[dict[str, Any]] = []
         anchor_group: str | None = None
 
-        for node in recipe.nodes:
+        for index, node in enumerate(recipe.nodes):
             started = perf_counter_ns()
             node_sampled: dict[str, Any] = {}
             try:
@@ -312,6 +337,12 @@ class BackgroundSynthesizer:
                     }
                 )
 
+            # No later node can observe these values; source/parameter evidence is
+            # already detached from raster storage. Do not keep the local alias.
+            for name in releases[index]:
+                del values[name]
+            del value
+
         output = values[recipe.output]
         if isinstance(output, AssetRecord):
             output = _resize_cover_crop(_load_rgb_float(output), size, rng)
@@ -319,7 +350,7 @@ class BackgroundSynthesizer:
             raise BackgroundSynthesisError(f"Recipe {recipe_id} output must be an RGB image")
         if output.shape[:2] != (size[1], size[0]):
             output = cv2.resize(output, size, interpolation=cv2.INTER_LINEAR)
-        output = np.clip(output.astype(np.float32), 0.0, 1.0)
+        output = np.clip(np.asarray(output, dtype=np.float32), 0.0, 1.0)
         qa, warnings = _qa(output)
         output_hash = _perceptual_hash(output)
         nearest_source_similarity = max(
