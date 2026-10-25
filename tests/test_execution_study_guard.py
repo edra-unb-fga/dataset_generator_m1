@@ -39,3 +39,31 @@ def test_guard_stops_child_even_if_coordinator_exits_first():
         if child is not None:
             try:child.kill()
             except psutil.Error:pass
+
+
+@pytest.mark.parametrize('failure',[KeyboardInterrupt,RuntimeError])
+def test_monitor_failure_stops_isolated_benchmark(tmp_path,monkeypatch,failure):
+    original_popen=subprocess.Popen;started=[]
+    def launch(command,**kwargs):
+        if command[0]=='git':return original_popen(command,**kwargs)
+        process=original_popen([sys.executable,'-c','import time;time.sleep(60)'],**kwargs)
+        started.append(process)
+        return process
+    def fail():raise failure('injected sampling interruption')
+    matrix=tmp_path/'matrix.yaml'
+    matrix.write_text('schema_version: 1\nvariants:\n  one: {workers: 1, native_threads: 1}\n')
+    out=tmp_path/'study'
+    monkeypatch.setattr(study.subprocess,'Popen',launch)
+    monkeypatch.setattr(study.psutil,'virtual_memory',fail)
+    monkeypatch.setattr(sys,'argv',['study','--config','examples/configs/landing-pad_minimal.yaml',
+        '--matrix',str(matrix),'--output-dir',str(out),'--samples','1','--warmups','0','--repeats','1'])
+    try:
+        with pytest.raises(failure):study.main()
+        assert len(started)==1
+        assert started[0].poll() is not None,'isolated benchmark survived its watchdog'
+        evidence=__import__('json').loads((out/'interruption.json').read_text())
+        assert evidence['reason']==failure.__name__
+        assert evidence['status']=='monitor-interrupted'
+    finally:
+        for process in started:
+            if process.poll() is None:process.kill();process.wait(timeout=3)

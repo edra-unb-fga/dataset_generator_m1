@@ -112,16 +112,27 @@ def main():
             with (root/f'{repeat:02d}-{index:02d}.log').open('w') as log:
                 process=subprocess.Popen(command,cwd=source,stdout=log,stderr=subprocess.STDOUT,
                     env={**os.environ,'PYTHONPATH':str(source/'src'),'PYTHONDONTWRITEBYTECODE':'1'},start_new_session=os.name=='posix')
-                while True:
-                    memory,swap=psutil.virtual_memory(),psutil.swap_memory()
-                    tree=process_tree_sample(process.pid)
-                    system.append({'elapsed':perf_counter()-started,'available_memory_bytes':memory.available,'swap_used_bytes':swap.used,
-                                   'swap_in_bytes':swap.sin,'swap_out_bytes':swap.sout,'cpu_percent':psutil.cpu_percent(None),**tree})
-                    abort=guard_reason(args,perf_counter()-started,memory,swap,tree,initial_swap_out)
-                    if abort:
-                        stop_benchmark(process);code=process.returncode;break
-                    try: code=process.wait(timeout=.25 if guarded else 2);break
-                    except subprocess.TimeoutExpired: pass
+                try:
+                    while True:
+                        memory,swap=psutil.virtual_memory(),psutil.swap_memory()
+                        tree=process_tree_sample(process.pid)
+                        system.append({'elapsed':perf_counter()-started,'available_memory_bytes':memory.available,'swap_used_bytes':swap.used,
+                                       'swap_in_bytes':swap.sin,'swap_out_bytes':swap.sout,'cpu_percent':psutil.cpu_percent(None),**tree})
+                        abort=guard_reason(args,perf_counter()-started,memory,swap,tree,initial_swap_out)
+                        if abort:
+                            stop_benchmark(process);code=process.returncode;break
+                        try: code=process.wait(timeout=.25 if guarded else 2);break
+                        except subprocess.TimeoutExpired: pass
+                except BaseException as error:
+                    # Ctrl+C cannot reach the isolated benchmark session. A
+                    # watchdog failure must also stop that complete workload.
+                    stop_benchmark(process)
+                    (root/f'{repeat:02d}-{index:02d}-system.json').write_text(json.dumps(system))
+                    failure={'status':'monitor-interrupted','policy':name,'repeat':repeat,
+                             'reason':type(error).__name__,'completed_cells':len(records)}
+                    (root/'interruption.json').write_text(json.dumps(failure,indent=2))
+                    (root/'progress.json').write_text(json.dumps(failure))
+                    raise
             (root/f'{repeat:02d}-{index:02d}-system.json').write_text(json.dumps(system))
             if abort:
                 failure={'status':'guard-aborted','policy':name,'repeat':repeat,'reason':abort,'completed_cells':len(records),
