@@ -14,6 +14,7 @@ os.environ.setdefault("ALBUMENTATIONS_NO_TELEMETRY", "1")
 import albumentations as A
 import numpy as np
 
+from .surface_effects import apply_surface_wear, validate_surface_wear
 from .models import TransformSpec
 from .native_effects import apply_atmospheric_fog, validate_atmospheric_fog_params
 
@@ -36,9 +37,10 @@ SUPPORTED_TRANSFORMS = {
     "RandomFog",
     "RandomRain",
     "AtmosphericFog",
+    "SurfaceWear",
 }
 
-NATIVE_TRANSFORMS = {"AtmosphericFog"}
+NATIVE_TRANSFORMS = {"AtmosphericFog", "SurfaceWear"}
 
 
 @dataclass(frozen=True)
@@ -120,6 +122,9 @@ def validate_transform_specs(specs: Iterable[TransformSpec], stage: str) -> None
         seen_ids.add(effect_id)
         if spec.type not in SUPPORTED_TRANSFORMS:
             raise ValueError(f"Unsupported Albumentations transform in {stage}: {spec.type}")
+        if spec.type == "SurfaceWear":
+            validate_surface_wear(spec.params, stage)
+            continue
         if spec.type == "AtmosphericFog":
             validate_atmospheric_fog_params(spec.params, stage)
             continue
@@ -165,6 +170,9 @@ def apply_pipeline(
         alpha = image[:, :, 3].copy()
     for spec in specs:
         if rng.random() > spec.probability:
+            continue
+        if spec.type == "SurfaceWear":
+            rgb, _ = apply_surface_wear(rgb, spec.params, rng)
             continue
         if spec.type == "AtmosphericFog":
             rgb, _ = apply_atmospheric_fog(rgb, spec.params, rng)
@@ -212,8 +220,9 @@ def apply_pipeline_traced(
         started = clock()
         applied_params: tuple[dict[str, Any], ...] = ()
         if applied:
-            if spec.type == "AtmosphericFog":
-                rgb, sampled = apply_atmospheric_fog(rgb, spec.params, activation_rng)
+            if spec.type in NATIVE_TRANSFORMS:
+                native = apply_surface_wear if spec.type == "SurfaceWear" else apply_atmospheric_fog
+                rgb, sampled = native(rgb, spec.params, activation_rng)
                 applied_params = (_json_safe(sampled),)
             else:
                 transform_type = getattr(A, spec.type)

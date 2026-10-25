@@ -2,6 +2,7 @@
   "schema_version": 1,
   "documentation": "docs/APPEARANCE_EFFECTS.md",
   "effects": {
+    "SurfaceWear": {"category": "surface", "stages": ["foreground"], "summary": "Foreground-local normalized fade, dirt and scratches. RGB-only, alpha preserved; qualitative planar wear.", "documentation": "docs/SURFACE_RENDERING.md"},
     "ImageCompression": {"category":"camera","stages":["final"],"summary":"Vary JPEG/WebP compression quality after scene composition; preserves instance alpha evidence."},
     "HueSaturationValue": {"category": "color", "stages": ["background", "foreground", "final"], "summary": "Shift hue, saturation, and value."},
     "RandomBrightnessContrast": {"category": "exposure", "stages": ["background", "foreground", "final"], "summary": "Vary brightness and contrast."},

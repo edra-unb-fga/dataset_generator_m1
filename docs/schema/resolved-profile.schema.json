@@ -640,11 +640,89 @@
           "title": "Canvas Scale",
           "type": "number"
         },
+        "lighting": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SceneLightingConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "perspective": {
           "$ref": "#/$defs/PerspectiveConfig"
         }
       },
       "title": "SceneConfig",
+      "type": "object"
+    },
+    "SceneLightingConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "gain": {
+          "default": [
+            0.85,
+            1.1
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gain",
+          "type": "array"
+        },
+        "gradient": {
+          "default": [
+            0.05,
+            0.25
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gradient",
+          "type": "array"
+        },
+        "probability": {
+          "default": 0.8,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Probability",
+          "type": "number"
+        },
+        "source_assumption": {
+          "default": "unknown",
+          "enum": [
+            "unknown",
+            "baked",
+            "unlit-approximation"
+          ],
+          "title": "Source Assumption",
+          "type": "string"
+        },
+        "tint": {
+          "default": 0.025,
+          "maximum": 0.1,
+          "minimum": 0,
+          "title": "Tint",
+          "type": "number"
+        }
+      },
+      "title": "SceneLightingConfig",
       "type": "object"
     },
     "TelemetryConfig": {

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "builtin:appearance/surface-camera",
+  "subject": "appearance",
+  "status": "experimental",
+  "intents": [
+    "planar-surface-variation"
+  ],
+  "performance_risk": "informational",
+  "warning_codes": [
+    "UNCALIBRATED_SURFACE_PROFILE"
+  ],
+  "evidence": [
+    "docs/SURFACE_RENDERING.md"
+  ],
+  "scaling_drivers": [
+    "foreground-source-pixels",
+    "output-pixels",
+    "marks"
+  ]
+}

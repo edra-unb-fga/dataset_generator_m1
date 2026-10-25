@@ -320,7 +320,9 @@ def load_profile(
         sources.append(partition_path)
     unique_sources = list(dict.fromkeys(item.resolve() for item in sources))
     source_hashes = {item.as_posix(): _sha256(item) for item in unique_sources}
+    from .renderer_version import RENDERER_SEMANTICS
     contract = {
+        "renderer_semantics": RENDERER_SEMANTICS,
         "profile": profile.model_dump(mode="json"),
         "family": family.model_dump(mode="json"),
         "recipes": recipes.model_dump(mode="json"),

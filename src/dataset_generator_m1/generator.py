@@ -166,6 +166,7 @@ def _produce_slot(
                     },
                     "stage_timings_ns": timings,
                     "appearance_effects": list(rendered.effect_traces),
+                    "scene_effects": rendered.scene_effects,
                     "execution": {
                         "worker_pid": os.getpid(),
                         "worker_process": os.getpid() != coordinator_pid,

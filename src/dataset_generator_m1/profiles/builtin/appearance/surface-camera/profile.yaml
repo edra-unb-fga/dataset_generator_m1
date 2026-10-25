@@ -1,0 +1,41 @@
+schema_version: 1
+subject: appearance
+value:
+  background: []
+  foreground:
+  - id: local-wear
+    type: SurfaceWear
+    probability: 0.65
+    params:
+      fade: 0.06
+      dirt: 0.18
+      scratches: 0.12
+      marks: 12
+  final:
+  - id: camera-exposure
+    type: RandomBrightnessContrast
+    probability: 0.35
+    params:
+      brightness_limit:
+      - -0.04
+      - 0.04
+      contrast_limit:
+      - -0.06
+      - 0.06
+      ensure_safe_range: true
+  - id: camera-motion
+    type: MotionBlur
+    probability: 0.2
+    params:
+      blur_limit:
+      - 3
+      - 5
+      allow_shifted: false
+  - id: camera-compression
+    type: ImageCompression
+    probability: 0.3
+    params:
+      quality_range:
+      - 88
+      - 98
+      compression_type: jpeg

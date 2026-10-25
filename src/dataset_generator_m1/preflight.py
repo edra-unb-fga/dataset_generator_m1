@@ -232,6 +232,9 @@ def run_preflight(
         raise ValueError("workers must be >= 1")
     knowledge = json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8"))
     metadata = _appearance_metadata(request.resolved)
+    if request.resolved.profile.scene.lighting is not None:
+        metadata = {**metadata, "performance_risk": metadata.get("performance_risk", "informational"),
+                    "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_SCENE_LIGHTING_UNCALIBRATED"]}
     environment = environment_class()
     observations, observation_warnings = read_matching_observations(
         request.observation_path, request.resolved, request.workers, environment
@@ -250,6 +253,8 @@ def run_preflight(
         _append_observations(request.observation_path, request, environment, probe_measurements)
         observations = [{"kind": "probe", **item} for item in probe_measurements]
     runtime = _runtime_estimate(request, metadata, observations, knowledge)
+    if request.resolved.profile.scene.lighting is not None and not observations:
+        runtime["confidence"] += "-scene-effects-unmeasured"
     if probe_triggered:
         runtime["confidence"] = "local-probe"
     warning_codes = list(dict.fromkeys(str(code) for code in metadata.get("warning_codes", ())))

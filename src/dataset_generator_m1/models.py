@@ -126,11 +126,38 @@ class BackgroundAffineConfig(StrictModel):
         return self
 
 
+class SceneLightingConfig(StrictModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+    probability: float = Field(default=0.8, ge=0, le=1)
+    gain: tuple[float, float] = (0.85, 1.10)
+    gradient: tuple[float, float] = (0.05, 0.25)
+    tint: float = Field(default=0.025, ge=0, le=0.1)
+    source_assumption: Literal["unknown", "baked", "unlit-approximation"] = "unknown"
+
+    @model_validator(mode="after")
+    def validate_ranges(self):
+        _ordered_range(self.gain, "gain", 0.1)
+        _ordered_range(self.gradient, "gradient", 0.)
+        if self.gain[1] > 2 or self.gradient[1] > 1:
+            raise ValueError("Lighting gain <=2 and gradient <=1 are required")
+        return self
+
+
+class SurfaceWearConfig(StrictModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+    fade: float = Field(default=0.06, ge=0, le=0.6)
+    dirt: float = Field(default=0.18, ge=0, le=0.8)
+    scratches: float = Field(default=0.12, ge=0, le=0.8)
+    marks: int = Field(default=12, ge=0, le=64)
+    scratch_width: float = Field(default=0.002, gt=0, le=0.03)
+
+
 class SceneConfig(StrictModel):
     canvas_scale: float = Field(default=2.0, ge=1.25)
     camera: CameraConfig = Field(default_factory=CameraConfig)
     perspective: PerspectiveConfig = Field(default_factory=PerspectiveConfig)
     background_affine: BackgroundAffineConfig = Field(default_factory=BackgroundAffineConfig)
+    lighting: SceneLightingConfig | None = None
 
 
 class TransformSpec(StrictModel):
@@ -234,6 +261,7 @@ class SceneInline(StrictModel):
     camera: CameraInline | None = None
     perspective: PerspectiveInline | None = None
     background_affine: BackgroundAffineInline | None = None
+    lighting: SceneLightingConfig | None = None
 
 
 class BackgroundRecipesInline(StrictModel):
