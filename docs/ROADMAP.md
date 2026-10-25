@@ -7,14 +7,14 @@ dependency; unchecked items are not promises that current commands already imple
 
 ### Practical workflow review stack
 
-- [ ] #49 / PR #51: exclusive coordinator ownership and malformed-input safety.
-- [ ] #50 / PR #53: complete diagnostics, resume telemetry and accepted-output calibration.
-- [ ] #52 / PR #54: declarative rectangular-pad family, explicit count policy and family discovery.
-- [ ] #33 / PR #55: pre-generation source feasibility and verified background/content isolation.
-- [ ] #56 / PR #58: experimental drone screens, pinned colour materials and planar mapping.
-- [ ] #57: execution budgets, isolated portable production benchmarks and local tuning guidance.
+- [x] #49 / PR #51: exclusive coordinator ownership and malformed-input safety.
+- [x] #50 / PR #53: complete diagnostics, resume telemetry and accepted-output calibration.
+- [x] #52 / PR #54: declarative rectangular-pad family, explicit count policy and family discovery.
+- [x] #33 / PR #55: pre-generation source feasibility and verified background/content isolation.
+- [x] #56 / PR #58: experimental drone screens, pinned colour materials and planar mapping.
+- [x] #57 / PR #60: execution budgets, isolated portable production benchmarks and local tuning guidance.
 
-These changes are implemented in the stacked branches but remain unchecked here until review/merge.
+These changes were reviewed, repaired and merged in dependency order on 2026-10-24.
 Read docs/PRACTICAL_WORKFLOW.md for acceptance scope. The historical checklist below records earlier
 deliveries; the follow-ups above repair acceptance gaps rather than rewriting their historical reports.
 
