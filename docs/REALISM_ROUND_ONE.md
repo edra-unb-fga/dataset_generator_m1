@@ -9,9 +9,9 @@ scope and future uses; unchecked items are not implemented capabilities.
 - [x] A: preserve the existing local artwork/profile-study changes separately; rerun a
   representative baseline with the corrected artwork without rewriting historical studies.
 - [x] B: offline detection **and instance-segmentation** evaluation, reference audits and projection checks.
-- [ ] C: experimental shared 2D illumination and RGB-only procedural wear.
-- [ ] D: procedural scene-plane occlusion, post-occlusion acceptance and exact annotation evidence.
-- [ ] E: integrated paired studies, production measurements, reports and merged validated milestones.
+- [x] C: experimental shared 2D illumination and RGB-only procedural wear.
+- [x] D: procedural scene-plane occlusion, post-occlusion acceptance and exact annotation evidence.
+- [x] E: integrated paired studies, production measurements, reports and merged validated milestones.
 
 Pads drive the examples; the core is family agnostic and landing/manometro remain regression controls.
 Use small dependent PRs, resolve review findings, and merge only after relevant checks pass.
@@ -125,3 +125,14 @@ QA/mask/writing costs, accepted throughput, memory and host/sample limits; no un
 
 Do not close an issue whose remaining real-data or physical-model acceptance is unfulfilled. Update it
 with completed round-one items and explicit prerequisites for the next planning round.
+
+## Delivered evidence
+
+A: #51/#53/#54/#55/#58/#60 reviewed and merged; corrected-artwork/profile preservation in #65.
+B: evaluation/reference foundations in #66. C: opt-in shared field/wear in #67. D: occlusion/visibility in #68.
+E: `experiments/planar-surfaces-v1/` records 20+2 natural/forced screens and 12 validated production cells
+(3 rotating repetitions ×4 configurations ×20 accepted +2 warmups). Source/driver identities are pinned;
+reporting-only and custom-composer robustness changes follow the measured commit.
+
+Synthetic acceptance is complete. The broader #59/#61–64 real-data/physical requirements remain open.
+No real transfer, calibrated physical appearance or cross-machine performance claim is established.

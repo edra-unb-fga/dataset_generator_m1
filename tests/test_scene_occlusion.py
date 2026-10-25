@@ -133,6 +133,10 @@ def test_enabled_pipeline_serial_process_masks_and_exports(tmp_path,family):
     config=write_derived_composer(tmp_path,family,{'run':{'num_images':3},'output':{'image_size':[96,96]},
         'scene':{'lighting':{'probability':1},'occlusion':{'probability':1,'count':[12,12],'width_fraction':[.02,.04]}},
         'background_mixing':{'recipe_weights':{'direct':1.}},'execution':{'native_threads':1},'reporting':{'qa_samples':1}})
+    import yaml
+    raw=yaml.safe_load(config.read_text())
+    raw['appearance']={'preset':'builtin:appearance/surface-camera'}
+    config.write_text(yaml.safe_dump(raw,sort_keys=False))
     resolved=load_profile(config)
     for name,workers in [('serial',1),('process',2)]:
         pool=tmp_path/name

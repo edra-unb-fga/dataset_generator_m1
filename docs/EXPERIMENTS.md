@@ -119,3 +119,9 @@ The reviewed [three-pair study](experiments/process-tree-overhead-v1/README.md) 
 one-second process-tree monitoring with the explicit `off` policy using fixed 20-sample landing runs.
 Paired generated content remained identical and no resource samples were dropped. The timing range was
 too variable to establish a universal overhead budget; interpret it only as local evidence.
+
+## Shared planar illumination, wear and occlusion
+
+The [round-one evidence](experiments/planar-surfaces-v1/README.md) isolates lighting, wear and capture effects on20 paired fixtures per natural/forced treatment (+2 warmups), then compares four selected production configurations in3 rotating-order repetitions of20 accepted images (+2 warmups). Appearance-only mask/box/content invariants stay strict; occlusion deliberately changes annotations. `scripts/study_planar_surfaces.py` reproduces the study, and `scripts/report_planar_surfaces.py` adds static Matplotlib charts/offline HTML without adding a generation dependency.
+
+Background synthesis dominates this host's measured total cost; scene lighting, source-local wear and procedural raster layers add distinct work. Keep defaults unchanged. Bounded optimizations and hardware-class promotion require additional evidence. Current procedural occluders are geometry fixtures, not demonstrated photographic realism. Real references/predictions remain missing; use `BLENDERPROC_COMPARISON.md` for the future matched-engine protocol.

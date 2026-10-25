@@ -88,7 +88,7 @@ def paired(args):
         target=root/'paired'/phase;target.mkdir(parents=True)
         planner=ScenePlanner(variants['pristine'],catalog)
         with execution_scope(plan_execution(base)):
-            synthesis=BackgroundSynthesizer(catalog,base.recipes)
+            synthesis=BackgroundSynthesizer(catalog,base.recipes,base.profile.assets.backgrounds.group_weights,base.profile.assets.backgrounds.asset_weights)
             for slot in range(-args.warmups,args.samples):
                 for attempt in range(base.profile.run.max_candidate_attempts):
                     try:
@@ -130,7 +130,7 @@ def paired(args):
                 print(f'paired {phase} slot {slot}',flush=True)
     result={'schema_version':1,'kind':'paired-planar-surfaces','samples':args.samples,'warmups':args.warmups,'dimensions':[512,512],
             'source_generation_identity':generation_identity(base,catalog),'software':software_identity(),'source':source_identity(),
-            'appearance_masks_boxes_equal':True,'records':records,
+            'appearance_masks_boxes_equal':True,'records':records,'low_sample':args.samples<20,
             'limits':['Synthetic engineering fixtures, uncalibrated settings; no detector transfer measurement.','Occlusion comparisons intentionally permit annotation changes.','Render-only timings exclude shared synthesis, output and QA.']}
     (root/'paired.json').write_text(json.dumps(result,indent=2))
     montage(root,'natural',TREATMENTS,range(min(4,args.samples)))
@@ -206,7 +206,8 @@ def report(args):
                 'median_stage_total_seconds':{k:median(r['stage_work'].get(k,{}).get('total_ns',0)/1e9 for r in rows) for k in rows[0]['stage_work']}})
     result={'schema_version':1,'kind':'planar-surface-study','samples':pair['samples'],'warmups':pair['warmups'],'software':pair['software'],
             'source_generation_identity':pair['source_generation_identity'],'source':pair.get('source'),'appearance_masks_boxes_equal':True,
-            'paired':summaries,'production':production_summary,'warnings':pair['limits']+['One host; repeated content and rotating order reduce confounding, not cross-machine evidence.','Production reports accepted throughput, including retries/masks/writes/QA; inclusive stages must not be summed with their nested render stages.']}
+            'paired':summaries,'production':production_summary,'low_sample':pair['samples']<20 or (prod is not None and prod['repeats']<3),
+            'warnings':(['LOW_SAMPLE: use at least20 measured fixtures and3 production repetitions.'] if pair['samples']<20 or (prod is not None and prod['repeats']<3) else [])+pair['limits']+['One host; repeated content and rotating order reduce confounding, not cross-machine evidence.','Production reports accepted throughput, including retries/masks/writes/QA; inclusive stages must not be summed with their nested render stages.']}
     images=[('natural-paired.jpg','Natural activation: pristine / light / wear / capture / surface / occlusion'),('forced-paired.jpg','Forced engineering coverage: stronger effects, not calibration')]
     write_report(root,result,'Planar surface attribution and production cost',images=images)
 

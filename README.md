@@ -8,6 +8,10 @@ See [the delivery contract](docs/PRACTICAL_WORKFLOW.md) for count-policy and spl
 
 Auditable synthetic YOLO generation for the `landing` and `manometro` families. The generator uses deterministic scene plans, one shared foreground/background homography, alpha-evidence-derived annotations, versioned background-mixing recipes, resumable pools, Rich live analytics, and deterministic process workers.
 
+Opt-in [planar surface examples](docs/SURFACE_RENDERING.md) add shared illumination, local wear and procedural occlusion.
+[Offline evaluation and reference checks](docs/EVALUATION.md) consume supplied predictions/camera inputs.
+The [round-one report](docs/experiments/planar-surfaces-v1/README.md) separates synthetic correctness, visual limits and generation cost.
+
 ## Install
 
 ```powershell

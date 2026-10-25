@@ -57,12 +57,14 @@ deliveries; the follow-ups above repair acceptance gaps rather than rewriting th
 
 ### Realism and real-image evidence
 
-These follow-ups are proposed research, not implemented capabilities or new merge requirements for
-#56 / PR #58. Preserve the retained material-lighting verdict and historical experiment evidence.
+Round one delivered offline evaluation/reference foundations (#66), shared 2D illumination and wear (#67),
+and procedural occlusion/final-mask acceptance (#68). See `REALISM_ROUND_ONE.md` and
+`experiments/planar-surfaces-v1/README.md`. Broader real/physical acceptance below remains open; it does
+not expand the historical #56 / PR #58 delivery. Preserve the retained material-lighting verdict and historical experiment evidence.
 
 - [ ] [#59](https://github.com/edra-unb-fga/dataset_generator_m1/issues/59): evaluate external predictions on separate real and synthetic sets, with capture/session isolation, controlled training provenance, repeated seeds, uncertainty and failure slices.
 - [ ] [#61](https://github.com/edra-unb-fga/dataset_generator_m1/issues/61): calibrate planar camera/physical scale and capture-effect severity from permitted real references; record unknowns and keep development references separate from final evaluation.
-- [ ] [#62](https://github.com/edra-unb-fga/dataset_generator_m1/issues/62): prototype shared foreground/ground lighting using #56's retained material work, with paired visual/cost evidence and explicit physical limits.
+- [ ] [#62](https://github.com/edra-unb-fga/dataset_generator_m1/issues/62): extend the shipped qualitative shared field only with reference-supported physical/material evidence; retain the independent material prototype verdict and measured costs.
 - [ ] [#63](https://github.com/edra-unb-fga/dataset_generator_m1/issues/63): study pad wear, surface interaction and environmental occlusion; distinguish appearance-only alpha invariants from deliberate visible-mask changes and coordinate with #31 only where relationships require it.
 - [ ] [#64](https://github.com/edra-unb-fga/dataset_generator_m1/issues/64): compare planar synthesis and BlenderProc using matched scene/annotation contracts, real-image accuracy, equal dataset-size/time budgets and complete generation/setup costs.
 
@@ -77,7 +79,6 @@ GUI, model training, GPU or distributed execution, multi-family generation, exac
 vendor-specific telemetry, and general legacy-config migration are deliberately outside the current
 product boundary.
 
-[External model-prediction evaluation/failure analysis (#59)](https://github.com/edra-unb-fga/dataset_generator_m1/issues/59) is a later analytical track, not a generator
-training dependency: preserve sample/manifests and configured versus measured conditions, compare real
+[External model-prediction evaluation/failure analysis (#59)](https://github.com/edra-unb-fga/dataset_generator_m1/issues/59) now has an offline scorer; real-data transfer and controlled external training remain future evidence, without a generator training dependency: preserve sample/manifests and configured versus measured conditions, compare real
 evaluation separately from synthetic regression, and analyze scale, perspective, visibility, material
 and camera slices without inferring training benefit from visual attractiveness.

@@ -1,0 +1,1096 @@
+{
+  "schema_version": 1,
+  "kind": "planar-surface-study",
+  "samples": 20,
+  "warmups": 2,
+  "software": {
+    "python": "3.13.16",
+    "numpy": "2.5.1",
+    "opencv-python-headless": "5.0.0.93",
+    "albumentations": "2.0.8",
+    "Pillow": "12.3.0"
+  },
+  "source_generation_identity": {
+    "schema_version": 1,
+    "sha256": "c959dfebfaf626fc8b3db2270ba8505512f1cd8fbf72789685a7c5ccb57a1d88",
+    "renderer_semantics": "planar-surface-v3.1"
+  },
+  "source": {
+    "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+    "dirty": false,
+    "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+  },
+  "appearance_masks_boxes_equal": true,
+  "paired": [
+    {
+      "phase": "natural",
+      "treatment": "pristine",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 52.50611295923591,
+      "activated_effect_calls": {},
+      "lighting_applied": 0,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "light-only",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 72.20423000399023,
+      "activated_effect_calls": {},
+      "lighting_applied": 18,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "wear-only",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 86.99923648964614,
+      "activated_effect_calls": {
+        "local-wear": 46
+      },
+      "lighting_applied": 0,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "capture-only",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 55.56264752522111,
+      "activated_effect_calls": {
+        "camera-exposure": 9,
+        "camera-compression": 8,
+        "camera-motion": 4
+      },
+      "lighting_applied": 0,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "surface",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 108.52716054068878,
+      "activated_effect_calls": {
+        "local-wear": 46,
+        "camera-exposure": 9,
+        "camera-compression": 8,
+        "camera-motion": 4
+      },
+      "lighting_applied": 18,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "occlusion",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 139.1062725451775,
+      "activated_effect_calls": {
+        "local-wear": 46,
+        "camera-exposure": 9,
+        "camera-compression": 8,
+        "camera-motion": 4
+      },
+      "lighting_applied": 18,
+      "occlusion_applied": 11,
+      "target_support_min": 0.9386482195509186,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "pristine",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 54.38271397724748,
+      "activated_effect_calls": {},
+      "lighting_applied": 0,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "light-only",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 73.46680347109213,
+      "activated_effect_calls": {},
+      "lighting_applied": 20,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "wear-only",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 118.84696898050606,
+      "activated_effect_calls": {
+        "local-wear": 78
+      },
+      "lighting_applied": 0,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "capture-only",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 56.96271499618888,
+      "activated_effect_calls": {
+        "camera-exposure": 20,
+        "camera-motion": 20,
+        "camera-compression": 20
+      },
+      "lighting_applied": 0,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "surface",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 130.78580802539364,
+      "activated_effect_calls": {
+        "local-wear": 78,
+        "camera-exposure": 20,
+        "camera-motion": 20,
+        "camera-compression": 20
+      },
+      "lighting_applied": 20,
+      "occlusion_applied": 0,
+      "target_support_min": 1.0,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "occlusion",
+      "fixtures": 20,
+      "accepted": 20,
+      "median_render_ms": 236.46877001738176,
+      "activated_effect_calls": {
+        "local-wear": 78,
+        "camera-exposure": 20,
+        "camera-motion": 20,
+        "camera-compression": 20
+      },
+      "lighting_applied": 20,
+      "occlusion_applied": 20,
+      "target_support_min": 0.5586190362023495,
+      "rejections": {
+        "visible_bbox_fraction": 18
+      }
+    }
+  ],
+  "production": [
+    {
+      "treatment": "heavy",
+      "repeats": 3,
+      "accepted_per_repeat": 20,
+      "throughput_median": 0.5464686405359844,
+      "throughput_range": [
+        0.49709058968518965,
+        0.5487893495116399
+      ],
+      "attempts": [
+        21,
+        21,
+        21
+      ],
+      "peak_rss_bytes": 1244364800.0,
+      "median_stage_total_seconds": {
+        "scene_plan": 0.010979893,
+        "background_synthesis": 27.200160911,
+        "scene_render": 7.439838327,
+        "render.background_effects": 1.398321642,
+        "render.background_affine": 0.82219841,
+        "render.background_perspective": 0.148003269,
+        "render.background_coverage": 0.043336968,
+        "render.foreground_decode": 0.245092148,
+        "render.foreground_effects": 0.628975048,
+        "render.foreground_rotation": 0.104395727,
+        "render.foreground_resize": 0.171445703,
+        "render.foreground_visibility": 0.189308923,
+        "render.foreground_warp": 0.186248814,
+        "render.foreground_composition": 1.384266282,
+        "render.foreground_annotation": 0.001488711,
+        "render.scene_occlusion": 2.627e-05,
+        "render.post_occlusion_annotation": 0.340180806,
+        "render.scene_lighting": 0.001567116,
+        "render.final_effects": 1.431273618,
+        "mask_encode": 0.302763809,
+        "mask_polygonization": 0.790142139,
+        "mask_write": 0.174078563,
+        "qa_render": 0.508250161,
+        "image_encode_write": 0.125274062,
+        "background.node.source": 0.000292146,
+        "background.node.canvas": 0.399600038,
+        "background.node.first": 0.000161147,
+        "background.node.second": 7.1496e-05,
+        "background.node.mask_source": 5.6659e-05,
+        "background.node.first_canvas": 0.27974204,
+        "background.node.second_canvas": 0.28134245,
+        "background.node.mask_canvas": 0.280442,
+        "background.node.mask_luma": 0.553473515,
+        "background.node.mask": 7.571510003,
+        "background.node.blended": 1.500504095,
+        "background.node.base": 0.000403636,
+        "background.node.palette_source": 0.000137379,
+        "background.node.base_canvas": 0.717797883,
+        "background.node.palette_canvas": 0.577797501,
+        "background.node.transferred": 5.775941687,
+        "background.node.field_source": 3.4498e-05,
+        "background.node.field_canvas": 0.149889588,
+        "background.node.field_x": 0.294550207,
+        "background.node.field_y": 0.264101008,
+        "background.node.warped": 2.449224039
+      }
+    },
+    {
+      "treatment": "camera",
+      "repeats": 3,
+      "accepted_per_repeat": 20,
+      "throughput_median": 0.5809950196754812,
+      "throughput_range": [
+        0.5770387149268331,
+        0.6163953974565
+      ],
+      "attempts": [
+        21,
+        21,
+        21
+      ],
+      "peak_rss_bytes": 1207508992.0,
+      "median_stage_total_seconds": {
+        "scene_plan": 0.011005296,
+        "background_synthesis": 27.902825298,
+        "scene_render": 4.461847882,
+        "render.background_effects": 0.0,
+        "render.background_affine": 0.854884608,
+        "render.background_perspective": 0.155036284,
+        "render.background_coverage": 0.044516768,
+        "render.foreground_decode": 0.262755298,
+        "render.foreground_effects": 0.0,
+        "render.foreground_rotation": 0.110179709,
+        "render.foreground_resize": 0.175989232,
+        "render.foreground_visibility": 0.194211982,
+        "render.foreground_warp": 0.194112453,
+        "render.foreground_composition": 1.458507346,
+        "render.foreground_annotation": 0.001618319,
+        "render.scene_occlusion": 2.5183e-05,
+        "render.post_occlusion_annotation": 0.35072425,
+        "render.scene_lighting": 0.001721992,
+        "render.final_effects": 0.297482924,
+        "mask_encode": 0.309727248,
+        "mask_polygonization": 0.809344377,
+        "mask_write": 0.165987483,
+        "qa_render": 0.547184794,
+        "image_encode_write": 0.117370227,
+        "background.node.source": 0.000241223,
+        "background.node.canvas": 0.415181804,
+        "background.node.first": 0.000172105,
+        "background.node.second": 7.0422e-05,
+        "background.node.mask_source": 6.5256e-05,
+        "background.node.first_canvas": 0.290092964,
+        "background.node.second_canvas": 0.292717967,
+        "background.node.mask_canvas": 0.285487235,
+        "background.node.mask_luma": 0.567575824,
+        "background.node.mask": 7.634064995,
+        "background.node.blended": 1.078234781,
+        "background.node.base": 0.000423422,
+        "background.node.palette_source": 0.000144525,
+        "background.node.base_canvas": 0.720081691,
+        "background.node.palette_canvas": 0.586476025,
+        "background.node.transferred": 5.914404783,
+        "background.node.field_source": 3.8506e-05,
+        "background.node.field_canvas": 0.154698119,
+        "background.node.field_x": 0.28812808,
+        "background.node.field_y": 0.265036451,
+        "background.node.warped": 2.519895504
+      }
+    },
+    {
+      "treatment": "surface",
+      "repeats": 3,
+      "accepted_per_repeat": 20,
+      "throughput_median": 0.5328103775329825,
+      "throughput_range": [
+        0.5305024945275876,
+        0.5648145826924393
+      ],
+      "attempts": [
+        21,
+        21,
+        21
+      ],
+      "peak_rss_bytes": 1145733120.0,
+      "median_stage_total_seconds": {
+        "scene_plan": 0.011094096,
+        "background_synthesis": 28.245851907,
+        "scene_render": 7.255715094,
+        "render.background_effects": 0.0,
+        "render.background_affine": 0.863222645,
+        "render.background_perspective": 0.153307839,
+        "render.background_coverage": 0.044694625,
+        "render.foreground_decode": 0.263162168,
+        "render.foreground_effects": 0.742937037,
+        "render.foreground_rotation": 0.108219362,
+        "render.foreground_resize": 0.176895995,
+        "render.foreground_visibility": 0.194009553,
+        "render.foreground_warp": 0.194624799,
+        "render.foreground_composition": 1.435427912,
+        "render.foreground_annotation": 0.001541695,
+        "render.scene_occlusion": 2.6675e-05,
+        "render.post_occlusion_annotation": 0.360544133,
+        "render.scene_lighting": 2.191937417,
+        "render.final_effects": 0.098228918,
+        "mask_encode": 0.312366203,
+        "mask_polygonization": 0.791664772,
+        "mask_write": 0.164254136,
+        "qa_render": 0.513915034,
+        "image_encode_write": 0.117830304,
+        "background.node.source": 0.000259957,
+        "background.node.canvas": 0.424687626,
+        "background.node.first": 0.000179692,
+        "background.node.second": 7.4047e-05,
+        "background.node.mask_source": 5.8579e-05,
+        "background.node.first_canvas": 0.291550134,
+        "background.node.second_canvas": 0.282195241,
+        "background.node.mask_canvas": 0.286333677,
+        "background.node.mask_luma": 0.554877164,
+        "background.node.mask": 7.827939444,
+        "background.node.blended": 1.159519229,
+        "background.node.base": 0.000424925,
+        "background.node.palette_source": 0.000147931,
+        "background.node.base_canvas": 0.737957116,
+        "background.node.palette_canvas": 0.607514949,
+        "background.node.transferred": 5.89840365,
+        "background.node.field_source": 3.3783e-05,
+        "background.node.field_canvas": 0.158959054,
+        "background.node.field_x": 0.285552886,
+        "background.node.field_y": 0.272587078,
+        "background.node.warped": 2.549900244
+      }
+    },
+    {
+      "treatment": "occlusion",
+      "repeats": 3,
+      "accepted_per_repeat": 20,
+      "throughput_median": 0.5015274294713925,
+      "throughput_range": [
+        0.48665865575976186,
+        0.5134815083771078
+      ],
+      "attempts": [
+        21,
+        21,
+        21
+      ],
+      "peak_rss_bytes": 1173975040.0,
+      "median_stage_total_seconds": {
+        "scene_plan": 0.01656075,
+        "background_synthesis": 27.136589834,
+        "scene_render": 10.655542553,
+        "render.background_effects": 0.0,
+        "render.background_affine": 0.851579308,
+        "render.background_perspective": 0.150178821,
+        "render.background_coverage": 0.043889537,
+        "render.foreground_decode": 0.253654187,
+        "render.foreground_effects": 0.740196786,
+        "render.foreground_rotation": 0.104611529,
+        "render.foreground_resize": 0.171651447,
+        "render.foreground_visibility": 0.189012206,
+        "render.foreground_warp": 0.189289422,
+        "render.foreground_composition": 1.393085462,
+        "render.foreground_annotation": 0.001495741,
+        "render.scene_occlusion": 3.641984584,
+        "render.post_occlusion_annotation": 0.366225565,
+        "render.scene_lighting": 2.112689383,
+        "render.final_effects": 0.095080875,
+        "mask_encode": 0.357417059,
+        "mask_polygonization": 0.809483571,
+        "mask_write": 0.15441512,
+        "qa_render": 0.516375989,
+        "image_encode_write": 0.117807194,
+        "background.node.source": 0.000274008,
+        "background.node.canvas": 0.418645105,
+        "background.node.first": 0.00015776,
+        "background.node.second": 7.114e-05,
+        "background.node.mask_source": 5.4908e-05,
+        "background.node.first_canvas": 0.271338929,
+        "background.node.second_canvas": 0.273837114,
+        "background.node.mask_canvas": 0.271116923,
+        "background.node.mask_luma": 0.542147349,
+        "background.node.mask": 7.594200453,
+        "background.node.blended": 1.002557865,
+        "background.node.base": 0.000429816,
+        "background.node.palette_source": 0.000145491,
+        "background.node.base_canvas": 0.766856463,
+        "background.node.palette_canvas": 0.601152201,
+        "background.node.transferred": 5.776289074,
+        "background.node.field_source": 3.4425e-05,
+        "background.node.field_canvas": 0.14879699,
+        "background.node.field_x": 0.271649492,
+        "background.node.field_y": 0.258025586,
+        "background.node.warped": 2.483825262
+      }
+    }
+  ],
+  "low_sample": false,
+  "warnings": [
+    "Synthetic engineering fixtures, uncalibrated settings; no detector transfer measurement.",
+    "Occlusion comparisons intentionally permit annotation changes.",
+    "Render-only timings exclude shared synthesis, output and QA.",
+    "One host; repeated content and rotating order reduce confounding, not cross-machine evidence.",
+    "Production reports accepted throughput, including retries/masks/writes/QA; inclusive stages must not be summed with their nested render stages."
+  ],
+  "activation_coverage": [
+    {
+      "phase": "natural",
+      "treatment": "pristine",
+      "accepted_scene_denominator": 20,
+      "effects": {}
+    },
+    {
+      "phase": "natural",
+      "treatment": "light-only",
+      "accepted_scene_denominator": 20,
+      "effects": {}
+    },
+    {
+      "phase": "natural",
+      "treatment": "wear-only",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "local-wear": {
+          "eligible_calls": 78,
+          "applied_calls": 46
+        }
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "capture-only",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "camera-exposure": {
+          "eligible_calls": 20,
+          "applied_calls": 9
+        },
+        "camera-motion": {
+          "eligible_calls": 20,
+          "applied_calls": 4
+        },
+        "camera-compression": {
+          "eligible_calls": 20,
+          "applied_calls": 8
+        }
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "surface",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "local-wear": {
+          "eligible_calls": 78,
+          "applied_calls": 46
+        },
+        "camera-exposure": {
+          "eligible_calls": 20,
+          "applied_calls": 9
+        },
+        "camera-motion": {
+          "eligible_calls": 20,
+          "applied_calls": 4
+        },
+        "camera-compression": {
+          "eligible_calls": 20,
+          "applied_calls": 8
+        }
+      }
+    },
+    {
+      "phase": "natural",
+      "treatment": "occlusion",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "local-wear": {
+          "eligible_calls": 78,
+          "applied_calls": 46
+        },
+        "camera-exposure": {
+          "eligible_calls": 20,
+          "applied_calls": 9
+        },
+        "camera-motion": {
+          "eligible_calls": 20,
+          "applied_calls": 4
+        },
+        "camera-compression": {
+          "eligible_calls": 20,
+          "applied_calls": 8
+        }
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "pristine",
+      "accepted_scene_denominator": 20,
+      "effects": {}
+    },
+    {
+      "phase": "forced",
+      "treatment": "light-only",
+      "accepted_scene_denominator": 20,
+      "effects": {}
+    },
+    {
+      "phase": "forced",
+      "treatment": "wear-only",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "local-wear": {
+          "eligible_calls": 78,
+          "applied_calls": 78
+        }
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "capture-only",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "camera-exposure": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        },
+        "camera-motion": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        },
+        "camera-compression": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        }
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "surface",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "local-wear": {
+          "eligible_calls": 78,
+          "applied_calls": 78
+        },
+        "camera-exposure": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        },
+        "camera-motion": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        },
+        "camera-compression": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        }
+      }
+    },
+    {
+      "phase": "forced",
+      "treatment": "occlusion",
+      "accepted_scene_denominator": 20,
+      "effects": {
+        "local-wear": {
+          "eligible_calls": 78,
+          "applied_calls": 78
+        },
+        "camera-exposure": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        },
+        "camera-motion": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        },
+        "camera-compression": {
+          "eligible_calls": 20,
+          "applied_calls": 20
+        }
+      }
+    }
+  ],
+  "activation_limits": "Accepted-fixture traces count effect calls, including foreground attempts later rejected for clipping; calls do not imply visible contribution. Rejected occlusion fixtures lack traces.",
+  "production_annotation_evidence": [
+    {
+      "repeat": 0,
+      "treatment": "heavy",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 0,
+      "treatment": "camera",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 0,
+      "treatment": "surface",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 0,
+      "treatment": "occlusion",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 0.9398217481827812,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9398217481827812,
+      "visible_polygon_warning_instances": 3
+    },
+    {
+      "repeat": 1,
+      "treatment": "camera",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 1,
+      "treatment": "surface",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 1,
+      "treatment": "occlusion",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 0.9398217481827812,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9398217481827812,
+      "visible_polygon_warning_instances": 3
+    },
+    {
+      "repeat": 1,
+      "treatment": "heavy",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 2,
+      "treatment": "surface",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 2,
+      "treatment": "occlusion",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 0.9398217481827812,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9398217481827812,
+      "visible_polygon_warning_instances": 3
+    },
+    {
+      "repeat": 2,
+      "treatment": "heavy",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    },
+    {
+      "repeat": 2,
+      "treatment": "camera",
+      "class_instances": {
+        "pad": 59
+      },
+      "minimum_visible_support": 1.0,
+      "median_visible_support": 1.0,
+      "candidate_rejections": {
+        "SceneRejected": 1
+      },
+      "accepted_sample_object_rejections": {
+        "visible_bbox_fraction": 19
+      },
+      "rejected_candidate_object_rejections": {
+        "visible_bbox_fraction": 2
+      },
+      "minimum_visible_polygon_iou": 0.9951668291855683,
+      "visible_polygon_warning_instances": 0
+    }
+  ],
+  "validation": {
+    "production_cells": 12,
+    "all_complete_and_valid": true,
+    "same_treatment_content_stable": true,
+    "appearance_production_content_equal": true,
+    "browser_layout": "Unverified: browser URL policy blocks local file protocol; no workaround attempted. Charts/crops/contact sheets visually inspected; all10 offline links resolve."
+  },
+  "production_environment": {
+    "minimum_available_memory_bytes": 6306140160,
+    "maximum_swap_used_bytes": 2110590976,
+    "sources": [
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      },
+      {
+        "commit": "b3b50cca4a73a7c063ee475c8a7780885dca3af2",
+        "dirty": false,
+        "driver_sha256": "d555618dc4778b497cfb66950ed76b48afc49e9a52cb4a64f53dfa8c9e2e8441"
+      }
+    ]
+  },
+  "accepted_scene_background_recipes": [
+    {
+      "treatment": "heavy",
+      "recipe": "direct",
+      "accepted_scene_calls": 6,
+      "median_seconds": 0.3461551085,
+      "maximum_seconds": 0.365182162
+    },
+    {
+      "treatment": "heavy",
+      "recipe": "displaced",
+      "accepted_scene_calls": 2,
+      "median_seconds": 2.2048695335,
+      "maximum_seconds": 2.276648826
+    },
+    {
+      "treatment": "heavy",
+      "recipe": "mask_multiband",
+      "accepted_scene_calls": 4,
+      "median_seconds": 3.289677457,
+      "maximum_seconds": 3.440808158
+    },
+    {
+      "treatment": "heavy",
+      "recipe": "palette",
+      "accepted_scene_calls": 8,
+      "median_seconds": 1.1458782484999999,
+      "maximum_seconds": 1.284932565
+    },
+    {
+      "treatment": "camera",
+      "recipe": "direct",
+      "accepted_scene_calls": 6,
+      "median_seconds": 0.344587364,
+      "maximum_seconds": 0.364629624
+    },
+    {
+      "treatment": "camera",
+      "recipe": "displaced",
+      "accepted_scene_calls": 2,
+      "median_seconds": 1.952039769,
+      "maximum_seconds": 2.053564357
+    },
+    {
+      "treatment": "camera",
+      "recipe": "mask_multiband",
+      "accepted_scene_calls": 4,
+      "median_seconds": 2.9151490585,
+      "maximum_seconds": 2.989538481
+    },
+    {
+      "treatment": "camera",
+      "recipe": "palette",
+      "accepted_scene_calls": 8,
+      "median_seconds": 1.1613607570000002,
+      "maximum_seconds": 1.245440803
+    },
+    {
+      "treatment": "surface",
+      "recipe": "direct",
+      "accepted_scene_calls": 6,
+      "median_seconds": 0.3375814535,
+      "maximum_seconds": 0.358871745
+    },
+    {
+      "treatment": "surface",
+      "recipe": "displaced",
+      "accepted_scene_calls": 2,
+      "median_seconds": 1.9691571245000001,
+      "maximum_seconds": 2.082262914
+    },
+    {
+      "treatment": "surface",
+      "recipe": "mask_multiband",
+      "accepted_scene_calls": 4,
+      "median_seconds": 2.8538408375,
+      "maximum_seconds": 3.228469678
+    },
+    {
+      "treatment": "surface",
+      "recipe": "palette",
+      "accepted_scene_calls": 8,
+      "median_seconds": 1.1708287689999999,
+      "maximum_seconds": 1.220422665
+    },
+    {
+      "treatment": "occlusion",
+      "recipe": "direct",
+      "accepted_scene_calls": 6,
+      "median_seconds": 0.3355717625,
+      "maximum_seconds": 0.374290856
+    },
+    {
+      "treatment": "occlusion",
+      "recipe": "displaced",
+      "accepted_scene_calls": 2,
+      "median_seconds": 2.079119746,
+      "maximum_seconds": 2.152793172
+    },
+    {
+      "treatment": "occlusion",
+      "recipe": "mask_multiband",
+      "accepted_scene_calls": 4,
+      "median_seconds": 2.852108041,
+      "maximum_seconds": 2.932792726
+    },
+    {
+      "treatment": "occlusion",
+      "recipe": "palette",
+      "accepted_scene_calls": 8,
+      "median_seconds": 1.1574296805,
+      "maximum_seconds": 1.21193598
+    }
+  ]
+}

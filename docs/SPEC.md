@@ -295,3 +295,9 @@ Both workflows write offline HTML/JSON with bounded visual artifacts. Input cont
 [EVALUATION.md](EVALUATION.md). Synthetic correctness is not detector accuracy or physical realism.
 
 Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Production nested placement (#31), general COCO/RLE export, a GUI, model training/inference, multi-family generation runs, exact recipe quotas, GPU/distributed execution, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract. Continuous process-tree monitoring is implemented and its lifecycle hardening remains tracked separately.
+
+## Experimental planar surface state
+
+Optional typed `scene.lighting` modulates composed surfaces in linear RGB using one scene-coordinate field before final capture effects. Foreground-only native `SurfaceWear` changes normalized local RGB patterns while preserving alpha. Optional `scene.occlusion` projects bounded procedural unlabeled layers through the shared homography, then derives final visible masks and boxes. See `SURFACE_RENDERING.md` for configuration, ordering and physical limits. Defaults remain omitted.
+
+Visible support is thresholded visible/full target contribution within the image, separate from frame-clipping bbox fraction. Fully hidden and below-floor annotations and archive entries are removed with typed rejections; accidental empty positives and incomplete require-count candidates are rejected after occlusion. Best-effort retains survivor IDs. Renderer semantics bind contract and run identity: upgrades require fresh pools; old pools remain inspectable/exportable and same-version resume remains supported.

@@ -36,10 +36,12 @@ def test_full_cli_workflow_is_opt_in_and_covers_both_families() -> None:
     assert "landing-ci.yaml" in workflow
     assert "manometro-ci.yaml" in workflow
     assert workflow.count("run status") == 3
-    assert workflow.count("run inspect") == 3
-    assert workflow.count("-m dataset_generator_m1 export ") == 6
-    assert workflow.count("--task detection") == 3
-    assert workflow.count("--task segmentation") == 3
+    assert workflow.count("run inspect") == 4
+    assert workflow.count("-m dataset_generator_m1 export ") == 8
+    assert workflow.count("--task detection") == 4
+    assert workflow.count("--task segmentation") == 4
+    assert "landing-pad_occlusion.yaml" in workflow
+    assert "surface-analysis" in workflow
     assert "Verify segmentation export evidence" in workflow
     assert "report[\"fidelity\"][\"instances\"] > 0" in workflow
     assert "retention-days: 7" in workflow
