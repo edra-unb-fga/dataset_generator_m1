@@ -1,12 +1,19 @@
 """Versioned public inputs for offline analysis; no model-runtime dependency."""
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, model_validator
 
 
 class AnalysisInput(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
     schema_version: Literal[1]
+
+    @model_validator(mode="before")
+    @classmethod
+    def strict_version(cls, value):
+        if not isinstance(value, dict) or type(value.get("schema_version")) is not int:
+            raise ValueError("schema_version must be an integer")
+        return value
 
 
 class EvaluationManifest(AnalysisInput):
@@ -26,7 +33,7 @@ class EvaluationManifest(AnalysisInput):
 class PredictionManifest(AnalysisInput):
     dataset_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     predictions: str = Field(min_length=1)
-    image_ids: list[int]
+    image_ids: list[StrictInt]
     allow_partial: bool = False
     model: dict[str, Any] | None = None
 
@@ -44,6 +51,7 @@ class ReferenceImage(BaseModel):
 class ReferenceManifest(AnalysisInput):
     domain: Literal["real", "synthetic"]
     role: Literal["development", "held-out", "regression"]
+    image_root: str = "."
     images: list[ReferenceImage] = Field(min_length=1)
     physical_measurements: dict[str, Any] = Field(default_factory=dict)
 

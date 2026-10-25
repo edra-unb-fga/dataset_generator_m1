@@ -8,7 +8,7 @@ import pytest
 pytest.importorskip("pycocotools")
 
 from dataset_generator_m1.evaluation import score_dataset, compare_scores
-from dataset_generator_m1.evaluation_io import prepare_dataset, encode_mask
+from dataset_generator_m1.evaluation_io import prepare_dataset, encode_mask, instance_mask, validate_coco
 from dataset_generator_m1.inspection import _LocalLinks
 
 
@@ -138,7 +138,45 @@ def test_pool_and_bound_export_adapters_preserve_exact_truth(tmp_path):
     result = prepare_dataset(path, tmp_path / "prepared")
     assert result["provenance"]["mask_reference"] == "exact-pool"
     assert result["provenance"]["export_fidelity"]["instances"] > 0
+    assert result["metadata"]["1"]["recipe_id"] == "direct"
+    assert result["metadata"]["1"]["effect_traces"]
+    unbound = dict(manifest, pool_bindings={}, annotation_semantics="full")
+    path.write_text(json.dumps(unbound))
+    with pytest.raises(ValueError, match="semantics"):
+        prepare_dataset(path, tmp_path / "wrong-semantics")
+    path.write_text(json.dumps(manifest))
     run = tmp_path / "pool/run.json"
     run.write_text(run.read_text()+" ")
     with pytest.raises(ValueError, match="hash"):
         prepare_dataset(path, tmp_path / "bad")
+
+
+@pytest.mark.parametrize("counts", ["0", "1", "P", "!!!!", ""])
+def test_truncated_compressed_masks_fail_before_native_decode(counts):
+    with pytest.raises(ValueError, match="RLE"):
+        instance_mask({"size": [4, 4], "counts": counts}, 4, 4)
+
+
+def test_annotation_zero_is_rejected_before_backend_matching(tmp_path):
+    dataset, _ = fixture_dataset(tmp_path)
+    coco = dataset["ground_truth"]
+    coco["annotations"][0]["id"] = 0
+    with pytest.raises(ValueError, match="positive"):
+        validate_coco(coco)
+
+
+@pytest.mark.parametrize("format", ["pool", "yolo-export"])
+def test_synthetic_sources_cannot_be_declared_real(tmp_path, format):
+    path = tmp_path / "manifest.json"
+    path.write_text(json.dumps({"schema_version": 1, "format": format, "domain": "real", "role": "held-out", "annotation_semantics": "visible"}))
+    with pytest.raises(ValueError, match="synthetic"):
+        prepare_dataset(path, tmp_path / "invalid")
+    assert not (tmp_path / "invalid").exists()
+
+
+def test_prediction_content_has_identity_independent_of_manifest(tmp_path):
+    dataset, prediction = fixture_dataset(tmp_path)
+    a = score(tmp_path, dataset, [prediction], "a")
+    b = score(tmp_path, dataset, [], "b")
+    assert a["prediction_file_sha256"] != b["prediction_file_sha256"]
+    assert a["normalized_predictions_sha256"] != b["normalized_predictions_sha256"]

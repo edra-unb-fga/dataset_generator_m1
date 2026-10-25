@@ -48,7 +48,7 @@ def _predictions(path, dataset, tasks):
     classes = {r["id"] for r in dataset["ground_truth"]["categories"]}
     normalized = []
     for row in predictions:
-        if not isinstance(row, dict) or type(row.get("image_id")) is not int or row["image_id"] not in ids or row.get("category_id") not in classes:
+        if not isinstance(row, dict) or type(row.get("image_id")) is not int or type(row.get("category_id")) is not int or row["image_id"] not in ids or row.get("category_id") not in classes:
             raise ValueError("Prediction references an unknown or unprocessed image/class")
         score = row.get("score")
         if isinstance(score, bool) or not isinstance(score, (int, float)) or not np.isfinite(score) or not 0 <= score <= 1:
@@ -181,10 +181,19 @@ def score_dataset(dataset_path, predictions_manifest, output_dir, *, tasks=("bbo
         cards.extend(_overlays(output, root, ground_truth, results[task]["per_image"], detections, task))
     slices = {}
     # Only image-level attributes supplied by the dataset are used as slice labels.
-    for key in ("capture_session", "location", "lighting", "material"):
+    for key in ("capture_session", "location", "lighting", "material", "recipe_id", "perspective_status", "clipping_status", "occlusion_status"):
         groups = {}
         for image_id in ids:
-            value = dataset.get("metadata", {}).get(str(image_id), {}).get(key, "unknown")
+            metadata = dataset.get("metadata", {}).get(str(image_id), {})
+            value = metadata.get(key, "unknown")
+            if key == "perspective_status" and metadata.get("perspective_quad") is not None:
+                quad = np.asarray(metadata["perspective_quad"], dtype=float)
+                affine = np.allclose(quad[0]+quad[2], quad[1]+quad[3], atol=1e-6)
+                value = "sampled-affine" if affine else "sampled-projective; not camera tilt"
+            if key in {"clipping_status", "occlusion_status"}:
+                fractions = metadata.get("clipping_bbox_fractions" if key == "clipping_status" else "visible_support_fractions", [])
+                known = [v for v in fractions if isinstance(v, (int, float))]
+                value = ("some-targets-reduced" if min(known) < .999 else "all-targets-full") if known else "unknown"
             groups.setdefault(str(value), []).append(image_id)
         slices[key] = {label: {"images": len(members), "operating_counts": {
             task: {k: sum(r[k] for r in results[task]["per_image"] if r["image_id"] in members) for k in ("tp", "fp", "fn")}
@@ -203,6 +212,8 @@ def score_dataset(dataset_path, predictions_manifest, output_dir, *, tasks=("bbo
     result = {"schema_version": 1, "kind": "evaluation-score", "status": "complete_with_warnings",
               "comparison": comparison, "tasks": results, "slices": slices, "warnings": warnings,
               "prediction_manifest_sha256": file_hash(predictions_manifest), "model": manifest.get("model", "unknown"),
+              "prediction_file_sha256": file_hash(Path(predictions_manifest).resolve().parent / manifest["predictions"]),
+              "normalized_predictions_sha256": digest(predictions),
               "ground_truth_reference": dataset["provenance"]["mask_reference"],
               "export_fidelity": dataset["provenance"].get("export_fidelity"),
               "training_provenance": dataset.get("training_provenance", "unknown")}

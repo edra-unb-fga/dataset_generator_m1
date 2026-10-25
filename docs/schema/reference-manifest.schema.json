@@ -69,6 +69,11 @@
       "title": "Domain",
       "type": "string"
     },
+    "image_root": {
+      "default": ".",
+      "title": "Image Root",
+      "type": "string"
+    },
     "images": {
       "items": {
         "$ref": "#/$defs/ReferenceImage"

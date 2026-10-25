@@ -16,11 +16,12 @@ from .evaluation_io import valid_box
 def audit_references(manifest_file, output_dir):
     source = Path(manifest_file).resolve()
     manifest = ReferenceManifest.model_validate(read_json(source))
+    image_root = (source.parent / manifest.image_root).resolve()
     if len({r.id for r in manifest.images}) != len(manifest.images):
         raise ValueError("Reference image IDs must be unique")
     rows, copies, duplicates = [], [], defaultdict(list)
     for row in manifest.images:
-        path = local_artifact(source.parent, row.path)
+        path = local_artifact(image_root, row.path)
         with Image.open(path) as image:
             rgb = np.asarray(image.convert("RGB"))
         height, width = rgb.shape[:2]
@@ -58,12 +59,22 @@ def audit_references(manifest_file, output_dir):
     warnings = ["Image statistics are observables, not estimated sensor noise, optical blur, camera pose or calibrated effect probabilities.",
                 "Duplicate detection cannot establish capture-session/location independence; unknown groups remain unknown.",
                 "No calibration fit or real-image detector benefit is established by this audit."]
+    missing = []
+    if not manifest.physical_measurements:
+        missing.append("verified target metric dimensions and physical-measurement provenance")
+    if any(not r.conditions.get("camera_matrix") or not r.conditions.get("world_to_camera") for r in manifest.images):
+        missing.append("camera intrinsics/geometry for some or all images")
+    if any(not r.capture_session or not r.location for r in manifest.images):
+        missing.append("capture-session/location identity for some or all images")
+    if manifest.domain != "real":
+        missing.append("permitted real target-domain captures and labels")
     return write_report(output, {"schema_version": 1, "kind": "reference-audit", "status": "complete_with_warnings",
                                  "domain": manifest.domain, "role": manifest.role, "images": rows,
                                  "input_manifest_sha256": file_hash(source),
                                  "duplicate_groups": [v for v in duplicates.values() if len(v) > 1],
                                  "physical_measurements": manifest.physical_measurements,
-                                 "warnings": warnings, "missing_evidence": ["verified target metric dimensions", "camera intrinsics and capture geometry", "deployment capture-effect distributions", "real labels and external predictions"]},
+                                 "warnings": warnings, "missing_evidence": missing,
+                                 "deferred": ["deployment distribution fitting", "external prediction evaluation", "calibrated profile promotion"]},
                         "Reference evidence audit", images=cards)
 
 

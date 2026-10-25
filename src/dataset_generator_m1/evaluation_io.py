@@ -29,6 +29,33 @@ def encode_mask(mask):
     return {"size": [int(x) for x in encoded["size"]], "counts": encoded["counts"].decode("ascii")}
 
 
+def _compressed_runs(text, pixels):
+    """Validate COCO's signed, delta-coded RLE before its unchecked native decoder."""
+    runs, index = [], 0
+    while index < len(text):
+        value, shift = 0, 0
+        while True:
+            if index >= len(text) or shift > 60:
+                raise ValueError("Truncated or overflowing compressed RLE")
+            char = ord(text[index]) - 48
+            index += 1
+            if not 0 <= char <= 63:
+                raise ValueError("Invalid compressed RLE character")
+            value |= (char & 31) << shift
+            shift += 5
+            if not char & 32:
+                if char & 16:
+                    value |= -1 << shift
+                break
+        if len(runs) > 2:
+            value += runs[-2]
+        if value < 0 or value > min(pixels, 2**32-1):
+            raise ValueError("Invalid compressed RLE run length")
+        runs.append(value)
+    if not runs or sum(runs) != pixels:
+        raise ValueError("Compressed RLE must cover every image pixel exactly")
+
+
 def instance_mask(segmentation, width, height):
     backend = mask_backend()
     if isinstance(segmentation, list):
@@ -50,6 +77,7 @@ def instance_mask(segmentation, width, height):
                 raise ValueError("Invalid uncompressed RLE run lengths")
             encoded = backend.frPyObjects(segmentation, height, width)
         elif isinstance(counts, str):
+            _compressed_runs(counts, width * height)
             encoded = {"size": [height, width], "counts": counts.encode("ascii")}
         else:
             raise ValueError("Invalid RLE counts")
@@ -79,6 +107,8 @@ def _unique_ids(rows, name):
     ids = [r.get("id") for r in rows]
     if any(type(v) is not int or v < 0 for v in ids) or len(set(ids)) != len(ids):
         raise ValueError(f"{name} need unique nonnegative integer IDs")
+    if name == "annotations" and any(v == 0 for v in ids):
+        raise ValueError("Annotation IDs must be positive: COCO reserves zero for unmatched instances")
 
 
 def validate_coco(coco, *, predictions=False):
@@ -103,7 +133,7 @@ def validate_coco(coco, *, predictions=False):
     if len(set(filenames)) != len(filenames):
         raise ValueError("Image paths must be unique; basenames alone are not identities")
     for annotation in coco["annotations"]:
-        if annotation.get("image_id") not in images or annotation.get("category_id") not in categories:
+        if type(annotation.get("image_id")) is not int or type(annotation.get("category_id")) is not int or annotation.get("image_id") not in images or annotation.get("category_id") not in categories:
             raise ValueError("Annotation references an unknown image or class")
         image = images[annotation["image_id"]]
         annotation["bbox"] = valid_box(annotation.get("bbox"), image["width"], image["height"])
@@ -142,9 +172,11 @@ def _from_pool(pool, semantics):
         sources[image_id] = path
         metadata[str(image_id)] = {
             "sample_id": row["sample_id"], "geometry_signature": row["geometry_signature"],
-            "recipe_id": row.get("background_recipe"), "scene_effects": row.get("scene_effects", {}),
+            "recipe_id": row.get("background", {}).get("recipe_id"), "scene_effects": row.get("scene_effects", {}),
             "perspective_quad": row.get("perspective_quad"), "camera_rect": row.get("camera_rect"),
-            "effect_traces": row.get("effects", []),
+            "effect_traces": row.get("appearance_effects", []),
+            "clipping_bbox_fractions": [a.get("visible_bbox_fraction") for a in row["annotations"]],
+            "visible_support_fractions": [a.get("visible_support_fraction") for a in row["annotations"]],
             "conditions_provenance": "configured-and-sampled-synthetic; not physical calibration",
         }
         evidence = row.get("mask_evidence")
@@ -170,6 +202,12 @@ def _from_export(root, spec, manifest_root):
     split = spec.get("split")
     if split not in export["splits"]:
         raise ValueError("An existing export split must be selected explicitly")
+    known_semantics = export.get("mask_semantics")
+    if not spec.get("pool_bindings") and export["task"] == "segmentation":
+        if known_semantics == "mixed":
+            raise ValueError("Mixed exported mask semantics require exact source-pool bindings")
+        if spec.get("annotation_semantics") != known_semantics:
+            raise ValueError("Declared annotation semantics contradict exported mask semantics")
     classes = export["classes"]
     coco = {"images": [], "categories": [{"id": i, "name": n} for i, n in enumerate(classes)], "annotations": []}
     sources, metadata, bindings = {}, {}, {}
@@ -222,6 +260,7 @@ def _from_export(root, spec, manifest_root):
                 item["bbox"] = [min(xs), min(ys), max(xs)-min(xs), max(ys)-min(ys)]
             coco["annotations"].append(item)
     return coco, sources, metadata, {"export_manifest_sha256": file_hash(root / "export.json"),
+                                    "export_mask_semantics": known_semantics,
                                     "export_fidelity": export.get("fidelity"),
                                     "mask_reference": "exact-pool" if bindings else "exported-labels"}
 
@@ -235,6 +274,8 @@ def prepare_dataset(manifest_file, output_dir):
     if semantics not in {"visible", "full", "unknown"}:
         raise ValueError("annotation_semantics must be visible, full or unknown")
     root = (manifest_file.parent / spec.get("source", ".")).resolve()
+    if spec["format"] in {"pool", "yolo-export"} and spec["domain"] != "synthetic":
+        raise ValueError("Generator pools and repository exports are synthetic, not real evaluation evidence")
     if spec.get("format") == "pool":
         if semantics == "unknown":
             raise ValueError("Pool annotation semantics must be explicitly visible or full")
@@ -285,6 +326,6 @@ def prepare_dataset(manifest_file, output_dir):
               "domain": spec["domain"], "role": spec["role"], "annotation_semantics": semantics,
               "ground_truth": coco, "metadata": metadata, "provenance": provenance,
               "training_provenance": spec.get("training_provenance", "unknown"), "warnings": warnings,
-              "support": dict(Counter(a["category_id"] for a in coco["annotations"]))}
+              "support": {str(k): v for k, v in Counter(a["category_id"] for a in coco["annotations"]).items()}}
     result["dataset_sha256"] = digest({k: v for k, v in result.items() if k not in {"status", "warnings"}})
     return write_report(output, result, "Prepared evaluation dataset", images=cards, filename="dataset.json")
