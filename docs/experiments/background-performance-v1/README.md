@@ -71,7 +71,30 @@ PYTHONPATH=src uv run --with 'matplotlib>=3.10,<3.11' python scripts/report_back
   --output-dir outputs/experiments/performance-round-two/report
 ```
 
-The retained report expects the reviewed study names/protocol. To reproduce its historical recipe panels, run `study_background_optimizations.py` from a clean checkout of `214c9ef` for `implementation-full` (the optional copies-only intermediate is unnecessary for the panel), and from `da5d554` with baseline `214c9ef` and `--recipes mask_multiband` for `streamed-multiband-full`. Reproduce `controls-full` against the original baseline using policy names `threads-one`, `threads-four`, `threads-default`, `cache-256`, `workers-two`, corresponding to workers/threads/window/cache values 1/1/2/0, 1/4/2/0, 1/24/2/0, 1/1/2/256 and 2/1/2/0. `optimized-controls-short` uses the optimized source, samples5/warmups1/repeats1 and the six policies described above. Report rendering happens after timing work.
+The retained report expects the reviewed study names/protocol. Its historical recipe panels require the **newer driver** operating on the older working directories: the driver at `214c9ef` itself required an intermediate copies-only file. From the current repository root, use the following commands on fresh output directories (the copies-only intermediate is unnecessary for these panels):
+
+```sh
+perf_repo=$(pwd)
+git worktree add --detach .worktrees/performance-recipes-214 214c9eff6d175e835814969907560f5d8a7dc068
+git worktree add --detach .worktrees/performance-recipes-da5 da5d55455e028d6e68733718faeeabffa85688b7
+(
+  cd "$perf_repo/.worktrees/performance-recipes-214"
+  PYTHONPATH=src uv run python "$perf_repo/scripts/study_background_optimizations.py" \
+    --config "$perf_repo/configs/local/performance-round-two/baseline.yaml" \
+    --baseline-ref a0d950309cc448d4eb1197cb5daaea1de53e113d --samples 20 --warmups 2 \
+    --output-dir "$perf_repo/outputs/experiments/performance-round-two/implementation-full"
+)
+(
+  cd "$perf_repo/.worktrees/performance-recipes-da5"
+  PYTHONPATH=src uv run python "$perf_repo/scripts/study_background_optimizations.py" \
+    --config "$perf_repo/configs/local/performance-round-two/baseline.yaml" \
+    --baseline-ref 214c9eff6d175e835814969907560f5d8a7dc068 --recipes mask_multiband \
+    --samples 20 --warmups 2 \
+    --output-dir "$perf_repo/outputs/experiments/performance-round-two/streamed-multiband-full"
+)
+```
+
+Reproducing all retained panels requires a fresh study root; do not overwrite existing raw evidence. Reproduce `controls-full` against the original baseline using policy names `threads-one`, `threads-four`, `threads-default`, `cache-256`, `workers-two`, corresponding to workers/threads/window/cache values 1/1/2/0, 1/4/2/0, 1/24/2/0, 1/1/2/256 and 2/1/2/0. `optimized-controls-short` uses the optimized source, samples5/warmups1/repeats1 and the six policies described above. Report rendering happens after timing work.
 
 ## Method, verification and limits
 
