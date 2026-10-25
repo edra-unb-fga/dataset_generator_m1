@@ -8,6 +8,10 @@ cross-machine resume is promised. Resume still requires the exact original contr
 
 ## Local tuning without machine-specific source edits
 
+Use the [portable tuning workflow](EXECUTION_TUNING.md) to create hardware-informed candidates,
+screen under guards, confirm finalists and save an evidence-bound local execution override.
+Hardware capacity provides starting choices; measured throughput determines a local near-best choice.
+
 Keep private/local composers and override files under ignored `configs/local/`. For example:
 
 ```yaml
@@ -26,6 +30,8 @@ limits. Explicit workers that violate an explicit CPU budget fail; a cache large
 fails. When an explicit CPU budget is set without a thread choice, OpenCV threads default to one and
 that effective choice is reported. Other native libraries may still have their own thread pools.
 `native_threads` controls OpenCV, not a hard OS CPU limit. OpenCV state is restored after serial runs.
+Automatic workers default to one OpenCV thread each unless explicitly configured and respect CPU
+affinity where available. An oversized CPU budget does not create additional automatic CPU capacity.
 
 RAM estimates are conservative heuristics, not hard process RSS limits. Large sources, backend
 temporary arrays and OS load can exceed estimates. Cache capacity and submitted-work count are actual

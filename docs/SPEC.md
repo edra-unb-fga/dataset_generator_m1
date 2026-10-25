@@ -256,6 +256,16 @@ exports embed the same analysis; structural fragility or material imbalance yiel
 
 ### Execution and identity
 
+`execution candidates --config COMPOSER --output-dir DIR` writes hardware-informed starting
+overrides and a trial matrix; explicit exploratory worker counts retain advisory RAM warnings.
+`execution recommend --config COMPOSER --study SUMMARY --output-dir DIR` consumes a complete guarded
+study with at least 20 accepted samples and three repetitions per policy. It validates workload,
+software/performance implementation, coarse hardware class, immutable source, paired output evidence,
+inspection/counters and current headroom. It chooses the fewest workers within a declared tolerance
+of the fastest eligible median and writes explicit typed overrides without changing a composer.
+The default tolerance is 5%; observed ranges are not formal confidence intervals. See
+[EXECUTION_TUNING.md](EXECUTION_TUNING.md) for the portable protocol and evidence limits.
+
 Execution planning is shared by preflight, generation and the production benchmark. CPU/RAM budgets
 are advisory planning inputs, while decoded-cache payload bytes and in-flight work counts are bounded.
 OpenCV native threads, workers, queue and cache choices are explicit and recorded; they never reduce
@@ -266,6 +276,13 @@ missing source dimensions or native-thread oversubscription. Automatic worker se
 complete estimated process/workspace/queue/cache memory against its RAM budget and explicit queue
 capacity; if no one-worker plan fits, it retains one worker with a warning. Explicit workers are not
 silently reduced. Rendering dimensions, distributions and annotation semantics remain unchanged.
+
+Automatic workers use one OpenCV thread per worker unless explicitly configured, and respect usable
+CPU affinity where supported even when a requested CPU budget exceeds detected capacity. Explicit
+worker/thread policies remain available. Effective native threading participates in timing
+fingerprints; usable CPU count participates in the environment class. Configuration and preflight
+views show effective workers, native threads, queue, estimated RSS and planning budget, distinguishing
+capacity guidance from a measured speed recommendation.
 
 The phase/lifetime memory model uses recipe last-use lifetimes, operation scratch, precision and
 per-asset correlated resize geometry, then takes the maximum synthesis/render/evidence phase per

@@ -166,3 +166,8 @@ host-memory floor to 1.5 GiB. A single 12-image run completes with exact signatu
 six-worker short controls, but the 48-image attempt crosses the revised floor during its second batch.
 The report retains both memory timelines and explicitly distinguishes short completion from an
 unfinished sustained comparison. No runtime code, estimator or generic defaults changed.
+
+The [3–6 worker tuning study](experiments/execution-tuning-v1/README.md) screens one/two-thread cases,
+then confirms single-threaded 3/4/5/6-worker policies over three 48-image repetitions. It introduces
+portable capacity candidates and evidence-bound local recommendations without promoting a hardware-
+class speed default. Five workers is the local 5%-tolerance choice; six has the highest measured median.

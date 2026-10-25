@@ -15,7 +15,7 @@ from rich.table import Table
 from .catalog import list_profiles, show_profile
 from .config import load_profile, load_yaml_strict, _resolve_reference
 from .filters import SUPPORTED_TRANSFORMS, validate_transform_specs
-from .execution import resolve_worker_count
+from .execution import format_execution_plan, resolve_worker_count
 from .families import family_names
 from .models import GenerationComposer, TransformSpec
 from .preflight import PreflightRequest, run_preflight, format_runtime
@@ -206,6 +206,7 @@ def configuration_summary(config: str | Path, output_dir: str | Path) -> dict[st
         "warnings": preflight["warnings"],
         "runtime": preflight["runtime"],
         "disk": preflight["disk"],
+        "execution_plan": preflight["execution_plan"],
         "suggested_next": f"preflight --config {Path(config).name} --output-dir {Path(output_dir).as_posix()}",
     }
 
@@ -228,6 +229,7 @@ def _render_cockpit(console: Console, config: Path, output_dir: Path) -> dict[st
     console.print(
         Panel.fit(
             f"Warnings: {warnings}\nETA: {format_runtime(runtime)}\n"
+            f"{format_execution_plan(summary['execution_plan'])}\n"
             f"Next: {summary['suggested_next']}",
             title="Preflight snapshot",
         )

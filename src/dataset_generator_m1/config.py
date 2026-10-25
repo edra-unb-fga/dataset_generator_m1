@@ -285,6 +285,10 @@ def load_profile(
     resolved_values["appearance"] = appearance_value
 
     applied = _normalized_overrides(overrides or {})
+    # Execution bundles may omit optional/defaulted leaves. They are still typed
+    # configuration fields and must accept the same overrides as inline values.
+    from .models import ExecutionConfig
+    resolved_values['execution'] = {**ExecutionConfig().model_dump(mode='json'), **resolved_values['execution']}
     for override_path, value in applied.items():
         _set_leaf(resolved_values, override_path, value)
 

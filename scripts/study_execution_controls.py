@@ -9,12 +9,16 @@ import math
 import os
 from pathlib import Path
 import signal
+import runpy
 import subprocess
 import sys
 from time import perf_counter
 
 import psutil
 import yaml
+
+from dataset_generator_m1.config import load_profile
+from dataset_generator_m1.execution_tuning import tuning_context
 
 
 def process_tree_sample(pid, detailed=False):
@@ -106,6 +110,9 @@ def main():
     if args.compare_source_root:sources={'baseline':args.compare_source_root.resolve(),**sources}
     provenance={label:{'commit':subprocess.run(['git','rev-parse','HEAD'],cwd=path,check=True,capture_output=True,text=True).stdout.strip(),
         'dirty':bool(subprocess.run(['git','status','--porcelain'],cwd=path,check=True,capture_output=True,text=True).stdout.strip())} for label,path in sources.items()}
+    resolved=load_profile(config)
+    contexts={label:tuning_context(resolved,implementation=runpy.run_path(str(path/'src/dataset_generator_m1/performance_version.py'))['IMPLEMENTATION'])
+              for label,path in sources.items()}
     root.mkdir(parents=True)
     policies={}
     for index,(name,policy) in enumerate(matrix['variants'].items()):
@@ -174,6 +181,8 @@ def main():
             if reference!=row['content_signature'] or pixel_reference!=pixels: raise RuntimeError('Execution policy changed pixels/geometry/masks/annotations')
             records.append({**row,'variant':name,'repeat':repeat,'pixel_signature':pixels,'software':result['software'],'cache_observed':cache_totals,
                 'source':provenance[implementation],'implementation':implementation,'command_seconds':perf_counter()-started,
+                'tuning_context':contexts[implementation],
+                'initial_available_memory_bytes':system[0]['available_memory_bytes'],
                 'minimum_available_memory_bytes':min(s['available_memory_bytes'] for s in system),
                 'maximum_swap_used_bytes':max(s['swap_used_bytes'] for s in system),
                 'swap_in_delta_bytes':system[-1]['swap_in_bytes']-system[0]['swap_in_bytes'],
@@ -184,6 +193,7 @@ def main():
                     'peak_uss_bytes':max((s['uss_bytes'] for s in system if s['pss_complete']),default=None)},
                 'guard_limits':{key:getattr(args,key) for key in ['rss_limit_gib','pss_limit_gib','min_available_gib','max_swap_out_mib','cell_timeout_seconds','poll_interval_seconds']}})
             summary={'schema_version':1,'kind':'execution-control-study','status':'running','samples':args.samples,'warmups':args.warmups,'repeats':args.repeats,
+                'tuning_context':contexts[implementation],
                 'low_sample':args.samples<20 or args.repeats<3,'exact_encoded_images_equal':True,'geometry_annotation_masks_equal':True,'records':records}
             (root/'summary.json').write_text(json.dumps(summary,indent=2))
             print(f'{repeat+1}/{args.repeats} {name}: {row["throughput"]:.3f} accepted/s, RSS {row["resource_peaks"]["rss_bytes"]/1024**3:.2f}GiB',flush=True)
