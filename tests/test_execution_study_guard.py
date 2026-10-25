@@ -23,6 +23,20 @@ def test_guard_units_and_thresholds():
     assert 'timeout' in study.guard_reason(args,61,memory,swap,tree,0)
 
 
+def test_proportional_memory_guard_and_sampling(monkeypatch):
+    args=SimpleNamespace(rss_limit_gib=12,pss_limit_gib=3,min_available_gib=1,max_swap_out_mib=16,cell_timeout_seconds=60)
+    memory=SimpleNamespace(available=4*2**30);swap=SimpleNamespace(sout=0)
+    assert study.guard_reason(args,1,memory,swap,{'rss_bytes':8*2**30,'pss_bytes':2*2**30},0) is None
+    assert 'PSS' in study.guard_reason(args,1,memory,swap,{'rss_bytes':8*2**30,'pss_bytes':4*2**30},0)
+    process=SimpleNamespace(children=lambda **kw:[],memory_info=lambda:SimpleNamespace(rss=800),num_threads=lambda:2,
+        cpu_times=lambda:SimpleNamespace(user=1,system=2),memory_full_info=lambda:SimpleNamespace(pss=400,uss=200))
+    monkeypatch.setattr(study.psutil,'Process',lambda pid:process)
+    sample=study.process_tree_sample(1,detailed=True)
+    assert sample['rss_bytes']==800 and sample['pss_bytes']==400 and sample['uss_bytes']==200 and sample['pss_complete']
+    process.memory_full_info=lambda:SimpleNamespace(uss=200)
+    assert not study.process_tree_sample(1,detailed=True)['pss_complete']
+
+
 @pytest.mark.skipif(os.name!='posix',reason='POSIX benchmark session cleanup')
 def test_guard_stops_child_even_if_coordinator_exits_first():
     child_code="import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);print('ready',flush=True);time.sleep(60)"

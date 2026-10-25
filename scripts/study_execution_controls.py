@@ -5,6 +5,7 @@ Raw evidence only. Use --source-root to pin an immutable checkout. No timing gat
 import argparse
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import signal
@@ -16,22 +17,29 @@ import psutil
 import yaml
 
 
-def process_tree_sample(pid):
+def process_tree_sample(pid, detailed=False):
     """Observed RSS counts shared pages in each process; useful as a conservative guard."""
-    rss=threads=cpu=0
+    rss=threads=cpu=pss=uss=0
+    complete=True
     try:
         parent=psutil.Process(pid);processes=[parent,*parent.children(recursive=True)]
-    except psutil.Error:return {'rss_bytes':0,'threads':0,'cpu_seconds':0}
+    except psutil.Error:return {'rss_bytes':0,'threads':0,'cpu_seconds':0,'pss_bytes':None,'uss_bytes':None,'pss_complete':False}
     for process in processes:
         try:
             rss+=process.memory_info().rss;threads+=process.num_threads()
             times=process.cpu_times();cpu+=times.user+times.system
-        except psutil.Error:pass
-    return {'rss_bytes':rss,'threads':threads,'cpu_seconds':cpu}
+            if detailed:
+                info=process.memory_full_info()
+                if not hasattr(info,'pss'):complete=False
+                else:pss+=info.pss;uss+=getattr(info,'uss',0)
+        except psutil.Error:complete=False
+    return {'rss_bytes':rss,'threads':threads,'cpu_seconds':cpu,
+            'pss_bytes':pss if detailed else None,'uss_bytes':uss if detailed else None,'pss_complete':detailed and complete}
 
 
 def guard_reason(args,elapsed,memory,swap,tree,initial_swap_out):
     if args.rss_limit_gib and tree['rss_bytes']>args.rss_limit_gib*2**30:return 'process-tree RSS limit'
+    if getattr(args,'pss_limit_gib',None) and tree.get('pss_bytes') is not None and tree['pss_bytes']>args.pss_limit_gib*2**30:return 'process-tree PSS limit'
     if args.min_available_gib and memory.available<args.min_available_gib*2**30:return 'available host memory floor'
     if args.max_swap_out_mib and swap.sout-initial_swap_out>args.max_swap_out_mib*2**20:return 'host swap-out limit'
     if args.cell_timeout_seconds and elapsed>args.cell_timeout_seconds:return 'cell timeout'
@@ -78,13 +86,17 @@ def main():
     parser.add_argument('--warmups',type=int,default=2)
     parser.add_argument('--repeats',type=int,default=3)
     parser.add_argument('--rss-limit-gib',type=float,help='Abort a cell above this sampled process-tree RSS')
+    parser.add_argument('--pss-limit-gib',type=float,help='Abort above sampled proportional physical memory, where supported')
+    parser.add_argument('--detailed-memory',action='store_true',help='Record Linux PSS/USS once per second to distinguish shared pages')
+    parser.add_argument('--poll-interval-seconds',type=float,default=.25,help='Guard polling interval, at least0.05 seconds')
     parser.add_argument('--min-available-gib',type=float,help='Abort below this available host-memory floor')
     parser.add_argument('--max-swap-out-mib',type=float,help='Abort on this much additional host swap-out')
     parser.add_argument('--cell-timeout-seconds',type=float,help='Abort a cell exceeding this command duration')
     args=parser.parse_args()
-    if any(value is not None and value<=0 for value in [args.rss_limit_gib,args.min_available_gib,args.max_swap_out_mib,args.cell_timeout_seconds]):
+    if not .05<=args.poll_interval_seconds<=2:raise ValueError('Poll interval must be between0.05 and2 seconds')
+    if any(value is not None and (not math.isfinite(value) or value<=0) for value in [args.rss_limit_gib,args.pss_limit_gib,args.min_available_gib,args.max_swap_out_mib,args.cell_timeout_seconds]):
         raise ValueError('Guard limits must be positive')
-    guarded=any(value is not None for value in [args.rss_limit_gib,args.min_available_gib,args.max_swap_out_mib,args.cell_timeout_seconds])
+    guarded=any(value is not None for value in [args.rss_limit_gib,args.pss_limit_gib,args.min_available_gib,args.max_swap_out_mib,args.cell_timeout_seconds])
     source=args.source_root.resolve();root=args.output_dir.resolve();config=args.config.resolve()
     matrix=yaml.safe_load(args.matrix.read_text())
     if set(matrix)!={'schema_version','variants'} or matrix['schema_version']!=1 or not matrix['variants']:
@@ -108,20 +120,22 @@ def main():
             command=[sys.executable,'-m','dataset_generator_m1','benchmark','--production','--config',str(config),'--execution-matrix',str(policy),
                      '--samples',str(args.samples),'--warmup',str(args.warmups),'--repeats','1','--output-dir',str(cell),'--output-format','json']
             (root/'progress.json').write_text(json.dumps({'repeat':repeat,'policy':name,'completed':len(records)}))
-            started=perf_counter();system=[];abort=None;initial_swap_out=psutil.swap_memory().sout
+            started=perf_counter();system=[];abort=None;initial_swap_out=psutil.swap_memory().sout;last_detailed=-1
             with (root/f'{repeat:02d}-{index:02d}.log').open('w') as log:
                 process=subprocess.Popen(command,cwd=source,stdout=log,stderr=subprocess.STDOUT,
                     env={**os.environ,'PYTHONPATH':str(source/'src'),'PYTHONDONTWRITEBYTECODE':'1'},start_new_session=os.name=='posix')
                 try:
                     while True:
                         memory,swap=psutil.virtual_memory(),psutil.swap_memory()
-                        tree=process_tree_sample(process.pid)
+                        detailed=(args.detailed_memory or args.pss_limit_gib is not None) and perf_counter()-started-last_detailed>=1
+                        tree=process_tree_sample(process.pid,detailed=detailed)
+                        if detailed:last_detailed=perf_counter()-started
                         system.append({'elapsed':perf_counter()-started,'available_memory_bytes':memory.available,'swap_used_bytes':swap.used,
                                        'swap_in_bytes':swap.sin,'swap_out_bytes':swap.sout,'cpu_percent':psutil.cpu_percent(None),**tree})
                         abort=guard_reason(args,perf_counter()-started,memory,swap,tree,initial_swap_out)
                         if abort:
                             stop_benchmark(process);code=process.returncode;break
-                        try: code=process.wait(timeout=.25 if guarded else 2);break
+                        try: code=process.wait(timeout=args.poll_interval_seconds if guarded else 2);break
                         except subprocess.TimeoutExpired: pass
                 except BaseException as error:
                     # Ctrl+C cannot reach the isolated benchmark session. A
@@ -136,7 +150,11 @@ def main():
             (root/f'{repeat:02d}-{index:02d}-system.json').write_text(json.dumps(system))
             if abort:
                 failure={'status':'guard-aborted','policy':name,'repeat':repeat,'reason':abort,'completed_cells':len(records),
-                         'peak_observed_rss_bytes':max(s['rss_bytes'] for s in system),'elapsed_seconds':perf_counter()-started}
+                         'peak_observed_rss_bytes':max(s['rss_bytes'] for s in system),'elapsed_seconds':perf_counter()-started,
+                         'minimum_available_memory_bytes':min(s['available_memory_bytes'] for s in system),
+                         'peak_observed_pss_bytes':max((s['pss_bytes'] for s in system if s['pss_complete']),default=None),
+                         'source':provenance[implementation],
+                         'guard_limits':{key:getattr(args,key) for key in ['rss_limit_gib','pss_limit_gib','min_available_gib','max_swap_out_mib','cell_timeout_seconds','poll_interval_seconds']}}
                 (root/'abort.json').write_text(json.dumps(failure,indent=2));(root/'progress.json').write_text(json.dumps(failure))
                 raise RuntimeError(f'Cell aborted by {abort}; raw evidence retained')
             if code: raise RuntimeError(f'Cell {repeat}/{name} failed; inspect log')
@@ -161,8 +179,10 @@ def main():
                 'swap_in_delta_bytes':system[-1]['swap_in_bytes']-system[0]['swap_in_bytes'],
                 'swap_out_delta_bytes':system[-1]['swap_out_bytes']-system[0]['swap_out_bytes'],
                 'command_resource_observed':{'peak_rss_bytes':max(s['rss_bytes'] for s in system),
-                    'peak_threads':max(s['threads'] for s in system)},
-                'guard_limits':{key:getattr(args,key) for key in ['rss_limit_gib','min_available_gib','max_swap_out_mib','cell_timeout_seconds']}})
+                    'peak_threads':max(s['threads'] for s in system),
+                    'peak_pss_bytes':max((s['pss_bytes'] for s in system if s['pss_complete']),default=None),
+                    'peak_uss_bytes':max((s['uss_bytes'] for s in system if s['pss_complete']),default=None)},
+                'guard_limits':{key:getattr(args,key) for key in ['rss_limit_gib','pss_limit_gib','min_available_gib','max_swap_out_mib','cell_timeout_seconds','poll_interval_seconds']}})
             summary={'schema_version':1,'kind':'execution-control-study','status':'running','samples':args.samples,'warmups':args.warmups,'repeats':args.repeats,
                 'low_sample':args.samples<20 or args.repeats<3,'exact_encoded_images_equal':True,'geometry_annotation_masks_equal':True,'records':records}
             (root/'summary.json').write_text(json.dumps(summary,indent=2))

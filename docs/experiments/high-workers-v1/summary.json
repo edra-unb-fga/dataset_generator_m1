@@ -1,0 +1,1189 @@
+{
+  "schema_version": 1,
+  "kind": "high-worker-capacity-and-phase-memory",
+  "complete": {
+    "six1": {
+      "workers": 6,
+      "native_threads": 1,
+      "throughput": {
+        "median": 0.9784212863549436,
+        "min": 0.968818776733718,
+        "max": 0.9804772640908517
+      },
+      "maximum_observed_rss_bytes": 4167680000,
+      "maximum_observed_pss_bytes": 3390573568,
+      "phase_estimate_bytes": 7405987431,
+      "memory_components": {
+        "model_version": "phase-lifetimes-v3",
+        "estimate_metric": "process-tree RSS planning upper estimate",
+        "runtime_reserve_bytes": 1879048192,
+        "native_reserve_bytes": 0,
+        "coordinator_reserve_bytes": 65536000,
+        "worker_peak_bytes": 655360000,
+        "phase_peaks_bytes_per_worker": {
+          "background": 655360000,
+          "scene_render": 273612800,
+          "mask_evidence": 131072000
+        },
+        "recipe_peaks_bytes": {
+          "direct": 471859200,
+          "palette": 629145600,
+          "mask_multiband": 655360000,
+          "displaced": 550502400
+        },
+        "queued_result_bytes": 294912000,
+        "headroom_percent": 20,
+        "headroom_bytes": 1234331239,
+        "estimated_peak_bytes": 7405987431,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+          "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+          "accepted": 48,
+          "attempts": 49,
+          "throughput": 0.968818776733718,
+          "active_seconds": 49.54486586898565,
+          "command_seconds": 57.7617251300253,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 599.8,
+            "rss_bytes": 3927138304.0,
+            "read_bytes": 39956480.0,
+            "write_bytes": 41684992.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4112723968,
+            "peak_threads": 71,
+            "peak_pss_bytes": 3390573568,
+            "peak_uss_bytes": 3287511040
+          },
+          "guard_limits": {
+            "rss_limit_gib": 12.0,
+            "pss_limit_gib": 3.5,
+            "min_available_gib": 2.5,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          },
+          "minimum_available_memory_bytes": 3062816768,
+          "maximum_swap_used_bytes": 2147479552,
+          "swap_in_delta_bytes": 57344,
+          "swap_out_delta_bytes": 593920
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+          "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+          "accepted": 48,
+          "attempts": 49,
+          "throughput": 0.9784212863549436,
+          "active_seconds": 49.058618622948416,
+          "command_seconds": 57.46479414694477,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 601.4,
+            "rss_bytes": 3765547008.0,
+            "read_bytes": 11296768.0,
+            "write_bytes": 41680896.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4167680000,
+            "peak_threads": 71,
+            "peak_pss_bytes": 3333512192,
+            "peak_uss_bytes": 3230605312
+          },
+          "guard_limits": {
+            "rss_limit_gib": 12.0,
+            "pss_limit_gib": 3.5,
+            "min_available_gib": 2.5,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          },
+          "minimum_available_memory_bytes": 3148419072,
+          "maximum_swap_used_bytes": 2147401728,
+          "swap_in_delta_bytes": 16384,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+          "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+          "accepted": 48,
+          "attempts": 49,
+          "throughput": 0.9804772640908517,
+          "active_seconds": 48.9557472220622,
+          "command_seconds": 57.09141784301028,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 599.8,
+            "rss_bytes": 3850141696.0,
+            "read_bytes": 8192.0,
+            "write_bytes": 41680896.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4135940096,
+            "peak_threads": 71,
+            "peak_pss_bytes": 3193614336,
+            "peak_uss_bytes": 3090173952
+          },
+          "guard_limits": {
+            "rss_limit_gib": 12.0,
+            "pss_limit_gib": 3.5,
+            "min_available_gib": 2.5,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          },
+          "minimum_available_memory_bytes": 3074985984,
+          "maximum_swap_used_bytes": 2147385344,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        }
+      ]
+    },
+    "six2": {
+      "workers": 6,
+      "native_threads": 2,
+      "throughput": {
+        "median": 0.8503035499999081,
+        "min": 0.835392339002374,
+        "max": 0.8512515594476802
+      },
+      "maximum_observed_rss_bytes": 4464807936,
+      "maximum_observed_pss_bytes": 3704356864,
+      "phase_estimate_bytes": 7421086925,
+      "memory_components": {
+        "model_version": "phase-lifetimes-v3",
+        "estimate_metric": "process-tree RSS planning upper estimate",
+        "runtime_reserve_bytes": 1879048192,
+        "native_reserve_bytes": 12582912,
+        "coordinator_reserve_bytes": 65536000,
+        "worker_peak_bytes": 655360000,
+        "phase_peaks_bytes_per_worker": {
+          "background": 655360000,
+          "scene_render": 273612800,
+          "mask_evidence": 131072000
+        },
+        "recipe_peaks_bytes": {
+          "direct": 471859200,
+          "palette": 629145600,
+          "mask_multiband": 655360000,
+          "displaced": 550502400
+        },
+        "queued_result_bytes": 294912000,
+        "headroom_percent": 20,
+        "headroom_bytes": 1236847821,
+        "estimated_peak_bytes": 7421086925,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+          "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+          "accepted": 48,
+          "attempts": 49,
+          "throughput": 0.8503035499999081,
+          "active_seconds": 56.45042549993377,
+          "command_seconds": 64.9818360490026,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 602.4,
+            "rss_bytes": 3970244608.0,
+            "read_bytes": 53575680.0,
+            "write_bytes": 41717760.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4175556608,
+            "peak_threads": 71,
+            "peak_pss_bytes": 3194226688,
+            "peak_uss_bytes": 3090513920
+          },
+          "guard_limits": {
+            "rss_limit_gib": 12.0,
+            "pss_limit_gib": 3.5,
+            "min_available_gib": 2.5,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          },
+          "minimum_available_memory_bytes": 3090624512,
+          "maximum_swap_used_bytes": 2147479552,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+          "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+          "accepted": 48,
+          "attempts": 49,
+          "throughput": 0.835392339002374,
+          "active_seconds": 57.45802870893385,
+          "command_seconds": 65.95997565891594,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 602.4,
+            "rss_bytes": 3991040000.0,
+            "read_bytes": 24576.0,
+            "write_bytes": 41721856.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4464807936,
+            "peak_threads": 71,
+            "peak_pss_bytes": 3043162112,
+            "peak_uss_bytes": 2939682816
+          },
+          "guard_limits": {
+            "rss_limit_gib": 12.0,
+            "pss_limit_gib": 3.5,
+            "min_available_gib": 2.5,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          },
+          "minimum_available_memory_bytes": 2806382592,
+          "maximum_swap_used_bytes": 2147479552,
+          "swap_in_delta_bytes": 77824,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+          "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+          "accepted": 48,
+          "attempts": 49,
+          "throughput": 0.8512515594476802,
+          "active_seconds": 56.38755868107546,
+          "command_seconds": 64.78763431007974,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 599.8,
+            "rss_bytes": 3864563712.0,
+            "read_bytes": 135168.0,
+            "write_bytes": 41717760.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4292485120,
+            "peak_threads": 71,
+            "peak_pss_bytes": 3704356864,
+            "peak_uss_bytes": 3601108992
+          },
+          "guard_limits": {
+            "rss_limit_gib": 12.0,
+            "pss_limit_gib": 3.5,
+            "min_available_gib": 2.5,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          },
+          "minimum_available_memory_bytes": 3011719168,
+          "maximum_swap_used_bytes": 2147385344,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        }
+      ]
+    }
+  },
+  "aborted": {
+    "status": "guard-aborted",
+    "policy": "twelve1",
+    "repeat": 0,
+    "reason": "available host memory floor",
+    "completed_cells": 0,
+    "peak_observed_rss_bytes": 4882100224,
+    "elapsed_seconds": 6.706479466054589,
+    "workers": 12,
+    "native_threads": 1,
+    "minimum_available_memory_bytes": 2639257600,
+    "peak_observed_pss_bytes": 2663129088,
+    "swap_out_delta_bytes": 0,
+    "throughput": null,
+    "metric_limit": "Partial sampled peaks are lower bounds, not completed-pool maxima."
+  },
+  "skipped": {
+    "twelve2": "First12-worker case reached the available-memory floor.",
+    "sixteen1and2": "Escalation stopped after12 workers failed the headroom condition.",
+    "twentyfour1and2": "User condition requires safe lower-count evidence;12-worker ramp already stopped."
+  },
+  "protocol": {
+    "samples": 48,
+    "warmups": 2,
+    "repeats": 3,
+    "output_pixels": [
+      1280,
+      1280
+    ],
+    "appearance": "realistic-heavy",
+    "background_mix": "standard",
+    "foreground": "landing-pad",
+    "qa_samples": 4,
+    "cache_mib": 0,
+    "guard_rss_gib": 12,
+    "guard_pss_gib": 3.5,
+    "minimum_available_gib": 2.5,
+    "max_swap_out_mib": 16,
+    "poll_interval_seconds": 0.1,
+    "pss_interval_seconds": 1
+  },
+  "earlier_rss_comparisons": {
+    "one24": {
+      "workers": 1,
+      "native_threads": 24,
+      "observed_rss_bytes": 1128341504,
+      "v2_estimate_bytes": 2129954560,
+      "v3_estimate_bytes": 1304061543,
+      "v2_ratio": 1.8876860883422755,
+      "v3_ratio": 1.1557330279681
+    },
+    "two12": {
+      "workers": 2,
+      "native_threads": 12,
+      "observed_rss_bytes": 1930973184,
+      "v2_estimate_bytes": 4327738880,
+      "v3_estimate_bytes": 2791204455,
+      "v2_ratio": 2.241221636768209,
+      "v3_ratio": 1.4454910498643154
+    },
+    "four6": {
+      "workers": 4,
+      "native_threads": 6,
+      "observed_rss_bytes": 2884993024,
+      "v2_estimate_bytes": 8175098880,
+      "v3_estimate_bytes": 5121245184,
+      "v2_ratio": 2.8336633094056314,
+      "v3_ratio": 1.7751326056585985
+    },
+    "six1": {
+      "workers": 6,
+      "native_threads": 1,
+      "observed_rss_bytes": 4087586816,
+      "v2_estimate_bytes": 11975272960,
+      "v3_estimate_bytes": 7405987431,
+      "v2_ratio": 2.9296681634076394,
+      "v3_ratio": 1.811823886409169
+    },
+    "six4": {
+      "workers": 6,
+      "native_threads": 4,
+      "observed_rss_bytes": 3842740224,
+      "v2_estimate_bytes": 12022458880,
+      "v3_estimate_bytes": 7451285914,
+      "v2_ratio": 3.1286160862275345,
+      "v3_ratio": 1.9390553302205213
+    },
+    "six24": {
+      "workers": 6,
+      "native_threads": 24,
+      "observed_rss_bytes": 3913023488,
+      "v2_estimate_bytes": 12337031680,
+      "v3_estimate_bytes": 7753275802,
+      "v2_ratio": 3.1528130914199104,
+      "v3_ratio": 1.9814028271940698
+    }
+  },
+  "array_allocation_validation": {
+    "direct": {
+      "max_traced_bytes": 414573216,
+      "predicted_array_peak_bytes": 471859200,
+      "ratio": 1.1381806199462727
+    },
+    "palette": {
+      "max_traced_bytes": 629159928,
+      "predicted_array_peak_bytes": 629145600,
+      "ratio": 0.9999772267759558
+    },
+    "mask_multiband": {
+      "max_traced_bytes": 642309976,
+      "predicted_array_peak_bytes": 655360000,
+      "ratio": 1.0203173303974964
+    },
+    "displaced": {
+      "max_traced_bytes": 498092224,
+      "predicted_array_peak_bytes": 550502400,
+      "ratio": 1.1052218313691242
+    }
+  },
+  "allocation_probe": {
+    "schema_version": 1,
+    "software": {
+      "python": "3.13.16",
+      "numpy": "2.5.1",
+      "opencv-python-headless": "5.0.0.93",
+      "albumentations": "2.0.8",
+      "Pillow": "12.3.0"
+    },
+    "canvas_size": [
+      2560,
+      2560
+    ],
+    "samples_per_recipe": 3,
+    "background_source_sha256": "d0c27eedc82d0c0708c6243d83c3e8171afb5c6c99767a961b06b4e5c6e2184c",
+    "limit": "Traced allocation includes live arrays and selected native NumPy allocations; excludes interpreter/import baselines and untracked native storage.",
+    "records": [
+      {
+        "fixture": 0,
+        "recipe": "direct",
+        "peak_traced_bytes": 414573216,
+        "tail_peak_bytes": 414573216,
+        "nodes": [
+          {
+            "id": "source",
+            "op": "sample_asset",
+            "live_before_bytes": 4343,
+            "peak_traced_bytes": 10170,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 7902,
+            "peak_traced_bytes": 207673254,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 0,
+        "recipe": "palette",
+        "peak_traced_bytes": 629159928,
+        "tail_peak_bytes": 629159928,
+        "nodes": [
+          {
+            "id": "base",
+            "op": "sample_asset",
+            "live_before_bytes": 5641,
+            "peak_traced_bytes": 10644,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "palette_source",
+            "op": "sample_asset",
+            "live_before_bytes": 8376,
+            "peak_traced_bytes": 9515,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "base_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 9055,
+            "peak_traced_bytes": 207628628,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "palette_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78653778,
+            "peak_traced_bytes": 286272930,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "transferred",
+            "op": "palette_transfer",
+            "live_before_bytes": 157298080,
+            "peak_traced_bytes": 629159928,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 0,
+        "recipe": "mask_multiband",
+        "peak_traced_bytes": 642309976,
+        "tail_peak_bytes": 642309976,
+        "nodes": [
+          {
+            "id": "first",
+            "op": "sample_asset",
+            "live_before_bytes": 7937,
+            "peak_traced_bytes": 13012,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "second",
+            "op": "sample_asset",
+            "live_before_bytes": 10744,
+            "peak_traced_bytes": 11883,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "mask_source",
+            "op": "sample_asset",
+            "live_before_bytes": 11423,
+            "peak_traced_bytes": 12514,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "first_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 12102,
+            "peak_traced_bytes": 207631550,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "second_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78656700,
+            "peak_traced_bytes": 286275724,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 157300906,
+            "peak_traced_bytes": 364919880,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask_luma",
+            "op": "channel_extract",
+            "live_before_bytes": 235945654,
+            "peak_traced_bytes": 367021752,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask",
+            "op": "mask_normalize",
+            "live_before_bytes": 183520574,
+            "peak_traced_bytes": 288379558,
+            "array_bytes": 52428800,
+            "dtype": "float64"
+          },
+          {
+            "id": "blended",
+            "op": "multiband_blend",
+            "live_before_bytes": 209736120,
+            "peak_traced_bytes": 642309976,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 0,
+        "recipe": "displaced",
+        "peak_traced_bytes": 498092224,
+        "tail_peak_bytes": 498092224,
+        "nodes": [
+          {
+            "id": "base",
+            "op": "sample_asset",
+            "live_before_bytes": 6897,
+            "peak_traced_bytes": 11924,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "field_source",
+            "op": "sample_asset",
+            "live_before_bytes": 9656,
+            "peak_traced_bytes": 10795,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "base_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 10335,
+            "peak_traced_bytes": 207629720,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78654870,
+            "peak_traced_bytes": 286273894,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_x",
+            "op": "channel_extract",
+            "live_before_bytes": 157299044,
+            "peak_traced_bytes": 288372642,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_y",
+            "op": "channel_extract",
+            "live_before_bytes": 183514792,
+            "peak_traced_bytes": 314588240,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "warped",
+            "op": "displace",
+            "live_before_bytes": 131087686,
+            "peak_traced_bytes": 498092224,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 1,
+        "recipe": "direct",
+        "peak_traced_bytes": 414526306,
+        "tail_peak_bytes": 414526306,
+        "nodes": [
+          {
+            "id": "source",
+            "op": "sample_asset",
+            "live_before_bytes": 3929,
+            "peak_traced_bytes": 8980,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 6712,
+            "peak_traced_bytes": 207627144,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 1,
+        "recipe": "palette",
+        "peak_traced_bytes": 629159049,
+        "tail_peak_bytes": 629159049,
+        "nodes": [
+          {
+            "id": "base",
+            "op": "sample_asset",
+            "live_before_bytes": 5641,
+            "peak_traced_bytes": 10644,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "palette_source",
+            "op": "sample_asset",
+            "live_before_bytes": 8376,
+            "peak_traced_bytes": 9563,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "base_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 9055,
+            "peak_traced_bytes": 207628679,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "palette_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78653829,
+            "peak_traced_bytes": 286272805,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "transferred",
+            "op": "palette_transfer",
+            "live_before_bytes": 157297857,
+            "peak_traced_bytes": 629159049,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 1,
+        "recipe": "mask_multiband",
+        "peak_traced_bytes": 642306204,
+        "tail_peak_bytes": 642306204,
+        "nodes": [
+          {
+            "id": "first",
+            "op": "sample_asset",
+            "live_before_bytes": 7937,
+            "peak_traced_bytes": 13012,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "second",
+            "op": "sample_asset",
+            "live_before_bytes": 10744,
+            "peak_traced_bytes": 11931,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "mask_source",
+            "op": "sample_asset",
+            "live_before_bytes": 11423,
+            "peak_traced_bytes": 12594,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "first_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 12102,
+            "peak_traced_bytes": 207631550,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "second_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78656700,
+            "peak_traced_bytes": 286275548,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 157300730,
+            "peak_traced_bytes": 364919578,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask_luma",
+            "op": "channel_extract",
+            "live_before_bytes": 235945352,
+            "peak_traced_bytes": 367019048,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask",
+            "op": "mask_normalize",
+            "live_before_bytes": 183517820,
+            "peak_traced_bytes": 288376504,
+            "array_bytes": 52428800,
+            "dtype": "float64"
+          },
+          {
+            "id": "blended",
+            "op": "multiband_blend",
+            "live_before_bytes": 209732924,
+            "peak_traced_bytes": 642306204,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 1,
+        "recipe": "displaced",
+        "peak_traced_bytes": 498091757,
+        "tail_peak_bytes": 498091757,
+        "nodes": [
+          {
+            "id": "base",
+            "op": "sample_asset",
+            "live_before_bytes": 6897,
+            "peak_traced_bytes": 11924,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "field_source",
+            "op": "sample_asset",
+            "live_before_bytes": 9656,
+            "peak_traced_bytes": 10843,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "base_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 10335,
+            "peak_traced_bytes": 207629783,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78654933,
+            "peak_traced_bytes": 286273781,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_x",
+            "op": "channel_extract",
+            "live_before_bytes": 157298931,
+            "peak_traced_bytes": 288372583,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_y",
+            "op": "channel_extract",
+            "live_before_bytes": 183514689,
+            "peak_traced_bytes": 314588137,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "warped",
+            "op": "displace",
+            "live_before_bytes": 131087543,
+            "peak_traced_bytes": 498091757,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 2,
+        "recipe": "direct",
+        "peak_traced_bytes": 414526530,
+        "tail_peak_bytes": 414526530,
+        "nodes": [
+          {
+            "id": "source",
+            "op": "sample_asset",
+            "live_before_bytes": 3929,
+            "peak_traced_bytes": 8980,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 6712,
+            "peak_traced_bytes": 207627320,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 2,
+        "recipe": "palette",
+        "peak_traced_bytes": 629159323,
+        "tail_peak_bytes": 629159323,
+        "nodes": [
+          {
+            "id": "base",
+            "op": "sample_asset",
+            "live_before_bytes": 5641,
+            "peak_traced_bytes": 10644,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "palette_source",
+            "op": "sample_asset",
+            "live_before_bytes": 8376,
+            "peak_traced_bytes": 9563,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "base_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 9055,
+            "peak_traced_bytes": 207628855,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "palette_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78654005,
+            "peak_traced_bytes": 286272981,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "transferred",
+            "op": "palette_transfer",
+            "live_before_bytes": 157298131,
+            "peak_traced_bytes": 629159323,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 2,
+        "recipe": "mask_multiband",
+        "peak_traced_bytes": 642306700,
+        "tail_peak_bytes": 642306700,
+        "nodes": [
+          {
+            "id": "first",
+            "op": "sample_asset",
+            "live_before_bytes": 7937,
+            "peak_traced_bytes": 13012,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "second",
+            "op": "sample_asset",
+            "live_before_bytes": 10744,
+            "peak_traced_bytes": 11931,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "mask_source",
+            "op": "sample_asset",
+            "live_before_bytes": 11423,
+            "peak_traced_bytes": 12594,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "first_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 12102,
+            "peak_traced_bytes": 207631726,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "second_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78656876,
+            "peak_traced_bytes": 286275724,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 157300906,
+            "peak_traced_bytes": 364919930,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask_luma",
+            "op": "channel_extract",
+            "live_before_bytes": 235945704,
+            "peak_traced_bytes": 367019400,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "mask",
+            "op": "mask_normalize",
+            "live_before_bytes": 183518222,
+            "peak_traced_bytes": 288376858,
+            "array_bytes": 52428800,
+            "dtype": "float64"
+          },
+          {
+            "id": "blended",
+            "op": "multiband_blend",
+            "live_before_bytes": 209733420,
+            "peak_traced_bytes": 642306700,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      },
+      {
+        "fixture": 2,
+        "recipe": "displaced",
+        "peak_traced_bytes": 498091825,
+        "tail_peak_bytes": 498091825,
+        "nodes": [
+          {
+            "id": "base",
+            "op": "sample_asset",
+            "live_before_bytes": 6897,
+            "peak_traced_bytes": 11924,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "field_source",
+            "op": "sample_asset",
+            "live_before_bytes": 9656,
+            "peak_traced_bytes": 10843,
+            "array_bytes": 0,
+            "dtype": null
+          },
+          {
+            "id": "base_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 10335,
+            "peak_traced_bytes": 207629959,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_canvas",
+            "op": "resize_crop",
+            "live_before_bytes": 78655109,
+            "peak_traced_bytes": 286273904,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_x",
+            "op": "channel_extract",
+            "live_before_bytes": 157299054,
+            "peak_traced_bytes": 288372662,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "field_y",
+            "op": "channel_extract",
+            "live_before_bytes": 183514772,
+            "peak_traced_bytes": 314588132,
+            "array_bytes": 26214400,
+            "dtype": "float32"
+          },
+          {
+            "id": "warped",
+            "op": "displace",
+            "live_before_bytes": 131087526,
+            "peak_traced_bytes": 498091825,
+            "array_bytes": 78643200,
+            "dtype": "float32"
+          }
+        ]
+      }
+    ]
+  },
+  "model_sources": {
+    "memory_planning.py": "9d31948f9ed5332cf60c1455fa8101d7dceabceee8f625348e37b91a78e9ce37",
+    "execution.py": "0dbfad5a39521425ee94d5a764937ba33feaf881b1cc61d0d93b538ad9ca622a"
+  },
+  "limits": [
+    "One host; ranges are observed extrema, not confidence intervals.",
+    "Repeated scenes measure execution variation;48/2 protocol differs from the historical24/2 workload prefix.",
+    "RSS planning estimates include shared pages repeatedly; PSS/USS are independent physical/private-memory observations.",
+    "Partial abort measurements cannot establish throughput or a completed peak.",
+    "Memory guards are sampled, not hard OS limits. No16/24-worker completion claim is made."
+  ]
+}

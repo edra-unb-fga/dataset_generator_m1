@@ -267,6 +267,12 @@ complete estimated process/workspace/queue/cache memory against its RAM budget a
 capacity; if no one-worker plan fits, it retains one worker with a warning. Explicit workers are not
 silently reduced. Rendering dimensions, distributions and annotation semantics remain unchanged.
 
+The phase/lifetime memory model uses recipe last-use lifetimes, operation scratch, precision and
+per-asset correlated resize geometry, then takes the maximum synthesis/render/evidence phase per
+worker. Its versioned breakdown identifies the estimate as an RSS planning upper estimate. PSS/USS
+in experimental watchdog output are separate proportional/private physical-memory observations;
+missing platform support is explicit, not zero usage.
+
 New run manifests distinguish normalized generation identity from execution/software identity and
 exact-file provenance. Equivalent fresh runs can be compared across checkout roots; historical resume
 continues to require strict contract/catalog equality. No cross-machine resume is promised.

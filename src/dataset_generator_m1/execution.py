@@ -8,7 +8,7 @@ from typing import Any
 import cv2
 import psutil
 
-from .memory_planning import memory_components, source_shapes
+from .memory_planning import HEADROOM_PERCENT, memory_components, source_shapes
 
 
 def resolve_worker_count(value: str | int | None, resolved: Any | None = None) -> int:
@@ -69,7 +69,7 @@ def plan_execution(resolved: Any, workers: str | int | None = None, *, available
         components = memory_components(resolved, count, window, effective_native_threads, shapes)
         # LRU payload is a hard limit; reserve allocator/copy headroom above it.
         components["decoded_cache_bytes"] = total_cache
-        components["cache_headroom_bytes"] = (total_cache + 3) // 4
+        components["cache_headroom_bytes"] = (total_cache * HEADROOM_PERCENT + 99) // 100
         components["estimated_peak_bytes"] += total_cache + components["cache_headroom_bytes"]
         return window, components
 

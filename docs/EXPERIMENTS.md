@@ -151,3 +151,12 @@ encoded images and mask/annotation signatures match. A lower experimental watchd
 host headroom. The accompanying conservative RAM accounting is evaluated separately against observed
 process-tree memory; it does not fit the planner to this host's fastest policy. See `WORKER_SCALING.md`
 for scope, safeguards and remaining limits.
+
+The [high-worker follow-up](experiments/high-workers-v1/README.md) records a12-worker capacity stop
+and the deliberate16/24-worker skips after the available-memory floor was reached. Repeated6×1/6×2
+cases use48 samples (+2 warmups), with exact output signatures. Independent traced recipe allocations
+validate the replacement phase/lifetime RAM model: it counts live DAG arrays and a maximum worker
+phase instead of summing expired values and mutually exclusive phases. RSS predictions remain
+distinct from Linux PSS/USS physical/private observations. `scripts/probe_background_memory.py` and
+`scripts/report_high_workers.py` reproduce the allocation/report evidence; source and model hashes
+are retained. Capacity decisions depend on current host headroom, not CI latency thresholds.
