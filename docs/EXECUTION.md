@@ -36,8 +36,9 @@ shows benefit. Queue windows remain bounded batches, with deterministic ordered 
 an unreviewed rolling scheduler. `max_in_flight` must be at least the effective worker count.
 
 The versioned `memory_estimate` breakdown reserves interpreter/native runtime per process, source
-dimensions discovered from image headers, cover-resize expansion, graph outputs/operator scratch,
-instance masks, coordinator QA, returned-result copies, cache payload and25% headroom. Missing source
+dimensions discovered from image headers, correlated cover-resize expansion, live graph arrays/operator
+scratch and the maximum of synthesis/render/evidence phases. It includes foreground rotation/resize,
+instance masks, coordinator QA, returned-result copies, cache payload and20% headroom. Missing source
 dimensions are reported explicitly. Automatic selection checks this complete estimate for each worker
 count and respects an explicit queue capacity. If even one worker cannot fit, it retains one worker
 with an over-budget warning. More conservative accounting can select fewer automatic workers;
@@ -101,3 +102,10 @@ threads are per worker; actual OS threads and other library pools differ. The po
 accepts `--rss-limit-gib`, `--min-available-gib`, `--max-swap-out-mib` and
 `--cell-timeout-seconds`; it retains abort evidence and stops the benchmark session/descendants.
 Watchdogs sample resources and can miss spikes; normal generation RAM budgets remain advisory.
+
+The [high-worker capacity follow-up](experiments/high-workers-v1/README.md) stopped12 workers at its
+available-memory floor and skipped16/24. The phase/lifetime v3 model replaces v2's expired-array and
+exclusive-phase overcounting; it remains an RSS planning upper estimate, not typical physical usage.
+The driver also supports `--detailed-memory`, `--pss-limit-gib` and `--poll-interval-seconds`.
+Linux PSS/USS samples distinguish proportional/private memory from summed RSS. Available host RAM and
+swap growth remain independent guards; unsupported proportional-memory sampling is reported as unknown.

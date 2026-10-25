@@ -32,3 +32,8 @@ The study does not change scheduling, native libraries, foreground effects, QA, 
 mask/annotation semantics, defaults, or cache policy. Approximate smoothing and a rolling scheduler
 remain future planning decisions. Read `PERFORMANCE_ROUND_TWO.md` and the retained scaling report for
 background and measured results.
+
+The [subsequent capacity/model correction](HIGH_WORKER_MEMORY.md) supersedes v2's loose memory
+formula with phase/lifetime accounting. The historical measurements above remain unchanged. Its
+12-worker ramp reached an available-memory floor;16/24 were intentionally skipped under the user's
+headroom condition, and no higher-count throughput was inferred.
