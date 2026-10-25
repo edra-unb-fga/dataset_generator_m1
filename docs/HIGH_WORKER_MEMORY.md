@@ -11,6 +11,13 @@ that first escalation failed its headroom condition, 16/24 and 12×2 are not att
 host state. No other applications are closed or modified to make room. Raw partial pool/monitor data
 remain ignored. Higher-worker trials need a quieter/larger-RAM environment and the same watchdogs.
 
+The user subsequently requested a [twelve-worker retry](experiments/twelve-worker-retry-v1/README.md)
+with a lower 1.5 GiB available-memory floor and 0.05-second polling. Twelve measured images completed,
+reaching 2.33 GiB available RAM. The longer 48-image attempt reached 1.46 GiB during its second batch
+and was terminated after twelve measured images had committed. This demonstrates that the original
+floor was conservative for the short prefix; it does not establish enough headroom for the longer
+workload. No completed longer-run peak or throughput is inferred. The remaining matrix was skipped.
+
 ## Estimator correction
 
 The preceding v2 model summed expired graph outputs and mutually exclusive synthesis/render/evidence

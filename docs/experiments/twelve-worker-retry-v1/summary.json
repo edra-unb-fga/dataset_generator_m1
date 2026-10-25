@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "kind": "twelve-worker-guarded-retry",
+  "protocol": {
+    "workers": 12,
+    "native_threads": 1,
+    "max_in_flight": 12,
+    "cache_mib": 0,
+    "output_size": [
+      1280,
+      1280
+    ],
+    "appearance": "realistic-heavy",
+    "background_mix": "standard",
+    "qa_samples": 4,
+    "short_samples": 12,
+    "short_warmups": 1,
+    "short_repeats": 1,
+    "long_requested_samples": 48,
+    "long_warmups": 2,
+    "long_requested_repeats": 3,
+    "planned_policies": [
+      "twelve1",
+      "twelve2",
+      "six1"
+    ],
+    "guard_limits": {
+      "rss_limit_gib": 12.0,
+      "pss_limit_gib": 6.5,
+      "min_available_gib": 1.5,
+      "max_swap_out_mib": 16.0,
+      "cell_timeout_seconds": 240.0,
+      "poll_interval_seconds": 0.05
+    },
+    "driver_source_sha256": "5df61343248f4392ddad054abbebc0f9b1bce765b810b40b79a4068e36ced95b"
+  },
+  "short": {
+    "status": "complete",
+    "record": {
+      "accepted": 12,
+      "attempts": 12,
+      "throughput": 1.1509302093086446,
+      "command_seconds": 16.097765427082777,
+      "active_seconds": 10.426345478044823,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "cf43d8f39be93011d3380c70777b68064e475a39c4dc7d9598e9a7e24a1bbe06",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "30d42ce1525b2a1854ab49a06ea58100a33cc4717f96adc778a527d909a5a13b",
+      "content_signature": "38624782dbb1d50bcbf8db33e6944fcaa15a08afa5b72c8020d8cac15d58f7fa",
+      "guard_limits": {
+        "rss_limit_gib": 12.0,
+        "pss_limit_gib": 6.5,
+        "min_available_gib": 1.5,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.05
+      },
+      "inspection": "valid"
+    },
+    "memory": {
+      "initial_available_bytes": 6615822336,
+      "minimum_available_bytes": 2499325952,
+      "peak_rss_bytes": 5258817536,
+      "peak_pss_bytes": 3585816576,
+      "peak_uss_bytes": 3482411008,
+      "swap_out_delta_bytes": 2924544,
+      "initial_swap_used_bytes": 2144391168,
+      "last_elapsed_seconds": 16.032004228094593
+    },
+    "observed_distinct_worker_pids": 12
+  },
+  "long": {
+    "status": "guard-aborted",
+    "abort": {
+      "status": "guard-aborted",
+      "policy": "twelve1",
+      "repeat": 0,
+      "reason": "available host memory floor",
+      "completed_cells": 0,
+      "peak_observed_rss_bytes": 6187458560,
+      "elapsed_seconds": 19.201743637095205,
+      "minimum_available_memory_bytes": 1566527488,
+      "peak_observed_pss_bytes": 3897827328,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "guard_limits": {
+        "rss_limit_gib": 12.0,
+        "pss_limit_gib": 6.5,
+        "min_available_gib": 1.5,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.05
+      }
+    },
+    "committed_measured_samples": 12,
+    "throughput": null,
+    "memory": {
+      "initial_available_bytes": 6662443008,
+      "minimum_available_bytes": 1566527488,
+      "peak_rss_bytes": 6187458560,
+      "peak_pss_bytes": 3897827328,
+      "peak_uss_bytes": 3792621568,
+      "swap_out_delta_bytes": 0,
+      "initial_swap_used_bytes": 2147291136,
+      "last_elapsed_seconds": 19.123429766041227
+    },
+    "observed_distinct_worker_pids": 12
+  },
+  "historical_short_controls": [
+    {
+      "variant": "six1",
+      "throughput": 1.0989739016980364,
+      "accepted": 12,
+      "attempts": 12,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "cf43d8f39be93011d3380c70777b68064e475a39c4dc7d9598e9a7e24a1bbe06",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "30d42ce1525b2a1854ab49a06ea58100a33cc4717f96adc778a527d909a5a13b",
+      "content_signature": "38624782dbb1d50bcbf8db33e6944fcaa15a08afa5b72c8020d8cac15d58f7fa"
+    },
+    {
+      "variant": "six2",
+      "throughput": 0.89926767895885,
+      "accepted": 12,
+      "attempts": 12,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "cf43d8f39be93011d3380c70777b68064e475a39c4dc7d9598e9a7e24a1bbe06",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "30d42ce1525b2a1854ab49a06ea58100a33cc4717f96adc778a527d909a5a13b",
+      "content_signature": "38624782dbb1d50bcbf8db33e6944fcaa15a08afa5b72c8020d8cac15d58f7fa"
+    }
+  ],
+  "skipped": {
+    "twelve2": "Long twelve1 run reached the revised available-memory floor.",
+    "six1_new_control": "Comparison matrix stopped at its first cell.",
+    "remaining_repetitions": "No complete 48-image twelve-worker cell.",
+    "sixteen_and_twentyfour": "Outside this retry; no safe lower-count full-workload evidence."
+  },
+  "limits": [
+    "The short completed result is 12 samples and one repetition; it does not establish sustained throughput.",
+    "Earlier six-worker short controls use identical content and software but were not interleaved with this retry.",
+    "The long run was terminated, not an out-of-memory event. It does not establish a completed peak or throughput.",
+    "Summed RSS repeats shared pages. PSS/USS are independent sampled maxima, collected once per second.",
+    "Available host memory is sampled every 0.05 seconds; neither guard nor advisory RAM budget is a hard OS limit.",
+    "No rendering, execution policy implementation, estimator or generic defaults were changed."
+  ]
+}
