@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
@@ -28,7 +29,10 @@ def _finding(code: str, message: str, artifact: str | None = None) -> dict[str, 
 
 def _json(path: Path, findings: list[dict[str, Any]]) -> dict[str, Any] | None:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        value = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(value, dict) or not value:
+            raise ValueError("Expected a non-empty JSON object")
+        return value
     except Exception as exc:
         findings.append(_finding("INVALID_JSON", f"{type(exc).__name__}: {exc}", path.name))
         return None
@@ -64,6 +68,17 @@ def _pool_artifact(root: Path, value: object, findings: list[dict[str, Any]], *,
 
 
 def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
+    """Treat corrupt pools as findings, including malformed nested record shapes."""
+    try:
+        return _inspect_pool(output_dir)
+    except (ValueError, TypeError, AttributeError, KeyError, IndexError, OverflowError, OSError) as exc:
+        return {
+            "schema_version": 1, "status": "invalid", "pool": str(Path(output_dir).resolve()),
+            "samples": 0, "findings": [_finding("INVALID_POOL_RECORD", f"{type(exc).__name__}: {exc}")],
+        }
+
+
+def _inspect_pool(output_dir: str | Path) -> dict[str, Any]:
     root = Path(output_dir).resolve()
     findings: list[dict[str, Any]] = []
     required = ["run.json", "summary.json", "samples.jsonl", "rejections.jsonl", "metrics.jsonl", "control.json", "control-events.jsonl", "qa/index.html"]
@@ -111,6 +126,8 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
                     continue
                 for annotation in sample.get("annotations", []):
                     x1, y1, x2, y2 = annotation.get("bbox", (-1, -1, -1, -1))
+                    if not all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) for value in (x1, y1, x2, y2)):
+                        raise ValueError("Annotation bbox requires four finite coordinates")
                     if not (0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height):
                         findings.append(_finding("ANNOTATION_OUT_OF_BOUNDS", f"Invalid bbox {annotation.get('bbox')}", sample.get("sample_id")))
                     nx, ny, nw, nh = annotation.get("normalized_bbox", (-1, -1, -1, -1))

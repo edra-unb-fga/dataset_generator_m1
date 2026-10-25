@@ -11,6 +11,8 @@ from pathlib import Path
 from time import perf_counter, sleep as default_sleep
 from typing import Any, Callable, Literal
 
+from .ownership import CoordinatorLease, coordinator_ownership
+
 
 RunAction = Literal["pause", "continue", "stop"]
 TERMINAL_STATES = {"complete", "interrupted", "failed"}
@@ -49,23 +51,23 @@ def _record_lock(root: Path):
     """Serialize cross-process read/modify/write cycles around the atomic record."""
     lock_path = root / "control.lock"
     deadline = perf_counter() + 5.0
-    descriptor: int | None = None
-    while descriptor is None:
+    handle = os.fdopen(os.open(lock_path, os.O_RDWR | os.O_CREAT, 0o600), "r+b")
+    if os.fstat(handle.fileno()).st_size == 0:
+        handle.write(b" ")
+        handle.flush()
+    while True:
         try:
-            descriptor = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-        except FileExistsError:
+            CoordinatorLease._lock(handle)
+            break
+        except OSError:
             if perf_counter() >= deadline:
+                handle.close()
                 raise TimeoutError(f"Timed out waiting for run-control lock: {lock_path}")
             default_sleep(0.01)
     try:
-        os.write(descriptor, f"{os.getpid()}\n".encode("ascii"))
-        os.close(descriptor)
-        descriptor = None
         yield
     finally:
-        if descriptor is not None:
-            os.close(descriptor)
-        lock_path.unlink(missing_ok=True)
+        handle.close()
 
 
 def _effective_state(record: dict[str, Any]) -> str:
@@ -78,7 +80,7 @@ def _effective_state(record: dict[str, Any]) -> str:
 
 def run_status(root: str | Path) -> dict[str, Any]:
     record = _read(Path(root).resolve())
-    return {"status": "valid", **record, "effective_state": _effective_state(record)}
+    return {"status": "valid", **record, "effective_state": _effective_state(record), "ownership": coordinator_ownership(root)}
 
 
 def request_run_action(
@@ -123,6 +125,7 @@ class RunController:
     clock: Callable[[], float] = field(default=perf_counter, repr=False)
     _pause_started: float | None = field(default=None, init=False, repr=False)
     _paused_total: float = field(default=0.0, init=False, repr=False)
+    _lease: CoordinatorLease | None = field(default=None, init=False, repr=False)
 
     @classmethod
     def open(
@@ -131,15 +134,26 @@ class RunController:
         *,
         resume: bool,
         clock: Callable[[], float] = perf_counter,
+        lease: CoordinatorLease | None = None,
     ) -> "RunController":
         root = Path(root).resolve()
         root.mkdir(parents=True, exist_ok=True)
         controller = cls(root, clock)
+        controller._lease = lease or CoordinatorLease(root).__enter__()
+        try:
+            controller._initialize(resume)
+        except BaseException:
+            controller.close()
+            raise
+        return controller
+
+    def _initialize(self, resume: bool) -> None:
+        root = self.root
         path = root / "control.json"
         if path.exists():
             if not resume:
                 raise ValueError(f"Control record already exists; use --resume: {root}")
-            controller._write_transition("running", desired="running", event="resumed")
+            self._write_transition("running", desired="running", event="resumed")
         else:
             record = {
                 "schema_version": 1,
@@ -151,8 +165,7 @@ class RunController:
                 "coordinator_pid": os.getpid(),
             }
             _atomic_json(path, record)
-            controller._event("created", record, actor="coordinator")
-        return controller
+            self._event("created", record, actor="coordinator")
 
     @property
     def paused_seconds(self) -> float:
@@ -202,7 +215,15 @@ class RunController:
         return "continue"
 
     def finish(self, status: Literal["complete", "interrupted", "failed"]) -> None:
-        self._write_transition(status, desired=status, event=status)
+        try:
+            self._write_transition(status, desired=status, event=status)
+        finally:
+            self.close()
+
+    def close(self) -> None:
+        if self._lease is not None:
+            self._lease.close()
+            self._lease = None
 
     def _write_transition(self, actual: str, *, desired: str | None = None, event: str) -> dict[str, Any]:
         with _record_lock(self.root):

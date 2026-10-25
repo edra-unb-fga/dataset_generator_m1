@@ -15,6 +15,7 @@ from .assets import AssetCatalog, build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
 from .execution import resolve_worker_count
 from .models import ResolvedProfile
+from .ownership import CoordinatorLease
 from .preflight import PreflightRequest, require_warning_receipt, run_preflight
 from .performance import DEFAULT_OBSERVATION_PATH, append_production_observation
 from .resource_monitor import ProcessTreeMonitor
@@ -223,6 +224,15 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         raise RuntimeError(f"Preflight failed: {preflight['validation_errors']}")
     require_warning_receipt(preflight, options.receipt_path)
     catalog = build_asset_catalog(resolved)
+    with CoordinatorLease(output_dir) as lease:
+        return _generate_owned_pool(resolved, output_dir, options, workers, preflight, observation_path, catalog, lease)
+
+
+def _generate_owned_pool(
+    resolved: ResolvedProfile, output_dir: str | Path, options: GenerationOptions,
+    workers: int, preflight: dict[str, Any], observation_path: Path,
+    catalog: AssetCatalog, lease: CoordinatorLease,
+) -> dict[str, Any]:
     store = RunStore.open(
         Path(output_dir),
         resolved,
@@ -231,7 +241,7 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         invocation=options.invocation,
         preflight=preflight,
     )
-    control = RunController.open(store.root, resume=options.resume)
+    control = RunController.open(store.root, resume=options.resume, lease=lease)
     terminal_control = TerminalControlAdapter(
         store.root,
         enabled=options.output_format == "human" and options.display not in {"quiet", "plain"},

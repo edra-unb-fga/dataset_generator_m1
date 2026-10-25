@@ -175,6 +175,21 @@ def test_inspection_reports_scalar_jsonl_records_without_crashing(tmp_path: Path
     assert any(item["code"] == "INVALID_JSONL_RECORD" for item in result["findings"])
 
 
+def test_inspection_reports_malformed_document_and_nested_records(tmp_path: Path) -> None:
+    pool = tmp_path / "pool"
+    generate_pool(_resolved(), pool, GenerationOptions(display="quiet", workers=1))
+    manifest = (pool / "run.json").read_text(encoding="utf-8")
+    for value in ([], None, {}, {"profile": []}):
+        (pool / "run.json").write_text(json.dumps(value), encoding="utf-8")
+        assert inspect_pool(pool)["status"] == "invalid"
+    (pool / "run.json").write_text(manifest, encoding="utf-8")
+    sample = json.loads((pool / "samples.jsonl").read_text(encoding="utf-8"))
+    for value in (None, [None], [{"bbox": [1, 2]}], [{"bbox": [0, 0, "bad", 4]}]):
+        sample["annotations"] = value
+        (pool / "samples.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
+        assert inspect_pool(pool)["status"] == "invalid"
+
+
 def test_inspection_rejects_paths_outside_pool_root(tmp_path: Path) -> None:
     pool = tmp_path / "pool"
     generate_pool(_resolved(), pool, GenerationOptions(display="quiet", workers=1))

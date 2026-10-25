@@ -170,7 +170,7 @@ class RunStore:
         root = root.resolve()
         run_id = f"{resolved.profile.run.label}-{resolved.contract_hash[:4]}-{catalog.fingerprint[:4]}"
         run_path = root / "run.json"
-        if root.exists() and any(root.iterdir()) and not resume:
+        if root.exists() and any(item.name != "coordinator.lock" for item in root.iterdir()) and not resume:
             raise ValueError(f"Output directory is not empty; use --resume: {root}")
         root.mkdir(parents=True, exist_ok=True)
         (root / "images").mkdir(exist_ok=True)
