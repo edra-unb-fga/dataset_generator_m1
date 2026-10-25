@@ -143,3 +143,11 @@ or a scheduling/transport redesign require the next planning decision. Reproduce
 `scripts/probe_multiband_allocations.py` and the optional Matplotlib authoring script
 `scripts/report_background_performance.py`. Raw evidence remains ignored. #28 still needs additional
 hardware-class evidence.
+
+The follow-up [worker/thread scaling report](experiments/worker-scaling-v1/README.md) tests6 workers
+with24 requested OpenCV threads each and compares1×24,2×12,4×6,6×1,6×4 and6×24 over3 repetitions
+of24 accepted images (+2 warmups). Six single-threaded workers led this host's measurements; all
+encoded images and mask/annotation signatures match. A lower experimental watchdog protects current
+host headroom. The accompanying conservative RAM accounting is evaluated separately against observed
+process-tree memory; it does not fit the planner to this host's fastest policy. See `WORKER_SCALING.md`
+for scope, safeguards and remaining limits.

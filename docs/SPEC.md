@@ -261,6 +261,12 @@ are advisory planning inputs, while decoded-cache payload bytes and in-flight wo
 OpenCV native threads, workers, queue and cache choices are explicit and recorded; they never reduce
 visual/annotation quality. The default decoded cache remains disabled. See [EXECUTION.md](EXECUTION.md).
 
+Execution plans include a versioned `memory_estimate` component breakdown and advisory warnings for
+missing source dimensions or native-thread oversubscription. Automatic worker selection evaluates the
+complete estimated process/workspace/queue/cache memory against its RAM budget and explicit queue
+capacity; if no one-worker plan fits, it retains one worker with a warning. Explicit workers are not
+silently reduced. Rendering dimensions, distributions and annotation semantics remain unchanged.
+
 New run manifests distinguish normalized generation identity from execution/software identity and
 exact-file provenance. Equivalent fresh runs can be compared across checkout roots; historical resume
 continues to require strict contract/catalog equality. No cross-machine resume is promised.
