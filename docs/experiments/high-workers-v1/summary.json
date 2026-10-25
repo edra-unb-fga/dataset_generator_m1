@@ -406,9 +406,9 @@
     "metric_limit": "Partial sampled peaks are lower bounds, not completed-pool maxima."
   },
   "skipped": {
-    "twelve2": "First12-worker case reached the available-memory floor.",
-    "sixteen1and2": "Escalation stopped after12 workers failed the headroom condition.",
-    "twentyfour1and2": "User condition requires safe lower-count evidence;12-worker ramp already stopped."
+    "twelve2": "First 12-worker case reached the available-memory floor.",
+    "sixteen1and2": "Escalation stopped after 12 workers failed the headroom condition.",
+    "twentyfour1and2": "User condition requires safe lower-count evidence; 12-worker ramp already stopped."
   },
   "protocol": {
     "samples": 48,
@@ -1184,6 +1184,6 @@
     "Repeated scenes measure execution variation;48/2 protocol differs from the historical24/2 workload prefix.",
     "RSS planning estimates include shared pages repeatedly; PSS/USS are independent physical/private-memory observations.",
     "Partial abort measurements cannot establish throughput or a completed peak.",
-    "Memory guards are sampled, not hard OS limits. No16/24-worker completion claim is made."
+    "Memory guards are sampled, not hard OS limits. No 16/24-worker completion claim is made."
   ]
 }
