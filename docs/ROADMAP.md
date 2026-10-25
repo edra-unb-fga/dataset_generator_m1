@@ -46,6 +46,11 @@ deliveries; the follow-ups above repair acceptance gaps rather than rewriting th
 - [ ] [#27](https://github.com/edra-unb-fga/dataset_generator_m1/issues/27): calibrate background QA warnings and hard failures after complete placement diagnostics.
 - [ ] [#28](https://github.com/edra-unb-fga/dataset_generator_m1/issues/28): establish reviewed benchmark baselines by hardware class using hardened continuous process-tree evidence; no universal timing budget exists yet.
 
+The bounded [background performance round](PERFORMANCE_ROUND_TWO.md) removes redundant work with
+exact-output production evidence and unchanged defaults. Its [local report](experiments/background-performance-v1/README.md)
+does not complete #28. Further large gains require a scoped smoothing/fidelity or scheduling/transport
+decision; preserve deterministic commits, bounded memory, stop/resume and any explicit diversity policy.
+
 ## Later
 
 - [ ] [#31](https://github.com/edra-unb-fga/dataset_generator_m1/issues/31): implement reviewed typed nested placement without changing landing/manometro controls.
