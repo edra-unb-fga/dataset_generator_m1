@@ -195,10 +195,13 @@ class RunStore:
         (root / "state" / "rejections").mkdir(parents=True, exist_ok=True)
         for name in ("samples.jsonl", "rejections.jsonl", "metrics.jsonl"):
             (root / name).touch(exist_ok=True)
+        from .renderer_version import RENDERER_SEMANTICS
         if run_path.exists():
             existing = json.loads(run_path.read_text(encoding="utf-8"))
             if existing.get("schema_version", 1) != 2:
                 raise ValueError("Pool schema v1 remains auditable/exportable but cannot resume as pool schema v2; generate a new pool")
+            if existing.get("renderer_semantics") != RENDERER_SEMANTICS:
+                raise ValueError("Renderer semantics changed; old pools remain inspectable/exportable. Generate a fresh pool.")
             if existing.get("contract_hash") != resolved.contract_hash or existing.get("catalog_fingerprint") != catalog.fingerprint:
                 raise ValueError("Resume contract or asset catalog fingerprint does not match the existing run")
         else:
@@ -224,6 +227,7 @@ class RunStore:
                 {
                     "schema_version": 2,
                     "run_id": run_id,
+                    "renderer_semantics": RENDERER_SEMANTICS,
                     "label": resolved.profile.run.label,
                     "tags": list(resolved.profile.run.tags),
                 "invocation": _sanitized_invocation(invocation),

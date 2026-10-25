@@ -3,6 +3,7 @@ import hashlib
 import json
 from importlib.metadata import version
 import platform
+from .renderer_version import RENDERER_SEMANTICS
 
 
 def digest(value) -> str:
@@ -32,7 +33,7 @@ def generation_contract(resolved, catalog) -> dict:
              "texture_kind": item.texture_kind}
             for item in getattr(catalog, role)
         ]
-    return {"schema_version": 1, "renderer_semantics": "planar-alpha-v2.1", "profile": payload,
+    return {"schema_version": 1, "renderer_semantics": RENDERER_SEMANTICS, "profile": payload,
             "family": resolved.family.model_dump(mode="json"), "recipes": resolved.recipes.model_dump(mode="json")}
 
 

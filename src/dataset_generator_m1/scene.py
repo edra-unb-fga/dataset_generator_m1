@@ -14,6 +14,7 @@ from .annotation_evidence import visible_coverages
 from .backgrounds import BackgroundSample
 from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox
+from .surface_effects import apply_scene_lighting, sample_lighting
 from .models import ResolvedProfile
 from .placement_diagnostics import (
     bounded_spatial_histogram,
@@ -121,6 +122,7 @@ class RenderedScene:
     rejected_instances: tuple[dict[str, Any], ...]
     exclusive_timings_ns: dict[str, int]
     effect_traces: tuple[dict[str, Any], ...]
+    scene_effects: dict[str, Any]
 
     @property
     def instance_masks(self) -> tuple[np.ndarray, ...]:
@@ -593,6 +595,12 @@ class SceneRenderer:
                     ),
                 )
             )
+        lighting_seed = derive_seed(self.profile.run.seed, plan.slot, plan.candidate_attempt, "scene-lighting")
+        started = self.clock()
+        lighting = sample_lighting(self.profile.scene.lighting, np.random.default_rng(lighting_seed))
+        rendered = apply_scene_lighting(rendered, plan.scene_to_output, plan.canvas_size, lighting)
+        timings["scene_lighting"] = max(0, self.clock()-started)
+        scene_effects = {"lighting": {"seed": lighting_seed, **lighting} if lighting is not None else None}
         rendered, traces = apply_pipeline_traced(
             rendered,
             self.profile.appearance.final,
@@ -612,4 +620,5 @@ class SceneRenderer:
             rejected_instances=tuple(rejected),
             exclusive_timings_ns=timings,
             effect_traces=tuple(effect_traces),
+            scene_effects=scene_effects,
         )

@@ -60,6 +60,8 @@ def plan_execution(resolved: Any, workers: str | int | None = None, *, available
     # Large source decodes can exceed this heuristic; RAM remains advisory.
     source_pixels = 2 * width * height
     work_bytes = max(256 * 1024**2, int(width * height * resolved.profile.scene.canvas_scale**2 * 64 + source_pixels * 4))
+    if resolved.profile.scene.lighting is not None:
+        work_bytes += width*min(height, 128)*40 + width*height*3
     total_cache = policy.decoded_cache_mb * 1024**2
     native_threads = policy.native_threads or (1 if policy.cpu_budget is not None else None)
     thread_budget = native_threads or 1

@@ -8,7 +8,7 @@ scope and future uses; unchecked items are not implemented capabilities.
 - [x] A: review and merge #51 → #53 → #54 → #55 → #58 → #60 in order, using merge commits.
 - [x] A: preserve the existing local artwork/profile-study changes separately; rerun a
   representative baseline with the corrected artwork without rewriting historical studies.
-- [ ] B: offline detection **and instance-segmentation** evaluation, reference audits and projection checks.
+- [x] B: offline detection **and instance-segmentation** evaluation, reference audits and projection checks.
 - [ ] C: experimental shared 2D illumination and RGB-only procedural wear.
 - [ ] D: procedural scene-plane occlusion, post-occlusion acceptance and exact annotation evidence.
 - [ ] E: integrated paired studies, production measurements, reports and merged validated milestones.

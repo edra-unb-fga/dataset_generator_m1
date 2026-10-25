@@ -1,0 +1,13 @@
+# Experimental planar surfaces
+
+Use `examples/configs/landing-pad_surface.yaml` through the normal resolve, preview, preflight and generate commands. Existing composers retain their selected effects. No physically calibrated realism or detector gain is claimed.
+
+`scene.lighting` is optional (omission disables it). Its probability (default .8), gain range [.85,1.10], gradient amplitude [.05,.25] and tint bound .025 sample one constant/linear irradiance field in scene coordinates. Gain is bounded [.1,2], gradient [0,1], tint [0,.1]. Inverse shared homography evaluates the same field for all surfaces. Texture affine rotation leaves the lighting field fixed. Modulation uses linear RGB after composition and before capture effects, with bounded row workspaces. It cannot remove baked shadows from photographs. `source_assumption` records `unknown`, `baked` or `unlit-approximation`; it is a declaration, not an inferred property.
+
+Foreground-only native `SurfaceWear` accepts `fade`, `dirt`, `scratches`, `marks` (0–64), and `scratch_width` relative to source width. The normalized fixed-width lattice (512 wide, height capped at 2048) makes the marks independent of ordinary source resolution. Wear changes RGB before rotation/projection and preserves alpha exactly. It models faded pigment, dirt and scratches qualitatively, not holes or material damage. Pristine source assets stay untouched. Stable effect IDs own deterministic streams; the shared field uses a separate scene-lighting stream.
+
+The shipped `surface-camera` preset combines mild wear with restrained exposure, motion and compression, avoiding independent surface-light/shadow stacks. Configuration is uncalibrated. Try fade .03/.06/.2, dirt .08/.18/.5, scratches .05/.12/.4 for mild/moderate/forced engineering checks; forced activation is diagnostic.
+
+Pool records retain realized seeds, sampled parameters and exclusive scene-lighting timing, alongside ordinary foreground effect traces. Cost identities include scene settings; preflight marks unmeasured enabled scene effects and budgets their temporary memory. Renderer semantics `planar-surface-v3` require a fresh pool after this upgrade; old pools remain inspectable and exportable. Same-version resume remains supported.
+
+Normal/roughness maps, physical sun angles, cast shadows, specular response and raised targets remain deferred to #62/#63. Future BlenderProc comparisons (#64) must match conditions and annotation policies, distinguish textured planes from physical scenes, and include cold start, scene reuse, output/QA and asset preparation costs. Equal dataset-size and equal generation-time comparisons answer different questions. This round installs no Blender runtime.
