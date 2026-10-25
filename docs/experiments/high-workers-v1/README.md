@@ -127,7 +127,7 @@ protocol; adapt a new report for a different machine rather than relabeling a co
 
 ## Verification and remaining work
 
-273 deterministic tests pass. New regressions exercise dead chains versus live branches, early output lifetime, exclusive phases, extreme foreground aspect/resize and supported/unsupported proportional-memory sampling. Two lifecycle/phase tests fail on v2 before the fix. Traced allocations for all four shipped recipes agree with the pixel allowances (within0.5% for small tracing metadata), and revised RSS estimates exceed all retained completed peaks. Platform/CLI checks and exact serial/process baseline comparisons accompany delivery. Charts were visually inspected; all report links are checked. Existing browser policy prevents local-file HTML layout inspection.
+274 deterministic tests pass. New regressions exercise dead chains versus live branches, early output lifetime, exclusive phases, extreme foreground aspect/resize, wide-RGB multiband conversion allocations and supported/unsupported proportional-memory sampling. Two lifecycle/phase tests fail on v2 before the fix. Traced allocations for all four shipped recipes agree with the pixel allowances (within0.5% for small tracing metadata), and revised RSS estimates exceed all retained completed peaks. Platform/CLI checks and exact serial/process baseline comparisons accompany delivery. Charts were visually inspected; all report links are checked. Existing browser policy prevents local-file HTML layout inspection.
 
 The only high-count capacity conclusion is that12 workers crossed this host-state headroom floor.
 No12-worker completed peak/rate or16/24 performance is claimed. More physical headroom is required
