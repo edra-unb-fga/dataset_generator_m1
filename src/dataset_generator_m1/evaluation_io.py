@@ -191,6 +191,10 @@ def _from_pool(pool, semantics):
                     "visible_support_fraction": a.get("visible_support_fraction")}
             if a.get("instance_id") in decoded:
                 mask = decoded[a["instance_id"]][semantics] > threshold
+                ys, xs = np.where(mask)
+                if not len(xs):
+                    raise ValueError("Selected pool mask semantics contain an empty accepted instance")
+                item["bbox"] = [int(xs.min()), int(ys.min()), int(xs.max()-xs.min()+1), int(ys.max()-ys.min()+1)]
                 item["segmentation"] = encode_mask(mask)
                 item["area"] = int(mask.sum())
             coco["annotations"].append(item)

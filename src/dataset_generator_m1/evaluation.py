@@ -155,7 +155,21 @@ def _overlays(output, root, ground_truth, diagnostics, detections, task):
                 if a["image_id"] == row["image_id"]:
                     mask = instance_mask(a["segmentation"], image["width"], image["height"])
                     tint[mask] = (tint[mask].astype(float)*.7 + np.array([0, 190, 130])*.3).astype(np.uint8)
+            for prediction_id in row["false_positive_ids"]:
+                a = detections.anns[prediction_id]
+                mask = instance_mask(a["segmentation"], image["width"], image["height"])
+                tint[mask] = (tint[mask].astype(float)*.7 + np.array([241, 64, 87])*.3).astype(np.uint8)
             canvas = Image.fromarray(tint)
+        targets = [a for a in ground_truth["annotations"] if a["image_id"] == row["image_id"]]
+        targets.sort(key=lambda a: (a["id"] not in row["false_negative_ids"], a["id"]))
+        for index, a in enumerate(targets[:2]):
+            x, y, w, h = a["bbox"]
+            margin = max(4, round(max(w, h)*.15))
+            crop = canvas.crop((max(0, int(x)-margin), max(0, int(y)-margin), min(image["width"], int(np.ceil(x+w))+margin), min(image["height"], int(np.ceil(y+h))+margin)))
+            crop.thumbnail((480, 480))
+            name = f"overlays/{task}-{row['image_id']}-target-{index}.jpg"
+            crop.save(output / name, quality=90)
+            cards.append((name, f"{task} target {a['id']} | {'missed at operating point' if a['id'] in row['false_negative_ids'] else 'reference crop'}"))
         canvas.thumbnail((960, 960))
         path = f"overlays/{task}-{row['image_id']}.jpg"
         canvas.save(output / path, quality=90)
@@ -199,6 +213,20 @@ def score_dataset(dataset_path, predictions_manifest, output_dir, *, tasks=("bbo
             task: {k: sum(r[k] for r in results[task]["per_image"] if r["image_id"] in members) for k in ("tp", "fp", "fn")}
             for task in tasks}} for label, members in groups.items()}
     warnings = list(dataset["warnings"])
+    relative_sizes = {}
+    images = {r["id"]: r for r in ground_truth["images"]}
+    for label, low, high in (("box-area-below-1pct", 0, .01), ("box-area-1-to-10pct", .01, .1), ("box-area-at-least-10pct", .1, float("inf"))):
+        selected = []
+        for annotation in ground_truth["annotations"]:
+            if annotation["image_id"] not in ids or annotation.get("iscrowd", 0):
+                continue
+            image = images[annotation["image_id"]]
+            area = annotation["bbox"][2]*annotation["bbox"][3]/(image["width"]*image["height"])
+            if low <= area < high:
+                selected.append(annotation["id"])
+        relative_sizes[label] = {"ground_truth_instances": len(selected), "misses": {
+            task: sum(a in selected for r in results[task]["per_image"] for a in r["false_negative_ids"]) for task in tasks},
+            "definition": "measured box area / image area; FP have no ground-truth size bin"}
     if len(ids) != len(ground_truth["images"]):
         warnings.append("Partial prediction coverage: this is not a full-dataset score.")
     if manifest.get("model") is None:
@@ -210,7 +238,7 @@ def score_dataset(dataset_path, predictions_manifest, output_dir, *, tasks=("bbo
                   "metric_parameters": {"iou_thresholds": [round(.5+.05*i, 2) for i in range(10)], "max_detections": [1, 10, 100],
                                         "confidence": confidence, "diagnostic_iou": diagnostic_iou}}
     result = {"schema_version": 1, "kind": "evaluation-score", "status": "complete_with_warnings",
-              "comparison": comparison, "tasks": results, "slices": slices, "warnings": warnings,
+              "comparison": comparison, "tasks": results, "slices": slices, "relative_target_size_support": relative_sizes, "warnings": warnings,
               "prediction_manifest_sha256": file_hash(predictions_manifest), "model": manifest.get("model", "unknown"),
               "prediction_file_sha256": file_hash(Path(predictions_manifest).resolve().parent / manifest["predictions"]),
               "normalized_predictions_sha256": digest(predictions),
