@@ -39,6 +39,13 @@ def test_background_partitions_are_portable_and_consumed_before_generation(tmp_p
         assert {row["split"] for row in result["samples"]} == {"train", "val"}
         assert result["split_analysis"]["analysis"]["pre_generation"] is True
     samples = [json.loads((pool / "samples.jsonl").read_text()) for pool in pools]
+    for strategy in ("random", "stratified"):
+        destination = tmp_path / f"invalid-{strategy}"
+        with pytest.raises(ValueError, match="Partitioned pools"):
+            export_pools(pools, destination, ExportOptions(strategy=strategy))
+        assert not destination.exists()
+    from dataset_generator_m1.runstore import _sanitized_profile
+    assert _sanitized_profile(current)["assets"]["partition"]["manifest_file"] == "partition.json"
     for i, sample in enumerate(samples):
         sample["_key"] = str(i)
     plan = plan_asset_disjoint_splits(samples, manifest["splits"], 42, policy="background-disjoint")

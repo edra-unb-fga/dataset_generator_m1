@@ -35,6 +35,9 @@ def _sanitized_profile(resolved: ResolvedProfile) -> dict[str, Any]:
         source["paths"] = [Path(value).name if Path(value).is_absolute() else value for value in source["paths"]]
         if source.get("catalog_file") and Path(source["catalog_file"]).is_absolute():
             source["catalog_file"] = Path(source["catalog_file"]).name
+    partition = profile["assets"].get("partition")
+    if partition and Path(partition["manifest_file"]).is_absolute():
+        partition["manifest_file"] = Path(partition["manifest_file"]).name
     recipe_file = profile["background_synthesis"]["recipe_file"]
     if Path(recipe_file).is_absolute():
         profile["background_synthesis"]["recipe_file"] = Path(recipe_file).name
