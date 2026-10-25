@@ -7,14 +7,14 @@ dependency; unchecked items are not promises that current commands already imple
 
 ### Practical workflow review stack
 
-- [ ] #49 / PR #51: exclusive coordinator ownership and malformed-input safety.
-- [ ] #50 / PR #53: complete diagnostics, resume telemetry and accepted-output calibration.
-- [ ] #52 / PR #54: declarative rectangular-pad family, explicit count policy and family discovery.
-- [ ] #33 / PR #55: pre-generation source feasibility and verified background/content isolation.
-- [ ] #56 / PR #58: experimental drone screens, pinned colour materials and planar mapping.
-- [ ] #57: execution budgets, isolated portable production benchmarks and local tuning guidance.
+- [x] #49 / PR #51: exclusive coordinator ownership and malformed-input safety.
+- [x] #50 / PR #53: complete diagnostics, resume telemetry and accepted-output calibration.
+- [x] #52 / PR #54: declarative rectangular-pad family, explicit count policy and family discovery.
+- [x] #33 / PR #55: pre-generation source feasibility and verified background/content isolation.
+- [x] #56 / PR #58: experimental drone screens, pinned colour materials and planar mapping.
+- [x] #57 / PR #60: execution budgets, isolated portable production benchmarks and local tuning guidance.
 
-These changes are implemented in the stacked branches but remain unchecked here until review/merge.
+These changes were reviewed, repaired and merged in dependency order on 2026-10-24.
 Read docs/PRACTICAL_WORKFLOW.md for acceptance scope. The historical checklist below records earlier
 deliveries; the follow-ups above repair acceptance gaps rather than rewriting their historical reports.
 
@@ -54,6 +54,22 @@ deliveries; the follow-ups above repair acceptance gaps rather than rewriting th
 - [ ] Add family scaffolding and narrow hooks only after declarative rules prove insufficient.
 - [ ] Evaluate random-phase synthesis for approved homogeneous microtextures.
 - [ ] Evaluate patch quilting for structured textures after current mixer diversity is measured.
+
+### Realism and real-image evidence
+
+These follow-ups are proposed research, not implemented capabilities or new merge requirements for
+#56 / PR #58. Preserve the retained material-lighting verdict and historical experiment evidence.
+
+- [ ] [#59](https://github.com/edra-unb-fga/dataset_generator_m1/issues/59): evaluate external predictions on separate real and synthetic sets, with capture/session isolation, controlled training provenance, repeated seeds, uncertainty and failure slices.
+- [ ] [#61](https://github.com/edra-unb-fga/dataset_generator_m1/issues/61): calibrate planar camera/physical scale and capture-effect severity from permitted real references; record unknowns and keep development references separate from final evaluation.
+- [ ] [#62](https://github.com/edra-unb-fga/dataset_generator_m1/issues/62): prototype shared foreground/ground lighting using #56's retained material work, with paired visual/cost evidence and explicit physical limits.
+- [ ] [#63](https://github.com/edra-unb-fga/dataset_generator_m1/issues/63): study pad wear, surface interaction and environmental occlusion; distinguish appearance-only alpha invariants from deliberate visible-mask changes and coordinate with #31 only where relationships require it.
+- [ ] [#64](https://github.com/edra-unb-fga/dataset_generator_m1/issues/64): compare planar synthesis and BlenderProc using matched scene/annotation contracts, real-image accuracy, equal dataset-size/time budgets and complete generation/setup costs.
+
+Start with real-reference requirements and #59's evaluation contract. Use bounded paired pilots before
+expensive studies; missing reference data or predictions must remain explicit evidence gaps. The
+BlenderProc study is a separate optional future harness, not a generator dependency or a commitment to
+begin 3D implementation now. Existing defaults and production boundaries remain unchanged.
 
 ## Deferred
 

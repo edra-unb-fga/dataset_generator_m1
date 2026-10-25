@@ -2,8 +2,8 @@
 
 Maintained tasks include `landing-pad`: complete rectangular panels using the shared planar renderer.
 Try `configure --family landing-pad --output configs/local/my-pad.yaml --output-format json`, then
-resolve/preview/generate/inspect/export as below. The shipped geometric pad fixtures are independently
-authored workflow examples; replace them with production artwork through a foreground-root override.
+resolve/preview/generate/inspect/export as below. The shipped blue/yellow pads are rasterized from the supplied takeoff and landing SVG artwork.
+Use a foreground-root override to supply other production artwork.
 See [the delivery contract](docs/PRACTICAL_WORKFLOW.md) for count-policy and split semantics.
 
 Auditable synthetic YOLO generation for the `landing` and `manometro` families. The generator uses deterministic scene plans, one shared foreground/background homography, alpha-evidence-derived annotations, versioned background-mixing recipes, resumable pools, Rich live analytics, and deterministic process workers.
@@ -107,6 +107,11 @@ uv run python -m dataset_generator_m1 generate --config examples/configs/landing
 
 `realistic-heavy` is the shipped default. To use `current-fast`, copy a composer and change
 `appearance.preset` to `builtin:appearance/current-fast`; the choice remains visible and versionable.
+
+The experimental `camera-minimal` and `camera-balanced` presets offer restrained final-image camera
+variation. Try `examples/configs/landing-pad_camera-minimal.yaml`, or the explicit content-changing
+`landing-pad_direct-camera.yaml`. The [profile tradeoff study](docs/experiments/profile-tradeoffs-v1/README.md)
+compares visuals, per-stage cost, background mixtures and full generation without changing defaults.
 
 Override files and typed leaves compose without changing code:
 

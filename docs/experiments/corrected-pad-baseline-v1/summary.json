@@ -1,0 +1,440 @@
+{
+  "schema_version": 1,
+  "scope": "Corrected artwork initial production baseline; no cross-run improvement claim",
+  "source_commit": "51336d6",
+  "samples": 20,
+  "warmups": 2,
+  "repeats": 1,
+  "low_sample": true,
+  "software": {
+    "python": "3.13.16",
+    "numpy": "2.5.1",
+    "opencv-python-headless": "5.0.0.93",
+    "albumentations": "2.0.8",
+    "Pillow": "12.3.0"
+  },
+  "execution": {
+    "workers": 1,
+    "native_threads": 1,
+    "max_in_flight": 2,
+    "cache_bytes_per_worker": 0,
+    "estimated_peak_bytes": 481689600,
+    "ram_budget_bytes": 736975257,
+    "cpu_budget": 23,
+    "warnings": [],
+    "requested": {
+      "workers": 1,
+      "cpu_budget": null,
+      "ram_budget_mb": null,
+      "native_threads": 1,
+      "max_in_flight": 2,
+      "decoded_cache_mb": 0
+    }
+  },
+  "result": {
+    "status": "complete",
+    "inspection": "valid",
+    "accepted": 20,
+    "attempts": 21,
+    "throughput": 0.06542042354545358,
+    "active_seconds": 305.7149236089317,
+    "wall_seconds": 306.17036193597596,
+    "resource_peaks": {
+      "process_count": 1.0,
+      "cpu_percent": 100.9,
+      "rss_bytes": 1111625728.0,
+      "read_bytes": 4410191872.0,
+      "write_bytes": 32804864.0
+    },
+    "stage_work": {
+      "scene_plan": {
+        "count": 21,
+        "total_ns": 39881120,
+        "mean_ns": 1899100,
+        "median_ns": 514257,
+        "p90_ns": 5346487,
+        "p95_ns": 5460037,
+        "p99_ns": 5466714
+      },
+      "background_synthesis": {
+        "count": 21,
+        "total_ns": 289371277050,
+        "mean_ns": 13779584621,
+        "median_ns": 2028993799,
+        "p90_ns": 4255222113,
+        "p95_ns": 65176753210,
+        "p99_ns": 184247191627
+      },
+      "scene_render": {
+        "count": 21,
+        "total_ns": 12147394767,
+        "mean_ns": 578447369,
+        "median_ns": 572780952,
+        "p90_ns": 923559655,
+        "p95_ns": 978680265,
+        "p99_ns": 1155681152
+      },
+      "render.background_effects": {
+        "count": 20,
+        "total_ns": 4140506820,
+        "mean_ns": 207025341,
+        "median_ns": 9582736,
+        "p90_ns": 570952806,
+        "p95_ns": 576349402,
+        "p99_ns": 866783985
+      },
+      "render.background_affine": {
+        "count": 20,
+        "total_ns": 844478347,
+        "mean_ns": 42223917,
+        "median_ns": 38882774,
+        "p90_ns": 52044334,
+        "p95_ns": 54165718,
+        "p99_ns": 81989337
+      },
+      "render.background_perspective": {
+        "count": 20,
+        "total_ns": 156251281,
+        "mean_ns": 7812564,
+        "median_ns": 7338937,
+        "p90_ns": 8192362,
+        "p95_ns": 8295704,
+        "p99_ns": 13752439
+      },
+      "render.background_coverage": {
+        "count": 20,
+        "total_ns": 52031814,
+        "mean_ns": 2601590,
+        "median_ns": 2167339,
+        "p90_ns": 3378526,
+        "p95_ns": 3398849,
+        "p99_ns": 5970218
+      },
+      "render.foreground_decode": {
+        "count": 20,
+        "total_ns": 285652978,
+        "mean_ns": 14282648,
+        "median_ns": 13455885,
+        "p90_ns": 19819823,
+        "p95_ns": 22853787,
+        "p99_ns": 28248823
+      },
+      "render.foreground_effects": {
+        "count": 20,
+        "total_ns": 883120954,
+        "mean_ns": 44156047,
+        "median_ns": 28695105,
+        "p90_ns": 103537295,
+        "p95_ns": 107157189,
+        "p99_ns": 122454994
+      },
+      "render.foreground_rotation": {
+        "count": 20,
+        "total_ns": 111335162,
+        "mean_ns": 5566758,
+        "median_ns": 5389699,
+        "p90_ns": 8449194,
+        "p95_ns": 9177074,
+        "p99_ns": 9892279
+      },
+      "render.foreground_resize": {
+        "count": 20,
+        "total_ns": 181004986,
+        "mean_ns": 9050249,
+        "median_ns": 8276930,
+        "p90_ns": 14132869,
+        "p95_ns": 14783289,
+        "p99_ns": 15017098
+      },
+      "render.foreground_visibility": {
+        "count": 20,
+        "total_ns": 220802777,
+        "mean_ns": 11040138,
+        "median_ns": 10797755,
+        "p90_ns": 16419960,
+        "p95_ns": 18116754,
+        "p99_ns": 18381966
+      },
+      "render.foreground_warp": {
+        "count": 20,
+        "total_ns": 199174915,
+        "mean_ns": 9958745,
+        "median_ns": 9090140,
+        "p90_ns": 14025250,
+        "p95_ns": 15369437,
+        "p99_ns": 17282731
+      },
+      "render.foreground_composition": {
+        "count": 20,
+        "total_ns": 1904947228,
+        "mean_ns": 95247361,
+        "median_ns": 92086868,
+        "p90_ns": 150419705,
+        "p95_ns": 175789673,
+        "p99_ns": 229275401
+      },
+      "render.foreground_annotation": {
+        "count": 20,
+        "total_ns": 1863666,
+        "mean_ns": 93183,
+        "median_ns": 68764,
+        "p90_ns": 141995,
+        "p95_ns": 159578,
+        "p99_ns": 430865
+      },
+      "render.final_effects": {
+        "count": 20,
+        "total_ns": 2364138360,
+        "mean_ns": 118206918,
+        "median_ns": 109315864,
+        "p90_ns": 254449926,
+        "p95_ns": 255491132,
+        "p99_ns": 371037992
+      },
+      "mask_encode": {
+        "count": 20,
+        "total_ns": 329887144,
+        "mean_ns": 16494357,
+        "median_ns": 14977717,
+        "p90_ns": 26033874,
+        "p95_ns": 27744178,
+        "p99_ns": 32020716
+      },
+      "mask_polygonization": {
+        "count": 20,
+        "total_ns": 847489402,
+        "mean_ns": 42374470,
+        "median_ns": 40932163,
+        "p90_ns": 65429311,
+        "p95_ns": 69177557,
+        "p99_ns": 82149206
+      },
+      "mask_write": {
+        "count": 20,
+        "total_ns": 72339788,
+        "mean_ns": 3616989,
+        "median_ns": 1661849,
+        "p90_ns": 9508899,
+        "p95_ns": 9565177,
+        "p99_ns": 9648754
+      },
+      "qa_render": {
+        "count": 16,
+        "total_ns": 2297841081,
+        "mean_ns": 143615067,
+        "median_ns": 132025343,
+        "p90_ns": 228094100,
+        "p95_ns": 228094100,
+        "p99_ns": 255901304
+      },
+      "image_encode_write": {
+        "count": 20,
+        "total_ns": 151036481,
+        "mean_ns": 7551824,
+        "median_ns": 6571118,
+        "p90_ns": 12124369,
+        "p95_ns": 12609207,
+        "p99_ns": 13357751
+      },
+      "background.node.source": {
+        "count": 6,
+        "total_ns": 472397,
+        "mean_ns": 78732,
+        "median_ns": 45954,
+        "p90_ns": 119907,
+        "p95_ns": 180619,
+        "p99_ns": 180619
+      },
+      "background.node.canvas": {
+        "count": 6,
+        "total_ns": 1394187323,
+        "mean_ns": 232364553,
+        "median_ns": 212909434,
+        "p90_ns": 249524554,
+        "p95_ns": 374260231,
+        "p99_ns": 374260231
+      },
+      "background.node.first": {
+        "count": 4,
+        "total_ns": 366636,
+        "mean_ns": 91659,
+        "median_ns": 91742,
+        "p90_ns": 148030,
+        "p95_ns": 148030,
+        "p99_ns": 148030
+      },
+      "background.node.second": {
+        "count": 4,
+        "total_ns": 171971,
+        "mean_ns": 42992,
+        "median_ns": 43350,
+        "p90_ns": 69425,
+        "p95_ns": 69425,
+        "p99_ns": 69425
+      },
+      "background.node.mask_source": {
+        "count": 4,
+        "total_ns": 144106,
+        "mean_ns": 36026,
+        "median_ns": 36180,
+        "p90_ns": 58885,
+        "p95_ns": 58885,
+        "p99_ns": 58885
+      },
+      "background.node.first_canvas": {
+        "count": 4,
+        "total_ns": 944615897,
+        "mean_ns": 236153974,
+        "median_ns": 211596274,
+        "p90_ns": 326529131,
+        "p95_ns": 326529131,
+        "p99_ns": 326529131
+      },
+      "background.node.second_canvas": {
+        "count": 4,
+        "total_ns": 720724326,
+        "mean_ns": 180181081,
+        "median_ns": 182539513,
+        "p90_ns": 218664005,
+        "p95_ns": 218664005,
+        "p99_ns": 218664005
+      },
+      "background.node.mask_canvas": {
+        "count": 4,
+        "total_ns": 652525891,
+        "mean_ns": 163131472,
+        "median_ns": 153866433,
+        "p90_ns": 200391516,
+        "p95_ns": 200391516,
+        "p99_ns": 200391516
+      },
+      "background.node.mask_luma": {
+        "count": 4,
+        "total_ns": 1087252122,
+        "mean_ns": 271813030,
+        "median_ns": 215301368,
+        "p90_ns": 466300144,
+        "p95_ns": 466300144,
+        "p99_ns": 466300144
+      },
+      "background.node.mask": {
+        "count": 4,
+        "total_ns": 9323669604,
+        "mean_ns": 2330917401,
+        "median_ns": 1899171345,
+        "p90_ns": 3711684857,
+        "p95_ns": 3711684857,
+        "p99_ns": 3711684857
+      },
+      "background.node.blended": {
+        "count": 4,
+        "total_ns": 60271745238,
+        "mean_ns": 15067936309,
+        "median_ns": 577897002,
+        "p90_ns": 58566057412,
+        "p95_ns": 58566057412,
+        "p99_ns": 58566057412
+      },
+      "background.node.base": {
+        "count": 10,
+        "total_ns": 413842,
+        "mean_ns": 41384,
+        "median_ns": 36984,
+        "p90_ns": 55765,
+        "p95_ns": 65925,
+        "p99_ns": 65925
+      },
+      "background.node.palette_source": {
+        "count": 8,
+        "total_ns": 143766,
+        "mean_ns": 17970,
+        "median_ns": 16797,
+        "p90_ns": 17858,
+        "p95_ns": 26663,
+        "p99_ns": 26663
+      },
+      "background.node.base_canvas": {
+        "count": 10,
+        "total_ns": 2273560650,
+        "mean_ns": 227356065,
+        "median_ns": 248749452,
+        "p90_ns": 291503814,
+        "p95_ns": 295211757,
+        "p99_ns": 295211757
+      },
+      "background.node.palette_canvas": {
+        "count": 8,
+        "total_ns": 1722058069,
+        "mean_ns": 215257258,
+        "median_ns": 210445918,
+        "p90_ns": 271366015,
+        "p95_ns": 320982050,
+        "p99_ns": 320982050
+      },
+      "background.node.transferred": {
+        "count": 8,
+        "total_ns": 190058123913,
+        "mean_ns": 23757265489,
+        "median_ns": 1078351476,
+        "p90_ns": 1146587954,
+        "p95_ns": 182709466638,
+        "p99_ns": 182709466638
+      },
+      "background.node.field_source": {
+        "count": 2,
+        "total_ns": 34112,
+        "mean_ns": 17056,
+        "median_ns": 17056,
+        "p90_ns": 17060,
+        "p95_ns": 17060,
+        "p99_ns": 17060
+      },
+      "background.node.field_canvas": {
+        "count": 2,
+        "total_ns": 399644522,
+        "mean_ns": 199822261,
+        "median_ns": 199822261,
+        "p90_ns": 214882874,
+        "p95_ns": 214882874,
+        "p99_ns": 214882874
+      },
+      "background.node.field_x": {
+        "count": 2,
+        "total_ns": 427290918,
+        "mean_ns": 213645459,
+        "median_ns": 213645459,
+        "p90_ns": 228132029,
+        "p95_ns": 228132029,
+        "p99_ns": 228132029
+      },
+      "background.node.field_y": {
+        "count": 2,
+        "total_ns": 371556734,
+        "mean_ns": 185778367,
+        "median_ns": 185778367,
+        "p90_ns": 190258995,
+        "p95_ns": 190258995,
+        "p99_ns": 190258995
+      },
+      "background.node.warped": {
+        "count": 2,
+        "total_ns": 2937329898,
+        "mean_ns": 1468664949,
+        "median_ns": 1468664949,
+        "p90_ns": 1609182274,
+        "p95_ns": 1609182274,
+        "p99_ns": 1609182274
+      }
+    }
+  },
+  "source_asset_sha256": {
+    "landing-base.png": "cd0b624318f6a488c2cbf2a2a7648865ea10c5c0b590a190ebe487711e1a6058",
+    "takeoff-base.png": "24eeb469a790b60976aa560b9d706d7a4bc143e5e114dfd0872370be6c8a7b89"
+  },
+  "raw_benchmark_sha256": "a25708f29a753956c9cfcdd0bbb6a77c61191799d3520478cef214933e7d4500",
+  "conditions": [
+    "Immediately after the run, approximately 1.7GiB memory was available and the 2GiB host swap was full. This observation does not isolate the cause of individual timing outliers.",
+    "Background synthesis contained roughly 183s and 59s outlier calls; retain them, do not infer an artwork-induced regression.",
+    "Earlier reviewed profile timings used different source artwork and host conditions."
+  ]
+}

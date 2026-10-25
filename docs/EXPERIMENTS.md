@@ -3,6 +3,18 @@
 Experiments are read-only analyses of the production pipeline. Their job is to isolate a decision,
 preserve paired inputs, and make evidence inspectable—not to create a second renderer.
 
+## Generation-profile tradeoffs
+
+The [profile comparison](experiments/profile-tradeoffs-v1/README.md) covers maintained foreground tasks,
+natural and forced appearance, heavy-stage ablations, recipe operation costs, resolution and repeated
+accepted-output throughput. It introduces experimental camera presets and an explicit content-changing
+direct-dominant background mixture; existing defaults remain unchanged. Generic RGBA label/wrench
+fixtures verify the shared flat renderer while documenting family-registration and YOLO-hole limits.
+
+Reproduce with `scripts/study_profile_tradeoffs.py`, `scripts/study_background_costs.py` and
+`scripts/benchmark_profile_composers.py`. Keep raw pools and report apps under ignored
+`outputs/experiments/`; only compact measurements and selected paired sheets are retained here.
+
 ## Augmentation attribution
 
 Run the default paired study:
