@@ -55,6 +55,22 @@ deliveries; the follow-ups above repair acceptance gaps rather than rewriting th
 - [ ] Evaluate random-phase synthesis for approved homogeneous microtextures.
 - [ ] Evaluate patch quilting for structured textures after current mixer diversity is measured.
 
+### Realism and real-image evidence
+
+These follow-ups are proposed research, not implemented capabilities or new merge requirements for
+#56 / PR #58. Preserve the retained material-lighting verdict and historical experiment evidence.
+
+- [ ] [#59](https://github.com/edra-unb-fga/dataset_generator_m1/issues/59): evaluate external predictions on separate real and synthetic sets, with capture/session isolation, controlled training provenance, repeated seeds, uncertainty and failure slices.
+- [ ] [#61](https://github.com/edra-unb-fga/dataset_generator_m1/issues/61): calibrate planar camera/physical scale and capture-effect severity from permitted real references; record unknowns and keep development references separate from final evaluation.
+- [ ] [#62](https://github.com/edra-unb-fga/dataset_generator_m1/issues/62): prototype shared foreground/ground lighting using #56's retained material work, with paired visual/cost evidence and explicit physical limits.
+- [ ] [#63](https://github.com/edra-unb-fga/dataset_generator_m1/issues/63): study pad wear, surface interaction and environmental occlusion; distinguish appearance-only alpha invariants from deliberate visible-mask changes and coordinate with #31 only where relationships require it.
+- [ ] [#64](https://github.com/edra-unb-fga/dataset_generator_m1/issues/64): compare planar synthesis and BlenderProc using matched scene/annotation contracts, real-image accuracy, equal dataset-size/time budgets and complete generation/setup costs.
+
+Start with real-reference requirements and #59's evaluation contract. Use bounded paired pilots before
+expensive studies; missing reference data or predictions must remain explicit evidence gaps. The
+BlenderProc study is a separate optional future harness, not a generator dependency or a commitment to
+begin 3D implementation now. Existing defaults and production boundaries remain unchanged.
+
 ## Deferred
 
 GUI, model training, GPU or distributed execution, multi-family generation, exact quotas,

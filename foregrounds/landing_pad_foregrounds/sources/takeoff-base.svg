@@ -1,0 +1,13 @@
+<svg width="1000" height="750" viewBox="0 0 1000 750" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer blue rectangle -->
+  <rect x="0" y="0" width="1000" height="750" fill="#25408f" />
+  <!-- Inner yellow rectangle -->
+  <rect x="125" y="125" width="750" height="500" fill="#fde900" />
+  <!-- Center blue circle -->
+  <circle cx="500" cy="375" r="200" fill="#25408f" />
+  <!-- Center yellow cross (no rounded caps) -->
+  <g stroke="#fde900" stroke-width="25">
+    <line x1="375" y1="375" x2="625" y2="375" />
+    <line x1="500" y1="250" x2="500" y2="500" />
+  </g>
+</svg>

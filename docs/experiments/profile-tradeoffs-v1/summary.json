@@ -1,0 +1,4858 @@
+{
+  "schema_version": 1,
+  "scope": "Local controlled profile comparison; no detector/training validation",
+  "base_commit": "96a539d9f98e218e091f106870c2e3239b4d13ad",
+  "hardware_class": "Linux x86-64; 24 logical CPUs; approximately 16 GB RAM; memory pressure",
+  "appearance": {
+    "natural-pad": {
+      "family": "landing-pad",
+      "size": 1280,
+      "samples": 20,
+      "warmups": 2,
+      "environment": {
+        "python": "3.13.16",
+        "system": "Linux",
+        "release": "7.0.0-38-generic",
+        "machine": "x86_64",
+        "processor": "x86_64",
+        "albumentations": "2.0.8",
+        "git": {
+          "commit": "96a539d9f98e218e091f106870c2e3239b4d13ad",
+          "dirty": true
+        },
+        "fingerprint": "27a27a9f99fc79d5a490d6f11a3b8c83bf5432071fedcd06fb0550768239863c"
+      },
+      "treatments": {
+        "camera-balanced": {
+          "calls": 20,
+          "render_total_ns": 3475283083,
+          "render_mean_ns": 173764154,
+          "render_p95_ns": 252048625,
+          "modeled_mean_ns": 1734685214,
+          "modeled_p95_ns": 2727908816,
+          "per_object_mean_ns": 55163223,
+          "per_megapixel_mean_ns": 106057222,
+          "effects": {
+            "camera-compression": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 94679729,
+              "mean_ns": 11834966,
+              "p95_ns": 18426235
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 17688829,
+              "mean_ns": 2211103,
+              "p95_ns": 4524978
+            },
+            "camera-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 180504315,
+              "mean_ns": 30084052,
+              "p95_ns": 45003716
+            },
+            "camera-motion": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 5587034,
+              "mean_ns": 1117406,
+              "p95_ns": 1236684
+            },
+            "camera-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 217513723,
+              "mean_ns": 54378430,
+              "p95_ns": 55953689
+            },
+            "camera-temperature": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 7314099,
+              "mean_ns": 3657049,
+              "p95_ns": 4526417
+            }
+          }
+        },
+        "camera-minimal": {
+          "calls": 20,
+          "render_total_ns": 3167298911,
+          "render_mean_ns": 158364945,
+          "render_p95_ns": 238690884,
+          "modeled_mean_ns": 1719446869,
+          "modeled_p95_ns": 2713763556,
+          "per_object_mean_ns": 50274585,
+          "per_megapixel_mean_ns": 96658291,
+          "effects": {
+            "camera-compression": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 79837450,
+              "mean_ns": 9979681,
+              "p95_ns": 15571448
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 18867402,
+              "mean_ns": 2358425,
+              "p95_ns": 5297782
+            },
+            "camera-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 178046856,
+              "mean_ns": 29674476,
+              "p95_ns": 41168363
+            },
+            "camera-motion": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 6253185,
+              "mean_ns": 1250637,
+              "p95_ns": 2228854
+            }
+          }
+        },
+        "current-fast": {
+          "calls": 20,
+          "render_total_ns": 3685247873,
+          "render_mean_ns": 184262393,
+          "render_p95_ns": 255795436,
+          "modeled_mean_ns": 1745121600,
+          "modeled_p95_ns": 2719578115,
+          "per_object_mean_ns": 58495997,
+          "per_megapixel_mean_ns": 112464839,
+          "effects": {
+            "bg-brightness-contrast": {
+              "calls": 12,
+              "eligible_calls": 20,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 68177080,
+              "mean_ns": 5681423,
+              "p95_ns": 7921901
+            },
+            "bg-hsv": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 476631687,
+              "mean_ns": 29789480,
+              "p95_ns": 51721699
+            },
+            "fg-hsv": {
+              "calls": 54,
+              "eligible_calls": 81,
+              "activation_rate": 0.6666666666666666,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 69365087,
+              "mean_ns": 1284538,
+              "p95_ns": 1980154
+            },
+            "final-gamma": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 22556555,
+              "mean_ns": 1735119,
+              "p95_ns": 2449254
+            },
+            "final-motion-blur": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 284394018,
+              "mean_ns": 35549252,
+              "p95_ns": 40682800
+            }
+          }
+        },
+        "drone-daylight-candidate": {
+          "calls": 20,
+          "render_total_ns": 2944909679,
+          "render_mean_ns": 147245483,
+          "render_p95_ns": 203049922,
+          "modeled_mean_ns": 1708094154,
+          "modeled_p95_ns": 2715304451,
+          "per_object_mean_ns": 46744598,
+          "per_megapixel_mean_ns": 89871511,
+          "effects": {
+            "daylight-camera": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 8556359,
+              "mean_ns": 1711271,
+              "p95_ns": 1873576
+            },
+            "daylight-illumination": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 228291943,
+              "mean_ns": 25365771,
+              "p95_ns": 40143040
+            }
+          }
+        },
+        "drone-haze-candidate": {
+          "calls": 20,
+          "render_total_ns": 2942377891,
+          "render_mean_ns": 147118894,
+          "render_p95_ns": 205678566,
+          "modeled_mean_ns": 1707751017,
+          "modeled_p95_ns": 2697234003,
+          "per_object_mean_ns": 46704410,
+          "per_megapixel_mean_ns": 89794247,
+          "effects": {
+            "haze-exposure": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 17909917,
+              "mean_ns": 2984986,
+              "p95_ns": 7638067
+            },
+            "haze-scattering": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 174618799,
+              "mean_ns": 29103133,
+              "p95_ns": 32133534
+            }
+          }
+        },
+        "drone-motion-candidate": {
+          "calls": 20,
+          "render_total_ns": 3214728379,
+          "render_mean_ns": 160736418,
+          "render_p95_ns": 260712247,
+          "modeled_mean_ns": 1721070127,
+          "modeled_p95_ns": 2722325807,
+          "per_object_mean_ns": 51027434,
+          "per_megapixel_mean_ns": 98105724,
+          "effects": {
+            "compression-camera": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 134940721,
+              "mean_ns": 10380055,
+              "p95_ns": 20390640
+            },
+            "motion-camera": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 9703951,
+              "mean_ns": 1617325,
+              "p95_ns": 3231352
+            }
+          }
+        },
+        "drone-overcast-candidate": {
+          "calls": 20,
+          "render_total_ns": 3457622951,
+          "render_mean_ns": 172881147,
+          "render_p95_ns": 265622090,
+          "modeled_mean_ns": 1733904743,
+          "modeled_p95_ns": 2709003631,
+          "per_object_mean_ns": 54882903,
+          "per_megapixel_mean_ns": 105518278,
+          "effects": {
+            "overcast-contrast": {
+              "calls": 17,
+              "eligible_calls": 20,
+              "activation_rate": 0.85,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 50773195,
+              "mean_ns": 2986658,
+              "p95_ns": 9876231
+            },
+            "overcast-noise": {
+              "calls": 10,
+              "eligible_calls": 20,
+              "activation_rate": 0.5,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 596549645,
+              "mean_ns": 59654964,
+              "p95_ns": 90907776
+            }
+          }
+        },
+        "heavy-background": {
+          "calls": 20,
+          "render_total_ns": 6832099859,
+          "render_mean_ns": 341604992,
+          "render_p95_ns": 732603214,
+          "modeled_mean_ns": 1902946043,
+          "modeled_p95_ns": 3202482191,
+          "per_object_mean_ns": 108446029,
+          "per_megapixel_mean_ns": 208499141,
+          "effects": {
+            "realistic-bg-blur": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 15552425,
+              "mean_ns": 3888106,
+              "p95_ns": 5492289
+            },
+            "realistic-bg-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 2312261345,
+              "mean_ns": 385376890,
+              "p95_ns": 486124866
+            },
+            "realistic-bg-noise": {
+              "calls": 3,
+              "eligible_calls": 20,
+              "activation_rate": 0.15,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 1400024899,
+              "mean_ns": 466674966,
+              "p95_ns": 554359085
+            }
+          }
+        },
+        "heavy-final": {
+          "calls": 20,
+          "render_total_ns": 4929107309,
+          "render_mean_ns": 246455365,
+          "render_p95_ns": 358506367,
+          "modeled_mean_ns": 1807788168,
+          "modeled_p95_ns": 2835889508,
+          "per_object_mean_ns": 78239798,
+          "per_megapixel_mean_ns": 150424417,
+          "effects": {
+            "realistic-final-flare": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 64549282,
+              "mean_ns": 64549282,
+              "p95_ns": 64549282
+            },
+            "realistic-final-light": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 1107066216,
+              "mean_ns": 138383277,
+              "p95_ns": 173209702
+            },
+            "realistic-final-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 75610518,
+              "mean_ns": 18902629,
+              "p95_ns": 22572983
+            },
+            "realistic-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 672345982,
+              "mean_ns": 84043247,
+              "p95_ns": 117632065
+            },
+            "realistic-final-temperature": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 14476247,
+              "mean_ns": 3619061,
+              "p95_ns": 4634051
+            },
+            "realistic-final-weather": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 4428635,
+              "mean_ns": 4428635,
+              "p95_ns": 4428635
+            }
+          }
+        },
+        "heavy-foreground": {
+          "calls": 20,
+          "render_total_ns": 3461452423,
+          "render_mean_ns": 173072621,
+          "render_p95_ns": 263379626,
+          "modeled_mean_ns": 1734279452,
+          "modeled_p95_ns": 2758721580,
+          "per_object_mean_ns": 54943689,
+          "per_megapixel_mean_ns": 105635144,
+          "effects": {
+            "realistic-fg-light": {
+              "calls": 19,
+              "eligible_calls": 81,
+              "activation_rate": 0.2345679012345679,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 217609069,
+              "mean_ns": 11453108,
+              "p95_ns": 18576576
+            },
+            "realistic-fg-noise": {
+              "calls": 6,
+              "eligible_calls": 81,
+              "activation_rate": 0.07407407407407407,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 54696677,
+              "mean_ns": 9116112,
+              "p95_ns": 12889588
+            },
+            "realistic-fg-shadow": {
+              "calls": 22,
+              "eligible_calls": 81,
+              "activation_rate": 0.2716049382716049,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 216948893,
+              "mean_ns": 9861313,
+              "p95_ns": 22679713
+            }
+          }
+        },
+        "legacy-heavy-compatible": {
+          "calls": 20,
+          "render_total_ns": 9633868844,
+          "render_mean_ns": 481693442,
+          "render_p95_ns": 789485254,
+          "modeled_mean_ns": 2043443583,
+          "modeled_p95_ns": 3274033849,
+          "per_object_mean_ns": 152918553,
+          "per_megapixel_mean_ns": 294002345,
+          "effects": {
+            "legacy-bg-blur": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 21661660,
+              "mean_ns": 4332332,
+              "p95_ns": 8957839
+            },
+            "legacy-bg-brightness": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 73104926,
+              "mean_ns": 5623455,
+              "p95_ns": 7106150
+            },
+            "legacy-bg-hsv": {
+              "calls": 12,
+              "eligible_calls": 20,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 272063207,
+              "mean_ns": 22671933,
+              "p95_ns": 44662911
+            },
+            "legacy-bg-noise": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 828427332,
+              "mean_ns": 414213666,
+              "p95_ns": 444010853
+            },
+            "legacy-fg-flare": {
+              "calls": 27,
+              "eligible_calls": 81,
+              "activation_rate": 0.3333333333333333,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 418267035,
+              "mean_ns": 15491371,
+              "p95_ns": 22384763
+            },
+            "legacy-fg-hsv": {
+              "calls": 58,
+              "eligible_calls": 81,
+              "activation_rate": 0.7160493827160493,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 72206013,
+              "mean_ns": 1244931,
+              "p95_ns": 1830410
+            },
+            "legacy-fg-light": {
+              "calls": 58,
+              "eligible_calls": 81,
+              "activation_rate": 0.7160493827160493,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 543179759,
+              "mean_ns": 9365168,
+              "p95_ns": 13561108
+            },
+            "legacy-fg-noise": {
+              "calls": 49,
+              "eligible_calls": 81,
+              "activation_rate": 0.6049382716049383,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 337440762,
+              "mean_ns": 6886546,
+              "p95_ns": 8513170
+            },
+            "legacy-fg-shadow": {
+              "calls": 28,
+              "eligible_calls": 81,
+              "activation_rate": 0.345679012345679,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 205956155,
+              "mean_ns": 7355576,
+              "p95_ns": 11118271
+            },
+            "legacy-final-atmospheric-fog": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 313453674,
+              "mean_ns": 44779096,
+              "p95_ns": 63319983
+            },
+            "legacy-final-flare": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 579138517,
+              "mean_ns": 82734073,
+              "p95_ns": 119837679
+            },
+            "legacy-final-gamma": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 25433091,
+              "mean_ns": 2825899,
+              "p95_ns": 7389123
+            },
+            "legacy-final-illumination": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 437113305,
+              "mean_ns": 27319581,
+              "p95_ns": 48194741
+            },
+            "legacy-final-light": {
+              "calls": 11,
+              "eligible_calls": 20,
+              "activation_rate": 0.55,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 1701591094,
+              "mean_ns": 154690099,
+              "p95_ns": 220081864
+            },
+            "legacy-final-motion": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 297155620,
+              "mean_ns": 33017291,
+              "p95_ns": 35094295
+            },
+            "legacy-final-salt-pepper": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 99866362,
+              "mean_ns": 19973272,
+              "p95_ns": 21148048
+            },
+            "legacy-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 596855421,
+              "mean_ns": 74606927,
+              "p95_ns": 100286061
+            },
+            "legacy-final-temperature": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 42192334,
+              "mean_ns": 3245564,
+              "p95_ns": 3853891
+            }
+          }
+        },
+        "no-appearance": {
+          "calls": 20,
+          "render_total_ns": 2886607378,
+          "render_mean_ns": 144330368,
+          "render_p95_ns": 241099966,
+          "modeled_mean_ns": 1705441544,
+          "modeled_p95_ns": 2697380573,
+          "per_object_mean_ns": 45819164,
+          "per_megapixel_mean_ns": 88092266,
+          "effects": {}
+        },
+        "realistic-heavy": {
+          "calls": 20,
+          "render_total_ns": 8342512150,
+          "render_mean_ns": 417125607,
+          "render_p95_ns": 683603733,
+          "modeled_mean_ns": 1979512993,
+          "modeled_p95_ns": 3080103566,
+          "per_object_mean_ns": 132420827,
+          "per_megapixel_mean_ns": 254593266,
+          "effects": {
+            "realistic-bg-blur": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 12334700,
+              "mean_ns": 3083675,
+              "p95_ns": 3978660
+            },
+            "realistic-bg-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 2044978075,
+              "mean_ns": 340829679,
+              "p95_ns": 401237085
+            },
+            "realistic-bg-noise": {
+              "calls": 3,
+              "eligible_calls": 20,
+              "activation_rate": 0.15,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 1160071331,
+              "mean_ns": 386690443,
+              "p95_ns": 434186357
+            },
+            "realistic-fg-light": {
+              "calls": 19,
+              "eligible_calls": 81,
+              "activation_rate": 0.2345679012345679,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 223340885,
+              "mean_ns": 11754783,
+              "p95_ns": 19695110
+            },
+            "realistic-fg-noise": {
+              "calls": 6,
+              "eligible_calls": 81,
+              "activation_rate": 0.07407407407407407,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 40481692,
+              "mean_ns": 6746948,
+              "p95_ns": 7638418
+            },
+            "realistic-fg-shadow": {
+              "calls": 22,
+              "eligible_calls": 81,
+              "activation_rate": 0.2716049382716049,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 166200794,
+              "mean_ns": 7554581,
+              "p95_ns": 11600714
+            },
+            "realistic-final-flare": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 59630416,
+              "mean_ns": 59630416,
+              "p95_ns": 59630416
+            },
+            "realistic-final-light": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 1017453218,
+              "mean_ns": 127181652,
+              "p95_ns": 148581652
+            },
+            "realistic-final-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 68881215,
+              "mean_ns": 17220303,
+              "p95_ns": 17570432
+            },
+            "realistic-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 718520581,
+              "mean_ns": 89815072,
+              "p95_ns": 125622259
+            },
+            "realistic-final-temperature": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 14234248,
+              "mean_ns": 3558562,
+              "p95_ns": 4231008
+            },
+            "realistic-final-weather": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 5647990,
+              "mean_ns": 5647990,
+              "p95_ns": 5647990
+            }
+          }
+        }
+      },
+      "warning_count": 15,
+      "invariants_equal": true
+    },
+    "natural-landing": {
+      "family": "landing",
+      "size": 1280,
+      "samples": 20,
+      "warmups": 2,
+      "environment": {
+        "python": "3.13.16",
+        "system": "Linux",
+        "release": "7.0.0-38-generic",
+        "machine": "x86_64",
+        "processor": "x86_64",
+        "albumentations": "2.0.8",
+        "git": {
+          "commit": "96a539d9f98e218e091f106870c2e3239b4d13ad",
+          "dirty": true
+        },
+        "fingerprint": "27a27a9f99fc79d5a490d6f11a3b8c83bf5432071fedcd06fb0550768239863c"
+      },
+      "treatments": {
+        "camera-balanced": {
+          "calls": 20,
+          "render_total_ns": 3329201380,
+          "render_mean_ns": 166460069,
+          "render_p95_ns": 248845575,
+          "modeled_mean_ns": 1498445477,
+          "modeled_p95_ns": 2229691062,
+          "per_object_mean_ns": 61651877,
+          "per_megapixel_mean_ns": 101599163,
+          "effects": {
+            "camera-compression": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 80088889,
+              "mean_ns": 10011111,
+              "p95_ns": 14997931
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 14999950,
+              "mean_ns": 1874993,
+              "p95_ns": 2333531
+            },
+            "camera-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 140826174,
+              "mean_ns": 23471029,
+              "p95_ns": 24882716
+            },
+            "camera-motion": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 6275312,
+              "mean_ns": 1255062,
+              "p95_ns": 1774752
+            },
+            "camera-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 185540558,
+              "mean_ns": 46385139,
+              "p95_ns": 51748087
+            },
+            "camera-temperature": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 5624546,
+              "mean_ns": 2812273,
+              "p95_ns": 2929351
+            }
+          }
+        },
+        "camera-minimal": {
+          "calls": 20,
+          "render_total_ns": 3143344249,
+          "render_mean_ns": 157167212,
+          "render_p95_ns": 221385258,
+          "modeled_mean_ns": 1489321124,
+          "modeled_p95_ns": 2230320402,
+          "per_object_mean_ns": 58210078,
+          "per_megapixel_mean_ns": 95927253,
+          "effects": {
+            "camera-compression": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 70966099,
+              "mean_ns": 8870762,
+              "p95_ns": 11088600
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 13122107,
+              "mean_ns": 1640263,
+              "p95_ns": 2013244
+            },
+            "camera-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 143972493,
+              "mean_ns": 23995415,
+              "p95_ns": 26597377
+            },
+            "camera-motion": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 5399677,
+              "mean_ns": 1079935,
+              "p95_ns": 1444250
+            }
+          }
+        },
+        "current-fast": {
+          "calls": 20,
+          "render_total_ns": 3785916550,
+          "render_mean_ns": 189295827,
+          "render_p95_ns": 277867265,
+          "modeled_mean_ns": 1521041163,
+          "modeled_p95_ns": 2230773098,
+          "per_object_mean_ns": 70109565,
+          "per_megapixel_mean_ns": 115537004,
+          "effects": {
+            "bg-brightness-contrast": {
+              "calls": 12,
+              "eligible_calls": 20,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 67225830,
+              "mean_ns": 5602152,
+              "p95_ns": 7529636
+            },
+            "bg-hsv": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 451424756,
+              "mean_ns": 28214047,
+              "p95_ns": 47860141
+            },
+            "fg-hsv": {
+              "calls": 66,
+              "eligible_calls": 97,
+              "activation_rate": 0.6804123711340206,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 100299109,
+              "mean_ns": 1519683,
+              "p95_ns": 1715770
+            },
+            "final-gamma": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 21424025,
+              "mean_ns": 1648001,
+              "p95_ns": 1967412
+            },
+            "final-motion-blur": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 271035575,
+              "mean_ns": 33879446,
+              "p95_ns": 39575350
+            }
+          }
+        },
+        "drone-daylight-candidate": {
+          "calls": 20,
+          "render_total_ns": 3208689361,
+          "render_mean_ns": 160434468,
+          "render_p95_ns": 230703048,
+          "modeled_mean_ns": 1492766107,
+          "modeled_p95_ns": 2210910314,
+          "per_object_mean_ns": 59420173,
+          "per_megapixel_mean_ns": 97921428,
+          "effects": {
+            "daylight-camera": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 10325570,
+              "mean_ns": 2065114,
+              "p95_ns": 2795169
+            },
+            "daylight-illumination": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 224055266,
+              "mean_ns": 24895029,
+              "p95_ns": 28386306
+            }
+          }
+        },
+        "drone-haze-candidate": {
+          "calls": 20,
+          "render_total_ns": 3078364578,
+          "render_mean_ns": 153918228,
+          "render_p95_ns": 219310709,
+          "modeled_mean_ns": 1486289940,
+          "modeled_p95_ns": 2206639874,
+          "per_object_mean_ns": 57006751,
+          "per_megapixel_mean_ns": 93944231,
+          "effects": {
+            "haze-exposure": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 10272224,
+              "mean_ns": 1712037,
+              "p95_ns": 1877342
+            },
+            "haze-scattering": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 182112257,
+              "mean_ns": 30352042,
+              "p95_ns": 36205244
+            }
+          }
+        },
+        "drone-motion-candidate": {
+          "calls": 20,
+          "render_total_ns": 3065958108,
+          "render_mean_ns": 153297905,
+          "render_p95_ns": 214776694,
+          "modeled_mean_ns": 1484910621,
+          "modeled_p95_ns": 2213338378,
+          "per_object_mean_ns": 56777002,
+          "per_megapixel_mean_ns": 93565616,
+          "effects": {
+            "compression-camera": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 92672947,
+              "mean_ns": 7128688,
+              "p95_ns": 8281284
+            },
+            "motion-camera": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 7333530,
+              "mean_ns": 1222255,
+              "p95_ns": 1394999
+            }
+          }
+        },
+        "drone-overcast-candidate": {
+          "calls": 20,
+          "render_total_ns": 3513276638,
+          "render_mean_ns": 175663831,
+          "render_p95_ns": 232544855,
+          "modeled_mean_ns": 1508126157,
+          "modeled_p95_ns": 2230714568,
+          "per_object_mean_ns": 65060678,
+          "per_megapixel_mean_ns": 107216694,
+          "effects": {
+            "overcast-contrast": {
+              "calls": 17,
+              "eligible_calls": 20,
+              "activation_rate": 0.85,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 29190684,
+              "mean_ns": 1717099,
+              "p95_ns": 1991132
+            },
+            "overcast-noise": {
+              "calls": 10,
+              "eligible_calls": 20,
+              "activation_rate": 0.5,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 527943608,
+              "mean_ns": 52794360,
+              "p95_ns": 54961488
+            }
+          }
+        },
+        "legacy-heavy-compatible": {
+          "calls": 20,
+          "render_total_ns": 9253450216,
+          "render_mean_ns": 462672510,
+          "render_p95_ns": 791136476,
+          "modeled_mean_ns": 1795423135,
+          "modeled_p95_ns": 2923326429,
+          "per_object_mean_ns": 171360189,
+          "per_megapixel_mean_ns": 282392889,
+          "effects": {
+            "legacy-bg-blur": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 12031933,
+              "mean_ns": 2406386,
+              "p95_ns": 2892058
+            },
+            "legacy-bg-brightness": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 71311718,
+              "mean_ns": 5485516,
+              "p95_ns": 6426053
+            },
+            "legacy-bg-hsv": {
+              "calls": 12,
+              "eligible_calls": 20,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 259388386,
+              "mean_ns": 21615698,
+              "p95_ns": 38931804
+            },
+            "legacy-bg-noise": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 730011238,
+              "mean_ns": 365005619,
+              "p95_ns": 401541670
+            },
+            "legacy-fg-flare": {
+              "calls": 33,
+              "eligible_calls": 97,
+              "activation_rate": 0.3402061855670103,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 512908163,
+              "mean_ns": 15542671,
+              "p95_ns": 18475313
+            },
+            "legacy-fg-hsv": {
+              "calls": 69,
+              "eligible_calls": 97,
+              "activation_rate": 0.711340206185567,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 90633870,
+              "mean_ns": 1313534,
+              "p95_ns": 1698074
+            },
+            "legacy-fg-light": {
+              "calls": 73,
+              "eligible_calls": 97,
+              "activation_rate": 0.7525773195876289,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 463654286,
+              "mean_ns": 6351428,
+              "p95_ns": 7531125
+            },
+            "legacy-fg-noise": {
+              "calls": 56,
+              "eligible_calls": 97,
+              "activation_rate": 0.5773195876288659,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 380122258,
+              "mean_ns": 6787897,
+              "p95_ns": 7939977
+            },
+            "legacy-fg-shadow": {
+              "calls": 33,
+              "eligible_calls": 97,
+              "activation_rate": 0.3402061855670103,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 136260461,
+              "mean_ns": 4129104,
+              "p95_ns": 5008133
+            },
+            "legacy-final-atmospheric-fog": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 228295135,
+              "mean_ns": 32613590,
+              "p95_ns": 36965296
+            },
+            "legacy-final-flare": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 472595783,
+              "mean_ns": 67513683,
+              "p95_ns": 72718097
+            },
+            "legacy-final-gamma": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 15108585,
+              "mean_ns": 1678731,
+              "p95_ns": 2162834
+            },
+            "legacy-final-illumination": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 366375534,
+              "mean_ns": 22898470,
+              "p95_ns": 26073320
+            },
+            "legacy-final-light": {
+              "calls": 11,
+              "eligible_calls": 20,
+              "activation_rate": 0.55,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 1499435031,
+              "mean_ns": 136312275,
+              "p95_ns": 147713442
+            },
+            "legacy-final-motion": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 308599371,
+              "mean_ns": 34288819,
+              "p95_ns": 42240033
+            },
+            "legacy-final-salt-pepper": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 105625194,
+              "mean_ns": 21125038,
+              "p95_ns": 26383243
+            },
+            "legacy-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 594198322,
+              "mean_ns": 74274790,
+              "p95_ns": 80999500
+            },
+            "legacy-final-temperature": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 48613700,
+              "mean_ns": 3739515,
+              "p95_ns": 7173457
+            }
+          }
+        },
+        "no-appearance": {
+          "calls": 20,
+          "render_total_ns": 2872013582,
+          "render_mean_ns": 143600679,
+          "render_p95_ns": 210030053,
+          "modeled_mean_ns": 1475838780,
+          "modeled_p95_ns": 2207765675,
+          "per_object_mean_ns": 53185436,
+          "per_megapixel_mean_ns": 87646898,
+          "effects": {}
+        },
+        "realistic-heavy": {
+          "calls": 20,
+          "render_total_ns": 8721141651,
+          "render_mean_ns": 436057082,
+          "render_p95_ns": 844217222,
+          "modeled_mean_ns": 1769481995,
+          "modeled_p95_ns": 2618910082,
+          "per_object_mean_ns": 161502623,
+          "per_megapixel_mean_ns": 266148121,
+          "effects": {
+            "realistic-bg-blur": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 12937529,
+              "mean_ns": 3234382,
+              "p95_ns": 4106829
+            },
+            "realistic-bg-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 2610949961,
+              "mean_ns": 435158326,
+              "p95_ns": 499484629
+            },
+            "realistic-bg-noise": {
+              "calls": 3,
+              "eligible_calls": 20,
+              "activation_rate": 0.15,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 1097621285,
+              "mean_ns": 365873761,
+              "p95_ns": 367146592
+            },
+            "realistic-fg-light": {
+              "calls": 26,
+              "eligible_calls": 97,
+              "activation_rate": 0.26804123711340205,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 167208204,
+              "mean_ns": 6431084,
+              "p95_ns": 7416022
+            },
+            "realistic-fg-noise": {
+              "calls": 10,
+              "eligible_calls": 97,
+              "activation_rate": 0.10309278350515463,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 75996501,
+              "mean_ns": 7599650,
+              "p95_ns": 11706581
+            },
+            "realistic-fg-shadow": {
+              "calls": 29,
+              "eligible_calls": 97,
+              "activation_rate": 0.29896907216494845,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 113848460,
+              "mean_ns": 3925808,
+              "p95_ns": 4422109
+            },
+            "realistic-final-flare": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 71838986,
+              "mean_ns": 71838986,
+              "p95_ns": 71838986
+            },
+            "realistic-final-light": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 1018948213,
+              "mean_ns": 127368526,
+              "p95_ns": 164292197
+            },
+            "realistic-final-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 79219461,
+              "mean_ns": 19804865,
+              "p95_ns": 24631434
+            },
+            "realistic-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 593285944,
+              "mean_ns": 74160743,
+              "p95_ns": 96658466
+            },
+            "realistic-final-temperature": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 21050214,
+              "mean_ns": 5262553,
+              "p95_ns": 9717834
+            },
+            "realistic-final-weather": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 7511079,
+              "mean_ns": 7511079,
+              "p95_ns": 7511079
+            }
+          }
+        }
+      },
+      "warning_count": 9,
+      "invariants_equal": true
+    },
+    "natural-manometro": {
+      "family": "manometro",
+      "size": 1280,
+      "samples": 20,
+      "warmups": 2,
+      "environment": {
+        "python": "3.13.16",
+        "system": "Linux",
+        "release": "7.0.0-38-generic",
+        "machine": "x86_64",
+        "processor": "x86_64",
+        "albumentations": "2.0.8",
+        "git": {
+          "commit": "96a539d9f98e218e091f106870c2e3239b4d13ad",
+          "dirty": true
+        },
+        "fingerprint": "27a27a9f99fc79d5a490d6f11a3b8c83bf5432071fedcd06fb0550768239863c"
+      },
+      "treatments": {
+        "camera-balanced": {
+          "calls": 20,
+          "render_total_ns": 1814348707,
+          "render_mean_ns": 90717435,
+          "render_p95_ns": 151511081,
+          "modeled_mean_ns": 1441123166,
+          "modeled_p95_ns": 2218498320,
+          "per_object_mean_ns": 62563748,
+          "per_megapixel_mean_ns": 55369528,
+          "effects": {
+            "camera-compression": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 53660179,
+              "mean_ns": 10732035,
+              "p95_ns": 14964142
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 13570648,
+              "mean_ns": 1696331,
+              "p95_ns": 2053110
+            },
+            "camera-light": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 163977239,
+              "mean_ns": 23425319,
+              "p95_ns": 26678267
+            },
+            "camera-motion": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 13639076,
+              "mean_ns": 3409769,
+              "p95_ns": 9033509
+            },
+            "camera-noise": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 250449364,
+              "mean_ns": 50089872,
+              "p95_ns": 53255954
+            },
+            "camera-temperature": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 5167347,
+              "mean_ns": 2583673,
+              "p95_ns": 2606978
+            }
+          }
+        },
+        "camera-minimal": {
+          "calls": 20,
+          "render_total_ns": 1539958122,
+          "render_mean_ns": 76997906,
+          "render_p95_ns": 112353865,
+          "modeled_mean_ns": 1426875840,
+          "modeled_p95_ns": 2213548262,
+          "per_object_mean_ns": 53102004,
+          "per_megapixel_mean_ns": 46995792,
+          "effects": {
+            "camera-compression": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 42784445,
+              "mean_ns": 8556889,
+              "p95_ns": 9349454
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 12331726,
+              "mean_ns": 1541465,
+              "p95_ns": 1684074
+            },
+            "camera-light": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 158838419,
+              "mean_ns": 22691202,
+              "p95_ns": 24685760
+            },
+            "camera-motion": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 3786970,
+              "mean_ns": 946742,
+              "p95_ns": 1021997
+            }
+          }
+        },
+        "current-fast": {
+          "calls": 20,
+          "render_total_ns": 2118679144,
+          "render_mean_ns": 105933957,
+          "render_p95_ns": 151341199,
+          "modeled_mean_ns": 1455657927,
+          "modeled_p95_ns": 2257533716,
+          "per_object_mean_ns": 73057901,
+          "per_megapixel_mean_ns": 64656956,
+          "effects": {
+            "bg-brightness-contrast": {
+              "calls": 11,
+              "eligible_calls": 20,
+              "activation_rate": 0.55,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 61413212,
+              "mean_ns": 5583019,
+              "p95_ns": 6268527
+            },
+            "bg-hsv": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 436923466,
+              "mean_ns": 27307716,
+              "p95_ns": 35644592
+            },
+            "fg-hsv": {
+              "calls": 18,
+              "eligible_calls": 30,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 33581936,
+              "mean_ns": 1865663,
+              "p95_ns": 3297223
+            },
+            "final-gamma": {
+              "calls": 14,
+              "eligible_calls": 20,
+              "activation_rate": 0.7,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 23629077,
+              "mean_ns": 1687791,
+              "p95_ns": 1936187
+            },
+            "final-motion-blur": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 280666534,
+              "mean_ns": 35083316,
+              "p95_ns": 43167393
+            }
+          }
+        },
+        "legacy-heavy-compatible": {
+          "calls": 20,
+          "render_total_ns": 6538367102,
+          "render_mean_ns": 326918355,
+          "render_p95_ns": 587491495,
+          "modeled_mean_ns": 1677650376,
+          "modeled_p95_ns": 2547523237,
+          "per_object_mean_ns": 225460934,
+          "per_megapixel_mean_ns": 199535128,
+          "effects": {
+            "legacy-bg-blur": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 12950750,
+              "mean_ns": 2590150,
+              "p95_ns": 3010839
+            },
+            "legacy-bg-brightness": {
+              "calls": 11,
+              "eligible_calls": 20,
+              "activation_rate": 0.55,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 60156760,
+              "mean_ns": 5468796,
+              "p95_ns": 6496180
+            },
+            "legacy-bg-hsv": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 282241204,
+              "mean_ns": 21710861,
+              "p95_ns": 44740880
+            },
+            "legacy-bg-noise": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 640417433,
+              "mean_ns": 320208716,
+              "p95_ns": 326070377
+            },
+            "legacy-fg-flare": {
+              "calls": 11,
+              "eligible_calls": 30,
+              "activation_rate": 0.36666666666666664,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 168669067,
+              "mean_ns": 15333551,
+              "p95_ns": 16460646
+            },
+            "legacy-fg-hsv": {
+              "calls": 20,
+              "eligible_calls": 30,
+              "activation_rate": 0.6666666666666666,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 29571652,
+              "mean_ns": 1478582,
+              "p95_ns": 1793392
+            },
+            "legacy-fg-light": {
+              "calls": 22,
+              "eligible_calls": 30,
+              "activation_rate": 0.7333333333333333,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 138699760,
+              "mean_ns": 6304534,
+              "p95_ns": 7333502
+            },
+            "legacy-fg-noise": {
+              "calls": 20,
+              "eligible_calls": 30,
+              "activation_rate": 0.6666666666666666,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 136726133,
+              "mean_ns": 6836306,
+              "p95_ns": 7470597
+            },
+            "legacy-fg-shadow": {
+              "calls": 9,
+              "eligible_calls": 30,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 32862128,
+              "mean_ns": 3651347,
+              "p95_ns": 4046427
+            },
+            "legacy-final-atmospheric-fog": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 248391656,
+              "mean_ns": 31048957,
+              "p95_ns": 34953137
+            },
+            "legacy-final-flare": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 609450530,
+              "mean_ns": 67716725,
+              "p95_ns": 79206872
+            },
+            "legacy-final-gamma": {
+              "calls": 10,
+              "eligible_calls": 20,
+              "activation_rate": 0.5,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 25029850,
+              "mean_ns": 2502985,
+              "p95_ns": 6393340
+            },
+            "legacy-final-illumination": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 387238764,
+              "mean_ns": 24202422,
+              "p95_ns": 30307794
+            },
+            "legacy-final-light": {
+              "calls": 12,
+              "eligible_calls": 20,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 1547513442,
+              "mean_ns": 128959453,
+              "p95_ns": 170867772
+            },
+            "legacy-final-motion": {
+              "calls": 11,
+              "eligible_calls": 20,
+              "activation_rate": 0.55,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 360233537,
+              "mean_ns": 32748503,
+              "p95_ns": 33858180
+            },
+            "legacy-final-salt-pepper": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 151552313,
+              "mean_ns": 21650330,
+              "p95_ns": 27826846
+            },
+            "legacy-final-shadow": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 409813504,
+              "mean_ns": 68302250,
+              "p95_ns": 78124049
+            },
+            "legacy-final-temperature": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 40908698,
+              "mean_ns": 3146822,
+              "p95_ns": 3969915
+            }
+          }
+        },
+        "no-appearance": {
+          "calls": 20,
+          "render_total_ns": 1318675098,
+          "render_mean_ns": 65933754,
+          "render_p95_ns": 91859308,
+          "modeled_mean_ns": 1416173916,
+          "modeled_p95_ns": 2194761156,
+          "per_object_mean_ns": 45471555,
+          "per_megapixel_mean_ns": 40242770,
+          "effects": {}
+        },
+        "realistic-heavy": {
+          "calls": 20,
+          "render_total_ns": 6670164967,
+          "render_mean_ns": 333508248,
+          "render_p95_ns": 610908047,
+          "modeled_mean_ns": 1684908360,
+          "modeled_p95_ns": 2383428299,
+          "per_object_mean_ns": 230005688,
+          "per_megapixel_mean_ns": 203557280,
+          "effects": {
+            "realistic-bg-blur": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 15739445,
+              "mean_ns": 2623240,
+              "p95_ns": 2801242
+            },
+            "realistic-bg-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 2342928235,
+              "mean_ns": 390488039,
+              "p95_ns": 483854567
+            },
+            "realistic-bg-noise": {
+              "calls": 3,
+              "eligible_calls": 20,
+              "activation_rate": 0.15,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 1046623477,
+              "mean_ns": 348874492,
+              "p95_ns": 385452962
+            },
+            "realistic-fg-light": {
+              "calls": 9,
+              "eligible_calls": 30,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 57550401,
+              "mean_ns": 6394489,
+              "p95_ns": 7688327
+            },
+            "realistic-fg-noise": {
+              "calls": 3,
+              "eligible_calls": 30,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 29053214,
+              "mean_ns": 9684404,
+              "p95_ns": 14904809
+            },
+            "realistic-fg-shadow": {
+              "calls": 8,
+              "eligible_calls": 30,
+              "activation_rate": 0.26666666666666666,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 31850979,
+              "mean_ns": 3981372,
+              "p95_ns": 4435308
+            },
+            "realistic-final-flare": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 63377788,
+              "mean_ns": 63377788,
+              "p95_ns": 63377788
+            },
+            "realistic-final-light": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 1229459393,
+              "mean_ns": 136606599,
+              "p95_ns": 176899672
+            },
+            "realistic-final-noise": {
+              "calls": 3,
+              "eligible_calls": 20,
+              "activation_rate": 0.15,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 53115819,
+              "mean_ns": 17705273,
+              "p95_ns": 18338120
+            },
+            "realistic-final-shadow": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 457014680,
+              "mean_ns": 65287811,
+              "p95_ns": 73122274
+            },
+            "realistic-final-temperature": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 21918370,
+              "mean_ns": 4383674,
+              "p95_ns": 8358702
+            },
+            "realistic-final-weather": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 14800659,
+              "mean_ns": 14800659,
+              "p95_ns": 14800659
+            }
+          }
+        }
+      },
+      "warning_count": 9,
+      "invariants_equal": true
+    },
+    "natural-pad-640": {
+      "family": "landing-pad",
+      "size": 640,
+      "samples": 20,
+      "warmups": 2,
+      "environment": {
+        "python": "3.13.16",
+        "system": "Linux",
+        "release": "7.0.0-38-generic",
+        "machine": "x86_64",
+        "processor": "x86_64",
+        "albumentations": "2.0.8",
+        "git": {
+          "commit": "96a539d9f98e218e091f106870c2e3239b4d13ad",
+          "dirty": true
+        },
+        "fingerprint": "27a27a9f99fc79d5a490d6f11a3b8c83bf5432071fedcd06fb0550768239863c"
+      },
+      "treatments": {
+        "camera-balanced": {
+          "calls": 20,
+          "render_total_ns": 981675505,
+          "render_mean_ns": 49083775,
+          "render_p95_ns": 70059278,
+          "modeled_mean_ns": 303546218,
+          "modeled_p95_ns": 410339759,
+          "per_object_mean_ns": 15338679,
+          "per_megapixel_mean_ns": 119833435,
+          "effects": {
+            "camera-compression": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 20165114,
+              "mean_ns": 2520639,
+              "p95_ns": 2810680
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 5135160,
+              "mean_ns": 641895,
+              "p95_ns": 817669
+            },
+            "camera-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 21676541,
+              "mean_ns": 3612756,
+              "p95_ns": 4003176
+            },
+            "camera-motion": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 3941496,
+              "mean_ns": 788299,
+              "p95_ns": 891873
+            },
+            "camera-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 39352897,
+              "mean_ns": 9838224,
+              "p95_ns": 11291141
+            },
+            "camera-temperature": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 1790314,
+              "mean_ns": 895157,
+              "p95_ns": 996126
+            }
+          }
+        },
+        "camera-minimal": {
+          "calls": 20,
+          "render_total_ns": 939465365,
+          "render_mean_ns": 46973268,
+          "render_p95_ns": 61402718,
+          "modeled_mean_ns": 301374860,
+          "modeled_p95_ns": 399529220,
+          "per_object_mean_ns": 14679146,
+          "per_megapixel_mean_ns": 114680830,
+          "effects": {
+            "camera-compression": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 20510927,
+              "mean_ns": 2563865,
+              "p95_ns": 2883096
+            },
+            "camera-exposure": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 4928558,
+              "mean_ns": 616069,
+              "p95_ns": 714238
+            },
+            "camera-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 21803280,
+              "mean_ns": 3633880,
+              "p95_ns": 3818778
+            },
+            "camera-motion": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 4123827,
+              "mean_ns": 824765,
+              "p95_ns": 973548
+            }
+          }
+        },
+        "current-fast": {
+          "calls": 20,
+          "render_total_ns": 1149672103,
+          "render_mean_ns": 57483605,
+          "render_p95_ns": 91166599,
+          "modeled_mean_ns": 311835476,
+          "modeled_p95_ns": 422963103,
+          "per_object_mean_ns": 17963626,
+          "per_megapixel_mean_ns": 140340832,
+          "effects": {
+            "bg-brightness-contrast": {
+              "calls": 12,
+              "eligible_calls": 20,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 19579378,
+              "mean_ns": 1631614,
+              "p95_ns": 2004911
+            },
+            "bg-hsv": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 85261978,
+              "mean_ns": 5328873,
+              "p95_ns": 6659622
+            },
+            "fg-hsv": {
+              "calls": 54,
+              "eligible_calls": 81,
+              "activation_rate": 0.6666666666666666,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 63938101,
+              "mean_ns": 1184038,
+              "p95_ns": 1622827
+            },
+            "final-gamma": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 8542501,
+              "mean_ns": 657115,
+              "p95_ns": 871734
+            },
+            "final-motion-blur": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 72945516,
+              "mean_ns": 9118189,
+              "p95_ns": 10476459
+            }
+          }
+        },
+        "drone-daylight-candidate": {
+          "calls": 20,
+          "render_total_ns": 931324405,
+          "render_mean_ns": 46566220,
+          "render_p95_ns": 63949957,
+          "modeled_mean_ns": 301093462,
+          "modeled_p95_ns": 395791566,
+          "per_object_mean_ns": 14551943,
+          "per_megapixel_mean_ns": 113687061,
+          "effects": {
+            "daylight-camera": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 3353281,
+              "mean_ns": 670656,
+              "p95_ns": 942320
+            },
+            "daylight-illumination": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 35098322,
+              "mean_ns": 3899813,
+              "p95_ns": 4650782
+            }
+          }
+        },
+        "drone-haze-candidate": {
+          "calls": 20,
+          "render_total_ns": 920883389,
+          "render_mean_ns": 46044169,
+          "render_p95_ns": 65630901,
+          "modeled_mean_ns": 300494307,
+          "modeled_p95_ns": 397619851,
+          "per_object_mean_ns": 14388802,
+          "per_megapixel_mean_ns": 112412523,
+          "effects": {
+            "haze-exposure": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 3511496,
+              "mean_ns": 585249,
+              "p95_ns": 643378
+            },
+            "haze-scattering": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 31748215,
+              "mean_ns": 5291369,
+              "p95_ns": 5997290
+            }
+          }
+        },
+        "drone-motion-candidate": {
+          "calls": 20,
+          "render_total_ns": 921851635,
+          "render_mean_ns": 46092581,
+          "render_p95_ns": 63717003,
+          "modeled_mean_ns": 300413201,
+          "modeled_p95_ns": 395897967,
+          "per_object_mean_ns": 14403931,
+          "per_megapixel_mean_ns": 112530717,
+          "effects": {
+            "compression-camera": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 26101517,
+              "mean_ns": 2007809,
+              "p95_ns": 2731484
+            },
+            "motion-camera": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 5957827,
+              "mean_ns": 992971,
+              "p95_ns": 1148448
+            }
+          }
+        },
+        "drone-overcast-candidate": {
+          "calls": 20,
+          "render_total_ns": 1003443337,
+          "render_mean_ns": 50172166,
+          "render_p95_ns": 71314033,
+          "modeled_mean_ns": 304748815,
+          "modeled_p95_ns": 395232041,
+          "per_object_mean_ns": 15678802,
+          "per_megapixel_mean_ns": 122490641,
+          "effects": {
+            "overcast-contrast": {
+              "calls": 17,
+              "eligible_calls": 20,
+              "activation_rate": 0.85,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 11200954,
+              "mean_ns": 658879,
+              "p95_ns": 850234
+            },
+            "overcast-noise": {
+              "calls": 10,
+              "eligible_calls": 20,
+              "activation_rate": 0.5,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 101239477,
+              "mean_ns": 10123947,
+              "p95_ns": 11529746
+            }
+          }
+        },
+        "heavy-background": {
+          "calls": 20,
+          "render_total_ns": 1217541145,
+          "render_mean_ns": 60877057,
+          "render_p95_ns": 90386957,
+          "modeled_mean_ns": 315381494,
+          "modeled_p95_ns": 432828957,
+          "per_object_mean_ns": 19024080,
+          "per_megapixel_mean_ns": 148625628,
+          "effects": {
+            "realistic-bg-blur": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 4289181,
+              "mean_ns": 1072295,
+              "p95_ns": 1135574
+            },
+            "realistic-bg-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 149111040,
+              "mean_ns": 24851840,
+              "p95_ns": 27307100
+            },
+            "realistic-bg-noise": {
+              "calls": 3,
+              "eligible_calls": 20,
+              "activation_rate": 0.15,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 155228497,
+              "mean_ns": 51742832,
+              "p95_ns": 52669950
+            }
+          }
+        },
+        "heavy-final": {
+          "calls": 20,
+          "render_total_ns": 1177056878,
+          "render_mean_ns": 58852843,
+          "render_p95_ns": 87438882,
+          "modeled_mean_ns": 313483855,
+          "modeled_p95_ns": 415000349,
+          "per_object_mean_ns": 18391513,
+          "per_megapixel_mean_ns": 143683700,
+          "effects": {
+            "realistic-final-flare": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 23975129,
+              "mean_ns": 23975129,
+              "p95_ns": 23975129
+            },
+            "realistic-final-light": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 135979400,
+              "mean_ns": 16997425,
+              "p95_ns": 18188354
+            },
+            "realistic-final-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 18016375,
+              "mean_ns": 4504093,
+              "p95_ns": 4567839
+            },
+            "realistic-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 88725400,
+              "mean_ns": 11090675,
+              "p95_ns": 12558752
+            },
+            "realistic-final-temperature": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 4365049,
+              "mean_ns": 1091262,
+              "p95_ns": 1266276
+            },
+            "realistic-final-weather": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 1546996,
+              "mean_ns": 1546996,
+              "p95_ns": 1546996
+            }
+          }
+        },
+        "heavy-foreground": {
+          "calls": 20,
+          "render_total_ns": 1323844886,
+          "render_mean_ns": 66192244,
+          "render_p95_ns": 97135203,
+          "modeled_mean_ns": 320718428,
+          "modeled_p95_ns": 411495777,
+          "per_object_mean_ns": 20685076,
+          "per_megapixel_mean_ns": 161602158,
+          "effects": {
+            "realistic-fg-light": {
+              "calls": 19,
+              "eligible_calls": 81,
+              "activation_rate": 0.2345679012345679,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 199285046,
+              "mean_ns": 10488686,
+              "p95_ns": 15891686
+            },
+            "realistic-fg-noise": {
+              "calls": 6,
+              "eligible_calls": 81,
+              "activation_rate": 0.07407407407407407,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 38889193,
+              "mean_ns": 6481532,
+              "p95_ns": 6669690
+            },
+            "realistic-fg-shadow": {
+              "calls": 22,
+              "eligible_calls": 81,
+              "activation_rate": 0.2716049382716049,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 168988836,
+              "mean_ns": 7681310,
+              "p95_ns": 12914873
+            }
+          }
+        },
+        "legacy-heavy-compatible": {
+          "calls": 20,
+          "render_total_ns": 3318451200,
+          "render_mean_ns": 165922560,
+          "render_p95_ns": 241302898,
+          "modeled_mean_ns": 420552011,
+          "modeled_p95_ns": 601598874,
+          "per_object_mean_ns": 51850800,
+          "per_megapixel_mean_ns": 405084375,
+          "effects": {
+            "legacy-bg-blur": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 4467809,
+              "mean_ns": 893561,
+              "p95_ns": 1062547
+            },
+            "legacy-bg-brightness": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 21372769,
+              "mean_ns": 1644059,
+              "p95_ns": 2050975
+            },
+            "legacy-bg-hsv": {
+              "calls": 12,
+              "eligible_calls": 20,
+              "activation_rate": 0.6,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 55664755,
+              "mean_ns": 4638729,
+              "p95_ns": 6824012
+            },
+            "legacy-bg-noise": {
+              "calls": 2,
+              "eligible_calls": 20,
+              "activation_rate": 0.1,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 99778905,
+              "mean_ns": 49889452,
+              "p95_ns": 52795147
+            },
+            "legacy-fg-flare": {
+              "calls": 27,
+              "eligible_calls": 81,
+              "activation_rate": 0.3333333333333333,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 406652444,
+              "mean_ns": 15061201,
+              "p95_ns": 17084023
+            },
+            "legacy-fg-hsv": {
+              "calls": 58,
+              "eligible_calls": 81,
+              "activation_rate": 0.7160493827160493,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 71804634,
+              "mean_ns": 1238010,
+              "p95_ns": 1634288
+            },
+            "legacy-fg-light": {
+              "calls": 58,
+              "eligible_calls": 81,
+              "activation_rate": 0.7160493827160493,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 557963964,
+              "mean_ns": 9620068,
+              "p95_ns": 13297323
+            },
+            "legacy-fg-noise": {
+              "calls": 49,
+              "eligible_calls": 81,
+              "activation_rate": 0.6049382716049383,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 324935217,
+              "mean_ns": 6631330,
+              "p95_ns": 7985238
+            },
+            "legacy-fg-shadow": {
+              "calls": 28,
+              "eligible_calls": 81,
+              "activation_rate": 0.345679012345679,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 213915801,
+              "mean_ns": 7639850,
+              "p95_ns": 11602195
+            },
+            "legacy-final-atmospheric-fog": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 36797878,
+              "mean_ns": 5256839,
+              "p95_ns": 5772401
+            },
+            "legacy-final-flare": {
+              "calls": 7,
+              "eligible_calls": 20,
+              "activation_rate": 0.35,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 172565222,
+              "mean_ns": 24652174,
+              "p95_ns": 27228123
+            },
+            "legacy-final-gamma": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 5396202,
+              "mean_ns": 599578,
+              "p95_ns": 670285
+            },
+            "legacy-final-illumination": {
+              "calls": 16,
+              "eligible_calls": 20,
+              "activation_rate": 0.8,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 58624928,
+              "mean_ns": 3664058,
+              "p95_ns": 4372845
+            },
+            "legacy-final-light": {
+              "calls": 11,
+              "eligible_calls": 20,
+              "activation_rate": 0.55,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 174016321,
+              "mean_ns": 15819665,
+              "p95_ns": 16825228
+            },
+            "legacy-final-motion": {
+              "calls": 9,
+              "eligible_calls": 20,
+              "activation_rate": 0.45,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 77693674,
+              "mean_ns": 8632630,
+              "p95_ns": 9571383
+            },
+            "legacy-final-salt-pepper": {
+              "calls": 5,
+              "eligible_calls": 20,
+              "activation_rate": 0.25,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 25164298,
+              "mean_ns": 5032859,
+              "p95_ns": 5608643
+            },
+            "legacy-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 89479448,
+              "mean_ns": 11184931,
+              "p95_ns": 11767948
+            },
+            "legacy-final-temperature": {
+              "calls": 13,
+              "eligible_calls": 20,
+              "activation_rate": 0.65,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 13455415,
+              "mean_ns": 1035031,
+              "p95_ns": 1243182
+            }
+          }
+        },
+        "no-appearance": {
+          "calls": 20,
+          "render_total_ns": 891071959,
+          "render_mean_ns": 44553597,
+          "render_p95_ns": 60617341,
+          "modeled_mean_ns": 299027119,
+          "modeled_p95_ns": 398941767,
+          "per_object_mean_ns": 13922999,
+          "per_megapixel_mean_ns": 108773432,
+          "effects": {}
+        },
+        "realistic-heavy": {
+          "calls": 20,
+          "render_total_ns": 1865472479,
+          "render_mean_ns": 93273623,
+          "render_p95_ns": 141637037,
+          "modeled_mean_ns": 348365603,
+          "modeled_p95_ns": 458625926,
+          "per_object_mean_ns": 29148007,
+          "per_megapixel_mean_ns": 227718808,
+          "effects": {
+            "realistic-bg-blur": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 4159420,
+              "mean_ns": 1039855,
+              "p95_ns": 1128013
+            },
+            "realistic-bg-light": {
+              "calls": 6,
+              "eligible_calls": 20,
+              "activation_rate": 0.3,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 140491249,
+              "mean_ns": 23415208,
+              "p95_ns": 25517242
+            },
+            "realistic-bg-noise": {
+              "calls": 3,
+              "eligible_calls": 20,
+              "activation_rate": 0.15,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 146114079,
+              "mean_ns": 48704693,
+              "p95_ns": 51924145
+            },
+            "realistic-fg-light": {
+              "calls": 19,
+              "eligible_calls": 81,
+              "activation_rate": 0.2345679012345679,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 195819547,
+              "mean_ns": 10306291,
+              "p95_ns": 14752803
+            },
+            "realistic-fg-noise": {
+              "calls": 6,
+              "eligible_calls": 81,
+              "activation_rate": 0.07407407407407407,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 40454994,
+              "mean_ns": 6742499,
+              "p95_ns": 7428076
+            },
+            "realistic-fg-shadow": {
+              "calls": 22,
+              "eligible_calls": 81,
+              "activation_rate": 0.2716049382716049,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 159450128,
+              "mean_ns": 7247733,
+              "p95_ns": 11085423
+            },
+            "realistic-final-flare": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 24829855,
+              "mean_ns": 24829855,
+              "p95_ns": 24829855
+            },
+            "realistic-final-light": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 126630256,
+              "mean_ns": 15828782,
+              "p95_ns": 17941709
+            },
+            "realistic-final-noise": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 18313506,
+              "mean_ns": 4578376,
+              "p95_ns": 4677945
+            },
+            "realistic-final-shadow": {
+              "calls": 8,
+              "eligible_calls": 20,
+              "activation_rate": 0.4,
+              "cost_estimate_available": true,
+              "low_activation_count": false,
+              "total_ns": 97045718,
+              "mean_ns": 12130714,
+              "p95_ns": 14620138
+            },
+            "realistic-final-temperature": {
+              "calls": 4,
+              "eligible_calls": 20,
+              "activation_rate": 0.2,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 4002165,
+              "mean_ns": 1000541,
+              "p95_ns": 1115645
+            },
+            "realistic-final-weather": {
+              "calls": 1,
+              "eligible_calls": 20,
+              "activation_rate": 0.05,
+              "cost_estimate_available": true,
+              "low_activation_count": true,
+              "total_ns": 1573716,
+              "mean_ns": 1573716,
+              "p95_ns": 1573716
+            }
+          }
+        }
+      },
+      "warning_count": 15,
+      "invariants_equal": true
+    }
+  },
+  "raw_artifact_sha256": {
+    "natural-pad/measurements.jsonl": "39a97241b7b68ad17b154dc6897fc6e446a250867d124001a60d15cca6e10d9d",
+    "natural-landing/measurements.jsonl": "fa4275ee057636bdc257bb8cfdb84e81a89c85d2d3ce00cad6cbcb4128f9b387",
+    "natural-manometro/measurements.jsonl": "29603b74f06bb73d71b0364da33f21065072f264d12b414858791509022f3c81",
+    "natural-pad-640/measurements.jsonl": "5491415b3f7b7a475d73cc068119a508590039cb50ae0410af4a417842bc78f2",
+    "forced-pad/measurements.jsonl": "5c08aa349afb80be9cabada4405b760657a175ac21702c4dbde502541620b324",
+    "effects-pad/measurements.jsonl": "d66c7f42807703dd8b28c9ca8347e2102ee75b28648a4003ef897d1b41aa6a80",
+    "stress-pad/measurements.jsonl": "55a05b5416da8cc45b6c0f81ee834be27b0bf1b677fb96e708c8b3d9bbdfa811",
+    "production/summary.json": "d421b0e040cd37e8d987d78fcc03a421ce1dd98a57519e0ce202fa6a0a52b176"
+  },
+  "forced-pad": {
+    "samples": 4,
+    "warmups": 1,
+    "treatments": {
+      "camera-balanced-forced": {
+        "calls": 4,
+        "render_total_ns": 828684268,
+        "render_mean_ns": 207171067,
+        "render_p95_ns": 262049155,
+        "modeled_mean_ns": 1507601448,
+        "modeled_p95_ns": 2464202368,
+        "per_object_mean_ns": 82868426,
+        "per_megapixel_mean_ns": 126447184,
+        "effects": {
+          "camera-compression": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 33694930,
+            "mean_ns": 8423732,
+            "p95_ns": 9862274
+          },
+          "camera-exposure": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 6243936,
+            "mean_ns": 1560984,
+            "p95_ns": 1693522
+          },
+          "camera-light": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 120589997,
+            "mean_ns": 30147499,
+            "p95_ns": 40775038
+          },
+          "camera-motion": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 4055059,
+            "mean_ns": 1013764,
+            "p95_ns": 1045518
+          },
+          "camera-noise": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 211228425,
+            "mean_ns": 52807106,
+            "p95_ns": 59001893
+          },
+          "camera-temperature": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 10264524,
+            "mean_ns": 2566131,
+            "p95_ns": 2615269
+          }
+        }
+      },
+      "camera-minimal-forced": {
+        "calls": 4,
+        "render_total_ns": 571952411,
+        "render_mean_ns": 142988102,
+        "render_p95_ns": 195838732,
+        "modeled_mean_ns": 1443248198,
+        "modeled_p95_ns": 2394704322,
+        "per_object_mean_ns": 57195241,
+        "per_megapixel_mean_ns": 87273011,
+        "effects": {
+          "camera-compression": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 32379187,
+            "mean_ns": 8094796,
+            "p95_ns": 9379007
+          },
+          "camera-exposure": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 6403134,
+            "mean_ns": 1600783,
+            "p95_ns": 1867062
+          },
+          "camera-light": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 102258863,
+            "mean_ns": 25564715,
+            "p95_ns": 31156182
+          },
+          "camera-motion": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 3634734,
+            "mean_ns": 908683,
+            "p95_ns": 1072104
+          }
+        }
+      },
+      "current-fast-forced": {
+        "calls": 4,
+        "render_total_ns": 714393683,
+        "render_mean_ns": 178598420,
+        "render_p95_ns": 223188397,
+        "modeled_mean_ns": 1482991464,
+        "modeled_p95_ns": 2443675663,
+        "per_object_mean_ns": 71439368,
+        "per_megapixel_mean_ns": 109007825,
+        "effects": {
+          "bg-brightness-contrast": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 20580329,
+            "mean_ns": 5145082,
+            "p95_ns": 5579079
+          },
+          "bg-hsv": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 113167930,
+            "mean_ns": 28291982,
+            "p95_ns": 35514606
+          },
+          "fg-hsv": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 13953444,
+            "mean_ns": 1162787,
+            "p95_ns": 1374062
+          },
+          "final-gamma": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 6156114,
+            "mean_ns": 1539028,
+            "p95_ns": 1765816
+          },
+          "final-motion-blur": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 132576593,
+            "mean_ns": 33144148,
+            "p95_ns": 35636737
+          }
+        }
+      },
+      "drone-daylight-candidate-forced": {
+        "calls": 4,
+        "render_total_ns": 648070533,
+        "render_mean_ns": 162017633,
+        "render_p95_ns": 226310661,
+        "modeled_mean_ns": 1462687210,
+        "modeled_p95_ns": 2413411692,
+        "per_object_mean_ns": 64807053,
+        "per_megapixel_mean_ns": 98887715,
+        "effects": {
+          "daylight-camera": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 7623698,
+            "mean_ns": 1905924,
+            "p95_ns": 2310784
+          },
+          "daylight-illumination": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 137452000,
+            "mean_ns": 34363000,
+            "p95_ns": 51977512
+          }
+        }
+      },
+      "drone-haze-candidate-forced": {
+        "calls": 4,
+        "render_total_ns": 561570193,
+        "render_mean_ns": 140392548,
+        "render_p95_ns": 193064178,
+        "modeled_mean_ns": 1441031171,
+        "modeled_p95_ns": 2394193376,
+        "per_object_mean_ns": 56157019,
+        "per_megapixel_mean_ns": 85688811,
+        "effects": {
+          "haze-exposure": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 7090942,
+            "mean_ns": 1772735,
+            "p95_ns": 2036767
+          },
+          "haze-scattering": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 126505877,
+            "mean_ns": 31626469,
+            "p95_ns": 39376193
+          }
+        }
+      },
+      "drone-motion-candidate-forced": {
+        "calls": 4,
+        "render_total_ns": 469930596,
+        "render_mean_ns": 117482649,
+        "render_p95_ns": 171616124,
+        "modeled_mean_ns": 1417301355,
+        "modeled_p95_ns": 2365552772,
+        "per_object_mean_ns": 46993059,
+        "per_megapixel_mean_ns": 71705718,
+        "effects": {
+          "compression-camera": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 36973101,
+            "mean_ns": 9243275,
+            "p95_ns": 15620767
+          },
+          "motion-camera": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 4820977,
+            "mean_ns": 1205244,
+            "p95_ns": 1362992
+          }
+        }
+      },
+      "drone-overcast-candidate-forced": {
+        "calls": 4,
+        "render_total_ns": 651476636,
+        "render_mean_ns": 162869159,
+        "render_p95_ns": 216493765,
+        "modeled_mean_ns": 1464001511,
+        "modeled_p95_ns": 2420150292,
+        "per_object_mean_ns": 65147663,
+        "per_megapixel_mean_ns": 99407445,
+        "effects": {
+          "overcast-contrast": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 6289793,
+            "mean_ns": 1572448,
+            "p95_ns": 1818010
+          },
+          "overcast-noise": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 210338002,
+            "mean_ns": 52584500,
+            "p95_ns": 58157823
+          }
+        }
+      },
+      "no-appearance": {
+        "calls": 4,
+        "render_total_ns": 431569676,
+        "render_mean_ns": 107892419,
+        "render_p95_ns": 161219548,
+        "modeled_mean_ns": 1408686745,
+        "modeled_p95_ns": 2350409248,
+        "per_object_mean_ns": 43156967,
+        "per_megapixel_mean_ns": 65852306,
+        "effects": {}
+      },
+      "realistic-heavy-forced": {
+        "calls": 4,
+        "render_total_ns": 5669220385,
+        "render_mean_ns": 1417305096,
+        "render_p95_ns": 1518065911,
+        "modeled_mean_ns": 2719725154,
+        "modeled_p95_ns": 3615904371,
+        "per_object_mean_ns": 566922038,
+        "per_megapixel_mean_ns": 865054380,
+        "effects": {
+          "realistic-bg-blur": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 11426296,
+            "mean_ns": 2856574,
+            "p95_ns": 3380537
+          },
+          "realistic-bg-light": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 1630957362,
+            "mean_ns": 407739340,
+            "p95_ns": 458762258
+          },
+          "realistic-bg-noise": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 1819511725,
+            "mean_ns": 454877931,
+            "p95_ns": 516160112
+          },
+          "realistic-fg-light": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 117756712,
+            "mean_ns": 9813059,
+            "p95_ns": 13538278
+          },
+          "realistic-fg-noise": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 83480796,
+            "mean_ns": 6956733,
+            "p95_ns": 8014723
+          },
+          "realistic-fg-shadow": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 86714519,
+            "mean_ns": 7226209,
+            "p95_ns": 11652017
+          },
+          "realistic-final-flare": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 341972354,
+            "mean_ns": 85493088,
+            "p95_ns": 93217158
+          },
+          "realistic-final-light": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 683490168,
+            "mean_ns": 170872542,
+            "p95_ns": 224553472
+          },
+          "realistic-final-noise": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 68220285,
+            "mean_ns": 17055071,
+            "p95_ns": 17381286
+          },
+          "realistic-final-shadow": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 316319457,
+            "mean_ns": 79079864,
+            "p95_ns": 93203291
+          },
+          "realistic-final-temperature": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 13706391,
+            "mean_ns": 3426597,
+            "p95_ns": 3677903
+          },
+          "realistic-final-weather": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 19937144,
+            "mean_ns": 4984286,
+            "p95_ns": 5695815
+          }
+        }
+      }
+    },
+    "invariants_equal": true
+  },
+  "effects-pad": {
+    "samples": 4,
+    "warmups": 1,
+    "treatments": {
+      "native-fog-diagonal": {
+        "calls": 4,
+        "render_total_ns": 563605535,
+        "render_mean_ns": 140901383,
+        "render_p95_ns": 199392692,
+        "modeled_mean_ns": 1360750550,
+        "modeled_p95_ns": 2121798970,
+        "per_object_mean_ns": 56360553,
+        "per_megapixel_mean_ns": 85999379,
+        "effects": {
+          "diagnostic-native-fog": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 130421105,
+            "mean_ns": 32605276,
+            "p95_ns": 34509199
+          }
+        }
+      },
+      "native-fog-linear": {
+        "calls": 4,
+        "render_total_ns": 565817567,
+        "render_mean_ns": 141454391,
+        "render_p95_ns": 203295313,
+        "modeled_mean_ns": 1361328737,
+        "modeled_p95_ns": 2120541944,
+        "per_object_mean_ns": 56581756,
+        "per_megapixel_mean_ns": 86336909,
+        "effects": {
+          "diagnostic-native-fog": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 128909219,
+            "mean_ns": 32227304,
+            "p95_ns": 38933412
+          }
+        }
+      },
+      "native-fog-radial": {
+        "calls": 4,
+        "render_total_ns": 597458581,
+        "render_mean_ns": 149364645,
+        "render_p95_ns": 211959547,
+        "modeled_mean_ns": 1369773182,
+        "modeled_p95_ns": 2130240086,
+        "per_object_mean_ns": 59745858,
+        "per_megapixel_mean_ns": 91164944,
+        "effects": {
+          "diagnostic-native-fog": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 163792329,
+            "mean_ns": 40948082,
+            "p95_ns": 49897719
+          }
+        }
+      },
+      "no-appearance": {
+        "calls": 4,
+        "render_total_ns": 427695082,
+        "render_mean_ns": 106923770,
+        "render_p95_ns": 151384302,
+        "modeled_mean_ns": 1326681936,
+        "modeled_p95_ns": 2092941297,
+        "per_object_mean_ns": 42769508,
+        "per_megapixel_mean_ns": 65261090,
+        "effects": {}
+      },
+      "random-fog-heavy-forced": {
+        "calls": 4,
+        "render_total_ns": 3089679191,
+        "render_mean_ns": 772419797,
+        "render_p95_ns": 1167964301,
+        "modeled_mean_ns": 1991194428,
+        "modeled_p95_ns": 2671282040,
+        "per_object_mean_ns": 308967919,
+        "per_megapixel_mean_ns": 471447630,
+        "effects": {
+          "random-fog-heavy-final": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 2653813480,
+            "mean_ns": 663453370,
+            "p95_ns": 1011711143
+          }
+        }
+      },
+      "realistic-bg-blur": {
+        "calls": 4,
+        "render_total_ns": 439437379,
+        "render_mean_ns": 109859344,
+        "render_p95_ns": 166723063,
+        "modeled_mean_ns": 1334111781,
+        "modeled_p95_ns": 2106331646,
+        "per_object_mean_ns": 43943737,
+        "per_megapixel_mean_ns": 67052822,
+        "effects": {
+          "realistic-bg-blur": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 10813007,
+            "mean_ns": 2703251,
+            "p95_ns": 3122500
+          }
+        }
+      },
+      "realistic-bg-light": {
+        "calls": 4,
+        "render_total_ns": 2230466125,
+        "render_mean_ns": 557616531,
+        "render_p95_ns": 589566058,
+        "modeled_mean_ns": 1777475672,
+        "modeled_p95_ns": 2560931260,
+        "per_object_mean_ns": 223046612,
+        "per_megapixel_mean_ns": 340342121,
+        "effects": {
+          "realistic-bg-light": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 1811216523,
+            "mean_ns": 452804130,
+            "p95_ns": 507780245
+          }
+        }
+      },
+      "realistic-bg-noise": {
+        "calls": 4,
+        "render_total_ns": 2079595015,
+        "render_mean_ns": 519898753,
+        "render_p95_ns": 653738623,
+        "modeled_mean_ns": 1740215588,
+        "modeled_p95_ns": 2482294312,
+        "per_object_mean_ns": 207959501,
+        "per_megapixel_mean_ns": 317321016,
+        "effects": {
+          "realistic-bg-noise": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 1635294958,
+            "mean_ns": 408823739,
+            "p95_ns": 509875074
+          }
+        }
+      },
+      "realistic-fg-light": {
+        "calls": 4,
+        "render_total_ns": 548122589,
+        "render_mean_ns": 137030647,
+        "render_p95_ns": 220151505,
+        "modeled_mean_ns": 1356780104,
+        "modeled_p95_ns": 2107814672,
+        "per_object_mean_ns": 54812258,
+        "per_megapixel_mean_ns": 83636869,
+        "effects": {
+          "realistic-fg-light": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 131266641,
+            "mean_ns": 10938886,
+            "p95_ns": 13837149
+          }
+        }
+      },
+      "realistic-fg-noise": {
+        "calls": 4,
+        "render_total_ns": 514221870,
+        "render_mean_ns": 128555467,
+        "render_p95_ns": 198736548,
+        "modeled_mean_ns": 1348884689,
+        "modeled_p95_ns": 2106647454,
+        "per_object_mean_ns": 51422187,
+        "per_megapixel_mean_ns": 78464030,
+        "effects": {
+          "realistic-fg-noise": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 81153592,
+            "mean_ns": 6762799,
+            "p95_ns": 7408990
+          }
+        }
+      },
+      "realistic-fg-shadow": {
+        "calls": 4,
+        "render_total_ns": 516138779,
+        "render_mean_ns": 129034694,
+        "render_p95_ns": 211291348,
+        "modeled_mean_ns": 1349145548,
+        "modeled_p95_ns": 2102060699,
+        "per_object_mean_ns": 51613877,
+        "per_megapixel_mean_ns": 78756527,
+        "effects": {
+          "realistic-fg-shadow": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 88618956,
+            "mean_ns": 7384913,
+            "p95_ns": 12460516
+          }
+        }
+      },
+      "realistic-final-flare": {
+        "calls": 4,
+        "render_total_ns": 766114316,
+        "render_mean_ns": 191528579,
+        "render_p95_ns": 264594654,
+        "modeled_mean_ns": 1411375581,
+        "modeled_p95_ns": 2162710197,
+        "per_object_mean_ns": 76611431,
+        "per_megapixel_mean_ns": 116899767,
+        "effects": {
+          "realistic-final-flare": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 321474060,
+            "mean_ns": 80368515,
+            "p95_ns": 99572743
+          }
+        }
+      },
+      "realistic-final-light": {
+        "calls": 4,
+        "render_total_ns": 1005264757,
+        "render_mean_ns": 251316189,
+        "render_p95_ns": 328702961,
+        "modeled_mean_ns": 1471386816,
+        "modeled_p95_ns": 2229295027,
+        "per_object_mean_ns": 100526475,
+        "per_megapixel_mean_ns": 153391228,
+        "effects": {
+          "realistic-final-light": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 563365360,
+            "mean_ns": 140841340,
+            "p95_ns": 161182643
+          }
+        }
+      },
+      "realistic-final-noise": {
+        "calls": 4,
+        "render_total_ns": 502366231,
+        "render_mean_ns": 125591557,
+        "render_p95_ns": 184729348,
+        "modeled_mean_ns": 1346505640,
+        "modeled_p95_ns": 2110734893,
+        "per_object_mean_ns": 50236623,
+        "per_megapixel_mean_ns": 76655003,
+        "effects": {
+          "realistic-final-noise": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 70324830,
+            "mean_ns": 17581207,
+            "p95_ns": 17862408
+          }
+        }
+      },
+      "realistic-final-shadow": {
+        "calls": 4,
+        "render_total_ns": 758436106,
+        "render_mean_ns": 189609026,
+        "render_p95_ns": 250874326,
+        "modeled_mean_ns": 1410544281,
+        "modeled_p95_ns": 2171363783,
+        "per_object_mean_ns": 75843610,
+        "per_megapixel_mean_ns": 115728165,
+        "effects": {
+          "realistic-final-shadow": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 304076183,
+            "mean_ns": 76019045,
+            "p95_ns": 79732314
+          }
+        }
+      },
+      "realistic-final-temperature": {
+        "calls": 4,
+        "render_total_ns": 441291244,
+        "render_mean_ns": 110322811,
+        "render_p95_ns": 168156289,
+        "modeled_mean_ns": 1329984558,
+        "modeled_p95_ns": 2092689314,
+        "per_object_mean_ns": 44129124,
+        "per_megapixel_mean_ns": 67335700,
+        "effects": {
+          "realistic-final-temperature": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 11321858,
+            "mean_ns": 2830464,
+            "p95_ns": 2910474
+          }
+        }
+      },
+      "realistic-final-weather": {
+        "calls": 4,
+        "render_total_ns": 453693952,
+        "render_mean_ns": 113423488,
+        "render_p95_ns": 167402894,
+        "modeled_mean_ns": 1332982917,
+        "modeled_p95_ns": 2096629314,
+        "per_object_mean_ns": 45369395,
+        "per_megapixel_mean_ns": 69228203,
+        "effects": {
+          "realistic-final-weather": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 17707185,
+            "mean_ns": 4426796,
+            "p95_ns": 4859558
+          }
+        }
+      }
+    },
+    "invariants_equal": true
+  },
+  "stress-pad": {
+    "samples": 4,
+    "warmups": 1,
+    "treatments": {
+      "all-effects-stress": {
+        "calls": 4,
+        "render_total_ns": 7108194457,
+        "render_mean_ns": 1777048614,
+        "render_p95_ns": 2003767324,
+        "modeled_mean_ns": 3025504703,
+        "modeled_p95_ns": 3938235996,
+        "per_object_mean_ns": 710819445,
+        "per_megapixel_mean_ns": 1084624398,
+        "effects": {
+          "stress-bg-blur": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 16048685,
+            "mean_ns": 4012171,
+            "p95_ns": 5437686
+          },
+          "stress-bg-brightness": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 22201514,
+            "mean_ns": 5550378,
+            "p95_ns": 6367192
+          },
+          "stress-bg-hsv": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 118062940,
+            "mean_ns": 29515735,
+            "p95_ns": 41877030
+          },
+          "stress-bg-noise": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 1840108044,
+            "mean_ns": 460027011,
+            "p95_ns": 594390188
+          },
+          "stress-fg-additive": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 9835537,
+            "mean_ns": 819628,
+            "p95_ns": 944106
+          },
+          "stress-fg-light": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 118480612,
+            "mean_ns": 9873384,
+            "p95_ns": 11996469
+          },
+          "stress-fg-shadow": {
+            "calls": 12,
+            "eligible_calls": 12,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 87512521,
+            "mean_ns": 7292710,
+            "p95_ns": 11774014
+          },
+          "stress-final-atmospheric-fog": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 244470932,
+            "mean_ns": 61117733,
+            "p95_ns": 99020920
+          },
+          "stress-final-flare": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 507309562,
+            "mean_ns": 126827390,
+            "p95_ns": 131139348
+          },
+          "stress-final-gamma": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 6384612,
+            "mean_ns": 1596153,
+            "p95_ns": 1770870
+          },
+          "stress-final-illumination": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 220391163,
+            "mean_ns": 55097790,
+            "p95_ns": 95697830
+          },
+          "stress-final-motion": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 7613562,
+            "mean_ns": 1903390,
+            "p95_ns": 2437459
+          },
+          "stress-final-rain": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 29663051,
+            "mean_ns": 7415762,
+            "p95_ns": 7824940
+          },
+          "stress-final-random-fog": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 3282400663,
+            "mean_ns": 820600165,
+            "p95_ns": 1169007525
+          },
+          "stress-final-salt-pepper": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 72974155,
+            "mean_ns": 18243538,
+            "p95_ns": 20032462
+          },
+          "stress-final-temperature": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 10531578,
+            "mean_ns": 2632894,
+            "p95_ns": 2731529
+          }
+        }
+      },
+      "current-fast": {
+        "calls": 4,
+        "render_total_ns": 874352053,
+        "render_mean_ns": 218588013,
+        "render_p95_ns": 302804978,
+        "modeled_mean_ns": 1471208340,
+        "modeled_p95_ns": 2102149312,
+        "per_object_mean_ns": 87435205,
+        "per_megapixel_mean_ns": 133415535,
+        "effects": {
+          "bg-brightness-contrast": {
+            "calls": 2,
+            "eligible_calls": 4,
+            "activation_rate": 0.5,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 16386701,
+            "mean_ns": 8193350,
+            "p95_ns": 9801196
+          },
+          "bg-hsv": {
+            "calls": 4,
+            "eligible_calls": 4,
+            "activation_rate": 1.0,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 203531610,
+            "mean_ns": 50882902,
+            "p95_ns": 78528812
+          },
+          "fg-hsv": {
+            "calls": 8,
+            "eligible_calls": 12,
+            "activation_rate": 0.6666666666666666,
+            "cost_estimate_available": true,
+            "low_activation_count": false,
+            "total_ns": 9887367,
+            "mean_ns": 1235920,
+            "p95_ns": 1462703
+          },
+          "final-gamma": {
+            "calls": 3,
+            "eligible_calls": 4,
+            "activation_rate": 0.75,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 5415334,
+            "mean_ns": 1805111,
+            "p95_ns": 2025602
+          },
+          "final-motion-blur": {
+            "calls": 2,
+            "eligible_calls": 4,
+            "activation_rate": 0.5,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 72243827,
+            "mean_ns": 36121913,
+            "p95_ns": 36878252
+          }
+        }
+      },
+      "no-appearance": {
+        "calls": 4,
+        "render_total_ns": 533718203,
+        "render_mean_ns": 133429550,
+        "render_p95_ns": 188146448,
+        "modeled_mean_ns": 1383092240,
+        "modeled_p95_ns": 2018353960,
+        "per_object_mean_ns": 53371820,
+        "per_megapixel_mean_ns": 81438934,
+        "effects": {}
+      },
+      "random-fog-heavy": {
+        "calls": 4,
+        "render_total_ns": 2239949318,
+        "render_mean_ns": 559987329,
+        "render_p95_ns": 749405457,
+        "modeled_mean_ns": 1808409056,
+        "modeled_p95_ns": 2596621500,
+        "per_object_mean_ns": 223994931,
+        "per_megapixel_mean_ns": 341789141,
+        "effects": {
+          "random-fog-heavy-final": {
+            "calls": 3,
+            "eligible_calls": 4,
+            "activation_rate": 0.75,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 1579357436,
+            "mean_ns": 526452478,
+            "p95_ns": 583973645
+          }
+        }
+      },
+      "realistic-heavy": {
+        "calls": 4,
+        "render_total_ns": 1539908613,
+        "render_mean_ns": 384977153,
+        "render_p95_ns": 578180126,
+        "modeled_mean_ns": 1634247921,
+        "modeled_p95_ns": 2046756584,
+        "per_object_mean_ns": 153990861,
+        "per_megapixel_mean_ns": 234971407,
+        "effects": {
+          "realistic-bg-blur": {
+            "calls": 0,
+            "eligible_calls": 4,
+            "activation_rate": 0.0,
+            "cost_estimate_available": false,
+            "low_activation_count": true,
+            "total_ns": 0,
+            "mean_ns": 0,
+            "p95_ns": 0
+          },
+          "realistic-bg-light": {
+            "calls": 2,
+            "eligible_calls": 4,
+            "activation_rate": 0.5,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 551972709,
+            "mean_ns": 275986354,
+            "p95_ns": 323905774
+          },
+          "realistic-bg-noise": {
+            "calls": 0,
+            "eligible_calls": 4,
+            "activation_rate": 0.0,
+            "cost_estimate_available": false,
+            "low_activation_count": true,
+            "total_ns": 0,
+            "mean_ns": 0,
+            "p95_ns": 0
+          },
+          "realistic-fg-light": {
+            "calls": 2,
+            "eligible_calls": 12,
+            "activation_rate": 0.16666666666666666,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 16910489,
+            "mean_ns": 8455244,
+            "p95_ns": 8959263
+          },
+          "realistic-fg-noise": {
+            "calls": 2,
+            "eligible_calls": 12,
+            "activation_rate": 0.16666666666666666,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 14073082,
+            "mean_ns": 7036541,
+            "p95_ns": 7462538
+          },
+          "realistic-fg-shadow": {
+            "calls": 0,
+            "eligible_calls": 12,
+            "activation_rate": 0.0,
+            "cost_estimate_available": false,
+            "low_activation_count": true,
+            "total_ns": 0,
+            "mean_ns": 0,
+            "p95_ns": 0
+          },
+          "realistic-final-flare": {
+            "calls": 0,
+            "eligible_calls": 4,
+            "activation_rate": 0.0,
+            "cost_estimate_available": false,
+            "low_activation_count": true,
+            "total_ns": 0,
+            "mean_ns": 0,
+            "p95_ns": 0
+          },
+          "realistic-final-light": {
+            "calls": 1,
+            "eligible_calls": 4,
+            "activation_rate": 0.25,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 170112054,
+            "mean_ns": 170112054,
+            "p95_ns": 170112054
+          },
+          "realistic-final-noise": {
+            "calls": 0,
+            "eligible_calls": 4,
+            "activation_rate": 0.0,
+            "cost_estimate_available": false,
+            "low_activation_count": true,
+            "total_ns": 0,
+            "mean_ns": 0,
+            "p95_ns": 0
+          },
+          "realistic-final-shadow": {
+            "calls": 2,
+            "eligible_calls": 4,
+            "activation_rate": 0.5,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 241240563,
+            "mean_ns": 120620281,
+            "p95_ns": 158897166
+          },
+          "realistic-final-temperature": {
+            "calls": 2,
+            "eligible_calls": 4,
+            "activation_rate": 0.5,
+            "cost_estimate_available": true,
+            "low_activation_count": true,
+            "total_ns": 6706900,
+            "mean_ns": 3353450,
+            "p95_ns": 3359887
+          },
+          "realistic-final-weather": {
+            "calls": 0,
+            "eligible_calls": 4,
+            "activation_rate": 0.0,
+            "cost_estimate_available": false,
+            "low_activation_count": true,
+            "total_ns": 0,
+            "mean_ns": 0,
+            "p95_ns": 0
+          }
+        }
+      }
+    },
+    "invariants_equal": true
+  },
+  "background_costs": {
+    "schema_version": 1,
+    "status": "complete",
+    "samples_per_recipe": 20,
+    "warmups_per_recipe": 2,
+    "canvas_size": [
+      2560,
+      2560
+    ],
+    "software": {
+      "python": "3.13.16",
+      "numpy": "2.5.1",
+      "opencv-python-headless": "5.0.0.93",
+      "albumentations": "2.0.8",
+      "Pillow": "12.3.0"
+    },
+    "scope": "Production synthesis with QA intact; instrumented function wall times; no foreground rendering",
+    "catalog_fingerprint": "6278bca7a30fa118e8042bfc51b38d8fb59825f4a4c0fae28dd5146218e326d7",
+    "recipes": {
+      "direct": {
+        "mean_seconds": 0.51480956145,
+        "p95_seconds": 0.6325234913500001,
+        "mean_operations_seconds": {
+          "decode_to_float": 0.0472092966,
+          "resize_crop": 0.04484448225,
+          "palette_transfer": 0.0,
+          "mask_preparation": 0.0,
+          "multiband_blend": 0.0,
+          "displacement": 0.0,
+          "qa": 0.27069995375,
+          "similarity_hash": 0.0235406512,
+          "other_synthesis": 0.12851517765
+        }
+      },
+      "palette": {
+        "mean_seconds": 1.4957858758,
+        "p95_seconds": 1.6355421296,
+        "mean_operations_seconds": {
+          "decode_to_float": 0.09561174665000001,
+          "resize_crop": 0.10578239504999999,
+          "palette_transfer": 0.8819487466,
+          "mask_preparation": 0.0,
+          "multiband_blend": 0.0,
+          "displacement": 0.0,
+          "qa": 0.26434570845,
+          "similarity_hash": 0.0232234725,
+          "other_synthesis": 0.12487380655
+        }
+      },
+      "mask_multiband": {
+        "mean_seconds": 2.03680106875,
+        "p95_seconds": 2.3097639415,
+        "mean_operations_seconds": {
+          "decode_to_float": 0.14175253869999999,
+          "resize_crop": 0.1704968701,
+          "palette_transfer": 0.0,
+          "mask_preparation": 0.48041661275,
+          "multiband_blend": 0.5824930338500001,
+          "displacement": 0.0,
+          "qa": 0.32019374875,
+          "similarity_hash": 0.0382673675,
+          "other_synthesis": 0.3031808971
+        }
+      },
+      "displaced": {
+        "mean_seconds": 1.59095342725,
+        "p95_seconds": 1.7866756136500002,
+        "mean_operations_seconds": {
+          "decode_to_float": 0.0955873563,
+          "resize_crop": 0.10033377959999999,
+          "palette_transfer": 0.0,
+          "mask_preparation": 0.0,
+          "multiband_blend": 0.0,
+          "displacement": 0.71847891965,
+          "qa": 0.2897678582,
+          "similarity_hash": 0.02653787575,
+          "other_synthesis": 0.36024763775
+        }
+      }
+    }
+  },
+  "production": {
+    "schema_version": 1,
+    "status": "complete",
+    "samples": 20,
+    "repeats": 3,
+    "warmups": 2,
+    "low_sample": false,
+    "scope": "Environment-local accepted-output generation; direct-camera deliberately changes background content",
+    "appearance_only_signatures_equal": true,
+    "profiles": [
+      {
+        "profile": "current-fast",
+        "label": "Current fast",
+        "repetitions": 3,
+        "median_images_per_second": 0.604599088531179,
+        "median_wall_images_per_second": 0.6036768471902875,
+        "repeat_1_images_per_second": 0.604599088531179,
+        "repeat_2_images_per_second": 0.6173659606927004,
+        "repeat_3_images_per_second": 0.6036960482261776,
+        "median_seconds": 33.07976948097348,
+        "max_tree_rss_mib": 1207.86328125,
+        "accepted_per_pool": 20,
+        "attempts_per_pool": 21,
+        "objects_per_pool": 59,
+        "median_synthesis_work_seconds": 26.034282734
+      },
+      {
+        "profile": "realistic-heavy",
+        "label": "Realistic heavy",
+        "repetitions": 3,
+        "median_images_per_second": 0.4657843920451167,
+        "median_wall_images_per_second": 0.4651298906744917,
+        "repeat_1_images_per_second": 0.41215392526504585,
+        "repeat_2_images_per_second": 0.4918554020688925,
+        "repeat_3_images_per_second": 0.4657843920451167,
+        "median_seconds": 42.93831852596486,
+        "max_tree_rss_mib": 1146.41796875,
+        "accepted_per_pool": 20,
+        "attempts_per_pool": 21,
+        "objects_per_pool": 59,
+        "median_synthesis_work_seconds": 30.361810774
+      },
+      {
+        "profile": "camera-minimal",
+        "label": "Camera minimal",
+        "repetitions": 3,
+        "median_images_per_second": 0.6099158007406739,
+        "median_wall_images_per_second": 0.609037967394651,
+        "repeat_1_images_per_second": 0.5567092117919737,
+        "repeat_2_images_per_second": 0.6261676054395076,
+        "repeat_3_images_per_second": 0.6099158007406739,
+        "median_seconds": 32.791408464021515,
+        "max_tree_rss_mib": 1081.109375,
+        "accepted_per_pool": 20,
+        "attempts_per_pool": 21,
+        "objects_per_pool": 59,
+        "median_synthesis_work_seconds": 26.178394777
+      },
+      {
+        "profile": "camera-balanced",
+        "label": "Camera balanced",
+        "repetitions": 3,
+        "median_images_per_second": 0.6214814138938342,
+        "median_wall_images_per_second": 0.6206163482987003,
+        "repeat_1_images_per_second": 0.6323737822153548,
+        "repeat_2_images_per_second": 0.6171966686266085,
+        "repeat_3_images_per_second": 0.6214814138938342,
+        "median_seconds": 32.18116853997344,
+        "max_tree_rss_mib": 946.9453125,
+        "accepted_per_pool": 20,
+        "attempts_per_pool": 21,
+        "objects_per_pool": 59,
+        "median_synthesis_work_seconds": 25.469635735
+      },
+      {
+        "profile": "direct-camera",
+        "label": "Direct + minimal camera",
+        "repetitions": 3,
+        "median_images_per_second": 0.9867708879153576,
+        "median_wall_images_per_second": 0.9851518649775096,
+        "repeat_1_images_per_second": 1.0083554480237515,
+        "repeat_2_images_per_second": 0.986379491057929,
+        "repeat_3_images_per_second": 0.9867708879153576,
+        "median_seconds": 20.268126973998733,
+        "max_tree_rss_mib": 1211.5859375,
+        "accepted_per_pool": 20,
+        "attempts_per_pool": 21,
+        "objects_per_pool": 59,
+        "median_synthesis_work_seconds": 13.695572073
+      }
+    ],
+    "runs": [
+      {
+        "composer": "current-fast",
+        "repeat": 0,
+        "wall_seconds": 33.1303081989754,
+        "active_seconds": 33.07976948097348,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.604599088531179,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1026.1,
+          "rss_bytes": 1031405568.0,
+          "read_bytes": 179163136.0,
+          "write_bytes": 25538560.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "realistic-heavy",
+        "repeat": 0,
+        "wall_seconds": 48.58399480197113,
+        "active_seconds": 48.52555751200998,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.41215392526504585,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1057.2,
+          "rss_bytes": 1151528960.0,
+          "read_bytes": 450248704.0,
+          "write_bytes": 32624640.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "camera-minimal",
+        "repeat": 0,
+        "wall_seconds": 36.05467973701889,
+        "active_seconds": 35.92538846703246,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.5567092117919737,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1040.1,
+          "rss_bytes": 986005504.0,
+          "read_bytes": 347389952.0,
+          "write_bytes": 28233728.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "camera-balanced",
+        "repeat": 0,
+        "wall_seconds": 31.742777390987612,
+        "active_seconds": 31.626862216042355,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.6323737822153548,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1056.2,
+          "rss_bytes": 968507392.0,
+          "read_bytes": 249643008.0,
+          "write_bytes": 28745728.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "direct-camera",
+        "repeat": 0,
+        "wall_seconds": 19.869528165028896,
+        "active_seconds": 19.834272575972136,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 1.0083554480237515,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 846.1,
+          "rss_bytes": 938446848.0,
+          "read_bytes": 201101312.0,
+          "write_bytes": 27910144.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "realistic-heavy",
+        "repeat": 1,
+        "wall_seconds": 40.74608442600584,
+        "active_seconds": 40.66235445998609,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.4918554020688925,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1050.1,
+          "rss_bytes": 1178607616.0,
+          "read_bytes": 248221696.0,
+          "write_bytes": 32595968.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "camera-minimal",
+        "repeat": 1,
+        "wall_seconds": 31.99684109300142,
+        "active_seconds": 31.940327118965797,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.6261676054395076,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1038.1,
+          "rss_bytes": 1133625344.0,
+          "read_bytes": 244092928.0,
+          "write_bytes": 28221440.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "camera-balanced",
+        "repeat": 1,
+        "wall_seconds": 32.454584791033994,
+        "active_seconds": 32.404579291003756,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.6171966686266085,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1039.0,
+          "rss_bytes": 992944128.0,
+          "read_bytes": 244076544.0,
+          "write_bytes": 28749824.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "direct-camera",
+        "repeat": 1,
+        "wall_seconds": 20.30882620898774,
+        "active_seconds": 20.276168508047704,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.986379491057929,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1069.6,
+          "rss_bytes": 890437632.0,
+          "read_bytes": 216424448.0,
+          "write_bytes": 27914240.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "current-fast",
+        "repeat": 1,
+        "wall_seconds": 32.43446848797612,
+        "active_seconds": 32.39569318399299,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.6173659606927004,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1055.0,
+          "rss_bytes": 969134080.0,
+          "read_bytes": 174153728.0,
+          "write_bytes": 25530368.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "camera-minimal",
+        "repeat": 2,
+        "wall_seconds": 32.838675206992775,
+        "active_seconds": 32.791408464021515,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.6099158007406739,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1051.3,
+          "rss_bytes": 991481856.0,
+          "read_bytes": 215842816.0,
+          "write_bytes": 28225536.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "camera-balanced",
+        "repeat": 2,
+        "wall_seconds": 32.226028294011485,
+        "active_seconds": 32.18116853997344,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.6214814138938342,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1084.3,
+          "rss_bytes": 983003136.0,
+          "read_bytes": 183631872.0,
+          "write_bytes": 28749824.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "direct-camera",
+        "repeat": 2,
+        "wall_seconds": 20.301438499998767,
+        "active_seconds": 20.268126973998733,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.9867708879153576,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 953.3,
+          "rss_bytes": 1270439936.0,
+          "read_bytes": 116559872.0,
+          "write_bytes": 27914240.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "current-fast",
+        "repeat": 2,
+        "wall_seconds": 33.174525179027114,
+        "active_seconds": 33.12925160198938,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.6036960482261776,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1107.4,
+          "rss_bytes": 1266536448.0,
+          "read_bytes": 195547136.0,
+          "write_bytes": 25538560.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      },
+      {
+        "composer": "realistic-heavy",
+        "repeat": 2,
+        "wall_seconds": 42.99874164396897,
+        "active_seconds": 42.93831852596486,
+        "accepted": 20,
+        "attempts": 21,
+        "throughput": 0.4657843920451167,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1052.1,
+          "rss_bytes": 1202106368.0,
+          "read_bytes": 184786944.0,
+          "write_bytes": 32608256.0
+        },
+        "content_signature": "d8e455713bc48b0fb62b8435e592ae5482be8d9a3d5f489415a45d8c928c1109"
+      }
+    ]
+  },
+  "generic_foregrounds": {
+    "status": "complete",
+    "validation": "valid",
+    "serial_process_masks_and_annotations_equal": true,
+    "pools": [
+      {
+        "workers": 1,
+        "accepted": 10,
+        "attempts": 12,
+        "classes": {
+          "shipping-label": 9,
+          "tool": 9
+        },
+        "inspection": "valid"
+      },
+      {
+        "workers": 2,
+        "accepted": 10,
+        "attempts": 12,
+        "classes": {
+          "shipping-label": 9,
+          "tool": 9
+        },
+        "inspection": "valid"
+      }
+    ],
+    "exports": {
+      "detection": "complete",
+      "segmentation": "complete_with_warnings"
+    },
+    "scope": "Authored synthetic label and wrench cutouts; two registered test classes; shared planar renderer unchanged. Custom family definition installed only in isolated checkout.",
+    "segmentation_fidelity": {
+      "instances": 18,
+      "minimum_iou": 0.9785934918468501,
+      "maximum_area_error": 0.021874770608529694,
+      "warning_instances": 9,
+      "warning_codes": [
+        "MASK_HOLES_FILLED",
+        "POLYGON_FIDELITY_BELOW_TARGET"
+      ]
+    }
+  },
+  "source_hashes": {
+    "backgrounds.py": "e78ce16d8725037dc9989076ed5646e0f74596347ad846e6ee5b6f6ce6fd24f6",
+    "scene.py": "2f8e963b2dff82d4bbd7484fd627c6326fc3662e1a810fbcd3735db2cb7bca53",
+    "filters.py": "2b2f18faa494cfb1e9e14f342d82954f55a097ac2bed6f034cfd2053556619b6",
+    "generator.py": "1d462623851e20e8a4311cfe3f0370f49a03a18e554ff27c1b23675a824404ef",
+    "imaging.py": "ab87aba002339be33d055189867e5302c4c0988559c6490411643ff698ab5301",
+    "augmentation_study.py": "3d799ea344c4ad8c2fcc1e6b55cd3454b72d97684753b13e6b13f96c980725af",
+    "execution_benchmark.py": "7271a3f93d861b65a6bfa8037458d091111d1722ee379f70e5b7f55288a3e375"
+  },
+  "candidate_definitions": {
+    "camera-minimal": {
+      "background": [],
+      "foreground": [],
+      "final": [
+        {
+          "id": "camera-light",
+          "type": "Illumination",
+          "probability": 0.55,
+          "params": {
+            "mode": "linear",
+            "intensity_range": [
+              0.02,
+              0.08
+            ],
+            "effect_type": "both"
+          }
+        },
+        {
+          "id": "camera-exposure",
+          "type": "RandomBrightnessContrast",
+          "probability": 0.35,
+          "params": {
+            "brightness_limit": [
+              -0.04,
+              0.04
+            ],
+            "contrast_limit": [
+              -0.06,
+              0.06
+            ],
+            "ensure_safe_range": true
+          }
+        },
+        {
+          "id": "camera-motion",
+          "type": "MotionBlur",
+          "probability": 0.2,
+          "params": {
+            "blur_limit": [
+              3,
+              5
+            ],
+            "allow_shifted": false
+          }
+        },
+        {
+          "id": "camera-compression",
+          "type": "ImageCompression",
+          "probability": 0.3,
+          "params": {
+            "quality_range": [
+              88,
+              98
+            ],
+            "compression_type": "jpeg"
+          }
+        }
+      ]
+    },
+    "camera-balanced": {
+      "background": [],
+      "foreground": [],
+      "final": [
+        {
+          "id": "camera-light",
+          "type": "Illumination",
+          "probability": 0.55,
+          "params": {
+            "mode": "linear",
+            "intensity_range": [
+              0.02,
+              0.08
+            ],
+            "effect_type": "both"
+          }
+        },
+        {
+          "id": "camera-exposure",
+          "type": "RandomBrightnessContrast",
+          "probability": 0.35,
+          "params": {
+            "brightness_limit": [
+              -0.04,
+              0.04
+            ],
+            "contrast_limit": [
+              -0.06,
+              0.06
+            ],
+            "ensure_safe_range": true
+          }
+        },
+        {
+          "id": "camera-temperature",
+          "type": "PlanckianJitter",
+          "probability": 0.25,
+          "params": {
+            "mode": "blackbody",
+            "temperature_limit": [
+              5500,
+              7500
+            ],
+            "sampling_method": "gaussian"
+          }
+        },
+        {
+          "id": "camera-noise",
+          "type": "GaussNoise",
+          "probability": 0.15,
+          "params": {
+            "std_range": [
+              0.003,
+              0.012
+            ],
+            "mean_range": [
+              0.0,
+              0.0
+            ],
+            "per_channel": false
+          }
+        },
+        {
+          "id": "camera-motion",
+          "type": "MotionBlur",
+          "probability": 0.2,
+          "params": {
+            "blur_limit": [
+              3,
+              5
+            ],
+            "allow_shifted": false
+          }
+        },
+        {
+          "id": "camera-compression",
+          "type": "ImageCompression",
+          "probability": 0.3,
+          "params": {
+            "quality_range": [
+              88,
+              98
+            ],
+            "compression_type": "jpeg"
+          }
+        }
+      ]
+    }
+  },
+  "direct_dominant_weights": {
+    "direct": 0.8,
+    "palette": 0.15,
+    "mask_multiband": 0.05,
+    "displaced": 0
+  },
+  "host_conditions": [
+    {
+      "run": "00-camera-balanced",
+      "available_memory_min_mib": 1211.36328125,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "00-camera-minimal",
+      "available_memory_min_mib": 684.9609375,
+      "swap_in_delta_mib": 0.02734375,
+      "swap_out_delta_mib": 0.1484375
+    },
+    {
+      "run": "00-current-fast",
+      "available_memory_min_mib": 852.01953125,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "00-direct-camera",
+      "available_memory_min_mib": 1425.75390625,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "00-realistic-heavy",
+      "available_memory_min_mib": 839.83203125,
+      "swap_in_delta_mib": 0.47265625,
+      "swap_out_delta_mib": 20.48828125
+    },
+    {
+      "run": "01-camera-balanced",
+      "available_memory_min_mib": 1247.40625,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "01-camera-minimal",
+      "available_memory_min_mib": 1265.73046875,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "01-current-fast",
+      "available_memory_min_mib": 1055.328125,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "01-direct-camera",
+      "available_memory_min_mib": 1392.1328125,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "01-realistic-heavy",
+      "available_memory_min_mib": 946.38671875,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "02-camera-balanced",
+      "available_memory_min_mib": 1273.5859375,
+      "swap_in_delta_mib": 0.0,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "02-camera-minimal",
+      "available_memory_min_mib": 1350.85546875,
+      "swap_in_delta_mib": 0.00390625,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "02-current-fast",
+      "available_memory_min_mib": 1138.73046875,
+      "swap_in_delta_mib": 0.03125,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "02-direct-camera",
+      "available_memory_min_mib": 1063.20703125,
+      "swap_in_delta_mib": 0.00390625,
+      "swap_out_delta_mib": 0.0
+    },
+    {
+      "run": "02-realistic-heavy",
+      "available_memory_min_mib": 1170.7890625,
+      "swap_in_delta_mib": 0.0234375,
+      "swap_out_delta_mib": 0.0
+    }
+  ]
+}

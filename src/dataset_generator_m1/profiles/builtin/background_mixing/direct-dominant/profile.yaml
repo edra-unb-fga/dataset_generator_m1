@@ -1,0 +1,4 @@
+schema_version: 1
+subject: background_mixing
+value:
+  recipe_weights: {direct: 0.80, palette: 0.15, mask_multiband: 0.05, displaced: 0.0}

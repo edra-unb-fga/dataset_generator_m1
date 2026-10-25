@@ -1,0 +1,10 @@
+schema_version: 1
+subject: appearance
+value:
+  background: []
+  foreground: []
+  final:
+    - {id: camera-light, type: Illumination, probability: 0.55, params: {mode: linear, intensity_range: [0.02, 0.08], effect_type: both}}
+    - {id: camera-exposure, type: RandomBrightnessContrast, probability: 0.35, params: {brightness_limit: [-0.04, 0.04], contrast_limit: [-0.06, 0.06], ensure_safe_range: true}}
+    - {id: camera-motion, type: MotionBlur, probability: 0.20, params: {blur_limit: [3, 5], allow_shifted: false}}
+    - {id: camera-compression, type: ImageCompression, probability: 0.30, params: {quality_range: [88, 98], compression_type: jpeg}}

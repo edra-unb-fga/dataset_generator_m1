@@ -50,7 +50,7 @@ uv run python -m dataset_generator_m1 configure `
 The command writes a valid composer before opening the menu. Its summary shows every referenced subject,
 current warnings, an evidence-backed ETA range, and the suggested preflight command. From the menu:
 
-- choose one of the six reviewed appearance profiles;
+- choose a catalogued appearance profile and review its status and evidence;
 - browse any other subject and select a built-in, workspace, relative-path, or absolute-path profile;
 - set run count, seed, worker policy, output dimensions, and format;
 - build an inline background, foreground, or final effect stack;
@@ -59,6 +59,14 @@ current warnings, an evidence-backed ETA range, and the suggested preflight comm
 `realistic-heavy` is the standard default. `current-fast` is the explicit performance-oriented alternative.
 Legacy, RandomFog-heavy, no-appearance, and stress profiles remain selectable. Slow valid choices are warned,
 not removed.
+
+The experimental `camera-minimal` and `camera-balanced` presets apply restrained lighting and camera
+variation to the composed frame. They preserve more source colour than the broad `current-fast`
+background hue changes; they are not calibrated physical camera models. Use
+`examples/configs/landing-pad_camera-minimal.yaml` to keep the standard background mixture.
+`landing-pad_direct-camera.yaml` additionally selects the experimental `direct-dominant` mixture,
+explicitly trading synthesized background diversity for more direct sources. Neither changes defaults.
+See the [paired visual and production comparison](experiments/profile-tradeoffs-v1/README.md).
 
 JSON and quiet modes never prompt; they save the default or explicitly selected appearance and return the
 resolved summary:

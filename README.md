@@ -108,6 +108,11 @@ uv run python -m dataset_generator_m1 generate --config examples/configs/landing
 `realistic-heavy` is the shipped default. To use `current-fast`, copy a composer and change
 `appearance.preset` to `builtin:appearance/current-fast`; the choice remains visible and versionable.
 
+The experimental `camera-minimal` and `camera-balanced` presets offer restrained final-image camera
+variation. Try `examples/configs/landing-pad_camera-minimal.yaml`, or the explicit content-changing
+`landing-pad_direct-camera.yaml`. The [profile tradeoff study](docs/experiments/profile-tradeoffs-v1/README.md)
+compares visuals, per-stage cost, background mixtures and full generation without changing defaults.
+
 Override files and typed leaves compose without changing code:
 
 ```powershell
