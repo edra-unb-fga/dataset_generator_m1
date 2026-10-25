@@ -43,7 +43,6 @@ jobs:
           --config examples/configs/landing-pad_occlusion.yaml
           --num-images 2 --workers 2 --qa-samples 1
           --set 'output.image_size=[128,128]' --set scene.occlusion.probability=1
-         
           --output-dir outputs/windows-surface-pool --display quiet --output-format json
       - run: uv run python scripts/smoke_analysis.py --pool outputs/windows-surface-pool --output-dir outputs/windows-surface-analysis
       - uses: actions/upload-artifact@v4

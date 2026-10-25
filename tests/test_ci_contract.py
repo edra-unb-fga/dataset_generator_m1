@@ -51,6 +51,10 @@ def test_full_cli_workflow_is_opt_in_and_covers_both_families() -> None:
 def test_windows_validation_uses_latest_supported_python() -> None:
     workflow = (ROOT / ".github/workflows/windows-full.yml").read_text(encoding="utf-8")
     assert 'python-version: "3.14"' in workflow
+    steps=yaml.safe_load(workflow)['jobs']['full']['steps']
+    surface=next(step['run'] for step in steps if step.get('name')=='Shared surface and occlusion public CLI correctness')
+    assert '\n' not in surface.strip(), 'Folded PowerShell step must remain one command'
+    assert '--output-dir outputs/windows-surface-pool' in surface
 
 
 def test_pr_template_records_full_cli_decision() -> None:
