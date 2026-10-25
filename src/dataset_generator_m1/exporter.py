@@ -186,6 +186,8 @@ def export_pools(
         for sample in samples
     ]
     split_plan: dict[str, Any] | None = None
+    if any(sample["_planned_partition"] for sample in all_samples) and options.strategy not in {"asset-disjoint", "background-disjoint"}:
+        raise ValueError("Partitioned pools require a partition-aware export strategy; declared splits cannot be redistributed")
     if options.strategy == "random":
         assignments = _assign_random(all_samples, splits, options.seed)
     elif options.strategy == "stratified":

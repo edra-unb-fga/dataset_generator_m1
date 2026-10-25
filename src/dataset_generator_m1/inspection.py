@@ -71,7 +71,7 @@ def inspect_pool(output_dir: str | Path) -> dict[str, Any]:
     """Treat corrupt pools as findings, including malformed nested record shapes."""
     try:
         return _inspect_pool(output_dir)
-    except (ValueError, TypeError, AttributeError, KeyError, IndexError, OSError) as exc:
+    except (ValueError, TypeError, AttributeError, KeyError, IndexError, OverflowError, OSError) as exc:
         return {
             "schema_version": 1, "status": "invalid", "pool": str(Path(output_dir).resolve()),
             "samples": 0, "findings": [_finding("INVALID_POOL_RECORD", f"{type(exc).__name__}: {exc}")],
