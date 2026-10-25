@@ -235,6 +235,8 @@ def run_preflight(
     if request.resolved.profile.scene.lighting is not None:
         metadata = {**metadata, "performance_risk": metadata.get("performance_risk", "informational"),
                     "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_SCENE_LIGHTING_UNCALIBRATED"]}
+    if request.resolved.profile.scene.occlusion is not None:
+        metadata = {**metadata, "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_SCENE_OCCLUSION_UNCALIBRATED"]}
     environment = environment_class()
     observations, observation_warnings = read_matching_observations(
         request.observation_path, request.resolved, request.workers, environment
@@ -253,7 +255,7 @@ def run_preflight(
         _append_observations(request.observation_path, request, environment, probe_measurements)
         observations = [{"kind": "probe", **item} for item in probe_measurements]
     runtime = _runtime_estimate(request, metadata, observations, knowledge)
-    if request.resolved.profile.scene.lighting is not None and not observations:
+    if (request.resolved.profile.scene.lighting is not None or request.resolved.profile.scene.occlusion is not None) and not observations:
         runtime["confidence"] += "-scene-effects-unmeasured"
     if probe_triggered:
         runtime["confidence"] = "local-probe"

@@ -51,6 +51,7 @@ def _annotation_record(annotation: Any) -> dict[str, Any]:
         "bbox": list(annotation.bbox),
         "normalized_bbox": list(annotation.normalized_bbox),
         "visible_bbox_fraction": annotation.visible_bbox_fraction,
+        "visible_support_fraction": annotation.visible_support_fraction,
         "source_asset": annotation.source_asset,
         "source_content_hash": annotation.source_content_hash,
         "source_group": annotation.source_group,

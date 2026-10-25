@@ -143,6 +143,27 @@ class SceneLightingConfig(StrictModel):
         return self
 
 
+class SceneOcclusionConfig(StrictModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+    probability: float = Field(default=0.6, ge=0, le=1)
+    kind: Literal["blade", "debris", "mixed"] = "mixed"
+    count: tuple[int, int] = (6, 18)
+    length_fraction: tuple[float, float] = (0.04, 0.22)
+    width_fraction: tuple[float, float] = (0.005, 0.025)
+    opacity: tuple[float, float] = (1., 1.)
+    min_visible_support: float = Field(default=0.25, ge=0, le=1)
+
+    @model_validator(mode="after")
+    def validate_ranges(self):
+        _ordered_range(self.count, "count", 0)
+        _ordered_range(self.length_fraction, "length_fraction", .001)
+        _ordered_range(self.width_fraction, "width_fraction", .001)
+        _ordered_range(self.opacity, "opacity", .1)
+        if self.count[1] > 64 or self.length_fraction[1] > 1.2 or self.width_fraction[1] > .3 or self.opacity[1] > 1:
+            raise ValueError("Occlusion limits: count<=64, length<=1.2, width<=.3, opacity<=1")
+        return self
+
+
 class SurfaceWearConfig(StrictModel):
     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
     fade: float = Field(default=0.06, ge=0, le=0.6)
@@ -158,6 +179,7 @@ class SceneConfig(StrictModel):
     perspective: PerspectiveConfig = Field(default_factory=PerspectiveConfig)
     background_affine: BackgroundAffineConfig = Field(default_factory=BackgroundAffineConfig)
     lighting: SceneLightingConfig | None = None
+    occlusion: SceneOcclusionConfig | None = None
 
 
 class TransformSpec(StrictModel):
@@ -262,6 +284,7 @@ class SceneInline(StrictModel):
     perspective: PerspectiveInline | None = None
     background_affine: BackgroundAffineInline | None = None
     lighting: SceneLightingConfig | None = None
+    occlusion: SceneOcclusionConfig | None = None
 
 
 class BackgroundRecipesInline(StrictModel):

@@ -33,7 +33,7 @@ class PolygonProjection:
     warnings: tuple[dict[str, str], ...]
 
 
-def visible_coverages(full_coverages: Iterable[np.ndarray]) -> tuple[np.ndarray, ...]:
+def visible_coverages(full_coverages: Iterable[np.ndarray], external_coverage: np.ndarray | None = None) -> tuple[np.ndarray, ...]:
     """Return each instance's final visible alpha contribution in composition order."""
     full = tuple(_coverage(value) for value in full_coverages)
     if not full:
@@ -41,11 +41,16 @@ def visible_coverages(full_coverages: Iterable[np.ndarray]) -> tuple[np.ndarray,
     shape = full[0].shape
     if any(value.shape != shape for value in full):
         raise ValueError("Full coverage arrays must have one shared shape")
+    external = None if external_coverage is None else _coverage(external_coverage)
+    if external is not None and external.shape != shape:
+        raise ValueError("External coverage must share target coverage shape")
     visible: list[np.ndarray] = []
     for index, coverage in enumerate(full):
         contribution = coverage.astype(np.float32) / 255.0
         for later in full[index + 1 :]:
             contribution *= 1.0 - later.astype(np.float32) / 255.0
+        if external is not None:
+            contribution *= 1.0 - external.astype(np.float32)/255.0
         visible.append(np.rint(np.clip(contribution, 0.0, 1.0) * 255.0).astype(np.uint8))
     return tuple(visible)
 
