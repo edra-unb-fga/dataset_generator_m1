@@ -8,7 +8,7 @@ Foreground-only native `SurfaceWear` accepts `fade`, `dirt`, `scratches`, `marks
 
 The shipped `surface-camera` preset combines mild wear with restrained exposure, motion and compression, avoiding independent surface-light/shadow stacks. Configuration is uncalibrated. Try fade .03/.06/.2, dirt .08/.18/.5, scratches .05/.12/.4 for mild/moderate/forced engineering checks; forced activation is diagnostic.
 
-Pool records retain realized seeds, sampled parameters and exclusive scene-lighting timing, alongside ordinary foreground effect traces. Cost identities include scene settings; preflight marks unmeasured enabled scene effects and budgets their temporary memory. Renderer semantics `planar-surface-v3` require a fresh pool after this upgrade; old pools remain inspectable and exportable. Same-version resume remains supported.
+Pool records retain realized seeds, sampled parameters and exclusive scene-lighting timing, alongside ordinary foreground effect traces. Cost identities include scene settings; preflight marks unmeasured enabled scene effects and budgets their temporary memory. Renderer semantics `planar-surface-v3.1` require a fresh pool after this upgrade; old pools remain inspectable and exportable. Same-version resume remains supported.
 
 Normal/roughness maps, physical sun angles, cast shadows, specular response and raised targets remain deferred to #62/#63. Future BlenderProc comparisons (#64) must match conditions and annotation policies, distinguish textured planes from physical scenes, and include cold start, scene reuse, output/QA and asset preparation costs. Equal dataset-size and equal generation-time comparisons answer different questions. This round installs no Blender runtime.
 
