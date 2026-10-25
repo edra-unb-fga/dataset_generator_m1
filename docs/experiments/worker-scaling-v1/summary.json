@@ -1,0 +1,1207 @@
+{
+  "schema_version": 1,
+  "kind": "worker-native-scaling",
+  "protocol": {
+    "samples": 24,
+    "warmups": 2,
+    "repeats": 3,
+    "output_pixels": [
+      1280,
+      1280
+    ],
+    "appearance": "realistic-heavy",
+    "foreground": "landing-pad",
+    "background_mix": "standard",
+    "cache_mib": 0,
+    "requested_ram_budget_mib": 12288,
+    "defaults_changed": false,
+    "same_scenes_repeated": true
+  },
+  "exact_encoded_images_equal": true,
+  "geometry_annotation_masks_equal": true,
+  "groups": {
+    "one24": {
+      "workers": 1,
+      "native_threads": 24,
+      "max_in_flight": 2,
+      "throughput": {
+        "median": 0.8467658015175528,
+        "min": 0.8189484846314401,
+        "max": 0.8500725691141638
+      },
+      "maximum_generation_sampled_rss_bytes": 1036603392.0,
+      "maximum_command_sampled_rss_bytes": 1128341504,
+      "maximum_command_observed_threads": 94,
+      "previous_estimated_peak_bytes": 481689600,
+      "revised_estimated_peak_bytes": 2129954560,
+      "revised_memory_components": {
+        "model_version": "shape-reserves-v2",
+        "runtime_reserve_bytes": 268435456,
+        "native_reserve_bytes": 48234496,
+        "coordinator_reserve_bytes": 65536000,
+        "workspace_bytes_per_worker": 838860800,
+        "source_bytes_per_worker": 148663296,
+        "cover_extra_bytes_per_worker": 157286400,
+        "mask_bytes_per_worker": 78643200,
+        "scene_effect_bytes_per_worker": 0,
+        "queued_result_bytes": 98304000,
+        "headroom_bytes": 425990912,
+        "estimated_peak_bytes": 2129954560,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "revised_estimate_exceeds_observed": true,
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.8189484846314401,
+          "active_seconds": 29.305870325071737,
+          "wall_seconds": 29.57485983101651,
+          "command_seconds": 36.22470843791962,
+          "resource_peaks": {
+            "process_count": 1.0,
+            "cpu_percent": 1110.4,
+            "rss_bytes": 1016598528.0,
+            "read_bytes": 290816.0,
+            "write_bytes": 24178688.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 1128341504,
+            "peak_threads": 94
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 5631746048,
+          "maximum_swap_used_bytes": 2147332096,
+          "swap_in_delta_bytes": 36864,
+          "swap_out_delta_bytes": 311296
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.8467658015175528,
+          "active_seconds": 28.343135753064416,
+          "wall_seconds": 28.62508328689728,
+          "command_seconds": 35.27254200691823,
+          "resource_peaks": {
+            "process_count": 1.0,
+            "cpu_percent": 1154.5,
+            "rss_bytes": 1036603392.0,
+            "read_bytes": 8192.0,
+            "write_bytes": 24174592.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 1094193152,
+            "peak_threads": 94
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 5673156608,
+          "maximum_swap_used_bytes": 2147254272,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.8500725691141638,
+          "active_seconds": 28.232881132047623,
+          "wall_seconds": 28.51682255603373,
+          "command_seconds": 35.051372000947595,
+          "resource_peaks": {
+            "process_count": 1.0,
+            "cpu_percent": 1177.2,
+            "rss_bytes": 1027551232.0,
+            "read_bytes": 0.0,
+            "write_bytes": 24174592.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 1084403712,
+            "peak_threads": 94
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 5381214208,
+          "maximum_swap_used_bytes": 2147434496,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        }
+      ]
+    },
+    "two12": {
+      "workers": 2,
+      "native_threads": 12,
+      "max_in_flight": 2,
+      "throughput": {
+        "median": 0.6295119262398294,
+        "min": 0.601647386019924,
+        "max": 0.631887697940901
+      },
+      "maximum_generation_sampled_rss_bytes": 1906667520.0,
+      "maximum_command_sampled_rss_bytes": 1930973184,
+      "maximum_command_observed_threads": 71,
+      "previous_estimated_peak_bytes": 914227200,
+      "revised_estimated_peak_bytes": 4327738880,
+      "revised_memory_components": {
+        "model_version": "shape-reserves-v2",
+        "runtime_reserve_bytes": 805306368,
+        "native_reserve_bytes": 46137344,
+        "coordinator_reserve_bytes": 65536000,
+        "workspace_bytes_per_worker": 838860800,
+        "source_bytes_per_worker": 148663296,
+        "cover_extra_bytes_per_worker": 157286400,
+        "mask_bytes_per_worker": 78643200,
+        "scene_effect_bytes_per_worker": 0,
+        "queued_result_bytes": 98304000,
+        "headroom_bytes": 865547776,
+        "estimated_peak_bytes": 4327738880,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "revised_estimate_exceeds_observed": true,
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.601647386019924,
+          "active_seconds": 39.890470662969165,
+          "wall_seconds": 40.174087239895016,
+          "command_seconds": 46.52894003188703,
+          "resource_peaks": {
+            "process_count": 3.0,
+            "cpu_percent": 200.8,
+            "rss_bytes": 1844559872.0,
+            "read_bytes": 4096.0,
+            "write_bytes": 24227840.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 1752436736,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 5204332544,
+          "maximum_swap_used_bytes": 2147315712,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.6295119262398294,
+          "active_seconds": 38.12477128393948,
+          "wall_seconds": 38.40211930300575,
+          "command_seconds": 44.81722740794066,
+          "resource_peaks": {
+            "process_count": 3.0,
+            "cpu_percent": 200.8,
+            "rss_bytes": 1848942592.0,
+            "read_bytes": 8192.0,
+            "write_bytes": 24223744.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 1930973184,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 5034549248,
+          "maximum_swap_used_bytes": 2147291136,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.631887697940901,
+          "active_seconds": 37.9814296180848,
+          "wall_seconds": 38.26572470308747,
+          "command_seconds": 44.76798754604533,
+          "resource_peaks": {
+            "process_count": 3.0,
+            "cpu_percent": 199.8,
+            "rss_bytes": 1906667520.0,
+            "read_bytes": 0.0,
+            "write_bytes": 24219648.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 1904869376,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 4851355648,
+          "maximum_swap_used_bytes": 2147430400,
+          "swap_in_delta_bytes": 36864,
+          "swap_out_delta_bytes": 0
+        }
+      ]
+    },
+    "four6": {
+      "workers": 4,
+      "native_threads": 6,
+      "max_in_flight": 4,
+      "throughput": {
+        "median": 0.8393408267920346,
+        "min": 0.799557424335527,
+        "max": 0.8518515337616224
+      },
+      "maximum_generation_sampled_rss_bytes": 2748887040.0,
+      "maximum_command_sampled_rss_bytes": 2884993024,
+      "maximum_command_observed_threads": 71,
+      "previous_estimated_peak_bytes": 1828454400,
+      "revised_estimated_peak_bytes": 8175098880,
+      "revised_memory_components": {
+        "model_version": "shape-reserves-v2",
+        "runtime_reserve_bytes": 1342177280,
+        "native_reserve_bytes": 41943040,
+        "coordinator_reserve_bytes": 65536000,
+        "workspace_bytes_per_worker": 838860800,
+        "source_bytes_per_worker": 148663296,
+        "cover_extra_bytes_per_worker": 157286400,
+        "mask_bytes_per_worker": 78643200,
+        "scene_effect_bytes_per_worker": 0,
+        "queued_result_bytes": 196608000,
+        "headroom_bytes": 1635019776,
+        "estimated_peak_bytes": 8175098880,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "revised_estimate_exceeds_observed": true,
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.799557424335527,
+          "active_seconds": 30.01660246006213,
+          "wall_seconds": 30.32477145898156,
+          "command_seconds": 37.284347169916146,
+          "resource_peaks": {
+            "process_count": 5.0,
+            "cpu_percent": 401.6,
+            "rss_bytes": 2485293056.0,
+            "read_bytes": 4096.0,
+            "write_bytes": 24178688.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 2800906240,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 4189925376,
+          "maximum_swap_used_bytes": 2147479552,
+          "swap_in_delta_bytes": 155648,
+          "swap_out_delta_bytes": 274432
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.8518515337616224,
+          "active_seconds": 28.173906827927567,
+          "wall_seconds": 28.459748810972087,
+          "command_seconds": 35.02766698296182,
+          "resource_peaks": {
+            "process_count": 5.0,
+            "cpu_percent": 400.6,
+            "rss_bytes": 2621054976.0,
+            "read_bytes": 20480.0,
+            "write_bytes": 24174592.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 2820292608,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 4294873088,
+          "maximum_swap_used_bytes": 2147291136,
+          "swap_in_delta_bytes": 86016,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.8393408267920346,
+          "active_seconds": 28.593864302965812,
+          "wall_seconds": 28.873640466015786,
+          "command_seconds": 35.46077625500038,
+          "resource_peaks": {
+            "process_count": 5.0,
+            "cpu_percent": 400.6,
+            "rss_bytes": 2748887040.0,
+            "read_bytes": 12288.0,
+            "write_bytes": 24174592.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 2884993024,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 4252524544,
+          "maximum_swap_used_bytes": 2147254272,
+          "swap_in_delta_bytes": 12288,
+          "swap_out_delta_bytes": 0
+        }
+      ]
+    },
+    "six1": {
+      "workers": 6,
+      "native_threads": 1,
+      "max_in_flight": 6,
+      "throughput": {
+        "median": 1.1437312633799699,
+        "min": 1.0908792086034107,
+        "max": 1.1604066547389829
+      },
+      "maximum_generation_sampled_rss_bytes": 3632783360.0,
+      "maximum_command_sampled_rss_bytes": 4087586816,
+      "maximum_command_observed_threads": 71,
+      "previous_estimated_peak_bytes": 2742681600,
+      "revised_estimated_peak_bytes": 11975272960,
+      "revised_memory_components": {
+        "model_version": "shape-reserves-v2",
+        "runtime_reserve_bytes": 1879048192,
+        "native_reserve_bytes": 0,
+        "coordinator_reserve_bytes": 65536000,
+        "workspace_bytes_per_worker": 838860800,
+        "source_bytes_per_worker": 148663296,
+        "cover_extra_bytes_per_worker": 157286400,
+        "mask_bytes_per_worker": 78643200,
+        "scene_effect_bytes_per_worker": 0,
+        "queued_result_bytes": 294912000,
+        "headroom_bytes": 2395054592,
+        "estimated_peak_bytes": 11975272960,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "revised_estimate_exceeds_observed": true,
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 1.0908792086034107,
+          "active_seconds": 22.000599061953835,
+          "wall_seconds": 22.278510511037894,
+          "command_seconds": 29.884389717015438,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 600.4,
+            "rss_bytes": 3632783360.0,
+            "read_bytes": 376832.0,
+            "write_bytes": 24145920.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4076437504,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3368370176,
+          "maximum_swap_used_bytes": 2147471360,
+          "swap_in_delta_bytes": 294912,
+          "swap_out_delta_bytes": 745472
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 1.1437312633799699,
+          "active_seconds": 20.98394675203599,
+          "wall_seconds": 21.259242228930816,
+          "command_seconds": 28.831766056944616,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 601.7,
+            "rss_bytes": 3318505472.0,
+            "read_bytes": 12288.0,
+            "write_bytes": 24141824.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 3751788544,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3744116736,
+          "maximum_swap_used_bytes": 2147282944,
+          "swap_in_delta_bytes": 12288,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 1.1604066547389829,
+          "active_seconds": 20.68240142101422,
+          "wall_seconds": 20.966916432022117,
+          "command_seconds": 28.62283719005063,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 600.8,
+            "rss_bytes": 3166040064.0,
+            "read_bytes": 0.0,
+            "write_bytes": 24141824.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 4087586816,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3220824064,
+          "maximum_swap_used_bytes": 2147479552,
+          "swap_in_delta_bytes": 40960,
+          "swap_out_delta_bytes": 270336
+        }
+      ]
+    },
+    "six4": {
+      "workers": 6,
+      "native_threads": 4,
+      "max_in_flight": 6,
+      "throughput": {
+        "median": 0.9539504832855306,
+        "min": 0.9130331974325964,
+        "max": 0.9615700772386023
+      },
+      "maximum_generation_sampled_rss_bytes": 3548327936.0,
+      "maximum_command_sampled_rss_bytes": 3842740224,
+      "maximum_command_observed_threads": 71,
+      "previous_estimated_peak_bytes": 2742681600,
+      "revised_estimated_peak_bytes": 12022458880,
+      "revised_memory_components": {
+        "model_version": "shape-reserves-v2",
+        "runtime_reserve_bytes": 1879048192,
+        "native_reserve_bytes": 37748736,
+        "coordinator_reserve_bytes": 65536000,
+        "workspace_bytes_per_worker": 838860800,
+        "source_bytes_per_worker": 148663296,
+        "cover_extra_bytes_per_worker": 157286400,
+        "mask_bytes_per_worker": 78643200,
+        "scene_effect_bytes_per_worker": 0,
+        "queued_result_bytes": 294912000,
+        "headroom_bytes": 2404491776,
+        "estimated_peak_bytes": 12022458880,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "revised_estimate_exceeds_observed": true,
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.9539504832855306,
+          "active_seconds": 25.158534427988343,
+          "wall_seconds": 25.435915315058082,
+          "command_seconds": 32.43597607803531,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 602.2,
+            "rss_bytes": 3297349632.0,
+            "read_bytes": 82345984.0,
+            "write_bytes": 24162304.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 3781201920,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3621629952,
+          "maximum_swap_used_bytes": 2147315712,
+          "swap_in_delta_bytes": 4096,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.9615700772386023,
+          "active_seconds": 24.95917611499317,
+          "wall_seconds": 25.249108197982423,
+          "command_seconds": 32.083546824986115,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 602.4,
+            "rss_bytes": 3548327936.0,
+            "read_bytes": 4096.0,
+            "write_bytes": 24158208.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 3842740224,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3596005376,
+          "maximum_swap_used_bytes": 2147270656,
+          "swap_in_delta_bytes": 0,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.9130331974325964,
+          "active_seconds": 26.28600716299843,
+          "wall_seconds": 26.577229239977896,
+          "command_seconds": 33.43730462004896,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 600.8,
+            "rss_bytes": 3313438720.0,
+            "read_bytes": 0.0,
+            "write_bytes": 24166400.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 3662864384,
+            "peak_threads": 71
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3674796032,
+          "maximum_swap_used_bytes": 2147471360,
+          "swap_in_delta_bytes": 16384,
+          "swap_out_delta_bytes": 0
+        }
+      ]
+    },
+    "six24": {
+      "workers": 6,
+      "native_threads": 24,
+      "max_in_flight": 6,
+      "throughput": {
+        "median": 0.9369446842300945,
+        "min": 0.9369434229252283,
+        "max": 0.9496770645536322
+      },
+      "maximum_generation_sampled_rss_bytes": 3720257536.0,
+      "maximum_command_sampled_rss_bytes": 3913023488,
+      "maximum_command_observed_threads": 79,
+      "previous_estimated_peak_bytes": 2742681600,
+      "revised_estimated_peak_bytes": 12337031680,
+      "revised_memory_components": {
+        "model_version": "shape-reserves-v2",
+        "runtime_reserve_bytes": 1879048192,
+        "native_reserve_bytes": 289406976,
+        "coordinator_reserve_bytes": 65536000,
+        "workspace_bytes_per_worker": 838860800,
+        "source_bytes_per_worker": 148663296,
+        "cover_extra_bytes_per_worker": 157286400,
+        "mask_bytes_per_worker": 78643200,
+        "scene_effect_bytes_per_worker": 0,
+        "queued_result_bytes": 294912000,
+        "headroom_bytes": 2467406336,
+        "estimated_peak_bytes": 12337031680,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      },
+      "revised_estimate_exceeds_observed": true,
+      "repetitions": [
+        {
+          "repeat": 0,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.9496770645536322,
+          "active_seconds": 25.271744717028923,
+          "wall_seconds": 25.5691645500483,
+          "command_seconds": 31.94672641600482,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 599.0,
+            "rss_bytes": 3375652864.0,
+            "read_bytes": 22126592.0,
+            "write_bytes": 24158208.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 3882835968,
+            "peak_threads": 79
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3548172288,
+          "maximum_swap_used_bytes": 2147311616,
+          "swap_in_delta_bytes": 16384,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 1,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.9369446842300945,
+          "active_seconds": 25.615169505006634,
+          "wall_seconds": 25.89435397204943,
+          "command_seconds": 32.22749161103275,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 600.4,
+            "rss_bytes": 3720257536.0,
+            "read_bytes": 8192.0,
+            "write_bytes": 24158208.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 3592429568,
+            "peak_threads": 79
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3855335424,
+          "maximum_swap_used_bytes": 2147270656,
+          "swap_in_delta_bytes": 8192,
+          "swap_out_delta_bytes": 0
+        },
+        {
+          "repeat": 2,
+          "source": {
+            "commit": "31dca0e2f20e845ee65e8ef69fc18dbc36f61120",
+            "dirty": false
+          },
+          "software": {
+            "python": "3.13.16",
+            "numpy": "2.5.1",
+            "opencv-python-headless": "5.0.0.93",
+            "albumentations": "2.0.8",
+            "Pillow": "12.3.0"
+          },
+          "generation_identity": {
+            "schema_version": 1,
+            "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+            "renderer_semantics": "planar-surface-v3.1"
+          },
+          "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+          "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+          "accepted": 24,
+          "attempts": 25,
+          "throughput": 0.9369434229252283,
+          "active_seconds": 25.615204075933434,
+          "wall_seconds": 25.899077368085273,
+          "command_seconds": 32.173170083900914,
+          "resource_peaks": {
+            "process_count": 7.0,
+            "cpu_percent": 597.8,
+            "rss_bytes": 3479781376.0,
+            "read_bytes": 8192.0,
+            "write_bytes": 24158208.0
+          },
+          "command_resource_observed": {
+            "peak_rss_bytes": 3913023488,
+            "peak_threads": 79
+          },
+          "guard_limits": {
+            "rss_limit_gib": 4.5,
+            "min_available_gib": 1.5,
+            "max_swap_out_mib": 64.0,
+            "cell_timeout_seconds": 180.0
+          },
+          "minimum_available_memory_bytes": 3449323520,
+          "maximum_swap_used_bytes": 2147450880,
+          "swap_in_delta_bytes": 16384,
+          "swap_out_delta_bytes": 0
+        }
+      ]
+    }
+  },
+  "estimator_sources": {
+    "execution.py": "4366a24274d3c3da85697606c4133176bb7f38e499236ffc863fc381ce00213a",
+    "memory_planning.py": "9867b825498cd0a593ae725541cff743d2491edbe2e9f7c3e8000be15b9a789f"
+  },
+  "ramp": {
+    "samples": 6,
+    "warmups": 1,
+    "repeats": 1,
+    "low_sample": true,
+    "measurements": [
+      {
+        "variant": "one24",
+        "throughput": 0.7766362760089243,
+        "resource_peaks": {
+          "process_count": 1.0,
+          "cpu_percent": 1015.1,
+          "rss_bytes": 994246656.0,
+          "read_bytes": 49152.0,
+          "write_bytes": 8601600.0
+        },
+        "command_resource_observed": {
+          "peak_rss_bytes": 841519104,
+          "peak_threads": 94
+        }
+      },
+      {
+        "variant": "two1",
+        "throughput": 0.6806432619871743,
+        "resource_peaks": {
+          "process_count": 3.0,
+          "cpu_percent": 188.8,
+          "rss_bytes": 1256996864.0,
+          "read_bytes": 4096.0,
+          "write_bytes": 8605696.0
+        },
+        "command_resource_observed": {
+          "peak_rss_bytes": 1284550656,
+          "peak_threads": 71
+        }
+      },
+      {
+        "variant": "four1",
+        "throughput": 0.674933879414388,
+        "resource_peaks": {
+          "process_count": 5.0,
+          "cpu_percent": 302.6,
+          "rss_bytes": 1688899584.0,
+          "read_bytes": 0.0,
+          "write_bytes": 8605696.0
+        },
+        "command_resource_observed": {
+          "peak_rss_bytes": 1955958784,
+          "peak_threads": 71
+        }
+      },
+      {
+        "variant": "six1",
+        "throughput": 0.9344722320071901,
+        "resource_peaks": {
+          "process_count": 7.0,
+          "cpu_percent": 597.5,
+          "rss_bytes": 2403487744.0,
+          "read_bytes": 110592.0,
+          "write_bytes": 8597504.0
+        },
+        "command_resource_observed": {
+          "peak_rss_bytes": 2559713280,
+          "peak_threads": 71
+        }
+      },
+      {
+        "variant": "six4",
+        "throughput": 0.8123793959864384,
+        "resource_peaks": {
+          "process_count": 7.0,
+          "cpu_percent": 592.3,
+          "rss_bytes": 2632785920.0,
+          "read_bytes": 9850880.0,
+          "write_bytes": 8597504.0
+        },
+        "command_resource_observed": {
+          "peak_rss_bytes": 2909507584,
+          "peak_threads": 71
+        }
+      },
+      {
+        "variant": "six24",
+        "throughput": 0.7969311321237016,
+        "resource_peaks": {
+          "process_count": 7.0,
+          "cpu_percent": 598.4,
+          "rss_bytes": 2708312064.0,
+          "read_bytes": 823296.0,
+          "write_bytes": 8601600.0
+        },
+        "command_resource_observed": {
+          "peak_rss_bytes": 2635767808,
+          "peak_threads": 71
+        }
+      }
+    ]
+  },
+  "limits": [
+    "One host; ranges are observed minima/maxima, not confidence intervals.",
+    "Summed process RSS repeats shared pages and sampled peaks can miss spikes.",
+    "Command observations include preparation and warmup; generation telemetry does not.",
+    "Native threads configure OpenCV per worker; other libraries and actual active threading differ.",
+    "The revised RAM model is conservative shape accounting, not a hard RSS bound or a fitted universal predictor."
+  ]
+}

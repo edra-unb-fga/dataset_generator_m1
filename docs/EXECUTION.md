@@ -35,6 +35,15 @@ mutable alpha arrays are never cached. The default cache is zero until a represe
 shows benefit. Queue windows remain bounded batches, with deterministic ordered commits, rather than
 an unreviewed rolling scheduler. `max_in_flight` must be at least the effective worker count.
 
+The versioned `memory_estimate` breakdown reserves interpreter/native runtime per process, source
+dimensions discovered from image headers, cover-resize expansion, graph outputs/operator scratch,
+instance masks, coordinator QA, returned-result copies, cache payload and25% headroom. Missing source
+dimensions are reported explicitly. Automatic selection checks this complete estimate for each worker
+count and respects an explicit queue capacity. If even one worker cannot fit, it retains one worker
+with an over-budget warning. More conservative accounting can select fewer automatic workers;
+explicit worker counts stay unchanged. Native threads above detected CPU capacity produce a warning
+when no explicit CPU budget forbids the request. These reserves are not a hard allocation guarantee.
+
 Budgets never reduce masks, dimensions, appearance or count policy. Reduce worker/queue/cache settings
 explicitly when warned. Slow effects remain selectable. Preflight preparation is bound to source
 catalog content too; changed assets invalidate prepared generation.
@@ -70,7 +79,7 @@ Rich may correctly refuse `start` in automation wrappers whose stdin is not a re
 when they display terminal escape sequences. Use an actual Windows Terminal/PowerShell or POSIX
 terminal for the interactive journey; atomic commands remain available in non-TTY environments.
 
-Worker setup reuse, duplicate full/visible polygonization avoidance, rolling scheduling, shared-memory
+Worker setup reuse, rolling scheduling, shared-memory
 transport and synthesized-background caching remain separate candidates. The bounded decoded cache
 and explicit native/queue controls enable comparisons without making them universal defaults. #28
 requires additional stable hardware measurements; CI correctness evidence is not a latency budget.
@@ -85,3 +94,10 @@ cache was slower in this workload despite hits; native threading helped this par
 these as local choices until #28 has additional-machine evidence. Observed process-tree RSS exceeded
 the advisory planner estimate in this study; do not treat that estimate as a hard memory limit or
 infer a safe worker count from throughput alone.
+
+The follow-up [worker/thread scaling study](experiments/worker-scaling-v1/README.md) includes6 workers
+with24 requested OpenCV threads each, under a lower host-appropriate experimental watchdog. Requested
+threads are per worker; actual OS threads and other library pools differ. The portable study driver
+accepts `--rss-limit-gib`, `--min-available-gib`, `--max-swap-out-mib` and
+`--cell-timeout-seconds`; it retains abort evidence and stops the benchmark session/descendants.
+Watchdogs sample resources and can miss spikes; normal generation RAM budgets remain advisory.

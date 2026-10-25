@@ -20,7 +20,7 @@ def _resolved(**policy):
 
 
 def test_execution_budgets_are_explicit_without_quality_changes():
-    r = _resolved(workers="auto", cpu_budget=4, native_threads=2, ram_budget_mb=4096, decoded_cache_mb=128)
+    r = _resolved(workers="auto", cpu_budget=4, native_threads=2, ram_budget_mb=8192, decoded_cache_mb=128)
     plan = plan_execution(r, available_ram=8 * 1024**3, logical_cpus=8)
     assert plan.workers == 2
     assert plan.cache_bytes_per_worker == 64 * 1024**2
