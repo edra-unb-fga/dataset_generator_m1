@@ -152,19 +152,22 @@ def _multiband_blend(first: np.ndarray, second: np.ndarray, mask: np.ndarray, le
         gp_first.append(cv2.pyrDown(gp_first[-1]))
         gp_second.append(cv2.pyrDown(gp_second[-1]))
         gp_mask.append(cv2.pyrDown(gp_mask[-1]))
-    lp_first = [gp_first[-1]]
-    lp_second = [gp_second[-1]]
+    # Blend/reconstruct from coarse to fine using the same arithmetic as the
+    # materialized Laplacian pyramids. Only the current level/result survives.
+    weight = gp_mask[-1][:, :, None]
+    result = gp_first[-1] * weight + gp_second[-1] * (1.0 - weight)
     for index in range(levels, 0, -1):
         size = (gp_first[index - 1].shape[1], gp_first[index - 1].shape[0])
-        lp_first.append(gp_first[index - 1] - cv2.pyrUp(gp_first[index], dstsize=size))
-        lp_second.append(gp_second[index - 1] - cv2.pyrUp(gp_second[index], dstsize=size))
-    blended_levels: list[np.ndarray] = []
-    for first_level, second_level, mask_level in zip(lp_first, lp_second, reversed(gp_mask)):
-        weight = mask_level[:, :, None]
-        blended_levels.append(first_level * weight + second_level * (1.0 - weight))
-    result = blended_levels[0]
-    for level in blended_levels[1:]:
-        result = cv2.pyrUp(result, dstsize=(level.shape[1], level.shape[0])) + level
+        first_level = gp_first[index - 1] - cv2.pyrUp(gp_first[index], dstsize=size)
+        second_level = gp_second[index - 1] - cv2.pyrUp(gp_second[index], dstsize=size)
+        weight = gp_mask[index - 1][:, :, None]
+        blended = first_level * weight + second_level * (1.0 - weight)
+        result = cv2.pyrUp(result, dstsize=size) + blended
+        gp_first.pop()
+        gp_second.pop()
+        gp_mask.pop()
+        del first_level, second_level, blended, weight
+
     return np.clip(result, 0.0, 1.0)
 
 

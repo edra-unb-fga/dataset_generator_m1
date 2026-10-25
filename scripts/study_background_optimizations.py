@@ -36,19 +36,24 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config',type=Path,required=True)
     parser.add_argument('--baseline-ref',required=True)
-    parser.add_argument('--copies-source',type=Path,required=True)
+    parser.add_argument('--copies-source',type=Path,help='Optional isolated intermediate implementation')
     parser.add_argument('--output-dir',type=Path,required=True)
     parser.add_argument('--samples',type=int,default=20)
     parser.add_argument('--warmups',type=int,default=2)
     parser.add_argument('--size',type=int,default=1280)
+    parser.add_argument('--recipes',nargs='+',help='Optional subset for an isolated changed operation')
     args=parser.parse_args();root=args.output_dir
     if root.exists() or args.samples<1 or args.warmups<0 or args.size<1:raise ValueError('Fresh output and valid counts required')
     resolved=load_profile(args.config);catalog=build_asset_catalog(resolved)
+    selected=args.recipes or list(resolved.recipes.recipes)
+    if len(set(selected))!=len(selected) or set(selected)-set(resolved.recipes.recipes):raise ValueError('Invalid recipe subset')
     source=subprocess.run(['git','show',args.baseline_ref+':src/dataset_generator_m1/backgrounds.py'],check=True,capture_output=True).stdout
     root.mkdir(parents=True);(root/'baseline.py').write_bytes(source)
-    (root/'copies.py').write_bytes(args.copies_source.read_bytes())
+    names=['baseline','current']
+    if args.copies_source:
+        (root/'copies.py').write_bytes(args.copies_source.read_bytes());names.insert(1,'copies')
     (root/'current.py').write_bytes(Path('src/dataset_generator_m1/backgrounds.py').read_bytes())
-    modules={name:load_module(name,root/(name+'.py')) for name in ['baseline','copies','current']}
+    modules={name:load_module(name,root/(name+'.py')) for name in names}
     synthesis={name:module.BackgroundSynthesizer(catalog,resolved.recipes,resolved.profile.assets.backgrounds.group_weights,resolved.profile.assets.backgrounds.asset_weights) for name,module in modules.items()}
     size=(round(args.size*resolved.profile.scene.canvas_scale),)*2;records=[];observed={}
     def wrapper(function,name,operation):
@@ -62,7 +67,7 @@ def main():
             for operation in OPERATIONS:
                 patches.enter_context(patch.object(module,operation,wrapper(getattr(module,operation),name,operation)))
         for fixture in range(-args.warmups,args.samples):
-            recipe_names=list(resolved.recipes.recipes);offset=(fixture+args.warmups)%len(recipe_names)
+            recipe_names=list(selected);offset=(fixture+args.warmups)%len(recipe_names)
             for recipe in recipe_names[offset:]+recipe_names[:offset]:
                 names=list(modules);offset=(fixture+args.warmups)%len(names);reference=None
                 for name in names[offset:]+names[:offset]:
@@ -84,7 +89,7 @@ def main():
         'warmups_per_recipe':args.warmups,'canvas_size':size,'low_sample':args.samples<20,'software':software_identity(),
         'baseline_ref':args.baseline_ref,'sources':{name:hashlib.sha256((root/(name+'.py')).read_bytes()).hexdigest() for name in modules},
         'catalog_fingerprint':catalog.fingerprint,'all_pixels_qa_lineage_parameters_rng_equal':True,'recipes':{}}
-    for recipe in resolved.recipes.recipes:
+    for recipe in selected:
         summary['recipes'][recipe]={}
         for name in modules:
             rows=[r for r in records if r['recipe']==recipe and r['variant']==name]
