@@ -19,7 +19,7 @@ import yaml
 
 def process_tree_sample(pid, detailed=False):
     """Observed RSS counts shared pages in each process; useful as a conservative guard."""
-    rss=threads=cpu=pss=uss=0
+    rss=threads=cpu=pss=uss=known=0
     complete=True
     try:
         parent=psutil.Process(pid);processes=[parent,*parent.children(recursive=True)]
@@ -31,10 +31,10 @@ def process_tree_sample(pid, detailed=False):
             if detailed:
                 info=process.memory_full_info()
                 if not hasattr(info,'pss'):complete=False
-                else:pss+=info.pss;uss+=getattr(info,'uss',0)
+                else:pss+=info.pss;uss+=getattr(info,'uss',0);known+=1
         except psutil.Error:complete=False
     return {'rss_bytes':rss,'threads':threads,'cpu_seconds':cpu,
-            'pss_bytes':pss if detailed else None,'uss_bytes':uss if detailed else None,'pss_complete':detailed and complete}
+            'pss_bytes':pss if detailed and known else None,'uss_bytes':uss if detailed and known else None,'pss_complete':detailed and complete}
 
 
 def guard_reason(args,elapsed,memory,swap,tree,initial_swap_out):

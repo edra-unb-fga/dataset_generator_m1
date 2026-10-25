@@ -34,7 +34,8 @@ def test_proportional_memory_guard_and_sampling(monkeypatch):
     sample=study.process_tree_sample(1,detailed=True)
     assert sample['rss_bytes']==800 and sample['pss_bytes']==400 and sample['uss_bytes']==200 and sample['pss_complete']
     process.memory_full_info=lambda:SimpleNamespace(uss=200)
-    assert not study.process_tree_sample(1,detailed=True)['pss_complete']
+    unknown=study.process_tree_sample(1,detailed=True)
+    assert not unknown['pss_complete'] and unknown['pss_bytes'] is None
 
 
 @pytest.mark.skipif(os.name!='posix',reason='POSIX benchmark session cleanup')

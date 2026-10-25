@@ -61,3 +61,38 @@ def test_extreme_foreground_aspect_accounts_for_resize(tmp_path):
         assets=value.profile.assets.model_copy(update={'foregrounds':value.profile.assets.foregrounds.model_copy(update={'paths':(str(path),)})})
         return plan_execution(value.model_copy(update={'profile':value.profile.model_copy(update={'assets':assets})}))
     assert estimate((2,4000)).estimated_peak_bytes>estimate((100,100)).estimated_peak_bytes
+
+
+def test_multiband_after_wide_linear_blends_covers_actual_array_allocations():
+    import tracemalloc
+    import numpy as np
+    from dataset_generator_m1.backgrounds import _multiband_blend
+    from dataset_generator_m1.memory_planning import recipe_peak_bytes
+
+    # Normalization can promote masks to float64; linear blends then propagate
+    # that dtype to both RGB branches before multiband converts them to float32.
+    nodes = [RecipeNode(id='asset', op='sample_asset'),
+             RecipeNode(id='rgb', op='resize_crop', inputs={'image': 'asset'}),
+             RecipeNode(id='channel', op='channel_extract', inputs={'image': 'rgb'}),
+             RecipeNode(id='mask', op='mask_normalize', inputs={'mask': 'channel'}),
+             RecipeNode(id='wide_a', op='linear_blend', inputs={'first': 'rgb', 'second': 'rgb', 'mask': 'mask'}),
+             RecipeNode(id='wide_b', op='linear_blend', inputs={'first': 'rgb', 'second': 'rgb', 'mask': 'mask'}),
+             RecipeNode(id='result', op='multiband_blend', inputs={'first': 'wide_a', 'second': 'wide_b', 'mask': 'mask'})]
+    recipe = BackgroundRecipe(nodes=tuple(nodes), output='result')
+    side = 256
+    first = np.full((side, side, 3), .25, dtype=np.float64)
+    second = np.full_like(first, .75)
+    mask = np.full((side, side), .5, dtype=np.float64)
+    tracemalloc.start()
+    try:
+        result = _multiband_blend(first, second, mask, 5)
+        _, scratch = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    assert result.dtype == np.float32
+    forecast = recipe_peak_bytes(recipe, side*side, {
+        'background_resize_peak_bytes': 36*side*side,
+    })
+    retained = first.nbytes + second.nbytes + mask.nbytes
+    # Small Python object headers are covered by the separate runtime reserve.
+    assert forecast + 16*1024 >= retained + scratch

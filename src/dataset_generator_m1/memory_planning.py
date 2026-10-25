@@ -96,8 +96,10 @@ def recipe_peak_bytes(recipe, canvas, shapes):
             extra = (72 + 12*sum(v>12 for v in inputs.values()))*canvas
         elif op == "multiband_blend":
             # Streamed pyramids/reconstruction: float32 mask inputs need64 B/px;
-            # converting a float64 normalization mask adds another4 B/px.
-            extra = (64 + (4 if inputs['mask']>4 else 0))*canvas
+            # float64 inputs retain their originals while level-zero float32
+            # conversions add4 B/px for the mask and12 B/px for each RGB input.
+            extra = (64 + (4 if inputs['mask']>4 else 0)
+                     + 12*sum(inputs[name]>12 for name in ('first','second')))*canvas
         elif op == "displace":
             result = inputs['image']
             extra = (64 + max(0,result-12))*canvas
