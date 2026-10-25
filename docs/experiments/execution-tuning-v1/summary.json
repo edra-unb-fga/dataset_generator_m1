@@ -1115,16 +1115,16 @@
     },
     "study_sha256": "25a5abab5ff3e1b05c59999f6fcac3830df579496704b7c6ace823dc7e663ceb",
     "selected": {
-      "variant": "w5-t1",
-      "workers": 5,
+      "variant": "w4-t1",
+      "workers": 4,
       "native_threads": 1,
       "throughput": {
-        "median": 0.9215739743571066,
-        "min": 0.9179006936913283,
-        "max": 0.9385259893343194
+        "median": 0.9026030320702977,
+        "min": 0.8983911167126397,
+        "max": 0.9228702208952958
       },
-      "peak_observed_rss_bytes": 3850313728.0,
-      "required_available_memory_bytes": 5537564672
+      "peak_observed_rss_bytes": 2997198848,
+      "required_available_memory_bytes": 4889808077
     },
     "fastest": {
       "variant": "w6-t1",
@@ -1192,41 +1192,41 @@
     "method": {
       "minimum_samples": 20,
       "minimum_repetitions": 3,
-      "near_best_tolerance_percent": 5,
+      "near_best_tolerance_percent": 10.0,
       "preference": "fewest workers, then requested CPU concurrency, then measured RSS",
       "headroom_rule": "largest observed host-memory drop \u00d71.10 + recorded available-memory floor"
     },
     "overrides": {
       "execution": {
-        "workers": 5,
+        "workers": 4,
         "native_threads": 1,
-        "max_in_flight": 5,
+        "max_in_flight": 4,
         "decoded_cache_mb": 0
       }
     },
     "current_advisory_plan": {
-      "workers": 5,
+      "workers": 4,
       "native_threads": 1,
-      "max_in_flight": 5,
+      "max_in_flight": 4,
       "cache_bytes_per_worker": 0,
-      "estimated_peak_bytes": 6553023284,
-      "ram_budget_bytes": 3818449305,
+      "estimated_peak_bytes": 5322571776,
+      "ram_budget_bytes": 3916969574,
       "cpu_budget": 23,
       "warnings": [
         "RAM_ESTIMATE_EXCEEDS_BUDGET: advisory estimate; lower workers/queue/cache explicitly"
       ],
       "requested": {
-        "workers": 5,
+        "workers": 4,
         "cpu_budget": null,
         "ram_budget_mb": null,
         "native_threads": 1,
-        "max_in_flight": 5,
+        "max_in_flight": 4,
         "decoded_cache_mb": 0
       },
       "memory_estimate": {
         "model_version": "phase-lifetimes-v3",
         "estimate_metric": "process-tree RSS planning upper estimate",
-        "runtime_reserve_bytes": 1610612736,
+        "runtime_reserve_bytes": 1342177280,
         "native_reserve_bytes": 0,
         "coordinator_reserve_bytes": 65536000,
         "worker_peak_bytes": 707788800,
@@ -1241,10 +1241,10 @@
           "mask_multiband": 707788800,
           "displaced": 550502400
         },
-        "queued_result_bytes": 245760000,
+        "queued_result_bytes": 196608000,
         "headroom_percent": 20,
-        "headroom_bytes": 1092170548,
-        "estimated_peak_bytes": 6553023284,
+        "headroom_bytes": 887095296,
+        "estimated_peak_bytes": 5322571776,
         "source_dimensions_complete": true,
         "decoded_cache_bytes": 0,
         "cache_headroom_bytes": 0

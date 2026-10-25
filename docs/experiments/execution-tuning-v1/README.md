@@ -3,7 +3,8 @@
 This host no longer needs worker-count escalation tests for the current workload. After the earlier
 12-worker capacity stops, the useful remaining question was the affordable 3–6 worker range. Six is
 fastest here; five is the default near-best recommendation under the explicit 5% tolerance rule.
-Four is a useful lower-memory alternative. These are local choices, not generic hardware-class defaults.
+For this RAM-constrained interactive host, we explicitly use a 10% tolerance and select four as the
+everyday local setup. These are local choices, not generic hardware-class defaults.
 
 [Compact measurements and recommendation](summary.json) · [Portable workflow](../../EXECUTION_TUNING.md)
 
@@ -39,9 +40,11 @@ recommendations; their shorter prefix gives different rates from the 48-image co
 ## What this means
 
 Five workers trails six by 4.73% in accepted throughput, using about 9% less maximum sampled summed
-RSS. The resource preference selects five because its median is within 5% of the fastest eligible
-median. Four trails six by 6.70%, using about 29% less RSS; it is the smaller choice if the tolerance
-is relaxed to 10%. The tradeoff is transparent rather than an asserted unique optimum. Three is
+RSS. The default resource preference selects five because its median is within 5% of the fastest
+eligible median. Four trails six by 6.70%, using about 29% less RSS; it is the smaller choice if the tolerance
+is relaxed to 10%. Four is only 2.06% slower than five while using about 22% less peak summed RSS,
+so the local setup deliberately uses that 10% preference. The chart and retained recommendation
+show this four-worker local choice. The tradeoff is transparent rather than an asserted unique optimum. Three is
 about 13.7% behind six. Ranges overlap for some neighbouring settings, and three repetitions do not
 establish statistical significance or a universal performance plateau.
 
@@ -63,7 +66,8 @@ The portable method now separates:
    write ordinary typed overrides for explicit preflight/generation use.
 
 The headroom rule is the largest observed available-memory drop ×1.10 plus the recorded reserve.
-At recommendation time it required about 5.16 GiB available for five workers and 5.77 GiB for six.
+At recommendation time it required about 4.55 GiB available for four workers, 5.16 GiB for five
+and 5.77 GiB for six.
 These are workload-local empirical safeguards, not guaranteed future peaks or hard runtime limits.
 RSS repeats shared pages; PSS and host availability are separate metrics with independent samples.
 
@@ -71,11 +75,13 @@ RSS repeats shared pages; PSS and host availability are separate metrics with in
 
 Ignored local files were created:
 
-- `configs/local/execution-tuning/landing-pad-balanced.yaml`: five workers, one OpenCV thread,
-  five in-flight slots and zero decoded cache. This is the primary local composer for the measured workload.
+- `configs/local/execution-tuning/landing-pad-balanced.yaml`: four workers, one OpenCV thread,
+  four in-flight slots and zero decoded cache. This is the primary local composer for the measured workload.
+- `configs/local/execution-tuning/landing-pad-strict-five-percent.yaml`: five workers for the
+  generic five-percent tolerance.
 - `configs/local/execution-tuning/landing-pad-fastest.yaml`: six workers, one thread, six slots,
   zero decoded cache; requires more headroom.
-- `configs/local/execution-tuning/execution-balanced-overrides.yaml`: the same measured five-worker
+- `configs/local/execution-tuning/execution-balanced-overrides.yaml`: the same measured four-worker
   settings as reusable typed overrides for the matching composer.
 
 These do not change the shipped one-worker profile or silently apply to other families/resolutions.
@@ -102,13 +108,13 @@ PYTHONPATH=src uv run python scripts/study_execution_controls.py \
 uv run python -m dataset_generator_m1 execution recommend \
   --config configs/local/high-workers/baseline.yaml \
   --study outputs/experiments/execution-tuning/confirmation/summary.json \
-  --output-dir outputs/experiments/execution-tuning/selected
+  --tolerance-percent 10 --output-dir outputs/experiments/execution-tuning/local-balanced
 
 # Optional authoring dependency, after timing; output must be fresh.
 uv run --with 'matplotlib>=3.10,<3.11' python scripts/report_execution_tuning.py \
   --study outputs/experiments/execution-tuning/confirmation/summary.json \
   --screen outputs/experiments/execution-tuning/screen/summary.json \
-  --recommendation outputs/experiments/execution-tuning/selected/result.json \
+  --recommendation outputs/experiments/execution-tuning/local-balanced/result.json \
   --output-dir outputs/experiments/execution-tuning/report
 ```
 
