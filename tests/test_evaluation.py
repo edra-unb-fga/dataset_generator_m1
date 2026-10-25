@@ -180,3 +180,24 @@ def test_prediction_content_has_identity_independent_of_manifest(tmp_path):
     b = score(tmp_path, dataset, [], "b")
     assert a["prediction_file_sha256"] != b["prediction_file_sha256"]
     assert a["normalized_predictions_sha256"] != b["normalized_predictions_sha256"]
+
+
+@pytest.mark.parametrize('box', [[0, 0, 31, 20], [65, 76, 31, 20], [0, 76, 2, 20], [94, 0, 2, 20]])
+def test_repository_detection_export_rounding_at_borders(tmp_path, box):
+    from dataset_generator_m1.evaluation_io import _from_export
+    root = tmp_path
+    (root/'images/test').mkdir(parents=True)
+    (root/'labels/test').mkdir(parents=True)
+    Image.new('RGB', (96, 96)).save(root/'images/test/edge.png')
+    x, y, w, h = box
+    label = f'0 {(x+w/2)/96:.6f} {(y+h/2)/96:.6f} {w/96:.6f} {h/96:.6f}'
+    (root/'labels/test/edge.txt').write_text(label)
+    manifest = {'splits': {'test': 1}, 'task': 'detection', 'classes': ['pad'],
+                'samples': [{'split':'test','filename':'edge.png','sample_id':'s','pool_sample_key':'p/s','source_pool_id':'p'}]}
+    (root/'export.json').write_text(json.dumps(manifest))
+    coco, *_ = _from_export(root, {'split':'test'}, root)
+    validate_coco(coco)
+    assert coco['annotations'][0]['bbox'] == pytest.approx(box, abs=.0001)
+    (root/'labels/test/edge.txt').write_text('0 0 0.5 0.1 0.2')
+    with pytest.raises(ValueError, match='outside'):
+        _from_export(root, {'split':'test'}, root)

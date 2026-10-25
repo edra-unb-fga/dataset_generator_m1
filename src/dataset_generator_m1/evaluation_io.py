@@ -254,7 +254,14 @@ def _from_export(root, spec, manifest_root):
                 if len(values) != 5:
                     raise ValueError("Detection export requires five-column labels")
                 _, cx, cy, w, h = values
-                item["bbox"] = [(cx-w/2)*width, (cy-h/2)*height, w*width, h*height]
+                # Repository exports round normalized centers/sizes to six decimals.
+                # Only absorb that known quantization bound at this adapter boundary.
+                x1, y1, x2, y2 = cx-w/2, cy-h/2, cx+w/2, cy+h/2
+                tolerance = 0.00000075 + 1e-12
+                if not all(np.isfinite(v) for v in (cx, cy, w, h)) or w <= 0 or h <= 0 or min(x1, y1) < -tolerance or max(x2, y2) > 1+tolerance:
+                    raise ValueError("YOLO detection box lies outside its image")
+                x1, y1, x2, y2 = max(0., x1), max(0., y1), min(1., x2), min(1., y2)
+                item["bbox"] = [x1*width, y1*height, (x2-x1)*width, (y2-y1)*height]
             else:
                 if len(values) < 7 or len(values) % 2 != 1:
                     raise ValueError("Invalid YOLO segmentation polygon")
