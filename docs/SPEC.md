@@ -254,6 +254,19 @@ exports embed the same analysis; structural fragility or material imbalance yiel
 
 ## 9. Acceptance and non-goals
 
+### Experimental drone scenarios and materials
+
+The four catalog-visible `drone-*-candidate` appearance bundles are experimental, compatible with
+landing and landing-pad, and do not replace `realistic-heavy`. Natural and forced comparisons are
+documented in [DRONE_PRESETS.md](DRONE_PRESETS.md). They express scenario judgments, not camera
+calibration or demonstrated training benefit. Manometro keeps generic baseline regression coverage.
+
+`materials acquire|fetch` retains pinned CC0 colour/data-map bundles with bounded download/extraction,
+hash verification and offline reuse. The `texture_map` recipe operator applies periodic planar UV
+coordinates before the shared scene homography. Data maps are not sampled as colour backgrounds.
+Physical scale remains unknown unless supplied externally; normal/roughness shading is prototype-only.
+See [MATERIALS.md](MATERIALS.md).
+
 The test suite covers strict profiles, duplicate keys, shipped examples, asset mappings, geometry/mask boxes, RNG isolation, recipe operators and provenance, telemetry fake clocks and aggregates, CLI JSON/display behavior, atomic pools/resume, process equivalence, and collision-safe export.
 
 Pool-v2 stores exact annotation evidence and supports measured YOLO instance-segmentation export. Pool-v1 remains detection-only. Production nested placement (#31), COCO/RLE export, a GUI, model training/evaluation, multi-family runs, exact recipe quotas, GPU/distributed execution, public Python API stability, legacy migration, and unmeasured caching remain outside the current contract. Continuous process-tree monitoring is implemented and its lifecycle hardening remains tracked separately.

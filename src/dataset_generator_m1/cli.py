@@ -21,6 +21,7 @@ from .execution import resolve_worker_count
 from .families import family_names
 from .assets import build_asset_catalog
 from .partitions import plan_source_partitions
+from .materials import acquire_material, fetch_material
 from .generator import GenerationOptions, generate_pool, probe_profile
 from .guided_start import run_guided_start
 from .inspection import inspect_pool
@@ -51,6 +52,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     start = commands.add_parser("start", help="Run the complete guided interactive workflow")
     start.add_argument("--config", help="Start from a saved composer or arbitrary schema-v2 YAML path")
+
+    materials = commands.add_parser("materials", help="Acquire pinned colour/data-map material bundles")
+    material_commands = materials.add_subparsers(dest="material_command", required=True)
+    acquire = material_commands.add_parser("acquire", help="Pin an ambientCG material and retain its maps locally")
+    acquire.add_argument("--asset", required=True)
+    acquire.add_argument("--resolution", choices=["1K-JPG", "2K-JPG"], default="1K-JPG")
+    acquire.add_argument("--output-dir", required=True)
+    acquire.add_argument("--manifest-file", required=True)
+    _common(acquire)
+    fetch = material_commands.add_parser("fetch", help="Verify/reuse or download a pinned material manifest")
+    fetch.add_argument("--manifest-file", required=True)
+    fetch.add_argument("--output-dir", required=True)
+    _common(fetch)
 
     partition = commands.add_parser("partition", help="Plan source isolation and feasibility before generation")
     partition.add_argument("--config", required=True)
@@ -185,6 +199,10 @@ def _override_plan(args: argparse.Namespace, common: dict[str, Any] | None = Non
 
 
 def _run(args: argparse.Namespace) -> dict[str, Any]:
+    if args.command == "materials":
+        if args.material_command == "acquire":
+            return acquire_material(args.asset, args.output_dir, args.manifest_file, resolution=args.resolution)
+        return fetch_material(json.loads(Path(args.manifest_file).read_text(encoding="utf-8")), args.output_dir)
     if args.command == "partition":
         resolved = load_profile(args.config)
         if resolved.profile.assets.partition is not None:

@@ -1,0 +1,3 @@
+schema_version: 1
+subject: appearance
+value: {"background":[],"foreground":[],"final":[{"id":"overcast-contrast","type":"RandomBrightnessContrast","probability":0.7,"params":{"brightness_limit":[-0.08,0.04],"contrast_limit":[-0.15,0]}},{"id":"overcast-noise","type":"GaussNoise","probability":0.25,"params":{"std_range":[0.005,0.02],"mean_range":[0,0],"per_channel":false}}]}
