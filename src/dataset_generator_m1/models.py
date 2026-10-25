@@ -38,9 +38,15 @@ class AssetSourceConfig(StrictModel):
         return self
 
 
+class PartitionSelection(StrictModel):
+    manifest_file: str
+    split: str = Field(pattern=r"^[A-Za-z][A-Za-z0-9_-]*$")
+
+
 class AssetsConfig(StrictModel):
     backgrounds: AssetSourceConfig
     foregrounds: AssetSourceConfig
+    partition: PartitionSelection | None = None
 
 
 class OutputConfig(StrictModel):
@@ -482,6 +488,7 @@ class BackgroundCatalogEntry(StrictModel):
     seamless: bool | None = None
     texture_kind: Literal["micro", "structured"] | None = None
     approved_roles: tuple[str, ...] = ()
+    material_id: str | None = None
 
 
 class BackgroundCatalogMetadata(StrictModel):

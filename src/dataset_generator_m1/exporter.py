@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
+import re
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
@@ -29,8 +31,10 @@ def parse_splits(value: str) -> dict[str, float]:
     result: dict[str, float] = {}
     for item in value.split(","):
         name, raw = item.split("=", 1)
+        if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", name.strip()) or name.strip() in result:
+            raise ValueError("Split names must be unique path-safe identifiers")
         result[name.strip()] = float(raw)
-    if not result or any(weight <= 0 for weight in result.values()):
+    if not result or any(not math.isfinite(weight) or weight <= 0 for weight in result.values()):
         raise ValueError("Splits must contain positive name=weight entries")
     total = sum(result.values())
     return {name: weight / total for name, weight in result.items()}
@@ -151,8 +155,8 @@ def export_pools(
     if options.task not in {"detection", "segmentation"}:
         raise ValueError(f"Unsupported YOLO task: {options.task}")
     splits = options.splits or {"train": 0.8, "val": 0.1, "test": 0.1}
-    if options.analyze_only and options.strategy != "asset-disjoint":
-        raise ValueError("Analyze-only mode currently requires --strategy asset-disjoint")
+    if options.analyze_only and options.strategy not in {"asset-disjoint", "background-disjoint"}:
+        raise ValueError("Analyze-only requires a source-disjoint strategy")
     if not options.analyze_only and output_dir is None:
         raise ValueError("--output-dir is required unless --analyze-only is used")
     output = Path(output_dir).resolve() if output_dir is not None else None
@@ -177,17 +181,19 @@ def export_pools(
                 classes.append(class_name)
     class_ids = {name: index for index, name in enumerate(classes)}
     all_samples = [
-        dict(sample, _pool=str(path), _pool_index=pool_index, _run=run, _key=f"{pool_index}:{sample['sample_id']}")
+        dict(sample, _pool=str(path), _pool_index=pool_index, _run=run, _key=f"{pool_index}:{sample['sample_id']}", _planned_partition=run.get("source_partition"))
         for pool_index, (path, run, samples) in enumerate(pools)
         for sample in samples
     ]
     split_plan: dict[str, Any] | None = None
+    if any(sample["_planned_partition"] for sample in all_samples) and options.strategy not in {"asset-disjoint", "background-disjoint"}:
+        raise ValueError("Partitioned pools require a partition-aware export strategy; declared splits cannot be redistributed")
     if options.strategy == "random":
         assignments = _assign_random(all_samples, splits, options.seed)
     elif options.strategy == "stratified":
         assignments = _assign_stratified(all_samples, splits, options.seed)
-    elif options.strategy == "asset-disjoint":
-        split_plan = plan_asset_disjoint_splits(all_samples, splits, options.seed)
+    elif options.strategy in {"asset-disjoint", "background-disjoint"}:
+        split_plan = plan_asset_disjoint_splits(all_samples, splits, options.seed, policy=options.strategy)
         assignments = split_plan["assignments"]
     else:
         raise ValueError(f"Unsupported export split strategy: {options.strategy}")

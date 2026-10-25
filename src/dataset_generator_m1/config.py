@@ -310,6 +310,13 @@ def load_profile(
     if unknown_recipes:
         raise ValueError(f"Unknown background recipe weights: {sorted(unknown_recipes)}")
     sources.extend([_family_path(profile.family), recipe_path])
+    if profile.assets.partition is not None:
+        partition_path = Path(profile.assets.partition.manifest_file)
+        if not partition_path.is_absolute():
+            partition_path = config_path.parent / partition_path
+        from .partitions import read_partition
+        read_partition(partition_path)
+        sources.append(partition_path)
     unique_sources = list(dict.fromkeys(item.resolve() for item in sources))
     source_hashes = {item.as_posix(): _sha256(item) for item in unique_sources}
     contract = {

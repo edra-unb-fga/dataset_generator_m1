@@ -19,6 +19,8 @@ from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
 from .execution import resolve_worker_count
 from .families import family_names
+from .assets import build_asset_catalog
+from .partitions import plan_source_partitions
 from .generator import GenerationOptions, generate_pool, probe_profile
 from .guided_start import run_guided_start
 from .inspection import inspect_pool
@@ -49,6 +51,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     start = commands.add_parser("start", help="Run the complete guided interactive workflow")
     start.add_argument("--config", help="Start from a saved composer or arbitrary schema-v2 YAML path")
+
+    partition = commands.add_parser("partition", help="Plan source isolation and feasibility before generation")
+    partition.add_argument("--config", required=True)
+    partition.add_argument("--policy", choices=["asset-disjoint", "background-disjoint"], default="background-disjoint")
+    partition.add_argument("--splits", default="train=0.8,val=0.1,test=0.1")
+    partition.add_argument("--seed", type=int, default=42)
+    partition.add_argument("--output-file", help="Optional JSON manifest; no generation pool is created")
+    _common(partition)
 
     catalog = commands.add_parser("catalog", help="Discover and inspect reusable configuration profiles")
     catalog_commands = catalog.add_subparsers(dest="catalog_command", required=True)
@@ -156,7 +166,7 @@ def build_parser() -> argparse.ArgumentParser:
     export.add_argument("--format", choices=["yolo"], default="yolo")
     export.add_argument("--task", choices=["detection", "segmentation"], default="detection")
     export.add_argument("--mask-semantics", choices=["family", "visible", "full"], default="family")
-    export.add_argument("--strategy", choices=["random", "stratified", "asset-disjoint"], default="random")
+    export.add_argument("--strategy", choices=["random", "stratified", "asset-disjoint", "background-disjoint"], default="random")
     export.add_argument("--splits", default="train=0.8,val=0.1,test=0.1")
     export.add_argument("--output-dir")
     export.add_argument("--analyze-only", action="store_true")
@@ -175,6 +185,18 @@ def _override_plan(args: argparse.Namespace, common: dict[str, Any] | None = Non
 
 
 def _run(args: argparse.Namespace) -> dict[str, Any]:
+    if args.command == "partition":
+        resolved = load_profile(args.config)
+        if resolved.profile.assets.partition is not None:
+            raise ValueError("Create a partition plan from an unpartitioned composer")
+        result = plan_source_partitions(build_asset_catalog(resolved), parse_splits(args.splits), args.seed, args.policy)
+        if args.output_file:
+            path = Path(args.output_file)
+            if path.exists():
+                raise ValueError("Partition output already exists; review it or choose a new name")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+        return result
     if args.command == "start":
         return run_guided_start(args.config)
     if args.command == "catalog" and args.catalog_command == "list":
