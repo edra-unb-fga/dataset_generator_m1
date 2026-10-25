@@ -45,6 +45,9 @@ deliveries; the follow-ups above repair acceptance gaps rather than rewriting th
 - [ ] [#29](https://github.com/edra-unb-fga/dataset_generator_m1/issues/29): improve landing requested-count fulfillment using complete placement evidence without silent policy drift.
 - [ ] [#27](https://github.com/edra-unb-fga/dataset_generator_m1/issues/27): calibrate background QA warnings and hard failures after complete placement diagnostics.
 - [ ] [#28](https://github.com/edra-unb-fga/dataset_generator_m1/issues/28): establish reviewed benchmark baselines by hardware class using hardened continuous process-tree evidence; no universal timing budget exists yet.
+  The portable [execution tuning workflow](EXECUTION_TUNING.md) now generates capacity candidates and
+  repeated-evidence local overrides; the [3–6 worker study](experiments/execution-tuning-v1/README.md)
+  supplies one-host evidence. Additional hardware classes remain required.
 
 The bounded [background performance round](PERFORMANCE_ROUND_TWO.md) removes redundant work with
 exact-output production evidence and unchanged defaults. Its [local report](experiments/background-performance-v1/README.md)

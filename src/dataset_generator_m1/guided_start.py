@@ -31,7 +31,7 @@ from .configurator import (
     set_inline_values,
     set_subject_reference,
 )
-from .execution import resolve_worker_count
+from .execution import format_execution_plan, resolve_worker_count
 from .families import family_names
 from .exporter import ExportOptions, export_pools, parse_splits
 from .generator import GenerationOptions, generate_pool, probe_profile
@@ -390,6 +390,7 @@ def _preflight_panel(preflight: dict[str, Any]) -> Panel:
     warnings = "\n".join(f"• {item['code']} ({item['severity']})" for item in preflight["warnings"]) or "none"
     return Panel(
         f"Estimated time remaining: {format_runtime(runtime)}\n"
+        f"{format_execution_plan(preflight['execution_plan'])}\n"
         f"Disk estimate: {preflight['disk']['estimated_output_bytes']:,} bytes\nWarnings:\n{warnings}",
         title="Full preflight",
         border_style="yellow" if preflight["warnings"] else "green",

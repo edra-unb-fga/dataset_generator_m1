@@ -41,7 +41,9 @@ def _hash(value: Any) -> str:
 
 
 def environment_class() -> dict[str, Any]:
-    return {"system": platform.system(), "machine": platform.machine(), "logical_cpu_count": os.cpu_count()}
+    from .execution import usable_cpu_count
+    return {"system": platform.system(), "machine": platform.machine(), "logical_cpu_count": os.cpu_count(),
+            "usable_cpu_count": usable_cpu_count()}
 
 
 def performance_fingerprint(resolved: ResolvedProfile) -> str:
@@ -52,6 +54,9 @@ def performance_fingerprint(resolved: ResolvedProfile) -> str:
     value["profile"].pop("run", None)
     value["candidate_attempt_budget"] = resolved.profile.run.max_candidate_attempts
     policy = resolved.profile.execution.model_dump(mode="json")
+    from .execution import plan_execution
+    import cv2
+    policy['native_threads'] = plan_execution(resolved).native_threads or max(1, cv2.getNumThreads())
     # Worker-count matching/extrapolation is explicit in observation selection.
     for key in ("workers", "cpu_budget", "ram_budget_mb"):
         policy.pop(key, None)

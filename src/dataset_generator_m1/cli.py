@@ -17,7 +17,7 @@ from .catalog import list_profiles, promote_inline_stack, resolved_contract, sho
 from .configurator import APPEARANCE_IDS, configure_interactive, configure_noninteractive
 from .augmentation_study import AugmentationStudyRequest, run_augmentation_study
 from .exporter import ExportOptions, export_pools, parse_splits
-from .execution import resolve_worker_count
+from .execution import format_execution_plan, resolve_worker_count
 from .families import family_names
 from .assets import build_asset_catalog
 from .partitions import plan_source_partitions
@@ -200,6 +200,24 @@ def build_parser() -> argparse.ArgumentParser:
     bench.add_argument("--repeats", type=int, default=3)
     _common(bench)
 
+    execution = commands.add_parser("execution", help="Suggest trials and choose measured local execution settings")
+    execution_commands = execution.add_subparsers(dest="execution_command", required=True)
+    candidates = execution_commands.add_parser("candidates", help="Write hardware-informed starting overrides and a trial matrix")
+    candidates.add_argument("--config", required=True)
+    candidates.add_argument("--output-dir", required=True)
+    candidates.add_argument("--workers", nargs="+", type=int, help="Explicit exploratory counts; advisory RAM overruns stay visible")
+    candidates.add_argument("--native-threads", nargs="+", type=int, default=[1, 2])
+    candidates.add_argument("--cpu-budget", type=int)
+    candidates.add_argument("--ram-budget-mb", type=int)
+    candidates.add_argument("--max-workers", type=int, default=32)
+    _common(candidates)
+    recommend = execution_commands.add_parser("recommend", help="Write overrides from a complete guarded repeated study")
+    recommend.add_argument("--config", required=True)
+    recommend.add_argument("--study", required=True, help="Guarded execution study summary.json")
+    recommend.add_argument("--output-dir", required=True)
+    recommend.add_argument("--tolerance-percent", type=float, default=5)
+    _common(recommend)
+
     compare = commands.add_parser("compare", help="Compare run or benchmark artifacts")
     compare.add_argument("--left", required=True)
     compare.add_argument("--right", required=True)
@@ -372,6 +390,16 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
                 qa_samples=args.qa_samples,
             )
         )
+    if args.command == "execution":
+        from .execution_tuning import execution_candidates, recommend_execution, save_tuning_result
+        resolved = load_profile(args.config)
+        if args.execution_command == "candidates":
+            result = execution_candidates(resolved, workers=args.workers, threads=args.native_threads,
+                cpu_budget=args.cpu_budget, ram_budget_mb=args.ram_budget_mb, max_workers=args.max_workers)
+        else:
+            result = recommend_execution(resolved, json.loads(Path(args.study).read_text(encoding="utf-8")),
+                                         tolerance_percent=args.tolerance_percent)
+        return save_tuning_result(result, args.output_dir)
     if args.command == "benchmark":
         if args.production:
             from .execution_benchmark import production_benchmark
@@ -427,6 +455,7 @@ def main(argv: list[str] | None = None) -> int:
                         f"ETA: {format_runtime(runtime)} "
                         f"({runtime['confidence']})\n"
                         f"Disk estimate: {result['disk']['estimated_output_bytes']:,} bytes\n"
+                        f"{format_execution_plan(result['execution_plan'])}\n"
                         f"Warnings: {warning_text}\n"
                         f"Probe: {'yes' if result['probe']['triggered'] else 'no'}",
                         title="preflight",
@@ -457,10 +486,21 @@ def main(argv: list[str] | None = None) -> int:
                     Panel.fit(
                         f"Saved: {result['config']}\nContract: {result['contract_hash'][:12]}\n"
                         f"ETA: {format_runtime(runtime)}\n"
+                        f"{format_execution_plan(result['execution_plan'])}\n"
                         f"Next: {result['suggested_next']}",
                         title="composer ready",
                     )
                 )
+            elif args.command == "execution":
+                if result['kind'] == 'execution-recommendation':
+                    detail = (f"Selected: {result['selected']['workers']} workers × {result['selected']['native_threads']} OpenCV threads\n"
+                              f"Measured median: {result['selected']['throughput']['median']:.3f} accepted images/s\n"
+                              f"{format_execution_plan(result['current_advisory_plan'])}\n")
+                else:
+                    over = sum(item['estimated_peak_bytes'] > result['starting_plan']['ram_budget_bytes'] for item in result['forecasts'].values())
+                    detail = (f"Candidate policies: {len(result['matrix']['variants'])}; above advisory RAM budget: {over}\n"
+                              f"{format_execution_plan(result['starting_plan'])}\n")
+                Console().print(Panel.fit(detail + result['scope'] + f"\nSaved under: {args.output_dir}", title="execution tuning"))
             else:
                 Console().print(Panel.fit(f"[bold]{result.get('status', 'complete')}[/bold]", title=args.command))
         return 0 if result.get("status") in {"valid", "complete", "complete_with_warnings"} else 1

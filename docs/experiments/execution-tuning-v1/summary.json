@@ -1,0 +1,1265 @@
+{
+  "schema_version": 1,
+  "kind": "portable-execution-tuning-evidence",
+  "protocol": {
+    "samples": 48,
+    "warmups": 2,
+    "repeats": 3,
+    "tuning_context": {
+      "schema_version": 1,
+      "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+      "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "environment_class": {
+        "system": "Linux",
+        "machine": "x86_64",
+        "logical_cpus": 24,
+        "usable_cpus": 24,
+        "ram_class_gib": 16
+      }
+    },
+    "exact_encoded_images_equal": true,
+    "geometry_annotation_masks_equal": true
+  },
+  "screen_protocol": {
+    "samples": 24,
+    "warmups": 2,
+    "repeats": 1
+  },
+  "screen": [
+    {
+      "variant": "w3-t1",
+      "throughput": 0.9130457384157737,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+      "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+      "workers": 3,
+      "native_threads": 1
+    },
+    {
+      "variant": "w3-t2",
+      "throughput": 0.6744929887741583,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+      "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+      "workers": 3,
+      "native_threads": 2
+    },
+    {
+      "variant": "w4-t1",
+      "throughput": 1.014929671969907,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+      "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+      "workers": 4,
+      "native_threads": 1
+    },
+    {
+      "variant": "w4-t2",
+      "throughput": 0.8378109129872081,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+      "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+      "workers": 4,
+      "native_threads": 2
+    },
+    {
+      "variant": "w5-t1",
+      "throughput": 1.1076671185094569,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+      "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+      "workers": 5,
+      "native_threads": 1
+    },
+    {
+      "variant": "w5-t2",
+      "throughput": 0.8933522737163819,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+      "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+      "workers": 5,
+      "native_threads": 2
+    },
+    {
+      "variant": "w6-t1",
+      "throughput": 1.102312605600096,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "445d2366c572e6f3a1ef102443d50741854b78810a4013140664a35a45d39796",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "438de0e4a8c0df73a01938108eefc4cb5d66879806c1b2215b3d37080f3db815",
+      "content_signature": "f18954d2de12804a3687769cdd8b5156609bac9442b754512e8250677ab77da8",
+      "workers": 6,
+      "native_threads": 1
+    }
+  ],
+  "groups": [
+    {
+      "variant": "w3-t1",
+      "workers": 3,
+      "native_threads": 1,
+      "throughput": {
+        "median": 0.8346099492918398,
+        "min": 0.8057138590998194,
+        "max": 0.8467502662381791
+      },
+      "peak_rss_bytes": 2894770176,
+      "peak_pss_bytes": 2071572480,
+      "minimum_available_bytes": 3910348800,
+      "background_mean_seconds": 2.006633418
+    },
+    {
+      "variant": "w4-t1",
+      "workers": 4,
+      "native_threads": 1,
+      "throughput": {
+        "median": 0.9026030320702977,
+        "min": 0.8983911167126397,
+        "max": 0.9228702208952958
+      },
+      "peak_rss_bytes": 2997198848,
+      "peak_pss_bytes": 2473051136,
+      "minimum_available_bytes": 3878359040,
+      "background_mean_seconds": 2.474433365
+    },
+    {
+      "variant": "w5-t1",
+      "workers": 5,
+      "native_threads": 1,
+      "throughput": {
+        "median": 0.9215739743571066,
+        "min": 0.9179006936913283,
+        "max": 0.9385259893343194
+      },
+      "peak_rss_bytes": 3850313728.0,
+      "peak_pss_bytes": 2879212544,
+      "minimum_available_bytes": 3392106496,
+      "background_mean_seconds": 2.875568241
+    },
+    {
+      "variant": "w6-t1",
+      "workers": 6,
+      "native_threads": 1,
+      "throughput": {
+        "median": 0.9673578797775058,
+        "min": 0.9635623329199423,
+        "max": 0.9681442560283001
+      },
+      "peak_rss_bytes": 4222377984,
+      "peak_pss_bytes": 3278366720,
+      "minimum_available_bytes": 2807316480,
+      "background_mean_seconds": 3.263730965
+    }
+  ],
+  "repetitions": [
+    {
+      "variant": "w3-t1",
+      "repeat": 0,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.8057138590998194,
+      "active_seconds": 59.57449574000202,
+      "command_seconds": 67.54127226700075,
+      "initial_available_memory_bytes": 6163251200,
+      "minimum_available_memory_bytes": 3910348800,
+      "swap_out_delta_bytes": 401408,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 2832211968,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2071572480,
+        "peak_uss_bytes": 1961758720
+      },
+      "execution": {
+        "workers": 3,
+        "native_threads": 1,
+        "max_in_flight": 3,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w3-t1",
+      "repeat": 1,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.8467502662381791,
+      "active_seconds": 56.68731251801364,
+      "command_seconds": 64.81557823193725,
+      "initial_available_memory_bytes": 6501453824,
+      "minimum_available_memory_bytes": 4003598336,
+      "swap_out_delta_bytes": 139264,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 2894770176,
+        "peak_threads": 71,
+        "peak_pss_bytes": 1898754048,
+        "peak_uss_bytes": 1788903424
+      },
+      "execution": {
+        "workers": 3,
+        "native_threads": 1,
+        "max_in_flight": 3,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w3-t1",
+      "repeat": 2,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.8346099492918398,
+      "active_seconds": 57.51189137203619,
+      "command_seconds": 65.54260103707202,
+      "initial_available_memory_bytes": 6457556992,
+      "minimum_available_memory_bytes": 4187926528,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 2679123968,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2025895936,
+        "peak_uss_bytes": 1916022784
+      },
+      "execution": {
+        "workers": 3,
+        "native_threads": 1,
+        "max_in_flight": 3,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w4-t1",
+      "repeat": 0,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9026030320702977,
+      "active_seconds": 53.17951853002887,
+      "command_seconds": 61.34648545808159,
+      "initial_available_memory_bytes": 6167244800,
+      "minimum_available_memory_bytes": 3878359040,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 2958794752,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2326970368,
+        "peak_uss_bytes": 2216386560
+      },
+      "execution": {
+        "workers": 4,
+        "native_threads": 1,
+        "max_in_flight": 4,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w4-t1",
+      "repeat": 1,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9228702208952958,
+      "active_seconds": 52.01164315093774,
+      "command_seconds": 60.12787547707558,
+      "initial_available_memory_bytes": 6550753280,
+      "minimum_available_memory_bytes": 4112023552,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 2923687936,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2473051136,
+        "peak_uss_bytes": 2362277888
+      },
+      "execution": {
+        "workers": 4,
+        "native_threads": 1,
+        "max_in_flight": 4,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w4-t1",
+      "repeat": 2,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.8983911167126397,
+      "active_seconds": 53.428841421962716,
+      "command_seconds": 61.49813445098698,
+      "initial_available_memory_bytes": 6490136576,
+      "minimum_available_memory_bytes": 3997114368,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 2997198848,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2429683712,
+        "peak_uss_bytes": 2318454784
+      },
+      "execution": {
+        "workers": 4,
+        "native_threads": 1,
+        "max_in_flight": 4,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w5-t1",
+      "repeat": 0,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9385259893343194,
+      "active_seconds": 51.144024746958166,
+      "command_seconds": 59.25531926902477,
+      "initial_available_memory_bytes": 6387249152,
+      "minimum_available_memory_bytes": 3430608896,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 3574882304,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2712258560,
+        "peak_uss_bytes": 2600468480
+      },
+      "execution": {
+        "workers": 5,
+        "native_threads": 1,
+        "max_in_flight": 5,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w5-t1",
+      "repeat": 1,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9215739743571066,
+      "active_seconds": 52.084800011944026,
+      "command_seconds": 60.170403412077576,
+      "initial_available_memory_bytes": 6473998336,
+      "minimum_available_memory_bytes": 3392106496,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 3742650368,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2879212544,
+        "peak_uss_bytes": 2767527936
+      },
+      "execution": {
+        "workers": 5,
+        "native_threads": 1,
+        "max_in_flight": 5,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w5-t1",
+      "repeat": 2,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9179006936913283,
+      "active_seconds": 52.2932350479532,
+      "command_seconds": 60.44627896603197,
+      "initial_available_memory_bytes": 6510956544,
+      "minimum_available_memory_bytes": 3546759168,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 3565035520,
+        "peak_threads": 71,
+        "peak_pss_bytes": 2727686144,
+        "peak_uss_bytes": 2615562240
+      },
+      "execution": {
+        "workers": 5,
+        "native_threads": 1,
+        "max_in_flight": 5,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w6-t1",
+      "repeat": 0,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9673578797775058,
+      "active_seconds": 49.619687355007045,
+      "command_seconds": 57.626656215055846,
+      "initial_available_memory_bytes": 6478671872,
+      "minimum_available_memory_bytes": 2807316480,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 4222377984,
+        "peak_threads": 71,
+        "peak_pss_bytes": 3063328768,
+        "peak_uss_bytes": 2950979584
+      },
+      "execution": {
+        "workers": 6,
+        "native_threads": 1,
+        "max_in_flight": 6,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w6-t1",
+      "repeat": 1,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9635623329199423,
+      "active_seconds": 49.815143215004355,
+      "command_seconds": 57.962613285984844,
+      "initial_available_memory_bytes": 6581956608,
+      "minimum_available_memory_bytes": 2900357120,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 4058566656,
+        "peak_threads": 71,
+        "peak_pss_bytes": 3278366720,
+        "peak_uss_bytes": 3166294016
+      },
+      "execution": {
+        "workers": 6,
+        "native_threads": 1,
+        "max_in_flight": 6,
+        "cache_bytes_per_worker": 0
+      }
+    },
+    {
+      "variant": "w6-t1",
+      "repeat": 2,
+      "source": {
+        "commit": "6bd5e13c2c881bd1a7697707ba488ff0bd44b65c",
+        "dirty": false
+      },
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "tuning_context": {
+        "schema_version": 1,
+        "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+        "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "generation_identity": {
+        "schema_version": 1,
+        "sha256": "a3386370a5a40993e6bd7158436296579be4b47ce586c070f3e3c1c7a8499bab",
+        "renderer_semantics": "planar-surface-v3.1"
+      },
+      "pixel_signature": "1a939ee55770aacf5600a926c1adea24529d966ced0db5e5a6c6bc336b80c710",
+      "content_signature": "dcc6b5829b08e3052e7e31dbef8beacded399aea953ac71d3dd14ac09f1dc15e",
+      "accepted": 48,
+      "attempts": 49,
+      "throughput": 0.9681442560283001,
+      "active_seconds": 49.57938262796961,
+      "command_seconds": 57.734847528045066,
+      "initial_available_memory_bytes": 6445522944,
+      "minimum_available_memory_bytes": 3081560064,
+      "swap_out_delta_bytes": 0,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": 5.0,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "command_resource_observed": {
+        "peak_rss_bytes": 4038774784,
+        "peak_threads": 71,
+        "peak_pss_bytes": 3275277312,
+        "peak_uss_bytes": 3162734592
+      },
+      "execution": {
+        "workers": 6,
+        "native_threads": 1,
+        "max_in_flight": 6,
+        "cache_bytes_per_worker": 0
+      }
+    }
+  ],
+  "recommendation": {
+    "schema_version": 1,
+    "status": "complete",
+    "kind": "execution-recommendation",
+    "tuning_context": {
+      "schema_version": 1,
+      "workload_sha256": "aaaaade4939c7e3ba9868d5c3a05cf7ddb9340c23b2110b6c355e845071555f3",
+      "performance_implementation": "background-workspaces-and-polygon-reuse-v1",
+      "software": {
+        "python": "3.13.16",
+        "numpy": "2.5.1",
+        "opencv-python-headless": "5.0.0.93",
+        "albumentations": "2.0.8",
+        "Pillow": "12.3.0"
+      },
+      "environment_class": {
+        "system": "Linux",
+        "machine": "x86_64",
+        "logical_cpus": 24,
+        "usable_cpus": 24,
+        "ram_class_gib": 16
+      }
+    },
+    "study_sha256": "25a5abab5ff3e1b05c59999f6fcac3830df579496704b7c6ace823dc7e663ceb",
+    "selected": {
+      "variant": "w5-t1",
+      "workers": 5,
+      "native_threads": 1,
+      "throughput": {
+        "median": 0.9215739743571066,
+        "min": 0.9179006936913283,
+        "max": 0.9385259893343194
+      },
+      "peak_observed_rss_bytes": 3850313728.0,
+      "required_available_memory_bytes": 5537564672
+    },
+    "fastest": {
+      "variant": "w6-t1",
+      "workers": 6,
+      "native_threads": 1,
+      "throughput": {
+        "median": 0.9673578797775058,
+        "min": 0.9635623329199423,
+        "max": 0.9681442560283001
+      },
+      "peak_observed_rss_bytes": 4222377984,
+      "required_available_memory_bytes": 6197243085
+    },
+    "candidates": [
+      {
+        "variant": "w3-t1",
+        "workers": 3,
+        "native_threads": 1,
+        "throughput": {
+          "median": 0.8346099492918398,
+          "min": 0.8057138590998194,
+          "max": 0.8467502662381791
+        },
+        "peak_observed_rss_bytes": 2894770176,
+        "required_available_memory_bytes": 4895124685
+      },
+      {
+        "variant": "w4-t1",
+        "workers": 4,
+        "native_threads": 1,
+        "throughput": {
+          "median": 0.9026030320702977,
+          "min": 0.8983911167126397,
+          "max": 0.9228702208952958
+        },
+        "peak_observed_rss_bytes": 2997198848,
+        "required_available_memory_bytes": 4889808077
+      },
+      {
+        "variant": "w5-t1",
+        "workers": 5,
+        "native_threads": 1,
+        "throughput": {
+          "median": 0.9215739743571066,
+          "min": 0.9179006936913283,
+          "max": 0.9385259893343194
+        },
+        "peak_observed_rss_bytes": 3850313728.0,
+        "required_available_memory_bytes": 5537564672
+      },
+      {
+        "variant": "w6-t1",
+        "workers": 6,
+        "native_threads": 1,
+        "throughput": {
+          "median": 0.9673578797775058,
+          "min": 0.9635623329199423,
+          "max": 0.9681442560283001
+        },
+        "peak_observed_rss_bytes": 4222377984,
+        "required_available_memory_bytes": 6197243085
+      }
+    ],
+    "excluded": [],
+    "method": {
+      "minimum_samples": 20,
+      "minimum_repetitions": 3,
+      "near_best_tolerance_percent": 5,
+      "preference": "fewest workers, then requested CPU concurrency, then measured RSS",
+      "headroom_rule": "largest observed host-memory drop \u00d71.10 + recorded available-memory floor"
+    },
+    "overrides": {
+      "execution": {
+        "workers": 5,
+        "native_threads": 1,
+        "max_in_flight": 5,
+        "decoded_cache_mb": 0
+      }
+    },
+    "current_advisory_plan": {
+      "workers": 5,
+      "native_threads": 1,
+      "max_in_flight": 5,
+      "cache_bytes_per_worker": 0,
+      "estimated_peak_bytes": 6553023284,
+      "ram_budget_bytes": 3818449305,
+      "cpu_budget": 23,
+      "warnings": [
+        "RAM_ESTIMATE_EXCEEDS_BUDGET: advisory estimate; lower workers/queue/cache explicitly"
+      ],
+      "requested": {
+        "workers": 5,
+        "cpu_budget": null,
+        "ram_budget_mb": null,
+        "native_threads": 1,
+        "max_in_flight": 5,
+        "decoded_cache_mb": 0
+      },
+      "memory_estimate": {
+        "model_version": "phase-lifetimes-v3",
+        "estimate_metric": "process-tree RSS planning upper estimate",
+        "runtime_reserve_bytes": 1610612736,
+        "native_reserve_bytes": 0,
+        "coordinator_reserve_bytes": 65536000,
+        "worker_peak_bytes": 707788800,
+        "phase_peaks_bytes_per_worker": {
+          "background": 707788800,
+          "scene_render": 273612800,
+          "mask_evidence": 131072000
+        },
+        "recipe_peaks_bytes": {
+          "direct": 471859200,
+          "palette": 629145600,
+          "mask_multiband": 707788800,
+          "displaced": 550502400
+        },
+        "queued_result_bytes": 245760000,
+        "headroom_percent": 20,
+        "headroom_bytes": 1092170548,
+        "estimated_peak_bytes": 6553023284,
+        "source_dimensions_complete": true,
+        "decoded_cache_bytes": 0,
+        "cache_headroom_bytes": 0
+      }
+    },
+    "scope": "Environment-local recommendation, not a hardware-class speed guarantee or hard memory bound."
+  },
+  "authoring_sources": {
+    "src/dataset_generator_m1/execution_tuning.py": "b65d780236fbcf8fcc40d8dd8addfafe59b027bd10d9ca7a32ccb0b4110689ba",
+    "scripts/study_execution_controls.py": "3d27ffbe09e83c4053923b3825087ae713d69765911cf9e268c5ce370574ca92"
+  },
+  "limits": [
+    "One hardware class; not a generic fastest-worker formula.",
+    "Three repeated deterministic prefixes measure execution variation, not independent scene diversity.",
+    "Observed ranges are not confidence intervals. Near-best selection uses an explicit resource preference.",
+    "Sampled RSS, PSS and host availability are distinct metrics, not OS hard limits."
+  ]
+}
