@@ -36,10 +36,12 @@ def test_full_cli_workflow_is_opt_in_and_covers_both_families() -> None:
     assert "landing-ci.yaml" in workflow
     assert "manometro-ci.yaml" in workflow
     assert workflow.count("run status") == 3
-    assert workflow.count("run inspect") == 3
-    assert workflow.count("-m dataset_generator_m1 export ") == 6
-    assert workflow.count("--task detection") == 3
-    assert workflow.count("--task segmentation") == 3
+    assert workflow.count("run inspect") == 4
+    assert workflow.count("-m dataset_generator_m1 export ") == 8
+    assert workflow.count("--task detection") == 4
+    assert workflow.count("--task segmentation") == 4
+    assert "landing-pad_occlusion.yaml" in workflow
+    assert "surface-analysis" in workflow
     assert "Verify segmentation export evidence" in workflow
     assert "report[\"fidelity\"][\"instances\"] > 0" in workflow
     assert "retention-days: 7" in workflow
@@ -49,6 +51,10 @@ def test_full_cli_workflow_is_opt_in_and_covers_both_families() -> None:
 def test_windows_validation_uses_latest_supported_python() -> None:
     workflow = (ROOT / ".github/workflows/windows-full.yml").read_text(encoding="utf-8")
     assert 'python-version: "3.14"' in workflow
+    steps=yaml.safe_load(workflow)['jobs']['full']['steps']
+    surface=next(step['run'] for step in steps if step.get('name')=='Shared surface and occlusion public CLI correctness')
+    assert '\n' not in surface.strip(), 'Folded PowerShell step must remain one command'
+    assert '--output-dir outputs/windows-surface-pool' in surface
 
 
 def test_pr_template_records_full_cli_decision() -> None:
