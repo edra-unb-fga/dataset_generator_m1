@@ -62,3 +62,17 @@ def test_strict_pad_partition_reports_insufficient_independent_artwork():
 def test_missing_background_lineage_cannot_claim_isolation():
     with pytest.raises(ValueError, match="lineage"):
         plan_asset_disjoint_splits([{"_key": "empty", "annotations": []}], {"train": 1.0}, 42)
+
+
+def test_copy_partitioned_composer_preserves_manifest_meaning(tmp_path):
+    from dataset_generator_m1.configurator import copy_composer
+    resolved = load_profile("examples/configs/landing-pad_minimal.yaml")
+    manifest = plan_source_partitions(build_asset_catalog(resolved), {"train": 1.0}, 42, "background-disjoint")
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "partition.json").write_text(json.dumps(manifest))
+    doc = load_yaml_strict("examples/configs/landing-pad_minimal.yaml")
+    doc["inline"] = {"assets": {**resolved.profile.assets.model_dump(mode="json"), "partition": {"manifest_file": "partition.json", "split": "train"}}}
+    original = save_composer(doc, source / "composer.yaml")
+    copied = copy_composer(original, tmp_path / "other/composer.yaml")
+    assert build_asset_catalog(load_profile(copied)).fingerprint == build_asset_catalog(load_profile(original)).fingerprint
