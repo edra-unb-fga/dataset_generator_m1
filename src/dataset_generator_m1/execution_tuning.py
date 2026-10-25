@@ -170,6 +170,11 @@ def recommend_execution(resolved, study, *, hardware=None, tolerance_percent=5):
                 raise ValueError('Minimum available memory exceeds the initial observation')
             if minimum < floor or swap > swap_limit or observed > rss_limit:
                 raise ValueError('Completed study violates its recorded guards')
+            if guards.get('pss_limit_gib') is not None:
+                pss_limit = _positive(guards['pss_limit_gib'], 'PSS guard')*GIB
+                pss = _positive(row.get('command_resource_observed', {}).get('peak_pss_bytes'), 'observed PSS for its guard')
+                if pss > pss_limit:
+                    raise ValueError('Completed study violates its recorded PSS guard')
             required_available = max(required_available, max(0, initial-minimum)*1.1 + floor)
             peak_rss = max(peak_rss, observed)
         rates = [r['throughput'] for r in rows]

@@ -125,7 +125,7 @@ for hardware classes still need additional machines under #28. A changed workloa
 software or material host allocation requires reevaluation. This round does not change smoothing,
 scheduling, effects, rendering semantics or quality policy.
 
-298 local tests pass, including recommendation adequacy/compatibility, memory guards, affinity,
+301 local tests pass, including recommendation adequacy/compatibility, memory guards, affinity,
 automatic threading, counter/hash validation and saved-override reloads. Production-path full CLI,
 Windows and exact baseline/current output checks accompany delivery. Charts and links are checked;
 raw pools, local composers and host time series stay ignored.

@@ -51,7 +51,9 @@ The numbers above are illustrative guard values, not a portable safe-RAM promise
 available RAM, swap occupancy and other applications first. Choose a reserve that keeps the session
 responsive; a nearly full swap calls for more caution. The host-memory floor and additional swap-out
 limit protect independently of summed RSS. PSS/USS, where supported, help interpret shared/private
-memory; unavailable values stay unknown. The watchdog is sampled and can miss transient peaks.
+memory; unavailable values stay unknown. If a PSS guard is declared, recommendations require a known,
+compliant PSS peak. On unsupported platforms, omit that optional limit and retain RSS, availability
+and swap guards. The watchdog is sampled and can miss transient peaks.
 
 Use the screen to eliminate clearly poor thread/worker combinations. Do not install its fastest
 single repetition as a default. Confirm finalists and a fresh reference in one matrix, with at least

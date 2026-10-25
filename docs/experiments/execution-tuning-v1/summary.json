@@ -1210,7 +1210,7 @@
       "max_in_flight": 4,
       "cache_bytes_per_worker": 0,
       "estimated_peak_bytes": 5322571776,
-      "ram_budget_bytes": 3916969574,
+      "ram_budget_bytes": 3866608435,
       "cpu_budget": 23,
       "warnings": [
         "RAM_ESTIMATE_EXCEEDS_BUDGET: advisory estimate; lower workers/queue/cache explicitly"
@@ -1253,7 +1253,7 @@
     "scope": "Environment-local recommendation, not a hardware-class speed guarantee or hard memory bound."
   },
   "authoring_sources": {
-    "src/dataset_generator_m1/execution_tuning.py": "b65d780236fbcf8fcc40d8dd8addfafe59b027bd10d9ca7a32ccb0b4110689ba",
+    "src/dataset_generator_m1/execution_tuning.py": "e7292fe40c8bdc8d3bffed14556a32bb31554aa12d3402a90c8ffe6cd98edf0b",
     "scripts/study_execution_controls.py": "3d27ffbe09e83c4053923b3825087ae713d69765911cf9e268c5ce370574ca92"
   },
   "limits": [

@@ -142,3 +142,21 @@ def test_auto_does_not_treat_an_oversized_cpu_budget_as_extra_hardware(resolved)
     plan = plan_execution(resolved.model_copy(update={'profile':profile}), available_ram=64*GIB, logical_cpus=4)
     assert plan.workers == 2
     assert 'CPU_BUDGET_EXCEEDS_DETECTED_LOGICAL_CPUS' in plan.warnings
+
+
+@pytest.mark.parametrize('pss',[None, 2*GIB])
+def test_recorded_pss_guard_requires_known_compliant_observations(resolved, pss):
+    study = study_for(resolved)
+    row = study['records'][0]
+    row['guard_limits']['pss_limit_gib'] = 1
+    row['command_resource_observed']['peak_pss_bytes'] = pss
+    with pytest.raises(ValueError, match='PSS'):
+        recommend_execution(resolved, study, hardware=HARDWARE)
+
+
+def test_supported_optional_pss_guard_allows_a_compliant_study(resolved):
+    study = study_for(resolved)
+    for row in study['records']:
+        row['guard_limits']['pss_limit_gib'] = 4
+        row['command_resource_observed']['peak_pss_bytes'] = 2*GIB
+    assert recommend_execution(resolved, study, hardware=HARDWARE)['selected']['workers'] == 3
