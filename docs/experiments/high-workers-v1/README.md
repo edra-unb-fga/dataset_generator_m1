@@ -1,5 +1,9 @@
 # High-worker capacity and corrected RAM estimates
 
+Follow-up: the [requested retry with a lower floor](../twelve-worker-retry-v1/README.md) completes the
+short twelve-worker case, then reaches the revised 1.5 GiB floor on the longer workload. The original
+measurements below remain unchanged.
+
 The 12-worker ramp was stopped by the available-memory guard. Following the user's explicit condition,
 12×2,16 and 24 were skipped after that lower-count headroom test failed. This is a host-capacity result,
 not a completed 12-worker throughput measurement. No other applications were closed or altered.

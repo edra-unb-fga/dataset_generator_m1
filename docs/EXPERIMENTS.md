@@ -160,3 +160,9 @@ phase instead of summing expired values and mutually exclusive phases. RSS predi
 distinct from Linux PSS/USS physical/private observations. `scripts/probe_background_memory.py` and
 `scripts/report_high_workers.py` reproduce the allocation/report evidence; source and model hashes
 are retained. Capacity decisions depend on current host headroom, not CI latency thresholds.
+
+The subsequent [twelve-worker retry](experiments/twelve-worker-retry-v1/README.md) lowers the available
+host-memory floor to 1.5 GiB. A single 12-image run completes with exact signatures matching the earlier
+six-worker short controls, but the 48-image attempt crosses the revised floor during its second batch.
+The report retains both memory timelines and explicitly distinguishes short completion from an
+unfinished sustained comparison. No runtime code, estimator or generic defaults changed.
