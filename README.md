@@ -1,5 +1,11 @@
 # Dataset Generator M1
 
+Maintained tasks include `landing-pad`: complete rectangular panels using the shared planar renderer.
+Try `configure --family landing-pad --output configs/local/my-pad.yaml --output-format json`, then
+resolve/preview/generate/inspect/export as below. The shipped geometric pad fixtures are independently
+authored workflow examples; replace them with production artwork through a foreground-root override.
+See [the delivery contract](docs/PRACTICAL_WORKFLOW.md) for count-policy and split semantics.
+
 Auditable synthetic YOLO generation for the `landing` and `manometro` families. The generator uses deterministic scene plans, one shared foreground/background homography, alpha-evidence-derived annotations, versioned background-mixing recipes, resumable pools, Rich live analytics, and deterministic process workers.
 
 ## Install

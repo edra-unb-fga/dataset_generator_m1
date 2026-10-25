@@ -16,18 +16,18 @@ from .catalog import list_profiles, show_profile
 from .config import load_profile
 from .filters import SUPPORTED_TRANSFORMS, validate_transform_specs
 from .execution import resolve_worker_count
+from .families import family_names
 from .models import GenerationComposer, TransformSpec
 from .preflight import PreflightRequest, run_preflight, format_runtime
 
 
-APPEARANCE_IDS = (
-    "builtin:appearance/realistic-heavy",
-    "builtin:appearance/current-fast",
-    "builtin:appearance/legacy-heavy-compatible",
-    "builtin:appearance/random-fog-heavy",
-    "builtin:appearance/no-appearance",
-    "builtin:appearance/all-effects-stress",
-)
+def appearance_references(composer: str | Path | None = None) -> tuple[str, ...]:
+    references = {item["id"] for item in list_profiles(composer)["profiles"] if item["subject"] == "appearance"}
+    default = "builtin:appearance/realistic-heavy"
+    return (default, *sorted(references - {default}))
+
+
+APPEARANCE_IDS = appearance_references()
 
 
 def _composer_payload(document: dict[str, Any] | GenerationComposer) -> dict[str, Any]:
@@ -64,8 +64,8 @@ def effect_catalog() -> dict[str, Any]:
 
 
 def default_composer(family: str, *, appearance: str = APPEARANCE_IDS[0]) -> dict[str, Any]:
-    if family not in {"landing", "manometro"}:
-        raise ValueError("family must be landing or manometro")
+    if family not in family_names():
+        raise ValueError(f"Unknown family {family}; available: {', '.join(family_names())}")
     raw = {
         "schema_version": 2,
         "family": f"builtin:family/{family}",
@@ -244,13 +244,14 @@ def configure_interactive(
                 console.print(Panel.fit(details["documentation"], title=reference))
             document = set_subject_reference(document, subject, reference)
         elif choice == "a":
-            for index, reference in enumerate(APPEARANCE_IDS, start=1):
-                details = show_profile(reference)
+            choices = appearance_references(path)
+            for index, reference in enumerate(choices, start=1):
+                details = show_profile(reference, composer=path)
                 console.print(f"{index}. {reference} — {details['metadata']['status']} / {details['metadata']['performance_risk']}")
             selected = int(ask("Profile number", default="1")) - 1
-            if selected not in range(len(APPEARANCE_IDS)):
+            if selected not in range(len(choices)):
                 raise ValueError("Appearance profile number is out of range")
-            document["appearance"]["preset"] = APPEARANCE_IDS[selected]
+            document["appearance"]["preset"] = choices[selected]
         elif choice == "e":
             docs = effect_catalog()["effects"]
             stage = ask("Stage", choices=["background", "foreground", "final"], default="final")

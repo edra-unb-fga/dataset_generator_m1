@@ -93,7 +93,7 @@ def promote_inline_stack(config: str | Path, stage: str, profile_id: str) -> dic
         "id": f"workspace:appearance.{stage}/{profile_id}",
         "subject": f"appearance.{stage}",
         "status": "experimental",
-        "compatible_families": ["landing", "manometro"],
+        "compatible_families": [load_profile(config).profile.family],
         "intents": ["promoted-custom-stack"],
         "performance_risk": "confirmation",
         "warning_codes": ["UNREVIEWED_WORKSPACE_PROFILE"],

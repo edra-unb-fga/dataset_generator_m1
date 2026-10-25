@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:sampling/landing-pad-standard","subject":"sampling","status":"experimental","compatible_families":["landing-pad"],"performance_risk":"informational","warning_codes":["UNCALIBRATED_PAD_DISTRIBUTION"]}

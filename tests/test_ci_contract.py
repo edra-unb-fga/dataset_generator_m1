@@ -29,16 +29,17 @@ def test_full_cli_workflow_is_opt_in_and_covers_both_families() -> None:
     assert "contains(github.event.pull_request.labels.*.name, 'ci:full')" in workflow
     assert "cancel-in-progress: true" in workflow
     assert 'python-version: "3.14"' in workflow
-    assert workflow.count("--num-images 10") == 2
+    assert workflow.count("--num-images 10") == 3
+    assert "configure --family landing-pad" in workflow
     assert workflow.count("--workers 2") >= 2
-    assert workflow.count("--qa-samples 3") == 2
+    assert workflow.count("--qa-samples 3") == 3
     assert "landing-ci.yaml" in workflow
     assert "manometro-ci.yaml" in workflow
-    assert workflow.count("run status") == 2
-    assert workflow.count("run inspect") == 2
-    assert workflow.count("-m dataset_generator_m1 export ") == 4
-    assert workflow.count("--task detection") == 2
-    assert workflow.count("--task segmentation") == 2
+    assert workflow.count("run status") == 3
+    assert workflow.count("run inspect") == 3
+    assert workflow.count("-m dataset_generator_m1 export ") == 6
+    assert workflow.count("--task detection") == 3
+    assert workflow.count("--task segmentation") == 3
     assert "Verify segmentation export evidence" in workflow
     assert "report[\"fidelity\"][\"instances\"] > 0" in workflow
     assert "retention-days: 7" in workflow

@@ -237,7 +237,7 @@ def run_preflight(
         request.observation_path, request.resolved, request.workers, environment
     )
     entry = knowledge["profiles"].get(metadata.get("id"))
-    expensive_or_weak = metadata.get("performance_risk") == "confirmation" or not entry or entry.get("confidence") == "low"
+    expensive_or_weak = metadata.get("performance_risk") == "confirmation" or not entry or entry.get("confidence") == "low" or request.resolved.profile.family not in entry.get("seconds_per_candidate", {})
     probe_triggered = bool(expensive_or_weak and not observations and probe_runner is not None)
     probe_measurements: list[dict[str, Any]] = []
     if probe_triggered:

@@ -300,7 +300,7 @@ def load_profile(
     incompatible = [
         item.get("id", "local profile")
         for item in metadata
-        if profile.family not in set(item.get("compatible_families", ("landing", "manometro")))
+        if item.get("compatible_families") and profile.family not in set(item["compatible_families"])
     ]
     if incompatible:
         raise ValueError(

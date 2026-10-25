@@ -103,10 +103,7 @@
       "type": "array"
     },
     "name": {
-      "enum": [
-        "landing",
-        "manometro"
-      ],
+      "pattern": "^[a-z][a-z0-9-]*$",
       "title": "Name",
       "type": "string"
     },

@@ -3,6 +3,15 @@
 Composer schema v2 is a clean generation break. Earlier pools remain readable for audit, comparison,
 and export, but cannot be resumed. `CONTEXT.md` defines canonical terminology.
 
+Installed declarative families are discovered from validated definitions. Maintained tasks are landing,
+manometro and landing-pad. The pad task labels the full square/rectangular opaque panel. Empty
+`compatible_families` metadata means a reusable profile has no family restriction; explicit lists are enforced.
+
+Sampling `count_policy` defaults to `best-effort`. `require-count` rejects incomplete candidates and
+uses the same bounded candidate retries, without silent fallback. Each candidate samples its own target;
+retries may therefore bias accepted count/scale distributions. Inspect requested versus retained counts.
+The new pad starter distribution is explicitly uncalibrated. Current geometry/spacing policy is unchanged.
+
 ## 1. Public commands
 
 The stable command surface is:

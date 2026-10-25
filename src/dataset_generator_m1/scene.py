@@ -561,6 +561,18 @@ class SceneRenderer:
 
         if not annotations and not plan.intentional_negative:
             raise SceneRejected("candidate has no accepted foreground annotations", rejected)
+        if self.profile.sampling.count_policy == "require-count" and len(annotations) != plan.attempted_instances:
+            for annotation in annotations:
+                x1, y1, x2, y2 = annotation.bbox
+                rejected.append(build_rejection_record(
+                    slot=plan.slot, candidate_attempt=plan.candidate_attempt, object_attempt=annotation.object_attempt,
+                    asset=annotation.source_asset, class_name=annotation.class_name, group=annotation.source_group,
+                    scale=annotation.sampled_scale, rotation_degrees=annotation.sampled_rotation_degrees,
+                    estimated_size=(x2-x1, y2-y1), requested_objects=plan.attempted_instances,
+                    stage="candidate.count_policy", reason="valid_object_discarded_with_incomplete_candidate",
+                    projected_bbox=annotation.bbox,
+                ))
+            raise SceneRejected("require-count: accepted object count differs from requested count", rejected)
         final_visible = visible_coverages(masks)
         visible_annotations: list[Annotation] = []
         for annotation, coverage in zip(annotations, final_visible):

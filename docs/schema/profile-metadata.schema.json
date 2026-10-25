@@ -2,15 +2,8 @@
   "additionalProperties": false,
   "properties": {
     "compatible_families": {
-      "default": [
-        "landing",
-        "manometro"
-      ],
+      "default": [],
       "items": {
-        "enum": [
-          "landing",
-          "manometro"
-        ],
         "type": "string"
       },
       "title": "Compatible Families",
