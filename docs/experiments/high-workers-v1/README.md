@@ -54,8 +54,8 @@ remain accounted for. Runtime reserves stay256 MiB per process; native/cache/coo
 result reserves remain explicit, with 20% headroom. The serial path reserves one returned sample rather
 than a parallel batch. No rendering, geometry, annotation or profile default changed.
 
-Across those same retained cases, the new estimates are 1.16–1.98× observed whole-command RSS, exceeding
-every observed complete peak. The previous 6×24 estimate falls 11.49→7.22 GiB against 3.64 GiB observed.
+Across those same retained cases, the new estimates are 1.21–2.08× observed whole-command RSS, exceeding
+every observed complete peak. The previous 6×24 estimate falls 11.49→7.57 GiB against 3.64 GiB observed.
 This is still a planning upper estimate: all workers may hit the worst selected recipe together, which
 these mixed batches need not realize. It is not a prediction of typical usage or a bound on all native
 libraries/effect/source combinations. Missing headers remain explicit uncertainty; automatic worker
@@ -66,7 +66,7 @@ counts can rise where the complete phase estimate now fits. Explicit worker choi
 The independent allocation probe uses 3 fixtures per recipe at 2560², native thread 1 and cache 0. It
 traces each real production recipe node plus final QA, without retaining array aliases in the probe.
 Measured maxima are about 395.3/600.0/612.6/475.0 MiB for direct/palette/mask-multiband/displaced. Phase
-allowances are 450/600/625/525 MiB, respectively. Tiny Python tracing metadata is not part of the pixel
+allowances are 450/600/675/525 MiB, respectively. The multiband reserve also covers Python 3.14 temporary-expression lifetimes observed in Linux and Windows CI; the traced recipe fixtures use Python 3.13. Tiny Python tracing metadata is not part of the pixel
 formula; the palette discrepancy is about 14 KiB and is covered by separate process/headroom reserves.
 These values exclude the import/runtime baseline and untracked native memory, so they are not RSS.
 

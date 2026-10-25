@@ -12,29 +12,29 @@
       },
       "maximum_observed_rss_bytes": 4167680000,
       "maximum_observed_pss_bytes": 3390573568,
-      "phase_estimate_bytes": 7405987431,
+      "phase_estimate_bytes": 7783474791,
       "memory_components": {
         "model_version": "phase-lifetimes-v3",
         "estimate_metric": "process-tree RSS planning upper estimate",
         "runtime_reserve_bytes": 1879048192,
         "native_reserve_bytes": 0,
         "coordinator_reserve_bytes": 65536000,
-        "worker_peak_bytes": 655360000,
+        "worker_peak_bytes": 707788800,
         "phase_peaks_bytes_per_worker": {
-          "background": 655360000,
+          "background": 707788800,
           "scene_render": 273612800,
           "mask_evidence": 131072000
         },
         "recipe_peaks_bytes": {
           "direct": 471859200,
           "palette": 629145600,
-          "mask_multiband": 655360000,
+          "mask_multiband": 707788800,
           "displaced": 550502400
         },
         "queued_result_bytes": 294912000,
         "headroom_percent": 20,
-        "headroom_bytes": 1234331239,
-        "estimated_peak_bytes": 7405987431,
+        "headroom_bytes": 1297245799,
+        "estimated_peak_bytes": 7783474791,
         "source_dimensions_complete": true,
         "decoded_cache_bytes": 0,
         "cache_headroom_bytes": 0
@@ -205,29 +205,29 @@
       },
       "maximum_observed_rss_bytes": 4464807936,
       "maximum_observed_pss_bytes": 3704356864,
-      "phase_estimate_bytes": 7421086925,
+      "phase_estimate_bytes": 7798574285,
       "memory_components": {
         "model_version": "phase-lifetimes-v3",
         "estimate_metric": "process-tree RSS planning upper estimate",
         "runtime_reserve_bytes": 1879048192,
         "native_reserve_bytes": 12582912,
         "coordinator_reserve_bytes": 65536000,
-        "worker_peak_bytes": 655360000,
+        "worker_peak_bytes": 707788800,
         "phase_peaks_bytes_per_worker": {
-          "background": 655360000,
+          "background": 707788800,
           "scene_render": 273612800,
           "mask_evidence": 131072000
         },
         "recipe_peaks_bytes": {
           "direct": 471859200,
           "palette": 629145600,
-          "mask_multiband": 655360000,
+          "mask_multiband": 707788800,
           "displaced": 550502400
         },
         "queued_result_bytes": 294912000,
         "headroom_percent": 20,
-        "headroom_bytes": 1236847821,
-        "estimated_peak_bytes": 7421086925,
+        "headroom_bytes": 1299762381,
+        "estimated_peak_bytes": 7798574285,
         "source_dimensions_complete": true,
         "decoded_cache_bytes": 0,
         "cache_headroom_bytes": 0
@@ -436,54 +436,54 @@
       "native_threads": 24,
       "observed_rss_bytes": 1128341504,
       "v2_estimate_bytes": 2129954560,
-      "v3_estimate_bytes": 1304061543,
+      "v3_estimate_bytes": 1366976103,
       "v2_ratio": 1.8876860883422755,
-      "v3_ratio": 1.1557330279681
+      "v3_ratio": 1.2114914661510139
     },
     "two12": {
       "workers": 2,
       "native_threads": 12,
       "observed_rss_bytes": 1930973184,
       "v2_estimate_bytes": 4327738880,
-      "v3_estimate_bytes": 2791204455,
+      "v3_estimate_bytes": 2917033575,
       "v2_ratio": 2.241221636768209,
-      "v3_ratio": 1.4454910498643154
+      "v3_ratio": 1.5106546269883363
     },
     "four6": {
       "workers": 4,
       "native_threads": 6,
       "observed_rss_bytes": 2884993024,
       "v2_estimate_bytes": 8175098880,
-      "v3_estimate_bytes": 5121245184,
+      "v3_estimate_bytes": 5372903424,
       "v2_ratio": 2.8336633094056314,
-      "v3_ratio": 1.7751326056585985
+      "v3_ratio": 1.8623627091307657
     },
     "six1": {
       "workers": 6,
       "native_threads": 1,
       "observed_rss_bytes": 4087586816,
       "v2_estimate_bytes": 11975272960,
-      "v3_estimate_bytes": 7405987431,
+      "v3_estimate_bytes": 7783474791,
       "v2_ratio": 2.9296681634076394,
-      "v3_ratio": 1.811823886409169
+      "v3_ratio": 1.9041735726647377
     },
     "six4": {
       "workers": 6,
       "native_threads": 4,
       "observed_rss_bytes": 3842740224,
       "v2_estimate_bytes": 12022458880,
-      "v3_estimate_bytes": 7451285914,
+      "v3_estimate_bytes": 7828773274,
       "v2_ratio": 3.1286160862275345,
-      "v3_ratio": 1.9390553302205213
+      "v3_ratio": 2.037289230509275
     },
     "six24": {
       "workers": 6,
       "native_threads": 24,
       "observed_rss_bytes": 3913023488,
       "v2_estimate_bytes": 12337031680,
-      "v3_estimate_bytes": 7753275802,
+      "v3_estimate_bytes": 8130763162,
       "v2_ratio": 3.1528130914199104,
-      "v3_ratio": 1.9814028271940698
+      "v3_ratio": 2.0778723120202236
     }
   },
   "array_allocation_validation": {
@@ -499,8 +499,8 @@
     },
     "mask_multiband": {
       "max_traced_bytes": 642309976,
-      "predicted_array_peak_bytes": 655360000,
-      "ratio": 1.0203173303974964
+      "predicted_array_peak_bytes": 707788800,
+      "ratio": 1.1019427168292961
     },
     "displaced": {
       "max_traced_bytes": 498092224,
@@ -1176,7 +1176,7 @@
     ]
   },
   "model_sources": {
-    "memory_planning.py": "ca680e5d1b32bad63935f5b2290c6581475a1d051fdd71e0ee15fc07ad9eb4f3",
+    "memory_planning.py": "9c9662017a55ac943683bf144d1b1bfcfbf42855a38d22e3dd49be06334f422c",
     "execution.py": "0dbfad5a39521425ee94d5a764937ba33feaf881b1cc61d0d93b538ad9ca622a"
   },
   "limits": [
