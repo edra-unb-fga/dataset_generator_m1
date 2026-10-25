@@ -5,6 +5,7 @@ import re
 import shutil
 import sys
 import webbrowser
+import difflib
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -23,6 +24,7 @@ from .configurator import (
     APPEARANCE_IDS,
     appearance_references,
     add_inline_effect,
+    copy_composer,
     default_composer,
     effect_catalog,
     save_composer,
@@ -206,10 +208,7 @@ def _copy_example(path: Path, root: Path) -> Path:
     while destination.exists():
         destination = root / "configs" / f"{path.stem}-{suffix:02d}{path.suffix}"
         suffix += 1
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(path, destination)
-    load_profile(destination)
-    return destination
+    return copy_composer(path, destination)
 
 
 def _select_config(root: Path, provided: str | Path | None, console: Console, ask: Callable[..., str]) -> Path:
@@ -259,6 +258,7 @@ def _essentials_panel(config: Path, output_dir: Path) -> Panel:
 
 def _edit_composer(config: Path, output_dir: Path, console: Console, ask: Callable[..., str], confirm: Callable[..., bool]) -> tuple[Path, Path]:
     document = load_yaml_strict(config)
+    original = json.dumps(document, sort_keys=True, indent=2)
     resolved = load_profile(config)
     console.print(_essentials_panel(config, output_dir))
     if confirm("Edit essentials?", default=False):
@@ -266,26 +266,55 @@ def _edit_composer(config: Path, output_dir: Path, console: Console, ask: Callab
             document,
             "run",
             {
-                "num_images": int(ask("Number of images", default=str(resolved.profile.run.num_images))),
-                "seed": int(ask("Seed", default=str(resolved.profile.run.seed))),
+                "num_images": _ask_integer("Number of images", resolved.profile.run.num_images, console, ask, minimum=1),
+                "seed": _ask_integer("Seed", resolved.profile.run.seed, console, ask),
             },
         )
-        workers = ask("Workers (auto or integer)", default=str(resolved.profile.execution.workers))
-        document = set_inline_values(document, "execution", {"workers": workers if workers == "auto" else int(workers)})
-        width = int(ask("Width", default=str(resolved.profile.output.image_size[0])))
-        height = int(ask("Height", default=str(resolved.profile.output.image_size[1])))
+        workers = _ask_integer("Workers (auto or integer)", resolved.profile.execution.workers, console, ask, minimum=1, auto=True)
+        document = set_inline_values(document, "execution", {"workers": workers})
+        width = _ask_integer("Width", resolved.profile.output.image_size[0], console, ask, minimum=1)
+        height = _ask_integer("Height", resolved.profile.output.image_size[1], console, ask, minimum=1)
         document = set_inline_values(document, "output", {"image_size": [width, height]})
         destination = ask("Run destination", default=str(output_dir))
         output_dir = Path(destination)
     if confirm("Open Advanced settings?", default=False):
         document = _advanced_editor(document, config, console, ask)
-    save_composer(document, config)
+    revised = json.dumps(document, sort_keys=True, indent=2)
+    if revised != original:
+        console.print(Panel("\n".join(difflib.unified_diff(original.splitlines(), revised.splitlines(), fromfile="saved", tofile="staged", lineterm="")), title="Staged changes — not saved yet"))
+        if not confirm("Save these composer changes?", default=False):
+            raise GuidedCancelled("unsaved-edits")
+        save_composer(document, config)
     return config, output_dir
+
+
+class GuidedCancelled(Exception):
+    pass
+
+
+def _ask_integer(label, default, console, ask, *, minimum=None, auto=False):
+    while True:
+        raw = ask(label + " (cancel to exit)", default=str(default))
+        if raw in {"cancel", "back"}:
+            raise GuidedCancelled("editing")
+        if auto and raw == "auto":
+            return raw
+        try:
+            value = int(raw)
+            if minimum is not None and value < minimum:
+                raise ValueError()
+            return value
+        except ValueError:
+            console.print(f"Enter an integer{f' >= {minimum}' if minimum is not None else ''}, or cancel.")
 
 
 def _advanced_editor(document: dict[str, Any], config: Path, console: Console, ask: Callable[..., str]) -> dict[str, Any]:
     while True:
-        action = ask("Advanced: appearance, subject, effect, help, or done", choices=["appearance", "subject", "effect", "help", "done"], default="done")
+        action = ask("Advanced: appearance, subject, values, effect, help, back, cancel or done", choices=["appearance", "subject", "values", "effect", "help", "back", "cancel", "done"], default="done")
+        if action == "cancel":
+            raise GuidedCancelled("advanced")
+        if action == "back":
+            return document
         if action == "done":
             return document
         if action == "appearance":
@@ -306,6 +335,22 @@ def _advanced_editor(document: dict[str, Any], config: Path, console: Console, a
             reference = ask("Profile ID or YAML path", default=str(document[subject]))
             console.print(Markdown(profile_help(reference, config)))
             document = set_subject_reference(document, subject, reference)
+        elif action == "values":
+            subject = ask("Inline subject", choices=["sampling", "scene", "execution", "output", "run", "telemetry", "reporting"], default="execution")
+            from .models import ComposerInline
+            console.print_json(data=ComposerInline.model_json_schema())
+            while True:
+                raw = ask(f"Typed {subject} JSON values, or back", default="{}")
+                if raw == "back":
+                    break
+                try:
+                    values = json.loads(raw)
+                    if not isinstance(values, dict):
+                        raise ValueError("Expected a JSON object")
+                    document = set_inline_values(document, subject, values)
+                    break
+                except ValueError as exc:
+                    console.print(f"Invalid typed values; saved composer unchanged: {exc}")
         elif action == "effect":
             docs = effect_catalog()["effects"]
             stage = ask("Stage", choices=["background", "foreground", "final"], default="final")
@@ -429,7 +474,10 @@ def run_guided_start(
         if resume_item:
             console.print(Panel(f"Resuming unchanged contract from {output_dir}", title="Resumable run"))
         else:
-            chosen, output_dir = _edit_composer(chosen, output_dir, console, ask, confirm)
+            try:
+                chosen, output_dir = _edit_composer(chosen, output_dir, console, ask, confirm)
+            except GuidedCancelled as exc:
+                return {"schema_version": 1, "status": "cancelled", "stage": str(exc)}
         session = session.advance("edit") if session.stage == "essentials" else GuidedSession("advanced")
         session = session.advance("review")
         console.print(_review_panel(chosen, output_dir))

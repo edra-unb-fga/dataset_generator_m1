@@ -170,6 +170,11 @@ class ReportConfig(StrictModel):
 
 class ExecutionConfig(StrictModel):
     workers: int | Literal["auto"] = 1
+    cpu_budget: int | None = Field(default=None, ge=1)
+    ram_budget_mb: int | None = Field(default=None, ge=256)
+    native_threads: int | None = Field(default=None, ge=1)
+    max_in_flight: int | None = Field(default=None, ge=1)
+    decoded_cache_mb: int = Field(default=0, ge=0)
 
     @model_validator(mode="after")
     def validate_workers(self) -> "ExecutionConfig":
@@ -241,6 +246,11 @@ class BackgroundMixingInline(StrictModel):
 
 class ExecutionInline(StrictModel):
     workers: int | Literal["auto"] | None = None
+    cpu_budget: int | None = Field(default=None, ge=1)
+    ram_budget_mb: int | None = Field(default=None, ge=256)
+    native_threads: int | None = Field(default=None, ge=1)
+    max_in_flight: int | None = Field(default=None, ge=1)
+    decoded_cache_mb: int | None = Field(default=None, ge=0)
 
 
 class TelemetryInline(StrictModel):

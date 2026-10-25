@@ -285,6 +285,10 @@ def run_preflight(
             }
         )
     disk = estimate_disk(request.output_dir, request.resolved)
+    from .execution import plan_execution
+    execution = plan_execution(request.resolved, request.workers)
+    warnings.extend({"code": value.split(":", 1)[0], "message": value,
+                     "severity": "info", "requires_acknowledgement": False} for value in execution.warnings)
     validation = [] if disk["sufficient"] else ["INSUFFICIENT_DISK_SPACE"]
     binding = {
         "contract_hash": request.resolved.contract_hash,
@@ -304,6 +308,7 @@ def run_preflight(
         "required_acknowledgements": required,
         "runtime": runtime,
         "disk": disk,
+        "execution_plan": execution.as_dict(),
         "probe": {
             "triggered": probe_triggered,
             "warmups": 1 if probe_triggered else 0,

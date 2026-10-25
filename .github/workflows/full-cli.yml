@@ -98,6 +98,14 @@ jobs:
               assert len(list((root / "labels").rglob("*.txt"))) == 10
               assert not any(Path(item["source_pool_id"]).is_absolute() for item in report["samples"])
           PY
+      # Execution policy correctness only: this tiny screen is not a timing gate.
+      - name: Portable production benchmark correctness
+        run: >-
+          uv run python -m dataset_generator_m1 benchmark --production
+          --config examples/benchmarks/landing-screen.yaml
+          --execution-matrix examples/benchmarks/execution-policies.yaml
+          --samples 2 --warmup 0 --repeats 1
+          --output-dir outputs/ci/execution-screen --output-format json
       - name: Upload compact evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -118,3 +126,4 @@ jobs:
             outputs/ci/*-pool/qa/
             outputs/ci/*-export/export.json
             outputs/ci/*-export/data.yaml
+            outputs/ci/execution-screen/benchmark.json

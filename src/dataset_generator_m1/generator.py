@@ -12,9 +12,10 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 
 from .annotation_evidence import encode_mask_evidence, polygonize_coverage
+from .decoded_cache import cache_stats
 from .assets import AssetCatalog, build_asset_catalog
 from .backgrounds import BackgroundSynthesisError, BackgroundSynthesizer
-from .execution import resolve_worker_count
+from .execution import resolve_worker_count, plan_execution, execution_scope, initialize_worker
 from .models import ResolvedProfile
 from .ownership import CoordinatorLease
 from .preflight import PreflightRequest, require_warning_receipt, run_preflight
@@ -168,6 +169,7 @@ def _produce_slot(
                     "execution": {
                         "worker_pid": os.getpid(),
                         "worker_process": os.getpid() != coordinator_pid,
+                        "decoded_cache": cache_stats(),
                     },
                 },
             }
@@ -196,6 +198,11 @@ def _produce_slot(
 
 def probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float = 60.0) -> list[dict[str, Any]]:
     """Run one disposable warm-up and up to three production-path candidate measurements."""
+    with execution_scope(plan_execution(resolved)):
+        return _probe_profile(resolved, timeout_seconds=timeout_seconds)
+
+
+def _probe_profile(resolved: ResolvedProfile, *, timeout_seconds: float) -> list[dict[str, Any]]:
     catalog = build_asset_catalog(resolved)
     coordinator_pid = os.getpid()
     observations: list[dict[str, Any]] = []
@@ -237,7 +244,8 @@ def generate_pool(resolved: ResolvedProfile, output_dir: str | Path, options: Ge
         raise RuntimeError(f"Preflight failed: {preflight['validation_errors']}")
     require_warning_receipt(preflight, options.receipt_path)
     catalog = build_asset_catalog(resolved)
-    with CoordinatorLease(output_dir) as lease:
+    execution = plan_execution(resolved, workers)
+    with execution_scope(execution), CoordinatorLease(output_dir) as lease:
         return _generate_owned_pool(resolved, output_dir, options, workers, preflight, observation_path, catalog, lease)
 
 
@@ -408,8 +416,9 @@ def _generate_owned_pool(
         else:
             # Batch windows bound queued jobs and returned-image memory. Sorted commits
             # keep JSONL ordering identical to a single-process generation run.
-            window = workers * 2
-            executor = ProcessPoolExecutor(max_workers=workers)
+            execution = plan_execution(resolved, workers)
+            window = execution.max_in_flight
+            executor = ProcessPoolExecutor(max_workers=workers, initializer=initialize_worker, initargs=(execution,))
             active_futures: dict[Any, int] = {}
             try:
                 for offset in range(0, len(slots), window):
@@ -522,6 +531,7 @@ def _generate_owned_pool(
                 "catalog_fingerprint": catalog.fingerprint,
                 "contract_hash": resolved.contract_hash,
                 "worker_count": workers,
+                "execution_plan": plan_execution(resolved, workers).as_dict(),
                 "preflight": preflight,
                 "control": {
                     "state_path": "control.json",

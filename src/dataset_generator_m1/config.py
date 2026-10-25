@@ -136,7 +136,8 @@ def _load_bundle(
     metadata: list[dict[str, Any]] = []
     graph: dict[str, Any] = {"reference": reference, "path": path.as_posix(), "extends": list(bundle.extends)}
     for parent in bundle.extends:
-        parent_value, parent_sources, parent_metadata, _ = _load_bundle(parent, composer_path, subject, stack=(*stack, path))
+        parent_context = composer_path if parent.startswith(("builtin:", "workspace:")) else path
+        parent_value, parent_sources, parent_metadata, _ = _load_bundle(parent, parent_context, subject, stack=(*stack, path))
         value = _merge_bundle_value(subject, value, parent_value)
         sources.extend(parent_sources)
         metadata.extend(parent_metadata)

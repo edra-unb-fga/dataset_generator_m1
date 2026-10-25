@@ -1,0 +1,15 @@
+schema_version: 1
+variants:
+  configured: {}
+  threads-one:
+    native_threads: 1
+  cache-64mb:
+    native_threads: 1
+    decoded_cache_mb: 64
+  two-workers:
+    native_threads: 1
+    workers: 2
+  queue-two:
+    native_threads: 1
+    workers: 2
+    max_in_flight: 2

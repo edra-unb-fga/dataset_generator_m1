@@ -167,6 +167,9 @@ def build_parser() -> argparse.ArgumentParser:
     bench.add_argument("--output-dir", required=True)
     bench.add_argument("--samples", type=int, default=5)
     bench.add_argument("--warmup", type=int, default=1)
+    bench.add_argument("--production", action="store_true", help="Benchmark complete generation, masks, writes, QA and inspection")
+    bench.add_argument("--execution-matrix", help="Strict YAML variants containing execution settings only")
+    bench.add_argument("--repeats", type=int, default=3)
     _common(bench)
 
     compare = commands.add_parser("compare", help="Compare run or benchmark artifacts")
@@ -329,6 +332,12 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
             )
         )
     if args.command == "benchmark":
+        if args.production:
+            from .execution_benchmark import production_benchmark
+            return production_benchmark(load_profile(args.config), args.output_dir, matrix_file=args.execution_matrix,
+                                        samples=args.samples, repeats=args.repeats, warmup=args.warmup)
+        if args.execution_matrix:
+            raise ValueError("--execution-matrix requires --production")
         return benchmark(load_profile(args.config), args.output_dir, args.samples, args.warmup)
     if args.command == "compare":
         return compare_artifacts(args.left, args.right, args.output_dir)

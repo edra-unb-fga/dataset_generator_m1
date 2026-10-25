@@ -9,6 +9,7 @@ from typing import Any, Callable
 from .models import ResolvedProfile
 from .performance import DEFAULT_OBSERVATION_PATH, environment_class
 from .preflight import PreflightRequest, run_preflight
+from .assets import build_asset_catalog
 
 
 def _binding_hash(value: Any) -> str:
@@ -40,6 +41,7 @@ class PreparedGeneration:
                 "output_dir": str(Path(output_dir).resolve()),
                 "workers": workers,
                 "environment": environment_class(),
+                "catalog_fingerprint": build_asset_catalog(resolved).fingerprint,
             }
         )
         if current != self.binding_hash:
@@ -63,6 +65,7 @@ def prepare_generation(
             "output_dir": str(output_dir),
             "workers": request.workers,
             "environment": environment,
+            "catalog_fingerprint": build_asset_catalog(request.resolved).fingerprint,
         }
     )
     return PreparedGeneration(

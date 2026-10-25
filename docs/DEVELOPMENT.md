@@ -50,6 +50,11 @@ intentional exception.
 
 ## Minimum verification
 
+For a new computer, use `docs/EXECUTION.md`: reproduce correctness first, then run the portable
+production benchmark without concurrent load. Keep local hardware choices in `configs/local/` and
+observations in `.cache/`. Promote only reviewed hardware-class profiles, never host names or private
+asset roots. The PR handoff specifies the current review stack and unfinished platform checks.
+
 - Schema/config change: regenerate schemas and run profile/CLI tests.
 - Configurator/catalog change: run configurator, override, profile, CLI, and preflight contracts; confirm every executable effect has file-backed guidance.
 - Guided-start/display change: run `tests/test_guided_start.py`, run-control and telemetry contracts; verify non-TTY refusal and one saved-composer journey.

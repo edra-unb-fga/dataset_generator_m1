@@ -17,6 +17,8 @@ from PIL import Image
 from .assets import AssetCatalog
 from .annotation_evidence import decode_mask_evidence, polygonize_coverage
 from .models import ResolvedProfile
+from .identities import generation_identity, execution_identity
+from .execution import plan_execution
 
 
 def _package_version(name: str) -> str | None:
@@ -228,6 +230,8 @@ class RunStore:
                     "contract_hash": resolved.contract_hash,
                     "catalog_fingerprint": catalog.fingerprint,
                     "source_partition": catalog.partition,
+                    "generation_identity": generation_identity(resolved, catalog),
+                    "execution_identity": execution_identity(plan_execution(resolved, (preflight or {}).get("receipt_binding", {}).get("value", {}).get("workers"))),
                     "profile": _sanitized_profile(resolved),
                     "reference_graph": resolved.reference_graph,
                     "source_hashes": resolved.source_hashes,
