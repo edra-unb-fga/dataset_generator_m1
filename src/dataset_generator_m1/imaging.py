@@ -40,12 +40,38 @@ def crop_bbox(image: np.ndarray, bbox: BBox) -> np.ndarray:
     return image[y1:y2, x1:x2].copy()
 
 
-def resize_rgba(image: np.ndarray, width: int) -> np.ndarray:
+def _filter_rgba(image: np.ndarray, operation, premultiplied: bool) -> np.ndarray:
+    if not premultiplied:
+        return operation(image)
+    alpha = image[:, :, 3].astype(np.float32) / 255.0
+    packed = np.empty(image.shape, dtype=np.float32)
+    packed[:, :, :3] = image[:, :, :3] * alpha[:, :, None]
+    packed[:, :, 3] = alpha
+    filtered = operation(packed)
+    rgb = np.zeros(filtered.shape[:2] + (3,), dtype=np.float32)
+    np.divide(filtered[:, :, :3], filtered[:, :, 3:4], out=rgb,
+              where=filtered[:, :, 3:4] > 0)
+    result = np.empty(filtered.shape, dtype=np.uint8)
+    result[:, :, :3] = np.clip(np.rint(rgb), 0, 255).astype(np.uint8)
+    # Preserve OpenCV's historical integer alpha rounding, not float resampling.
+    result[:, :, 3] = operation(image[:, :, 3])
+    return result
+
+
+def warp_rgba(image: np.ndarray, matrix: np.ndarray, size: tuple[int, int],
+              *, premultiplied: bool = False) -> np.ndarray:
+    return _filter_rgba(image, lambda value: cv2.warpPerspective(
+        value, matrix, size, flags=cv2.INTER_LINEAR,
+        borderMode=cv2.BORDER_CONSTANT, borderValue=0), premultiplied)
+
+
+def resize_rgba(image: np.ndarray, width: int, *, premultiplied: bool = False) -> np.ndarray:
     height = max(1, round(image.shape[0] * width / image.shape[1]))
-    return cv2.resize(image, (width, height), interpolation=cv2.INTER_AREA)
+    return _filter_rgba(image, lambda value: cv2.resize(value, (width, height),
+                        interpolation=cv2.INTER_AREA), premultiplied)
 
 
-def rotate_rgba(image: np.ndarray, angle: float, mode: str) -> np.ndarray:
+def rotate_rgba(image: np.ndarray, angle: float, mode: str, *, premultiplied: bool = False) -> np.ndarray:
     h, w = image.shape[:2]
     center = (w / 2, h / 2)
     matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
@@ -55,14 +81,14 @@ def rotate_rgba(image: np.ndarray, angle: float, mode: str) -> np.ndarray:
     new_h = int((h * cos) + (w * sin))
     matrix[0, 2] += (new_w / 2) - center[0]
     matrix[1, 2] += (new_h / 2) - center[1]
-    rotated = cv2.warpAffine(
-        image,
+    rotated = _filter_rgba(image, lambda value: cv2.warpAffine(
+        value,
         matrix,
         (new_w, new_h),
         flags=cv2.INTER_LINEAR,
         borderMode=cv2.BORDER_CONSTANT,
         borderValue=(0, 0, 0, 0),
-    )
+    ), premultiplied)
     if mode == "circle":
         bbox = visible_bbox(rotated)
         if bbox is not None:

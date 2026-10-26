@@ -148,6 +148,11 @@ def memory_components(resolved, workers, window, native_threads, shapes):
         4*(shapes['foreground_rotated_pixels']+resized))
     retained_render = 7*canvas + (3+2*instances)*output
     render = max(41*canvas+3*output, retained_render+foreground+52*output)
+    if resolved.profile.scene.foreground_resampling == "premultiplied":
+        # Float packed premultiplication/filter/unpremultiplication plus integer alpha.
+        foreground = max(foreground, 40*(shapes['foreground_pixels']+shapes['foreground_rotated_pixels']),
+                         40*(shapes['foreground_rotated_pixels']+resized))
+        render = max(render, retained_render+foreground+80*output)
     if resolved.profile.scene.lighting is not None:
         render = max(render,retained_render+width*min(height,128)*40+output*3)
     if resolved.profile.scene.occlusion is not None:

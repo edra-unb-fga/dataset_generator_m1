@@ -330,3 +330,11 @@ Pool-v2 stores exact annotation evidence and supports measured YOLO instance-seg
 Optional typed `scene.lighting` modulates composed surfaces in linear RGB using one scene-coordinate field before final capture effects. Foreground-only native `SurfaceWear` changes normalized local RGB patterns while preserving alpha. Optional `scene.occlusion` projects bounded procedural unlabeled layers through the shared homography, then derives final visible masks and boxes. See `SURFACE_RENDERING.md` for configuration, ordering and physical limits. Defaults remain omitted.
 
 Visible support is thresholded visible/full target contribution within the image, separate from frame-clipping bbox fraction. Fully hidden and below-floor annotations and archive entries are removed with typed rejections; accidental empty positives and incomplete require-count candidates are rejected after occlusion. Best-effort retains survivor IDs. Renderer semantics bind contract and run identity: upgrades require fresh pools; old pools remain inspectable/exportable and same-version resume remains supported.
+
+### Opt-in foreground filtering
+
+`scene.foreground_resampling` selects `legacy` (default) or `premultiplied`. Corrected filtering weights
+RGB by alpha during rotation, resize and perspective projection; it preserves the historical integer
+alpha path, geometry and annotations. Composition remains encoded RGB. Omitted legacy mode keeps
+historical strict/normalized identities; nonlegacy mode participates in both and cannot cross-resume.
+See `SURFACE_RENDERING.md` and `experiments/alpha-resampling-v1/README.md` for cost and paired evidence.
