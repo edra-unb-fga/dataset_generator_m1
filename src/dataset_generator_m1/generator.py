@@ -418,61 +418,69 @@ def _generate_owned_pool(
                     status = "interrupted"
                     break
         else:
-            # Batch windows bound queued jobs and returned-image memory. Sorted commits
-            # keep JSONL ordering identical to a single-process generation run.
+            # All admitted slots, including completed Future payloads, remain in
+            # active_futures until their ordered commit. This is the hard window.
             execution = plan_execution(resolved, workers)
             window = execution.max_in_flight
             executor = ProcessPoolExecutor(max_workers=workers, initializer=initialize_worker, initargs=(execution,))
             active_futures: dict[Any, int] = {}
+            next_slot = 0
+
+            def update_workload() -> None:
+                metrics.set_workload(
+                    worker_count=workers,
+                    active_workers=min(workers, sum(not future.done() for future in active_futures)),
+                    in_flight=len(active_futures),
+                    queued=len(slots)-next_slot,
+                )
+
+            def may_admit() -> bool:
+                desired = control.read()["desired_state"]
+                if desired != "running":
+                    set_run_state("draining")
+                    return False
+                set_run_state("running")
+                return True
+
             try:
-                for offset in range(0, len(slots), window):
-                    batch = slots[offset : offset + window]
-                    metrics.set_workload(
-                        worker_count=workers,
-                        active_workers=min(workers, len(batch)),
-                        in_flight=len(batch),
-                        queued=max(0, len(slots) - offset - len(batch)),
-                    )
-                    reporter.update(metrics, force=True)
-                    active_futures = {
-                        executor.submit(
-                            _produce_slot,
-                            resolved,
-                            catalog,
-                            slot,
-                            store.next_attempt(slot),
-                            coordinator_pid,
-                        ): slot
-                        for slot in batch
-                    }
-                    # Poll rather than blocking on an entire process-pool
-                    # window. The coordinator remains the sole Rich owner,
-                    # but now drains telemetry and refreshes the display while
-                    # workers are still producing results.
-                    results: dict[int, dict[str, Any]] = {}
-                    pending = set(active_futures)
-                    while pending:
-                        done, pending = wait(
-                            pending,
-                            timeout=max(0.05, 1.0 / resolved.profile.telemetry.refresh_hz),
-                            return_when=FIRST_COMPLETED,
-                        )
-                        poll_coordinator_services()
-                        if not done:
-                            continue
-                        for future in done:
-                            results[active_futures[future]] = future.result()
-                    for slot in sorted(results):
-                        if not commit_result(slot, results[slot]):
-                            for future in active_futures:
-                                future.cancel()
+                while active_futures or next_slot < len(slots):
+                    # Check before every admission, including refills after a
+                    # commit. Pause/stop drains only the already admitted window.
+                    while next_slot < len(slots) and len(active_futures) < window and may_admit():
+                        slot = slots[next_slot]
+                        future = executor.submit(_produce_slot, resolved, catalog, slot,
+                                                 store.next_attempt(slot), coordinator_pid)
+                        active_futures[future] = slot
+                        next_slot += 1
+                    update_workload()
+                    if not active_futures:
+                        if not control_checkpoint():
+                            interrupted = True
+                            status = "interrupted"
                             break
-                    if status == "failed":
+                        continue
+                    future = next(iter(active_futures))
+                    while not future.done():
+                        wait((future,), timeout=max(0.05, 1.0/resolved.profile.telemetry.refresh_hz))
+                        may_admit()
+                        poll_coordinator_services()
+                    slot = active_futures[future]
+                    result = future.result()
+                    committed = commit_result(slot, result)
+                    del active_futures[future]
+                    del future, result
+                    if not committed:
+                        for pending in active_futures:
+                            pending.cancel()
                         break
-                    if not control_checkpoint():
-                        interrupted = True
-                        status = "interrupted"
-                        break
+                    update_workload()
+                    poll_coordinator_services()
+                    # Enter the blocking pause checkpoint only after draining.
+                    if not active_futures and not may_admit():
+                        if not control_checkpoint():
+                            interrupted = True
+                            status = "interrupted"
+                            break
             except KeyboardInterrupt:
                 interrupted = True
                 if status == "complete":

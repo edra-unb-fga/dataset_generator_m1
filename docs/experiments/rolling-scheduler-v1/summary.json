@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "status": "promotion-gates-passed",
+  "studies": {
+    "heavy": {
+      "arms": {
+        "baseline": {
+          "median_accepted_per_second": 0.8322692510022851,
+          "rates": [
+            0.8322692510022851,
+            0.8310164985773854,
+            0.837072821854941
+          ],
+          "peak_rss_gib": 2.8836021423339844,
+          "rss_gib": [
+            2.703643798828125,
+            2.7462501525878906,
+            2.8836021423339844
+          ],
+          "minimum_available_gib": 3.2776832580566406,
+          "swap_out_mib": 1.37890625,
+          "source": {
+            "commit": "1771e2dbd19bfe5958f9466f9c80bad3c2366ec2",
+            "dirty": false
+          },
+          "samples": 48,
+          "repeats": 3,
+          "guard_limits": {
+            "rss_limit_gib": 10.0,
+            "pss_limit_gib": null,
+            "min_available_gib": 2.0,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          }
+        },
+        "current": {
+          "median_accepted_per_second": 0.9616681416774749,
+          "rates": [
+            0.9616681416774749,
+            0.9529563066343459,
+            0.9655931982722878
+          ],
+          "peak_rss_gib": 2.882659912109375,
+          "rss_gib": [
+            2.8470115661621094,
+            2.7116432189941406,
+            2.882659912109375
+          ],
+          "minimum_available_gib": 3.420562744140625,
+          "swap_out_mib": 0.0,
+          "source": {
+            "commit": "c3ad473061d0750a9169eac87990b2853d866b20",
+            "dirty": false
+          },
+          "samples": 48,
+          "repeats": 3,
+          "guard_limits": {
+            "rss_limit_gib": 10.0,
+            "pss_limit_gib": null,
+            "min_available_gib": 2.0,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 240.0,
+            "poll_interval_seconds": 0.1
+          }
+        }
+      },
+      "throughput_gain_fraction": 0.15547719745666133,
+      "peak_rss_change_fraction": -0.00032675458613951047,
+      "gate_pass": true
+    },
+    "light": {
+      "arms": {
+        "baseline": {
+          "median_accepted_per_second": 6.397498007091861,
+          "rates": [
+            6.521720970140782,
+            6.397498007091861,
+            6.29119098887857
+          ],
+          "peak_rss_gib": 0.5227584838867188,
+          "rss_gib": [
+            0.5227584838867188,
+            0.5181846618652344,
+            0.50042724609375
+          ],
+          "minimum_available_gib": 5.460929870605469,
+          "swap_out_mib": 0.0,
+          "source": {
+            "commit": "1771e2dbd19bfe5958f9466f9c80bad3c2366ec2",
+            "dirty": false
+          },
+          "samples": 20,
+          "repeats": 3,
+          "guard_limits": {
+            "rss_limit_gib": 10.0,
+            "pss_limit_gib": null,
+            "min_available_gib": 2.0,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 120.0,
+            "poll_interval_seconds": 0.1
+          }
+        },
+        "current": {
+          "median_accepted_per_second": 7.001061809983817,
+          "rates": [
+            7.001061809983817,
+            6.9831331307603035,
+            7.159348423178679
+          ],
+          "peak_rss_gib": 0.5360565185546875,
+          "rss_gib": [
+            0.5061302185058594,
+            0.5277938842773438,
+            0.5360565185546875
+          ],
+          "minimum_available_gib": 5.417732238769531,
+          "swap_out_mib": 0.0,
+          "source": {
+            "commit": "c3ad473061d0750a9169eac87990b2853d866b20",
+            "dirty": false
+          },
+          "samples": 20,
+          "repeats": 3,
+          "guard_limits": {
+            "rss_limit_gib": 10.0,
+            "pss_limit_gib": null,
+            "min_available_gib": 2.0,
+            "max_swap_out_mib": 16.0,
+            "cell_timeout_seconds": 120.0,
+            "poll_interval_seconds": 0.1
+          }
+        }
+      },
+      "throughput_gain_fraction": 0.09434372659794232,
+      "peak_rss_change_fraction": 0.025438199623462054,
+      "gate_pass": true
+    }
+  },
+  "exact_pixels_masks_annotations": true,
+  "limits": "One host, three rotating repetitions; dots are observations, not confidence intervals. Absolute y scales differ between workload panels."
+}

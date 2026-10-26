@@ -115,3 +115,14 @@ exclusive-phase overcounting; it remains an RSS planning upper estimate, not typ
 The driver also supports `--detailed-memory`, `--pss-limit-gib` and `--poll-interval-seconds`.
 Linux PSS/USS samples distinguish proportional/private memory from summed RSS. Available host RAM and
 swap growth remain independent guards; unsupported proportional-memory sampling is reported as unknown.
+
+## Ordered rolling admission
+
+Multiprocess generation admits new slots after ordered commits instead of waiting for a complete
+batch. `max_in_flight` bounds every submitted-but-uncommitted slot, including completed result images
+and the current commit. Slow earlier slots can still cause bounded head-of-line waiting. Pause/stop
+stops further admission once observed, drains admitted slots and enters the existing checkpoint.
+Slot RNG, candidate retries, coordinator ownership, pixel/mask evidence and historical resume remain
+unchanged. The [paired promotion study](experiments/rolling-scheduler-v1/README.md) passed local gates;
+its gains are workload/host evidence, not a universal speed promise. Performance observations now use
+`bounded-ordered-rolling-v1` to avoid mixing the old scheduler's cost evidence.
