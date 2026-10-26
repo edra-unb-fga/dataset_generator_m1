@@ -1,0 +1,4064 @@
+{
+  "identity": "82c0830e5a2e89eab8ef5b490eaed9dce2919dbb2889038d6b013e08d31a69eb",
+  "accepted": 69,
+  "rejected": 0,
+  "planned": 69,
+  "reference": {
+    "samples_sha256": "aad84133c433fc2b8be96414cf4dbceae0452e05768960b6c631fa2f156e79e5",
+    "run_sha256": "92b26616105dadd027abd39fdae6c81e728e031b9159ca3f8fda4ebe65360b48",
+    "target_width_fraction_quantiles": [
+      0.131875,
+      0.18125,
+      0.239375
+    ],
+    "images": 20
+  },
+  "achieved_baseline_width_fraction_quantiles": [
+    0.1540625,
+    0.1828125,
+    0.20296875
+  ],
+  "runs": [
+    {
+      "status": "complete",
+      "reason": null,
+      "returncode": 0,
+      "command_seconds": 2418.0520915659145,
+      "selected_jobs": [
+        "000-base-fast",
+        "000-base-quality",
+        "000-distortion-fast",
+        "000-dof-fast",
+        "000-environment-fast",
+        "000-glint-base-fast",
+        "000-glint-matte-fast",
+        "000-glint-satin-fast",
+        "000-haze-fast",
+        "000-matte-fast",
+        "000-motion-fast",
+        "000-night-mixed-fast",
+        "000-night-mixed-quality",
+        "000-night-single-fast",
+        "000-no-casters-fast",
+        "000-no-normal-fast",
+        "000-oblique-fast",
+        "000-overcast-fast",
+        "000-satin-fast",
+        "000-shade-fast",
+        "000-uv-close-fast",
+        "001-base-fast",
+        "001-base-quality",
+        "001-distortion-fast",
+        "001-dof-fast",
+        "001-environment-fast",
+        "001-glint-base-fast",
+        "001-glint-matte-fast",
+        "001-glint-satin-fast",
+        "001-haze-fast",
+        "001-matte-fast",
+        "001-motion-fast",
+        "001-night-mixed-fast",
+        "001-night-mixed-quality",
+        "001-night-single-fast",
+        "001-no-casters-fast",
+        "001-no-normal-fast",
+        "001-oblique-fast",
+        "001-overcast-fast",
+        "001-satin-fast",
+        "001-shade-fast",
+        "001-uv-close-fast",
+        "002-base-fast",
+        "002-base-quality",
+        "002-distortion-fast",
+        "002-dof-fast",
+        "002-environment-fast",
+        "002-glint-base-fast",
+        "002-glint-matte-fast",
+        "002-glint-satin-fast",
+        "002-haze-fast",
+        "002-matte-fast",
+        "002-motion-fast",
+        "002-night-mixed-fast",
+        "002-night-mixed-quality",
+        "002-night-single-fast",
+        "002-no-casters-fast",
+        "002-no-normal-fast",
+        "002-oblique-fast",
+        "002-overcast-fast",
+        "002-satin-fast",
+        "002-shade-fast",
+        "002-uv-close-fast",
+        "diagnostic-clipped",
+        "diagnostic-closeup",
+        "diagnostic-fully-hidden",
+        "diagnostic-negative",
+        "diagnostic-occluded",
+        "diagnostic-overlap"
+      ],
+      "peak_rss_bytes": 2553200640,
+      "minimum_available_bytes": 3406790656,
+      "swap_out_delta_bytes": 1789952,
+      "guards": {
+        "min_available_gib": 2,
+        "rss_limit_gib": 10,
+        "max_swap_out_mib": 16
+      }
+    },
+    {
+      "status": "complete",
+      "reason": null,
+      "returncode": 0,
+      "command_seconds": 1.9246094729751348,
+      "selected_jobs": [
+        "000-base-fast",
+        "000-base-quality",
+        "000-distortion-fast",
+        "000-dof-fast",
+        "000-environment-fast",
+        "000-glint-base-fast",
+        "000-glint-matte-fast",
+        "000-glint-satin-fast",
+        "000-haze-fast",
+        "000-matte-fast",
+        "000-motion-fast",
+        "000-night-mixed-fast",
+        "000-night-mixed-quality",
+        "000-night-single-fast",
+        "000-no-casters-fast",
+        "000-no-normal-fast",
+        "000-oblique-fast",
+        "000-overcast-fast",
+        "000-satin-fast",
+        "000-shade-fast",
+        "000-uv-close-fast",
+        "001-base-fast",
+        "001-base-quality",
+        "001-distortion-fast",
+        "001-dof-fast",
+        "001-environment-fast",
+        "001-glint-base-fast",
+        "001-glint-matte-fast",
+        "001-glint-satin-fast",
+        "001-haze-fast",
+        "001-matte-fast",
+        "001-motion-fast",
+        "001-night-mixed-fast",
+        "001-night-mixed-quality",
+        "001-night-single-fast",
+        "001-no-casters-fast",
+        "001-no-normal-fast",
+        "001-oblique-fast",
+        "001-overcast-fast",
+        "001-satin-fast",
+        "001-shade-fast",
+        "001-uv-close-fast",
+        "002-base-fast",
+        "002-base-quality",
+        "002-distortion-fast",
+        "002-dof-fast",
+        "002-environment-fast",
+        "002-glint-base-fast",
+        "002-glint-matte-fast",
+        "002-glint-satin-fast",
+        "002-haze-fast",
+        "002-matte-fast",
+        "002-motion-fast",
+        "002-night-mixed-fast",
+        "002-night-mixed-quality",
+        "002-night-single-fast",
+        "002-no-casters-fast",
+        "002-no-normal-fast",
+        "002-oblique-fast",
+        "002-overcast-fast",
+        "002-satin-fast",
+        "002-shade-fast",
+        "002-uv-close-fast",
+        "diagnostic-clipped",
+        "diagnostic-closeup",
+        "diagnostic-fully-hidden",
+        "diagnostic-negative",
+        "diagnostic-occluded",
+        "diagnostic-overlap"
+      ],
+      "peak_rss_bytes": 522989568,
+      "minimum_available_bytes": 5608873984,
+      "swap_out_delta_bytes": 0,
+      "guards": {
+        "min_available_gib": 2,
+        "rss_limit_gib": 10,
+        "max_swap_out_mib": 16
+      }
+    }
+  ],
+  "costs": [
+    {
+      "job": "000-base-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.012982266023755074,
+          "annotation_seconds": 2.095103886909783,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.216981018078513,
+      "warm_same_scene_render_seconds": [
+        24.13859214691911,
+        24.081770222983323
+      ],
+      "total_seconds": 75.86122663598508,
+      "accepted_output_seconds": 27.640864434069954
+    },
+    {
+      "job": "000-satin-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.016813679016195238,
+          "annotation_seconds": 1.0232419510139152,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.77498243493028,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.130364731070586,
+      "accepted_output_seconds": 26.130364845041186
+    },
+    {
+      "job": "000-matte-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.007906206068582833,
+          "annotation_seconds": 1.1050780710065737,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.906274842913263,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.342718046042137,
+      "accepted_output_seconds": 26.342718170024455
+    },
+    {
+      "job": "000-no-normal-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008747707935981452,
+          "annotation_seconds": 1.1130317830247805,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.997593724983744,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.43618418497499,
+      "accepted_output_seconds": 26.43618428800255
+    },
+    {
+      "job": "000-uv-close-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.00811456108931452,
+          "annotation_seconds": 1.1845054109580815,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.4894268210046,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.099563134019263,
+      "accepted_output_seconds": 27.099563286057673
+    },
+    {
+      "job": "000-overcast-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008047109935432673,
+          "annotation_seconds": 1.4933739480329677,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 26.903140638023615,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 28.734144497080706,
+      "accepted_output_seconds": 28.73414461000357
+    },
+    {
+      "job": "000-environment-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.016166060930117965,
+          "annotation_seconds": 1.3637359020067379,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.09887086902745,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.89946681598667,
+      "accepted_output_seconds": 26.899467005976476
+    },
+    {
+      "job": "000-shade-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008053562953136861,
+          "annotation_seconds": 1.4712968590902165,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 27.19650876102969,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 29.34180723002646,
+      "accepted_output_seconds": 29.341807365999557
+    },
+    {
+      "job": "000-no-casters-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006485265912488103,
+          "annotation_seconds": 1.3417482620570809,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.853602965944447,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.511255752993748,
+      "accepted_output_seconds": 26.51125588908326
+    },
+    {
+      "job": "000-night-single-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008500893018208444,
+          "annotation_seconds": 1.4144122009165585,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.95102851698175,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.865845942054875,
+      "accepted_output_seconds": 26.86584614799358
+    },
+    {
+      "job": "000-night-mixed-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008623479981906712,
+          "annotation_seconds": 1.3110194719629362,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.527288530021906,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.33448377100285,
+      "accepted_output_seconds": 27.334483877988532
+    },
+    {
+      "job": "000-dof-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008518756018020213,
+          "annotation_seconds": 1.4455233910121024,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.98129763395991,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.777424585074186,
+      "accepted_output_seconds": 27.777424709056504
+    },
+    {
+      "job": "000-motion-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008147093001753092,
+          "annotation_seconds": 1.6400010120123625,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 26.48980513808783,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 28.85502888506744,
+      "accepted_output_seconds": 28.855028969002888
+    },
+    {
+      "job": "000-distortion-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 2.2953035209793597,
+          "annotation_seconds": 2.385043864022009,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 30.182760849012993,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 35.671512453001924,
+      "accepted_output_seconds": 35.6715125789633
+    },
+    {
+      "job": "000-haze-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008717134012840688,
+          "annotation_seconds": 1.39479949104134,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 30.28910600906238,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 32.40926007006783,
+      "accepted_output_seconds": 32.40926019905601
+    },
+    {
+      "job": "000-oblique-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.00893450400326401,
+          "annotation_seconds": 1.329786779009737,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.346177360974252,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.106214925064705,
+      "accepted_output_seconds": 27.1062150610378
+    },
+    {
+      "job": "000-glint-base-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008728615008294582,
+          "annotation_seconds": 1.418682243092917,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.339143630000763,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.080892120022327,
+      "accepted_output_seconds": 27.080892208963633
+    },
+    {
+      "job": "000-glint-satin-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008437192998826504,
+          "annotation_seconds": 1.5123827538918704,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.378858427982777,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.245441287057474,
+      "accepted_output_seconds": 27.245441399980336
+    },
+    {
+      "job": "000-glint-matte-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.00944776099640876,
+          "annotation_seconds": 1.5747059100540355,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.115382093004882,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.01764393702615,
+      "accepted_output_seconds": 27.017644056933932
+    },
+    {
+      "job": "diagnostic-negative",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.004388177068904042,
+          "annotation_seconds": 0.4189694570377469,
+          "support": [],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.69042229501065,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 25.37776000890881,
+      "accepted_output_seconds": 25.377760128933005
+    },
+    {
+      "job": "diagnostic-clipped",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005642478005029261,
+          "annotation_seconds": 1.008101401035674,
+          "support": [
+            0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.103886686032638,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.413732112036087,
+      "accepted_output_seconds": 26.413732226006687
+    },
+    {
+      "job": "diagnostic-occluded",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006332952994853258,
+          "annotation_seconds": 0.8257593010785058,
+          "support": [
+            0.7181824507689096,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.153307334985584,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.2917447789805,
+      "accepted_output_seconds": 26.291744918911718
+    },
+    {
+      "job": "diagnostic-fully-hidden",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0063005100237205625,
+          "annotation_seconds": 1.1444531709421426,
+          "support": [
+            0.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.86987145105377,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.324405791936442,
+      "accepted_output_seconds": 26.32440591196064
+    },
+    {
+      "job": "diagnostic-overlap",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006236742017790675,
+          "annotation_seconds": 1.0699519529007375,
+          "support": [
+            0.29361213555076193,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.354528979980387,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.72325263102539,
+      "accepted_output_seconds": 26.723252733936533
+    },
+    {
+      "job": "diagnostic-closeup",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006467939005233347,
+          "annotation_seconds": 1.2817248509963974,
+          "support": [
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.9376255950192,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.63142329303082,
+      "accepted_output_seconds": 27.631423479062505
+    },
+    {
+      "job": "001-base-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.013425000011920929,
+          "annotation_seconds": 0.5973424679832533,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.957222528057173,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.04627289599739,
+      "accepted_output_seconds": 26.0462730510626
+    },
+    {
+      "job": "001-satin-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.00561555998865515,
+          "annotation_seconds": 0.7227043769089505,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.282117613009177,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.482763790991157,
+      "accepted_output_seconds": 26.48276389297098
+    },
+    {
+      "job": "001-matte-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0048361989902332425,
+          "annotation_seconds": 0.7018667999655008,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.640894402051345,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 25.800530571956187,
+      "accepted_output_seconds": 25.80053066194523
+    },
+    {
+      "job": "001-no-normal-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.004991786903701723,
+          "annotation_seconds": 0.7522171139717102,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.67450188694056,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 25.91206741996575,
+      "accepted_output_seconds": 25.912067621015012
+    },
+    {
+      "job": "001-uv-close-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.004909744951874018,
+          "annotation_seconds": 0.9026082390919328,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.367526568938047,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.90354056202341,
+      "accepted_output_seconds": 26.90354066400323
+    },
+    {
+      "job": "001-overcast-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0052629460114985704,
+          "annotation_seconds": 0.6943743160227314,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 27.340006017009728,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 28.497360595036298,
+      "accepted_output_seconds": 28.497360718087293
+    },
+    {
+      "job": "001-environment-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006445741048082709,
+          "annotation_seconds": 0.6494084900477901,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.222722474019974,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.423011636012234,
+      "accepted_output_seconds": 26.423011837992817
+    },
+    {
+      "job": "001-shade-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005614915047772229,
+          "annotation_seconds": 0.7686669039539993,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 26.85967722593341,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 28.153818406979553,
+      "accepted_output_seconds": 28.15381852001883
+    },
+    {
+      "job": "001-no-casters-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0037459860322996974,
+          "annotation_seconds": 0.7630911339074373,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.8760218990501,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.122014514985494,
+      "accepted_output_seconds": 26.12201464700047
+    },
+    {
+      "job": "001-night-single-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.004702114965766668,
+          "annotation_seconds": 0.8833321270067245,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.15086074604187,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.57469878497068,
+      "accepted_output_seconds": 26.574698911048472
+    },
+    {
+      "job": "001-night-mixed-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005199913983233273,
+          "annotation_seconds": 0.8189828459871933,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.42498848598916,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 25.710450454964302,
+      "accepted_output_seconds": 25.71045052399859
+    },
+    {
+      "job": "001-dof-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005372902960516512,
+          "annotation_seconds": 0.8096295439172536,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.575804202002473,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.866656672907993,
+      "accepted_output_seconds": 26.86665674194228
+    },
+    {
+      "job": "001-motion-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005064639961346984,
+          "annotation_seconds": 0.7382290279492736,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 26.07392322202213,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.34405086003244,
+      "accepted_output_seconds": 27.3440510740038
+    },
+    {
+      "job": "001-distortion-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 2.5032976989168674,
+          "annotation_seconds": 1.4054979889187962,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 29.66484656697139,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 34.55948835599702,
+      "accepted_output_seconds": 34.5594885420287
+    },
+    {
+      "job": "001-haze-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.00565563200507313,
+          "annotation_seconds": 0.6144305099733174,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 28.57278396608308,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 29.79149952798616,
+      "accepted_output_seconds": 29.791499666986056
+    },
+    {
+      "job": "001-oblique-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005319394986145198,
+          "annotation_seconds": 0.8490218550432473,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.74108756997157,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.114419373916462,
+      "accepted_output_seconds": 26.114419506979175
+    },
+    {
+      "job": "001-glint-base-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005496308906003833,
+          "annotation_seconds": 0.700302884913981,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.544378262013197,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.719551246031187,
+      "accepted_output_seconds": 26.71955134603195
+    },
+    {
+      "job": "001-glint-satin-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.00504144502338022,
+          "annotation_seconds": 0.9406925999792293,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.112004482070915,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.50856684509199,
+      "accepted_output_seconds": 26.5085669150576
+    },
+    {
+      "job": "001-glint-matte-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0053810919634997845,
+          "annotation_seconds": 0.8880562270060182,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.465054593980312,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.827570916968398,
+      "accepted_output_seconds": 26.827571033965796
+    },
+    {
+      "job": "002-base-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006508011021651328,
+          "annotation_seconds": 1.2865706360898912,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.233160177012905,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.10943056899123,
+      "accepted_output_seconds": 27.10943071404472
+    },
+    {
+      "job": "002-satin-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006050026044249535,
+          "annotation_seconds": 1.1446541179902852,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.328768544015475,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.06985067995265,
+      "accepted_output_seconds": 27.069850818952546
+    },
+    {
+      "job": "002-matte-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0062939380295574665,
+          "annotation_seconds": 0.9754384330008179,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.05554709408898,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.623985761078075,
+      "accepted_output_seconds": 26.623985883081332
+    },
+    {
+      "job": "002-no-normal-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006088339956477284,
+          "annotation_seconds": 1.2331790920579806,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.311026490991935,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.146925055072643,
+      "accepted_output_seconds": 27.146925174980424
+    },
+    {
+      "job": "002-uv-close-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006189074018038809,
+          "annotation_seconds": 1.1215326649835333,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.414332597050816,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.130950595019385,
+      "accepted_output_seconds": 27.130950705963187
+    },
+    {
+      "job": "002-overcast-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005811975104734302,
+          "annotation_seconds": 1.1512885720003396,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 27.533006445039064,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 29.22687929798849,
+      "accepted_output_seconds": 29.226879528025165
+    },
+    {
+      "job": "002-environment-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006397609948180616,
+          "annotation_seconds": 1.0506178699433804,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.361619913950562,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.98686164303217,
+      "accepted_output_seconds": 26.98686175700277
+    },
+    {
+      "job": "002-shade-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005927601014263928,
+          "annotation_seconds": 1.2663120800862089,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 27.45095431501977,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 29.249534509028308,
+      "accepted_output_seconds": 29.24953466001898
+    },
+    {
+      "job": "002-no-casters-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.004641850013285875,
+          "annotation_seconds": 1.510929531068541,
+          "support": [
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.113384242984466,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.20969997998327,
+      "accepted_output_seconds": 27.20970008696895
+    },
+    {
+      "job": "002-night-single-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006367942085489631,
+          "annotation_seconds": 1.3538793860934675,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.367328039952554,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.20818130695261,
+      "accepted_output_seconds": 27.20818141696509
+    },
+    {
+      "job": "002-night-mixed-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006166022038087249,
+          "annotation_seconds": 1.3335933641064912,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.710842108004726,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.54201697197277,
+      "accepted_output_seconds": 26.542017091065645
+    },
+    {
+      "job": "002-dof-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006481915945187211,
+          "annotation_seconds": 1.4780526669928804,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.593749232008122,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.677371878060512,
+      "accepted_output_seconds": 27.67737198807299
+    },
+    {
+      "job": "002-motion-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006555582978762686,
+          "annotation_seconds": 1.2212935709394515,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 26.546764484024607,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 28.326862856047228,
+      "accepted_output_seconds": 28.326862995047122
+    },
+    {
+      "job": "002-distortion-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 2.5281959109706804,
+          "annotation_seconds": 2.0893089729361236,
+          "support": [
+            0.8410304417169405,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 30.171832775115035,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 35.944581712945364,
+      "accepted_output_seconds": 35.944582020980306
+    },
+    {
+      "job": "002-haze-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.007316383067518473,
+          "annotation_seconds": 1.4679126359988004,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 29.378536620060913,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 31.46072162105702,
+      "accepted_output_seconds": 31.4607217409648
+    },
+    {
+      "job": "002-oblique-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0064231910509988666,
+          "annotation_seconds": 1.3424331020796672,
+          "support": [
+            0.9947757945145842,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 24.982461223960854,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 26.901377125061117,
+      "accepted_output_seconds": 26.901377191068605
+    },
+    {
+      "job": "002-glint-base-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006039571017026901,
+          "annotation_seconds": 1.385754212969914,
+          "support": [
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.40501549502369,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.422528714989312,
+      "accepted_output_seconds": 27.422528858995065
+    },
+    {
+      "job": "002-glint-satin-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006615199032239616,
+          "annotation_seconds": 1.482567913015373,
+          "support": [
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.20476059790235,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.29419417004101,
+      "accepted_output_seconds": 27.29419426806271
+    },
+    {
+      "job": "002-glint-matte-fast",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.0064125999342650175,
+          "annotation_seconds": 1.6355924210511148,
+          "support": [
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 25.210433339932933,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 27.45547839999199,
+      "accepted_output_seconds": 27.4554785360815
+    },
+    {
+      "job": "000-base-quality",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.008238604059442878,
+          "annotation_seconds": 2.2754415459930897,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 78.21178119606338,
+      "warm_same_scene_render_seconds": [
+        77.6089497259818,
+        77.54863130999729
+      ],
+      "total_seconds": 235.97034472902305,
+      "accepted_output_seconds": 80.81276387302205
+    },
+    {
+      "job": "000-night-mixed-quality",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.00854143500328064,
+          "annotation_seconds": 2.5093714100075886,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 75.83812618802767,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 78.86281072592828,
+      "accepted_output_seconds": 78.862810814986
+    },
+    {
+      "job": "001-base-quality",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005838479963131249,
+          "annotation_seconds": 0.910482304985635,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 77.15436727192719,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 78.55173857789487,
+      "accepted_output_seconds": 78.55173869396094
+    },
+    {
+      "job": "001-night-mixed-quality",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.005918244016356766,
+          "annotation_seconds": 0.8429977010237053,
+          "support": [
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 74.55676743504591,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 75.87854493700434,
+      "accepted_output_seconds": 75.878545052954
+    },
+    {
+      "job": "002-base-quality",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006269181962125003,
+          "annotation_seconds": 1.4332716090139002,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 77.27368618000764,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 79.27963279292453,
+      "accepted_output_seconds": 79.27963292598724
+    },
+    {
+      "job": "002-night-mixed-quality",
+      "setup_and_attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.006743101985193789,
+          "annotation_seconds": 1.3265230909455568,
+          "support": [
+            0.8424846103876017,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "rgb_render_seconds": 75.19643092690967,
+      "warm_same_scene_render_seconds": [],
+      "total_seconds": 77.03558612498455,
+      "accepted_output_seconds": 77.03558629297186
+    }
+  ],
+  "limits": [
+    "Nominal materials/camera; no calibration or model benefit measured.",
+    "Geometric labels remain sharp under RGB blur. Lens distortion is a post-render warp.",
+    "Noise is a post-display RGB approximation, not a physical sensor model.",
+    "Low sample counts are exploratory; no universal renderer speed ratio."
+  ],
+  "quality_crops": [
+    {
+      "scene": 0,
+      "treatment": "base",
+      "crop_xywh": [
+        161,
+        880,
+        400,
+        400
+      ]
+    },
+    {
+      "scene": 0,
+      "treatment": "night-mixed",
+      "crop_xywh": [
+        161,
+        880,
+        400,
+        400
+      ]
+    },
+    {
+      "scene": 1,
+      "treatment": "base",
+      "crop_xywh": [
+        0,
+        880,
+        400,
+        400
+      ]
+    },
+    {
+      "scene": 1,
+      "treatment": "night-mixed",
+      "crop_xywh": [
+        0,
+        880,
+        400,
+        400
+      ]
+    },
+    {
+      "scene": 2,
+      "treatment": "base",
+      "crop_xywh": [
+        0,
+        543,
+        400,
+        400
+      ]
+    },
+    {
+      "scene": 2,
+      "treatment": "night-mixed",
+      "crop_xywh": [
+        0,
+        543,
+        400,
+        400
+      ]
+    }
+  ],
+  "appearance_comparisons": [
+    {
+      "job": "000-base-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 0.0,
+      "background_mean_absolute_rgb_difference": 0.0,
+      "changed_rgb_pixels_fraction": 0.0
+    },
+    {
+      "job": "000-satin-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 3.3208821417191015,
+      "background_mean_absolute_rgb_difference": 0.011651335201320317,
+      "changed_rgb_pixels_fraction": 0.1108251953125
+    },
+    {
+      "job": "000-matte-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 3.1580511840046417,
+      "background_mean_absolute_rgb_difference": 0.4694298456975116,
+      "changed_rgb_pixels_fraction": 0.7548431396484375
+    },
+    {
+      "job": "000-no-normal-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 0.043174911181816884,
+      "background_mean_absolute_rgb_difference": 0.5114344119867985,
+      "changed_rgb_pixels_fraction": 0.6610455322265625
+    },
+    {
+      "job": "000-uv-close-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 0.4755137662238836,
+      "background_mean_absolute_rgb_difference": 11.923869296087506,
+      "changed_rgb_pixels_fraction": 0.944635009765625
+    },
+    {
+      "job": "000-overcast-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 15.645740294205773,
+      "background_mean_absolute_rgb_difference": 17.94327669301338,
+      "changed_rgb_pixels_fraction": 0.999998779296875
+    },
+    {
+      "job": "000-environment-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 37.299316088100035,
+      "background_mean_absolute_rgb_difference": 27.28960294819785,
+      "changed_rgb_pixels_fraction": 0.99996826171875
+    },
+    {
+      "job": "000-shade-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 71.29373968543857,
+      "background_mean_absolute_rgb_difference": 54.15635513823237,
+      "changed_rgb_pixels_fraction": 1.0
+    },
+    {
+      "job": "000-no-casters-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 0.13534844788144257,
+      "background_mean_absolute_rgb_difference": 2.1734782780879964,
+      "changed_rgb_pixels_fraction": 0.2984710693359375
+    },
+    {
+      "job": "000-night-single-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 54.19974698113297,
+      "background_mean_absolute_rgb_difference": 31.422232471380596,
+      "changed_rgb_pixels_fraction": 1.0
+    },
+    {
+      "job": "000-night-mixed-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 56.445063516296415,
+      "background_mean_absolute_rgb_difference": 44.52585101758124,
+      "changed_rgb_pixels_fraction": 0.99999755859375
+    },
+    {
+      "job": "000-dof-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 0.1841378096746425,
+      "background_mean_absolute_rgb_difference": 0.6380241254212203,
+      "changed_rgb_pixels_fraction": 0.6322393798828125
+    },
+    {
+      "job": "000-motion-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 18.097134038171607,
+      "background_mean_absolute_rgb_difference": 8.247544095483592,
+      "changed_rgb_pixels_fraction": 0.9851617431640625
+    },
+    {
+      "job": "000-distortion-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": false,
+      "foreground_mean_absolute_rgb_difference": 33.947848150631835,
+      "background_mean_absolute_rgb_difference": 11.443271130879678,
+      "changed_rgb_pixels_fraction": 0.98982666015625
+    },
+    {
+      "job": "000-haze-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 6.148703278306485,
+      "background_mean_absolute_rgb_difference": 14.105362608845395,
+      "changed_rgb_pixels_fraction": 0.9999981689453125
+    },
+    {
+      "job": "000-oblique-fast",
+      "reference_job": "000-base-fast",
+      "masks_equal_reference": false,
+      "foreground_mean_absolute_rgb_difference": 34.70235088770624,
+      "background_mean_absolute_rgb_difference": 18.444181318439274,
+      "changed_rgb_pixels_fraction": 0.9999017333984375
+    },
+    {
+      "job": "000-glint-base-fast",
+      "reference_job": "000-glint-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 0.0,
+      "background_mean_absolute_rgb_difference": 0.0,
+      "changed_rgb_pixels_fraction": 0.0
+    },
+    {
+      "job": "000-glint-satin-fast",
+      "reference_job": "000-glint-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 6.681390346041578,
+      "background_mean_absolute_rgb_difference": 0.014610749516989426,
+      "changed_rgb_pixels_fraction": 0.116046142578125
+    },
+    {
+      "job": "000-glint-matte-fast",
+      "reference_job": "000-glint-base-fast",
+      "masks_equal_reference": true,
+      "foreground_mean_absolute_rgb_difference": 9.709758592519249,
+      "background_mean_absolute_rgb_difference": 0.9998128340994881,
+      "changed_rgb_pixels_fraction": 0.9078759765625
+    }
+  ],
+  "2d_controls": {
+    "2D pristine": {
+      "accepted": 20,
+      "warmups": 2,
+      "repeats": 1,
+      "accepted_per_second": 1.6327263654438535,
+      "elapsed_seconds": 12.249447481008247,
+      "source_samples_sha256": "aad84133c433fc2b8be96414cf4dbceae0452e05768960b6c631fa2f156e79e5",
+      "context": {
+        "schema_version": 1,
+        "workload_sha256": "126e4bca0fed895a0f621f90dfcd4920ac8557718c9afd85a563df2665a1ad48",
+        "performance_implementation": "bounded-ordered-rolling-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "source": {
+        "commit": "8beeee17dede1edc7bcca3493bde0313a7d9659d",
+        "dirty": false
+      },
+      "peak_rss_bytes": 1148620800,
+      "native_threads": 1,
+      "workers": 2,
+      "command_seconds": 15.7120953790145,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": null,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "minimum_available_memory_bytes": 5191180288
+    },
+    "2D surface camera": {
+      "accepted": 20,
+      "warmups": 2,
+      "repeats": 1,
+      "accepted_per_second": 1.1346410329803016,
+      "elapsed_seconds": 17.626717600040138,
+      "source_samples_sha256": "c94b51adb52f4a9513f15c5c479f525e90fb9eacb943a1f3b5be75e880ecd5cd",
+      "context": {
+        "schema_version": 1,
+        "workload_sha256": "771f25364e9dec8f7bf31e3333a1c891c27212efba94d2680d808d3b1e346c5a",
+        "performance_implementation": "bounded-ordered-rolling-v1",
+        "software": {
+          "python": "3.13.16",
+          "numpy": "2.5.1",
+          "opencv-python-headless": "5.0.0.93",
+          "albumentations": "2.0.8",
+          "Pillow": "12.3.0"
+        },
+        "environment_class": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "logical_cpus": 24,
+          "usable_cpus": 24,
+          "ram_class_gib": 16
+        }
+      },
+      "source": {
+        "commit": "8beeee17dede1edc7bcca3493bde0313a7d9659d",
+        "dirty": false
+      },
+      "peak_rss_bytes": 1088241664,
+      "native_threads": 1,
+      "workers": 2,
+      "command_seconds": 21.79969742707908,
+      "guard_limits": {
+        "rss_limit_gib": 10.0,
+        "pss_limit_gib": null,
+        "min_available_gib": 2.0,
+        "max_swap_out_mib": 16.0,
+        "cell_timeout_seconds": 240.0,
+        "poll_interval_seconds": 0.1
+      },
+      "minimum_available_memory_bytes": 5102702592
+    }
+  },
+  "2d_control_geometry_equal": true,
+  "configuration": {
+    "schema_version": 1,
+    "seed": 20261026,
+    "width_metres": 1.0,
+    "thickness_metres": 0.003,
+    "resolution": [
+      1280,
+      1280
+    ],
+    "focal_length_mm": 35.0,
+    "sensor_width_mm": 36.0,
+    "principal_point_fraction": [
+      0.5,
+      0.5
+    ],
+    "threads": 6,
+    "fast_samples": 32,
+    "quality_samples": 128,
+    "scenes": 3,
+    "quality_treatments": [
+      "base",
+      "night-mixed"
+    ],
+    "study_seconds": 7200.0,
+    "treatments": [
+      {
+        "id": "base",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "satin",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.25,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "matte",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.8,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "no-normal",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.0,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "uv-close",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 0.5,
+        "uv_rotation_degrees": 30.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "overcast",
+        "paired_reference": null,
+        "lighting": "overcast",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "environment",
+        "paired_reference": null,
+        "lighting": "environment",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "shade",
+        "paired_reference": null,
+        "lighting": "shade",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "no-casters",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": false,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "night-single",
+        "paired_reference": null,
+        "lighting": "night-single",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.5,
+        "tone": "AgX",
+        "noise_std": 0.012,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 300.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "night-mixed",
+        "paired_reference": null,
+        "lighting": "night-mixed",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.02,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 500.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "dof",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 2.0,
+        "depth_of_field": true,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "motion",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 2.0,
+        "shutter_seconds": 0.06666666666666667,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "distortion",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          -0.15,
+          0.03,
+          0.0,
+          0.001,
+          -0.001
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "haze",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.008,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "oblique",
+        "paired_reference": null,
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 0.0,
+        "view_degrees": 55.0,
+        "sun_elevation_degrees": 45.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "glint-base",
+        "paired_reference": "glint-base",
+        "lighting": "sun",
+        "roughness": 0.5,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 135.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 70.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "glint-satin",
+        "paired_reference": "glint-base",
+        "lighting": "sun",
+        "roughness": 0.25,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 135.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 70.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      },
+      {
+        "id": "glint-matte",
+        "paired_reference": "glint-base",
+        "lighting": "sun",
+        "roughness": 0.8,
+        "normal_strength": 0.2,
+        "uv_scale_m": 2.0,
+        "uv_rotation_degrees": 0.0,
+        "shadows": true,
+        "occluder": false,
+        "haze_density": 0.0,
+        "exposure_ev": 0.0,
+        "tone": "AgX",
+        "noise_std": 0.0,
+        "aperture_fstop": 8.0,
+        "depth_of_field": false,
+        "focus_distance_m": null,
+        "camera_speed_mps": 0.0,
+        "shutter_seconds": 0.016666666666666666,
+        "distortion": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "camera_distance_scale": 1.0,
+        "camera_roll_degrees": 0.0,
+        "camera_azimuth_degrees": 135.0,
+        "view_degrees": 20.0,
+        "sun_elevation_degrees": 70.0,
+        "light_power_w": 800.0,
+        "light_size_m": 0.7
+      }
+    ]
+  },
+  "source_contract": {
+    "harness_source_sha256": "c70931fca1eb3c1711d32117a983b48a86e54078db8aab7308a1bb075d83413f",
+    "renderer_script_sha256": "843afd825c1e512e589f79dbc765178bf1620ce647ec089dbe6908aedfdb90a3",
+    "jobs_sha256": "d08ef18fed5b950f721736d0fee9bfcee604ba0315a3b8feb07d839549f9cd1a",
+    "runtime_sha256": "ff250cad2cf12f604692788bf08abe8ad783153efdff72a911a9b4d98e72d137"
+  },
+  "asset_provenance": [
+    {
+      "kind": "ground",
+      "manifest": {
+        "schema_version": 1,
+        "asset_id": "Ground068",
+        "material_id": "ambientcg/Ground068",
+        "provider": "ambientCG",
+        "source_page": "https://ambientcg.com/a/Ground068",
+        "license": "CC0-1.0",
+        "license_url": "https://docs.ambientcg.com/license/",
+        "resolution": "1K-JPG",
+        "physical_dimensions": {
+          "width": 0,
+          "height": 0,
+          "depth": 0
+        },
+        "normal_convention": "OpenGL",
+        "archive": {
+          "url": "https://ambientcg.com/get?file=Ground068_1K-JPG.zip",
+          "sha256": "f2404d148ba3fd04c753bd84e2c5bfd1743bf439ae147d8114308ce96336d91d",
+          "size_bytes": 10148987
+        },
+        "maps": {
+          "color": {
+            "member": "Ground068_1K-JPG_Color.jpg",
+            "sha256": "027f180023f33e6435ed8cf3f94481904612151360964e134de710b1b52f7a2d",
+            "size_bytes": 1906391
+          },
+          "normal": {
+            "member": "Ground068_1K-JPG_NormalGL.jpg",
+            "sha256": "ed5550f1016acca78276e8055e4677604763818846e43d0fee94778aaf5ce424",
+            "size_bytes": 2303772
+          },
+          "roughness": {
+            "member": "Ground068_1K-JPG_Roughness.jpg",
+            "sha256": "1fbc95dbbbb022c673169d883a722033f9ad2bbb46708ed2b089250d4aab1367",
+            "size_bytes": 717978
+          },
+          "displacement": {
+            "member": "Ground068_1K-JPG_Displacement.jpg",
+            "sha256": "5cdc817155a9bc56b63ebc262bd51f32b8f095409d99a50c1a93659e944013d3",
+            "size_bytes": 554937
+          },
+          "ambient-occlusion": {
+            "member": "Ground068_1K-JPG_AmbientOcclusion.jpg",
+            "sha256": "3e64a85b87108462e4c170f208ee9f8238233db5489b7b018f051a20da151ba5",
+            "size_bytes": 750491
+          }
+        }
+      }
+    },
+    {
+      "kind": "ground",
+      "manifest": {
+        "schema_version": 1,
+        "asset_id": "Asphalt012",
+        "material_id": "ambientcg/Asphalt012",
+        "provider": "ambientCG",
+        "source_page": "https://ambientcg.com/a/Asphalt012",
+        "license": "CC0-1.0",
+        "license_url": "https://docs.ambientcg.com/license/",
+        "resolution": "1K-JPG",
+        "physical_dimensions": {
+          "width": 0,
+          "height": 0,
+          "depth": 0
+        },
+        "normal_convention": "OpenGL",
+        "archive": {
+          "url": "https://ambientcg.com/get?file=Asphalt012_1K-JPG.zip",
+          "sha256": "c077e5d1b21a4333829bb655043ee6a45ddcf82fef850528f91f4305ac11193d",
+          "size_bytes": 8507722
+        },
+        "maps": {
+          "color": {
+            "member": "Asphalt012_1K-JPG_Color.jpg",
+            "sha256": "c7a142a1c12f517024d1b4c92472c700af86cfe3bfc12263c4260e414d4c2c59",
+            "size_bytes": 1009615
+          },
+          "normal": {
+            "member": "Asphalt012_1K-JPG_NormalGL.jpg",
+            "sha256": "4e1d22a2216769d575d3481c548555ab955f7e6d7cb06f0c5eda99835612deb1",
+            "size_bytes": 2149012
+          },
+          "roughness": {
+            "member": "Asphalt012_1K-JPG_Roughness.jpg",
+            "sha256": "0f3bdc4408c43fb8cfbef8089ea6aa9dbfbd104fcfc0ea7a63200fed79cb395c",
+            "size_bytes": 744991
+          },
+          "displacement": {
+            "member": "Asphalt012_1K-JPG_Displacement.jpg",
+            "sha256": "8d42dcc580f6f1fae061b3129f064789207284b9edf3375235e7b2d01afd598d",
+            "size_bytes": 688046
+          }
+        }
+      }
+    },
+    {
+      "kind": "ground",
+      "manifest": {
+        "schema_version": 1,
+        "asset_id": "Concrete034",
+        "material_id": "ambientcg/Concrete034",
+        "provider": "ambientCG",
+        "source_page": "https://ambientcg.com/a/Concrete034",
+        "license": "CC0-1.0",
+        "license_url": "https://docs.ambientcg.com/license/",
+        "resolution": "1K-JPG",
+        "physical_dimensions": {
+          "width": 110,
+          "height": 55,
+          "depth": 0
+        },
+        "normal_convention": "OpenGL",
+        "archive": {
+          "url": "https://ambientcg.com/get?file=Concrete034_1K-JPG.zip",
+          "sha256": "5839d284d94ffb8d2a56df742ec522b13dd311c52dbd42b8fd33f0409ceedb81",
+          "size_bytes": 3657575
+        },
+        "maps": {
+          "color": {
+            "member": "Concrete034_1K-JPG_Color.jpg",
+            "sha256": "8ceb9186d990b31fce785e06fdc6974c160f1d27c43f6160266f164deba713aa",
+            "size_bytes": 269501
+          },
+          "normal": {
+            "member": "Concrete034_1K-JPG_NormalGL.jpg",
+            "sha256": "e509eb9dfa978e780fbebfd2acacc2ce158b5b7ced722ddc0759039dd51e18ca",
+            "size_bytes": 821681
+          },
+          "roughness": {
+            "member": "Concrete034_1K-JPG_Roughness.jpg",
+            "sha256": "a4a9e39857a19afd23a778e5abf44fcdf6bd7f93918f1cf6878b41933e553511",
+            "size_bytes": 217708
+          },
+          "displacement": {
+            "member": "Concrete034_1K-JPG_Displacement.jpg",
+            "sha256": "136226ea667221e6a62ce23853148ecda4309222c1dea253fa6245709ded9a8a",
+            "size_bytes": 189234
+          }
+        }
+      }
+    },
+    {
+      "kind": "environment",
+      "manifest": {
+        "asset_id": "kloofendal_48d_partly_cloudy_puresky",
+        "source_page": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+        "license": "CC0-1.0",
+        "license_url": "https://polyhaven.com/license",
+        "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+        "sha256": "fd94c84997b8a3c353b62c2125a9b44e19509956986a126e472684432a02d798",
+        "size_bytes": 1435119,
+        "path": "kloofendal_48d_partly_cloudy_puresky.hdr"
+      }
+    },
+    {
+      "kind": "environment",
+      "manifest": {
+        "asset_id": "overcast_soil_puresky",
+        "source_page": "https://polyhaven.com/a/overcast_soil_puresky",
+        "license": "CC0-1.0",
+        "license_url": "https://polyhaven.com/license",
+        "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/overcast_soil_puresky_1k.hdr",
+        "sha256": "2dbbbbb1323a8e8989db2e8306bd13099b215539e5adba41b85738a250a7904e",
+        "size_bytes": 1195816,
+        "path": "overcast_soil_puresky.hdr"
+      }
+    }
+  ],
+  "resume_evidence": {
+    "files_checked": 207,
+    "bytes_and_mtimes_unchanged": true,
+    "status": "complete",
+    "command_seconds": 1.9246094729751348
+  },
+  "evaluator_evidence": {
+    "visible": {
+      "domain": "synthetic",
+      "annotation_semantics": "visible",
+      "dataset_sha256": "6f46053e8cb5988f5e59000f718531b35940f1296a86e70e3919a60603a800ac"
+    },
+    "full": {
+      "domain": "synthetic",
+      "annotation_semantics": "full",
+      "dataset_sha256": "f605b760a557025540f4acdd1534386f1b718ff6dc4f95a1319f948ff1993356"
+    }
+  },
+  "coco": {
+    "images": 69,
+    "instances": 155,
+    "export_seconds": 2.3404880280140787
+  },
+  "yolo": {
+    "formats": {
+      "detection": {
+        "status": "complete",
+        "images": 69
+      },
+      "segmentation": {
+        "status": "complete",
+        "images": 69
+      }
+    },
+    "fidelity": [
+      {
+        "annotation_id": 1,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 2,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 3,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 4,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 5,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 6,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 7,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 8,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 9,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 10,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 11,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 12,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 13,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 14,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 15,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 16,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 17,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 18,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 19,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 20,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 21,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 22,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 23,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 24,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 25,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 26,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 27,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 28,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 29,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 30,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 31,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 32,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 33,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 34,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 35,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 36,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 37,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 38,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 39,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 40,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 41,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 42,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 43,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 44,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 45,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 46,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 47,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 48,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 49,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 50,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 51,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 52,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 53,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9982263710618436,
+        "serialized_area_error": 0.0009338812103100486,
+        "warnings": []
+      },
+      {
+        "annotation_id": 54,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9974061035970462,
+        "serialized_area_error": 0.00026506215707583426,
+        "warnings": []
+      },
+      {
+        "annotation_id": 55,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9976789858953758,
+        "serialized_area_error": 0.00012768456804310632,
+        "warnings": []
+      },
+      {
+        "annotation_id": 56,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9982827187274042,
+        "serialized_area_error": 9.045680687471733e-05,
+        "warnings": []
+      },
+      {
+        "annotation_id": 57,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 58,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 59,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 60,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 61,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 1.0,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 62,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9966553298633947,
+        "serialized_area_error": 0.0013183915622940012,
+        "warnings": []
+      },
+      {
+        "annotation_id": 63,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9969680401610418,
+        "serialized_area_error": 0.001343149935329818,
+        "warnings": []
+      },
+      {
+        "annotation_id": 64,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968560465404134,
+        "serialized_area_error": 0.0009169764560099132,
+        "warnings": []
+      },
+      {
+        "annotation_id": 65,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9999594583637396,
+        "serialized_area_error": 4.054327995134806e-05,
+        "warnings": []
+      },
+      {
+        "annotation_id": 66,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9954870720821801,
+        "serialized_area_error": 0.0034177373082200325,
+        "warnings": []
+      },
+      {
+        "annotation_id": 67,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9976645435244161,
+        "serialized_area_error": 7.085665698292355e-05,
+        "warnings": []
+      },
+      {
+        "annotation_id": 68,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968573046432616,
+        "serialized_area_error": 0.0026903035795197102,
+        "warnings": []
+      },
+      {
+        "annotation_id": 69,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9999594583637396,
+        "serialized_area_error": 4.054327995134806e-05,
+        "warnings": []
+      },
+      {
+        "annotation_id": 70,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9954870720821801,
+        "serialized_area_error": 0.0034177373082200325,
+        "warnings": []
+      },
+      {
+        "annotation_id": 71,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9976645435244161,
+        "serialized_area_error": 7.085665698292355e-05,
+        "warnings": []
+      },
+      {
+        "annotation_id": 72,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968573046432616,
+        "serialized_area_error": 0.0026903035795197102,
+        "warnings": []
+      },
+      {
+        "annotation_id": 73,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9999594583637396,
+        "serialized_area_error": 4.054327995134806e-05,
+        "warnings": []
+      },
+      {
+        "annotation_id": 74,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9954870720821801,
+        "serialized_area_error": 0.0034177373082200325,
+        "warnings": []
+      },
+      {
+        "annotation_id": 75,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9976645435244161,
+        "serialized_area_error": 7.085665698292355e-05,
+        "warnings": []
+      },
+      {
+        "annotation_id": 76,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968573046432616,
+        "serialized_area_error": 0.0026903035795197102,
+        "warnings": []
+      },
+      {
+        "annotation_id": 77,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9955097502565857,
+        "serialized_area_error": 0.000557341907824223,
+        "warnings": []
+      },
+      {
+        "annotation_id": 78,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9978729575558348,
+        "serialized_area_error": 0.002131576397635888,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 79,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9955097502565857,
+        "serialized_area_error": 0.000557341907824223,
+        "warnings": []
+      },
+      {
+        "annotation_id": 80,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9955097502565857,
+        "serialized_area_error": 0.000557341907824223,
+        "warnings": []
+      },
+      {
+        "annotation_id": 81,
+        "components": 5,
+        "holes": 0,
+        "serialized_iou": 0.9829935934769948,
+        "serialized_area_error": 0.017300628036497217,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 5 disconnected components."
+          },
+          {
+            "code": "POLYGON_FIDELITY_BELOW_TARGET",
+            "message": "Rasterized IoU 0.982994; absolute area error 1.730%."
+          }
+        ]
+      },
+      {
+        "annotation_id": 82,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988363974866186,
+        "serialized_area_error": 0.0006983240223463687,
+        "warnings": []
+      },
+      {
+        "annotation_id": 83,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.998338325807365,
+        "serialized_area_error": 0.0007678430320108542,
+        "warnings": []
+      },
+      {
+        "annotation_id": 84,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977661148078988,
+        "serialized_area_error": 0.0005009370978468342,
+        "warnings": []
+      },
+      {
+        "annotation_id": 85,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 86,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 87,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 88,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 89,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 90,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 91,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 92,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 93,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 94,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 95,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 96,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 97,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 98,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9973496432212029,
+        "serialized_area_error": 0.00026250546886393466,
+        "warnings": []
+      },
+      {
+        "annotation_id": 99,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 100,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9978981226413592,
+        "serialized_area_error": 0.001020684815718546,
+        "warnings": []
+      },
+      {
+        "annotation_id": 101,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9967338581909474,
+        "serialized_area_error": 0.00014649510462192054,
+        "warnings": []
+      },
+      {
+        "annotation_id": 102,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9967338581909474,
+        "serialized_area_error": 0.00014649510462192054,
+        "warnings": []
+      },
+      {
+        "annotation_id": 103,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9967338581909474,
+        "serialized_area_error": 0.00014649510462192054,
+        "warnings": []
+      },
+      {
+        "annotation_id": 104,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 105,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 106,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 107,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 108,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 109,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 110,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 111,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 112,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 113,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 114,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 115,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 116,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 117,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 118,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 119,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 120,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9985476344983159,
+        "serialized_area_error": 0.0006496117796269373,
+        "warnings": []
+      },
+      {
+        "annotation_id": 121,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 122,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 123,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 124,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 125,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 126,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 127,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 128,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 129,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 130,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9992996621899976,
+        "serialized_area_error": 0.0007008286267881437,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 131,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 1.0,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 132,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 133,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 134,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9967413765697027,
+        "serialized_area_error": 0.0009548438432464691,
+        "warnings": []
+      },
+      {
+        "annotation_id": 135,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 1.0,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 136,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9961536075438923,
+        "serialized_area_error": 0.0024212323451808164,
+        "warnings": []
+      },
+      {
+        "annotation_id": 137,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 1.0,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 138,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9961536075438923,
+        "serialized_area_error": 0.0024212323451808164,
+        "warnings": []
+      },
+      {
+        "annotation_id": 139,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 1.0,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 140,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9961536075438923,
+        "serialized_area_error": 0.0024212323451808164,
+        "warnings": []
+      },
+      {
+        "annotation_id": 141,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 1.0,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 142,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 143,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 144,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 145,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 146,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9988661672403321,
+        "serialized_area_error": 0.0,
+        "warnings": []
+      },
+      {
+        "annotation_id": 147,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.996143223270049,
+        "serialized_area_error": 0.0023212280044926994,
+        "warnings": []
+      },
+      {
+        "annotation_id": 148,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9977497640881705,
+        "serialized_area_error": 0.0020085180524634593,
+        "warnings": []
+      },
+      {
+        "annotation_id": 149,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9968953195477711,
+        "serialized_area_error": 0.0008796622097114708,
+        "warnings": []
+      },
+      {
+        "annotation_id": 150,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 151,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9965157643389698,
+        "serialized_area_error": 0.0004150187979102583,
+        "warnings": []
+      },
+      {
+        "annotation_id": 152,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 153,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      },
+      {
+        "annotation_id": 154,
+        "components": 2,
+        "holes": 0,
+        "serialized_iou": 0.9993395222544307,
+        "serialized_area_error": 0.0006609142647328804,
+        "warnings": [
+          {
+            "code": "MULTIPLE_COMPONENTS",
+            "message": "One YOLO polygon bridges 2 disconnected components."
+          }
+        ]
+      },
+      {
+        "annotation_id": 155,
+        "components": 1,
+        "holes": 0,
+        "serialized_iou": 0.9958965340367847,
+        "serialized_area_error": 0.0017606925390653658,
+        "warnings": []
+      }
+    ]
+  }
+}

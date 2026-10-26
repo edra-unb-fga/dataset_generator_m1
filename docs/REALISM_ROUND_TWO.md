@@ -12,7 +12,7 @@ checkboxes remain open until the corresponding evidence and review are complete.
   control/resume and submitted-but-uncommitted memory bounds. Promote only after exact-output checks,
   at least5% median gain on the repeated four-worker heavy study, no lighter two-worker regression
   above5%, and no same-cap peak-RAM increase above15%. Otherwise retain the prototype/verdict.
-- [ ] Reusable optional BlenderProc harness, separate from core generation and its planar pool. Pin
+- [x] Reusable optional BlenderProc harness, separate from core generation and its planar pool. Pin
   BlenderProc2.8.0 / Blender4.2.1; use CPU initially. Required COCO RGB, visible/full geometric masks,
   boxes and provenance must feed the existing evaluator. A native Blender pool/backend is deferred.
 
@@ -61,3 +61,5 @@ Future use: #59 real transfer/model experiments; #61 capture/scale calibration; 
 lighting follow-ups; #63 contact/environmental occlusion; #64 matched-engine pilot; #28 hardware-class
 baselines. Real references and training remain later inputs. The pilot informs which physical cues
 are worth approximating in later2D work; it does not close those broader issues.
+
+Delivery evidence: [alpha](experiments/alpha-resampling-v1/README.md), [rolling scheduler](experiments/rolling-scheduler-v1/README.md), and [physical pilot](experiments/blender-pilot-v1/README.md). Broader issue requirements remain open.

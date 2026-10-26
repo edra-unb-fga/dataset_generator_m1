@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "asset_id": "Asphalt012",
+  "material_id": "ambientcg/Asphalt012",
+  "provider": "ambientCG",
+  "source_page": "https://ambientcg.com/a/Asphalt012",
+  "license": "CC0-1.0",
+  "license_url": "https://docs.ambientcg.com/license/",
+  "resolution": "1K-JPG",
+  "physical_dimensions": {
+    "width": 0,
+    "height": 0,
+    "depth": 0
+  },
+  "normal_convention": "OpenGL",
+  "archive": {
+    "url": "https://ambientcg.com/get?file=Asphalt012_1K-JPG.zip",
+    "sha256": "c077e5d1b21a4333829bb655043ee6a45ddcf82fef850528f91f4305ac11193d",
+    "size_bytes": 8507722
+  },
+  "maps": {
+    "color": {
+      "member": "Asphalt012_1K-JPG_Color.jpg",
+      "sha256": "c7a142a1c12f517024d1b4c92472c700af86cfe3bfc12263c4260e414d4c2c59",
+      "size_bytes": 1009615
+    },
+    "normal": {
+      "member": "Asphalt012_1K-JPG_NormalGL.jpg",
+      "sha256": "4e1d22a2216769d575d3481c548555ab955f7e6d7cb06f0c5eda99835612deb1",
+      "size_bytes": 2149012
+    },
+    "roughness": {
+      "member": "Asphalt012_1K-JPG_Roughness.jpg",
+      "sha256": "0f3bdc4408c43fb8cfbef8089ea6aa9dbfbd104fcfc0ea7a63200fed79cb395c",
+      "size_bytes": 744991
+    },
+    "displacement": {
+      "member": "Asphalt012_1K-JPG_Displacement.jpg",
+      "sha256": "8d42dcc580f6f1fae061b3129f064789207284b9edf3375235e7b2d01afd598d",
+      "size_bytes": 688046
+    }
+  }
+}

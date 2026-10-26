@@ -1,6 +1,10 @@
-# Future matched planar / BlenderProc comparison
+# Planar / BlenderProc comparison
 
-This is a protocol and input checklist for #64, not a Blender runtime or a performance prediction. Use the same external scorer in `docs/EVALUATION.md`. The round-one report is synthetic engineering evidence; real-image accuracy and physically calibrated distributions remain unknown.
+The optional source-checkout harness in `experiments/blenderproc/README.md` now supplies a bounded
+engineering pilot for #64. It is separate from the core generator, uses nominal physical parameters,
+and exports COCO to the existing evaluator. See `experiments/blender-pilot-v1/README.md` for the
+controlled day/night material, camera, annotation and cost evidence. Real-image accuracy and physical
+calibration remain unknown. This document retains the protocol for the later transfer study.
 
 ## Arms and controlled inputs
 
@@ -10,7 +14,7 @@ This is a protocol and input checklist for #64, not a Blender runtime or a perfo
 
 Freeze the task/classes, source hashes/derivative groups, dimensions, count/negative distributions, target pixel-size/viewpoint quantiles, illumination scenarios and visibility/box policies. Shared abstract intent/quantiles are useful; equal random seeds and equal pixels across engines are not a correctness contract. Keep synthetic source partitions and real session/location holdouts distinct.
 
-Current generation camera settings are normalized affine/projective sampling, not a calibrated physical camera. A physical arm requires measured/configured intrinsics, pose, metric target dimensions and texture scale. `reference project` checks supplied inputs against a centered world-Z=0 plane in OpenCV coordinates; it does not fit parameters or implement physical generation. Declare unknowns. Acquire the reference/development inputs listed in `docs/EVALUATION.md` before choosing physical distributions.
+Current generation camera settings are normalized affine/projective sampling, not a calibrated physical camera. A physical arm requires measured/configured intrinsics, pose, metric target dimensions and texture scale. `reference project` checks supplied inputs against a centered world-Z=0 plane in OpenCV coordinates; it does not fit parameters or implement physical generation. Declare unknowns. For engineering pilots, explicitly configure nominal physical distributions and measure achieved support. Acquire the reference/development inputs listed in `docs/EVALUATION.md` before calling those distributions representative of deployment.
 
 ## Annotation bridge
 
@@ -20,7 +24,7 @@ Prepare COCO boxes/RLE masks or the repository pool/export adapter with explicit
 
 ## Performance and accuracy decision
 
-Begin with 2 warmups +20 measured accepted images and 3 rotating-order repetitions per selected arm. Record cold startup, loading/material compilation, warm rendering and scene reuse, retries, masks/annotations, QA, encoding/writing and export separately. Report full accepted throughput and quality settings: engine/version, CPU/GPU, resolution, samples/adaptive threshold, denoising/bounces/motion/volume settings, CPU/RAM/VRAM where observed, and unavailable quantities. Include asset acquisition/modeling/calibration effort. No guaranteed slowdown multiplier is justified before a local pilot.
+For a promotion-grade performance comparison, begin with 2 warmups +20 measured accepted images and 3 rotating-order repetitions per selected arm. The bounded engineering pilot instead prioritizes three-scene paired feature coverage and records its sparse timing limitations; it does not establish a universal engine multiplier. Record cold startup, loading/material compilation, warm rendering and scene reuse, retries, masks/annotations, QA, encoding/writing and export separately. Report full accepted throughput and quality settings: engine/version, CPU/GPU, resolution, samples/adaptive threshold, denoising/bounces/motion/volume settings, CPU/RAM/VRAM where observed, and unavailable quantities. Include asset acquisition/modeling/calibration effort. No guaranteed slowdown multiplier is justified before a local pilot.
 
 Run equal accepted-dataset-size and equal generation-time arms. Keep external training exposure, optimization/fine-tuning allocation and checkpoints fixed, or disclose differences. Use development data to choose treatments, then a separate real holdout, repeated training seeds and uncertainty respecting capture-session clustering. Report class/target-size/viewpoint/lighting/occlusion support, AP/AR, negative-scene false positives and failure crops. Synthetic oracle tests verify the scorer, not detector benefit.
 

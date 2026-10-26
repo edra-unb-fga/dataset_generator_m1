@@ -1,0 +1,2 @@
+# Optional wrapper environment only. BlenderProc installs its Blender4.2.1 runtime separately.
+blenderproc==2.8.0

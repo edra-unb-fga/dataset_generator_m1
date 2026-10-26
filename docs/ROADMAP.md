@@ -76,10 +76,11 @@ not expand the historical #56 / PR #58 delivery. Preserve the retained material-
 - [ ] [#63](https://github.com/edra-unb-fga/dataset_generator_m1/issues/63): study pad wear, surface interaction and environmental occlusion; distinguish appearance-only alpha invariants from deliberate visible-mask changes and coordinate with #31 only where relationships require it.
 - [ ] [#64](https://github.com/edra-unb-fga/dataset_generator_m1/issues/64): compare planar synthesis and BlenderProc using matched scene/annotation contracts, real-image accuracy, equal dataset-size/time budgets and complete generation/setup costs.
 
-Start with real-reference requirements and #59's evaluation contract. Use bounded paired pilots before
-expensive studies; missing reference data or predictions must remain explicit evidence gaps. The
-BlenderProc study is a separate optional future harness, not a generator dependency or a commitment to
-begin 3D implementation now. Existing defaults and production boundaries remain unchanged.
+Use #59's evaluation contract and keep real-reference requirements explicit; nominal engineering pilots can proceed before real captures. Use bounded paired pilots before
+expensive studies; missing reference data or predictions must remain explicit evidence gaps. The separate optional [BlenderProc harness](../experiments/blenderproc/README.md) now supports nominal
+physical day/night engineering studies and canonical COCO/evaluator output. Its [pilot report](experiments/blender-pilot-v1/README.md)
+keeps calibration, model transfer, matched training budgets and richer environments open. Blender is
+not a generator dependency or a core backend. Existing production defaults remain unchanged.
 
 ## Deferred
 
