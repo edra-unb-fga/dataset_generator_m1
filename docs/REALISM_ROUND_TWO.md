@@ -5,10 +5,10 @@ checkboxes remain open until the corresponding evidence and review are complete.
 
 ## Independent deliveries
 
-- [ ] Opt-in `scene.foreground_resampling: premultiplied`; legacy remains default. Preserve geometry,
+- [x] Opt-in `scene.foreground_resampling: premultiplied`; legacy remains default. Preserve geometry,
   integer alpha, annotations, omitted-mode identity and historical resume. Correct resize, rotation and
   perspective filtering; encoded-RGB composition and new physical 2D effects stay outside this change.
-- [ ] Bounded rolling scheduling with deterministic slot/retry/commit order, coordinator ownership,
+- [x] Bounded rolling scheduling with deterministic slot/retry/commit order, coordinator ownership,
   control/resume and submitted-but-uncommitted memory bounds. Promote only after exact-output checks,
   at least5% median gain on the repeated four-worker heavy study, no lighter two-worker regression
   above5%, and no same-cap peak-RAM increase above15%. Otherwise retain the prototype/verdict.

@@ -51,7 +51,7 @@ deliveries; the follow-ups above repair acceptance gaps rather than rewriting th
 
 The bounded [background performance round](PERFORMANCE_ROUND_TWO.md) removes redundant work with
 exact-output production evidence and unchanged defaults. Its [local report](experiments/background-performance-v1/README.md)
-does not complete #28. Further large gains require a scoped smoothing/fidelity or scheduling/transport
+does not complete #28. The [bounded rolling scheduler](experiments/rolling-scheduler-v1/README.md) now removes batch barriers with exact-output evidence. Further gains require a scoped smoothing/fidelity or transport
 decision; preserve deterministic commits, bounded memory, stop/resume and any explicit diversity policy.
 
 ## Later
