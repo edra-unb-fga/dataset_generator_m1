@@ -33,12 +33,13 @@ def result(slot, attempt=0):
         'stage_timings_ns':{'scene_render':1},'execution':{'worker_pid':1,'worker_process':True}}}
 
 
-def threads(monkeypatch, submitted):
+def threads(monkeypatch, submitted, admitted=None):
     class Executor(ThreadPoolExecutor):
         def __init__(self, max_workers, **kwargs):
             super().__init__(max_workers=max_workers)
         def submit(self, fn, *args):
             submitted.append(args[2])
+            if admitted is not None and len(submitted)==2:admitted.set()
             return super().submit(fn,*args)
     monkeypatch.setattr(generator,'ProcessPoolExecutor',Executor)
 
@@ -65,8 +66,8 @@ def test_refills_after_commit_without_waiting_for_later_slot(monkeypatch,tmp_pat
 
 @pytest.mark.parametrize('action',['stop','pause'])
 def test_control_stops_admission_and_drains_then_resumes(monkeypatch,tmp_path,action):
-    submitted=[];entered=threading.Event();release=threading.Event()
-    threads(monkeypatch,submitted)
+    submitted=[];entered=threading.Event();release=threading.Event();admitted=threading.Event()
+    threads(monkeypatch,submitted,admitted)
     def produce(_r,_c,slot,attempt,_pid):
         if slot==0:
             entered.set();assert release.wait(5)
@@ -74,7 +75,7 @@ def test_control_stops_admission_and_drains_then_resumes(monkeypatch,tmp_path,ac
     monkeypatch.setattr(generator,'_produce_slot',produce)
     pool=tmp_path/'pool';summary={}
     thread=threading.Thread(target=lambda:summary.update(generate_pool(fixture(),pool,GenerationOptions(display='quiet',workers=2))))
-    thread.start();assert entered.wait(10)
+    thread.start();assert entered.wait(10) and admitted.wait(10)
     request_run_action(pool,action);release.set()
     if action=='pause':
         deadline=time.monotonic()+8
@@ -109,13 +110,20 @@ def test_future_exception_cannot_commit_later_slots(monkeypatch,tmp_path,failure
 def test_interrupt_reaps_admitted_work_without_duplicate_commits(monkeypatch,tmp_path):
     submitted=[];threads(monkeypatch,submitted)
     original=generator.wait;raised=False
+    release=threading.Event();both_started=threading.Event();lock=threading.Lock();started=0
     def interrupt(*args,**kwargs):
         nonlocal raised
         if not raised:
-            raised=True;raise KeyboardInterrupt
+            assert both_started.wait(5)
+            raised=True;release.set();raise KeyboardInterrupt
         return original(*args,**kwargs)
     def produce(_r,_c,slot,attempt,_pid):
-        time.sleep(.02);return result(slot,attempt)
+        nonlocal started
+        with lock:
+            started+=1
+            if started==2:both_started.set()
+        assert release.wait(5)
+        return result(slot,attempt)
     monkeypatch.setattr(generator,'wait',interrupt)
     monkeypatch.setattr(generator,'_produce_slot',produce)
     pool=tmp_path/'pool';summary=generate_pool(fixture(),pool,GenerationOptions(display='quiet',workers=2))
