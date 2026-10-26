@@ -138,6 +138,17 @@ def main():
     ax.spines[['top','right']].set_visible(False);ax.legend(loc='lower right')
     fig.savefig(args.output/'appearance-impact.png',dpi=140);plt.close(fig)
     atomic_json(args.output/'summary.json',raw)
+    analysis=args.output/'README.md'
+    if not analysis.exists():
+        analysis.write_text('# Targeted physical pad pilot\n\n'
+            +f"Accepted {raw['accepted']} / {raw['planned']} planned outputs; {raw['rejected']} rejected.\n\n"
+            +'This is nominal synthetic engineering evidence on one host. No camera/material calibration, '
+            +'real-image detector benefit or universal engine speed is established. The three-scene paired '
+            +'treatments are dependent observations. Inspect measured target-size support and individual costs '
+            +'before comparing workloads.\n\n'
+            +'[Offline figures](index.html) · [Measurements and settings](summary.json)\n\n'
+            +'COCO RLE remains authoritative; optional YOLO topology/fidelity is retained in summary.json. '
+            +'Geometric labels remain sharp under RGB optics. Post-display noise is approximate.\n')
     (args.output/'index.html').write_text('''<!doctype html><meta charset="utf-8"><title>BlenderProc pilot evidence</title>
 <style>body{font:16px system-ui;max-width:1300px;margin:2em auto;padding:0 1em}img{max-width:100%}</style>
 <h1>Targeted BlenderProc pilot</h1><p>Engineering evidence on one CPU host; no real-world detector benefit or physical calibration measured.

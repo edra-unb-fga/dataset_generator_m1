@@ -31,7 +31,7 @@ Nineteen paired treatments cover roughness.25/.5/.8, normal strength, physical U
 sun/environment/overcast/shade, one/mixed night lamps, environmental shadow casters, haze, f/2DOF,
 continuous moving-camera shutter blur, distortion, oblique view and a reflection-sensitive roughness
 trio. Base and mixed-night also receive128-sample views on each ground. Six separate diagnostic jobs
-cover intentional negatives, clipping, partial/full occlusion, overlap and closeup.
+cover intentional negatives, frame exit, partial/full occlusion, overlap and closeup. The named `clipped` diagnostic moves one target fully outside the frame; ordinary and closeup views also exercise partial frame-edge clipping.
 
 ## Measurements
 
