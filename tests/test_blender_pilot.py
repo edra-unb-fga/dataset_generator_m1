@@ -38,11 +38,12 @@ def fake_study(root):
     full=np.zeros((1,32,48),bool);full[:,8:24,12:36]=True
     np.savez_compressed(scene/'masks.npz',visible=full,full=full)
     job={'id':'base','scene':{'negative':False},'scene_index':0}
-    contract={'jobs_sha256':digest([job])};identity=digest(contract)
+    runtime={key:{} for key in ('config','artwork','grounds','environments')}
+    contract={'jobs_sha256':digest([job]),'runtime_sha256':digest(runtime)};identity=digest(contract)
     row={'identity':identity,'job':job,'status':'accepted',
          'files':{f:digest_file(scene/f) for f in ('rgb.png','masks.npz')}}
     (scene/'result.json').write_text(json.dumps(row))
-    (root/'study.json').write_text(json.dumps({'identity':identity,'contract':contract,'jobs':[job]}))
+    (root/'study.json').write_text(json.dumps({'identity':identity,'contract':contract,'jobs':[job],**runtime}))
     return scene
 
 
@@ -98,3 +99,43 @@ def test_bridge_uses_complete_typed_composers_and_only_color_maps(tmp_path):
 def test_declared_schema_matches_model():
     schema=json.loads(Path('experiments/blenderproc/pilot.schema.json').read_text())
     assert schema==PilotConfig.model_json_schema()
+
+
+@pytest.mark.parametrize('key',['config','artwork','grounds','environments'])
+def test_runtime_payload_is_sealed(tmp_path,key):
+    from dataset_generator_m1.blender_pilot import load_study
+    fake_study(tmp_path)
+    value=json.loads((tmp_path/'study.json').read_text());value[key]={'changed':True}
+    (tmp_path/'study.json').write_text(json.dumps(value))
+    with pytest.raises(ValueError,match='changed'):load_study(tmp_path)
+
+
+def test_exports_refuse_active_renderer(tmp_path):
+    from dataset_generator_m1.ownership import CoordinatorLease
+    from dataset_generator_m1.blender_pilot import export_study
+    fake_study(tmp_path)
+    with CoordinatorLease(tmp_path):
+        for export in (export_coco,export_yolo,lambda root:export_study(root,yolo=True)):
+            with pytest.raises(RuntimeError,match='active coordinator'):export(tmp_path)
+
+
+def test_prepared_input_and_host_source_changes_rejected(tmp_path,monkeypatch):
+    from dataset_generator_m1 import blender_pilot as pilot
+    pool=tmp_path/'pool';pool.mkdir()
+    for name in ('run.json','samples.jsonl','art.png','color.jpg','sky.hdr'):(pool/name).write_bytes(b'original')
+    sha=pilot.digest_file(pool/'art.png')
+    study={'contract':{'harness_source_sha256':pilot.digest_file(pilot.__file__),
+        'renderer_script_sha256':sha,'assets':[{'kind':'environment','manifest':{'sha256':sha}}],
+        'reference':{'run_sha256':sha,'samples_sha256':sha}},
+        'artwork':[{'path':str(pool/'art.png'),'sha256':sha}],
+        'grounds':[{'maps':{'color':str(pool/'color.jpg')},'provenance':{'maps':{'color':{'sha256':sha}}}}],
+        'environments':[str(pool/'sky.hdr')],'config':{'reference_pool':str(pool)}}
+    monkeypatch.setattr(pilot,'reference_scenes',lambda path:None)
+    renderer=pool/'renderer.py';renderer.write_bytes(b'original')
+    pilot.validate_inputs(study,renderer)
+    for name in ('run.json','samples.jsonl','art.png','color.jpg','sky.hdr','renderer.py'):
+        (pool/name).write_bytes(b'changed')
+        with pytest.raises(ValueError,match='changed'):pilot.validate_inputs(study,renderer)
+        (pool/name).write_bytes(b'original')
+    study['contract']['harness_source_sha256']='changed'
+    with pytest.raises(ValueError,match='changed'):pilot.validate_inputs(study,renderer)

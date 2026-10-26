@@ -2,7 +2,7 @@
 import argparse
 from pathlib import Path
 import json
-from dataset_generator_m1.blender_pilot import prepare,run_study,export_coco,export_yolo,report,fetch_assets,bridge_composers
+from dataset_generator_m1.blender_pilot import prepare,run_study,export_study,report,fetch_assets,bridge_composers
 
 parser=argparse.ArgumentParser(description=__doc__)
 sub=parser.add_subparsers(dest='command',required=True)
@@ -19,8 +19,7 @@ elif args.command=='prepare':
     value=prepare(args.config,args.output_dir);result={'identity':value['identity'],'jobs':len(value['jobs'])}
 elif args.command=='render':result=run_study(args.output_dir,args.blenderproc,args.blender_install_path,job_ids=args.jobs)
 elif args.command=='export':
-    result=export_coco(args.output_dir)
-    if args.yolo:result['yolo']=export_yolo(args.output_dir)
+    result=export_study(args.output_dir,yolo=args.yolo)
 else:
     value=report(args.output_dir);result={key:value[key] for key in ('accepted','rejected','planned')}
 print(json.dumps(result,indent=2))

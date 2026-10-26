@@ -244,7 +244,7 @@ def run_job(study,job,root):
                         'rgb_render_seconds':cold_render,'warm_same_scene_render_seconds':warm,
                         'encode_seconds':perf_counter()-encode_started,'total_seconds':perf_counter()-started,
                         'accepted_output_seconds':perf_counter()-started-sum(warm),
-                        'blender':bpy.app.version_string,'blenderproc':'2.8.0','device':'CPU',
+                        'blender':bpy.app.version_string,'blenderproc':bproc.__version__,'device':'CPU',
                         'renderer_settings':{'engine':scene.render.engine,'samples':scene.cycles.samples,
                             'denoiser':'OpenImageDenoise','max_bounces':scene.cycles.max_bounces,
                             'diffuse_bounces':scene.cycles.diffuse_bounces,'glossy_bounces':scene.cycles.glossy_bounces,
@@ -266,6 +266,8 @@ def run_job(study,job,root):
 
 parser=argparse.ArgumentParser();parser.add_argument('study');parser.add_argument('--jobs',nargs='*')
 args=parser.parse_args();path=Path(args.study).resolve();study=json.loads(path.read_text());root=path.parent
+if bproc.__version__!='2.8.0' or bpy.app.version!=(4,2,1):
+    raise RuntimeError(f'Pinned runtime required: BlenderProc2.8.0 / Blender4.2.1, got {bproc.__version__} / {bpy.app.version_string}')
 started=perf_counter();bproc.init();print('PILOT_STARTUP_SECONDS',perf_counter()-started,flush=True)
 for job in study['jobs']:
     if args.jobs and job['id'] not in args.jobs:continue

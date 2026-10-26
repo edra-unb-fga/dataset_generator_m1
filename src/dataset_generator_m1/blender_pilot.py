@@ -210,6 +210,8 @@ def prepare(config_path,output):
         jobs.append({**first,'id':'diagnostic-'+case,'case':case,'scene':scene,'benchmark':False})
     jobs.sort(key=lambda j:(j['quality']!='fast',j['scene_index']))
     contract['jobs_sha256']=digest(jobs)
+    runtime={'artwork':artwork,'grounds':grounds,'environments':environments,'config':config.model_dump(mode='json')}
+    contract['runtime_sha256']=digest(runtime)
     identity=digest(contract)
     if output.exists():
         stored=load_study(output)
@@ -254,7 +256,9 @@ def annotation_rows(visible,full,image_id,first_id=1):
 
 def load_study(root):
     value=json.loads((Path(root)/'study.json').read_text())
-    if digest(value['contract'])!=value['identity'] or digest(value['jobs'])!=value['contract']['jobs_sha256']:
+    runtime={key:value[key] for key in ('config','artwork','grounds','environments')}
+    if (digest(value['contract'])!=value['identity'] or digest(value['jobs'])!=value['contract']['jobs_sha256']
+            or digest(runtime)!=value['contract']['runtime_sha256']):
         raise ValueError('Study contract or job plan changed')
     return value
 
@@ -274,7 +278,19 @@ def completed_outputs(root,study):
     return rows
 
 
+def export_study(root, *, yolo=False):
+    from .ownership import CoordinatorLease
+    with CoordinatorLease(root):
+        result=_export_coco(root)
+        if yolo:result['yolo']=_export_yolo(root)
+        return result
+
+
 def export_coco(root):
+    return export_study(root)
+
+
+def _export_coco(root):
     export_started=monotonic()
     root=Path(root).resolve();study=load_study(root)
     images=[];annotations={'visible':[],'full':[]};metadata={};next_id=1
@@ -304,6 +320,25 @@ def export_coco(root):
     return result
 
 
+def validate_inputs(study,renderer):
+    """Refuse mutable external inputs/source before any new render or resume."""
+    contract=study['contract']
+    expected=[(Path(__file__),contract['harness_source_sha256']),
+              (renderer,contract['renderer_script_sha256'])]
+    expected.extend((item['path'],item['sha256']) for item in study['artwork'])
+    for ground in study['grounds']:
+        expected.extend((path,ground['provenance']['maps'][role]['sha256']) for role,path in ground['maps'].items())
+    manifests=[a['manifest'] for a in contract['assets'] if a['kind']=='environment']
+    expected.extend((path,record['sha256']) for path,record in zip(study['environments'],manifests,strict=True))
+    reference=Path(study['config']['reference_pool'])
+    expected.extend((reference/name,contract['reference'][key]) for name,key in
+                    (('run.json','run_sha256'),('samples.jsonl','samples_sha256')))
+    for path,sha in expected:
+        if digest_file(path)!=sha:raise ValueError('Prepared source/input changed; prepare a fresh study: '+str(path))
+    # Also check referenced pool images/masks via its canonical integrity inspector.
+    reference_scenes(reference)
+
+
 def run_study(root,blenderproc,blender_install_path,*,job_ids=None):
     from .ownership import CoordinatorLease
     with CoordinatorLease(root):
@@ -316,8 +351,7 @@ def _run_study(root,blenderproc,blender_install_path,*,job_ids=None):
     import signal
     root=Path(root).resolve();study=load_study(root)
     renderer=Path(__file__).resolve().parents[2]/'experiments/blenderproc/render.py'
-    if digest_file(renderer)!=study['contract']['renderer_script_sha256']:
-        raise ValueError('Renderer source changed; prepare a fresh study')
+    validate_inputs(study,renderer)
     completed=completed_outputs(root,study)  # Verify checkpoint hashes before asking Blender to skip them.
     if (root/'coco-export.json').exists():
         selected=set(job_ids or [j['id'] for j in study['jobs']])
@@ -384,6 +418,12 @@ def _run_study(root,blenderproc,blender_install_path,*,job_ids=None):
 
 
 def export_yolo(root):
+    from .ownership import CoordinatorLease
+    with CoordinatorLease(root):
+        return _export_yolo(root)
+
+
+def _export_yolo(root):
     """Optional bounded conversion. Never publish a partially labeled dataset."""
     from .annotation_evidence import polygonize_coverage
     root=Path(root);coco=json.loads((root/'coco-visible.json').read_text())
