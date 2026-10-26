@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "repetitions": 3,
+  "warmups": 2,
+  "measured": 20,
+  "resolution": [
+    640,
+    640
+  ],
+  "variants": [
+    {
+      "name": "stock",
+      "execution_profile": "gpu-oidn",
+      "renderer_initialization": "stock"
+    },
+    {
+      "name": "guarded",
+      "execution_profile": "gpu-guarded",
+      "renderer_initialization": "guarded"
+    }
+  ],
+  "metric": "measured-output"
+}

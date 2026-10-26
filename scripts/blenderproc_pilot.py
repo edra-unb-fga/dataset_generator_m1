@@ -8,12 +8,20 @@ parser=argparse.ArgumentParser(description=__doc__)
 sub=parser.add_subparsers(dest='command',required=True)
 p=sub.add_parser('bridge');p.add_argument('--assets-dir',required=True);p.add_argument('--foreground-dir',required=True);p.add_argument('--output-dir',required=True);p.add_argument('--workers',type=int,default=1)
 p=sub.add_parser('assets');p.add_argument('--manifest-dir',default='experiments/blenderproc/assets');p.add_argument('--output-dir',required=True)
+p=sub.add_parser('profiles');p.add_argument('--policy')
+p=sub.add_parser('bundle');p.add_argument('--config',required=True);p.add_argument('--output-file',required=True)
 p=sub.add_parser('prepare');p.add_argument('--config',required=True);p.add_argument('--output-dir',required=True)
 p=sub.add_parser('render');p.add_argument('--output-dir',required=True);p.add_argument('--blenderproc',required=True);p.add_argument('--blender-install-path',required=True);p.add_argument('--jobs',nargs='*')
 p=sub.add_parser('export');p.add_argument('--output-dir',required=True);p.add_argument('--yolo',action='store_true')
 p=sub.add_parser('report');p.add_argument('--output-dir',required=True)
 args=parser.parse_args()
-if args.command=='bridge':result=bridge_composers(args.assets_dir,args.foreground_dir,args.output_dir,workers=args.workers)
+if args.command=='profiles':
+    from dataset_generator_m1.blender_execution import load_catalog
+    result=load_catalog(args.policy).model_dump(mode='json')
+elif args.command=='bundle':
+    from dataset_generator_m1.blender_bundle import build_bundle
+    result=build_bundle(args.config,args.output_file)
+elif args.command=='bridge':result=bridge_composers(args.assets_dir,args.foreground_dir,args.output_dir,workers=args.workers)
 elif args.command=='assets':result=fetch_assets(args.manifest_dir,args.output_dir)
 elif args.command=='prepare':
     value=prepare(args.config,args.output_dir);result={'identity':value['identity'],'jobs':len(value['jobs'])}

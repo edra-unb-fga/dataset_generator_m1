@@ -11,6 +11,8 @@ import sys
 import tempfile
 from time import perf_counter
 
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from runtime import configure as configure_execution, evidence as execution_evidence
 import bpy
 from blenderproc.python.utility.GlobalStorage import GlobalStorage
 import numpy as np
@@ -94,10 +96,8 @@ def build_scene(study,job,attempt):
     bproc.clean_up(clean_up_camera=True)
     scene=bpy.context.scene;t=job['treatment'];config=study['config']
     scene.render.use_motion_blur=False
-    bproc.renderer.set_render_devices(use_only_cpu=True)
-    bproc.renderer.set_max_amount_of_samples(job['samples']);bproc.renderer.set_denoiser('INTEL')
-    bproc.renderer.set_light_bounces(diffuse_bounces=2,glossy_bounces=2,max_bounces=4,transparent_max_bounces=4)
-    scene.render.threads_mode='FIXED';scene.render.threads=config['threads']
+    configure_execution(EXECUTION)
+    bproc.renderer.set_max_amount_of_samples(job['samples'])
     scene.cycles.seed=job['seed'];scene.cycles.use_adaptive_sampling=False
     scene.view_settings.view_transform=t['tone'];scene.view_settings.exposure=t['exposure_ev']
     scene.render.fps=24
@@ -244,9 +244,9 @@ def run_job(study,job,root):
                         'rgb_render_seconds':cold_render,'warm_same_scene_render_seconds':warm,
                         'encode_seconds':perf_counter()-encode_started,'total_seconds':perf_counter()-started,
                         'accepted_output_seconds':perf_counter()-started-sum(warm),
-                        'blender':bpy.app.version_string,'blenderproc':bproc.__version__,'device':'CPU',
+                        'blender':bpy.app.version_string,'blenderproc':bproc.__version__,'device':scene.cycles.device,'execution':execution_evidence(EXECUTION),
                         'renderer_settings':{'engine':scene.render.engine,'samples':scene.cycles.samples,
-                            'denoiser':'OpenImageDenoise','max_bounces':scene.cycles.max_bounces,
+                            'denoiser':EXECUTION['settings']['denoiser'],'max_bounces':scene.cycles.max_bounces,
                             'diffuse_bounces':scene.cycles.diffuse_bounces,'glossy_bounces':scene.cycles.glossy_bounces,
                             'internal_resolution':[scene.render.resolution_x,scene.render.resolution_y],
                             'output_resolution':config['resolution'],'numpy':np.__version__,
@@ -264,8 +264,11 @@ def run_job(study,job,root):
     atomic_json(destination/'result.json',{'identity':study['identity'],'job':job,'status':'rejected','attempts':attempts,'files':{},'total_seconds':perf_counter()-started})
 
 
-parser=argparse.ArgumentParser();parser.add_argument('study');parser.add_argument('--jobs',nargs='*')
+parser=argparse.ArgumentParser();parser.add_argument('study');parser.add_argument('--jobs',nargs='*');parser.add_argument('--execution',required=True)
 args=parser.parse_args();path=Path(args.study).resolve();study=json.loads(path.read_text());root=path.parent
+execution_record=json.loads(Path(args.execution).read_text())
+if execution_record['study_identity']!=study['identity']:raise RuntimeError('Execution selection belongs to a different study')
+EXECUTION=execution_record['selection']
 if bproc.__version__!='2.8.0' or bpy.app.version!=(4,2,1):
     raise RuntimeError(f'Pinned runtime required: BlenderProc2.8.0 / Blender4.2.1, got {bproc.__version__} / {bpy.app.version_string}')
 started=perf_counter();bproc.init();print('PILOT_STARTUP_SECONDS',perf_counter()-started,flush=True)

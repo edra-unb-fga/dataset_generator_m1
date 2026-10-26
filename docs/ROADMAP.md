@@ -84,10 +84,18 @@ not a generator dependency or a core backend. Existing production defaults remai
 
 ## Deferred
 
-GUI, model training, GPU or distributed execution, multi-family generation, exact quotas,
+GUI, model training, GPU or distributed execution of the core planar generator, multi-family generation, exact quotas,
 vendor-specific telemetry, and general legacy-config migration are deliberately outside the current
 product boundary.
 
 [External model-prediction evaluation/failure analysis (#59)](https://github.com/edra-unb-fga/dataset_generator_m1/issues/59) now has an offline scorer; real-data transfer and controlled external training remain future evidence, without a generator training dependency: preserve sample/manifests and configured versus measured conditions, compare real
 evaluation separately from synthetic regression, and analyze scale, perspective, visibility, material
 and camera slices without inferring training benefit from visual attractiveness.
+
+
+The optional BlenderProc follow-up consolidates CPU/Colab GPU execution into saved, capability-selected
+policies and verified portable input bundles. Native GPU OIDN removes the observed CPU-denoising
+bottleneck. The separately recorded initialization study controls its renderer-session optimization;
+see `experiments/blender-execution-v1/README.md`. This is engineering execution evidence, not completion
+of #28/#64. The next planning session can concentrate on representative material/lighting/camera
+conditions and eventual real-image/model evidence; major renderer/annotation redesign remains separate.

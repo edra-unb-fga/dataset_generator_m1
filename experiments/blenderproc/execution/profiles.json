@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "backend_order": [
+    "OPTIX",
+    "CUDA",
+    "HIP",
+    "ONEAPI",
+    "METAL"
+  ],
+  "guards": {
+    "min_available_gib": 2,
+    "rss_limit_gib": 10,
+    "max_swap_out_mib": 16,
+    "probe_timeout_seconds": 300
+  },
+  "profiles": [
+    {
+      "id": "colab-t4-small",
+      "automatic": true,
+      "match": {
+        "environment": "colab",
+        "gpu_name_pattern": "Tesla T4",
+        "max_cpu_count": 2,
+        "min_gpu_memory_mib": 12288,
+        "max_pixels": 409600,
+        "min_cpu_count": 2
+      },
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "guarded",
+        "device": "GPU",
+        "denoiser": "native-gpu-oidn",
+        "workers": 2,
+        "threads": 1,
+        "thread_cap": 1,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "colab-denoising-v1: two1-thread processes; small fixture; bounded operational choice; paired initialization study and broader-case qualification; see docs/experiments/blender-execution-v1"
+    },
+    {
+      "id": "colab-t4",
+      "automatic": true,
+      "match": {
+        "environment": "colab",
+        "gpu_name_pattern": "Tesla T4",
+        "min_gpu_memory_mib": 12288
+      },
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "guarded",
+        "device": "GPU",
+        "denoiser": "native-gpu-oidn",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 2,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "colab-denoising-v1: native GPU OIDN at640/1280; paired initialization study and broader-case qualification; see docs/experiments/blender-execution-v1"
+    },
+    {
+      "id": "gpu-oidn",
+      "automatic": true,
+      "match": {
+        "oidn_gpu": true
+      },
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "stock",
+        "device": "GPU",
+        "denoiser": "native-gpu-oidn",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 6,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "Conservative capability fallback; not a tuned hardware-class speed recommendation"
+    },
+    {
+      "id": "cpu",
+      "automatic": true,
+      "match": {},
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "stock",
+        "device": "CPU",
+        "denoiser": "compositor-oidn",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 6,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "Historical CPU pilot; conservative fallback, not a measured CPU optimum"
+    },
+    {
+      "id": "cpu-fast",
+      "automatic": false,
+      "match": {},
+      "settings": {
+        "denoiser_prefilter": "FAST",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "stock",
+        "device": "CPU",
+        "denoiser": "compositor-fast",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 6,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "Explicit quality tradeoff: fast prefilter; never selected automatically"
+    },
+    {
+      "id": "raw-reference",
+      "automatic": false,
+      "match": {},
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "stock",
+        "device": "CPU",
+        "denoiser": "none",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 6,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "Explicit raw reference; sample count remains in study config"
+    },
+    {
+      "id": "gpu-reference",
+      "automatic": false,
+      "match": {},
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "stock",
+        "device": "GPU",
+        "denoiser": "none",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 6,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "Explicit raw GPU reference; sample count remains in study config"
+    },
+    {
+      "id": "gpu-guarded",
+      "automatic": false,
+      "match": {
+        "oidn_gpu": true
+      },
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "guarded",
+        "device": "GPU",
+        "denoiser": "native-gpu-oidn",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 6,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "Explicit initialization experiment; not selected automatically"
+    },
+    {
+      "id": "cpu-guarded",
+      "automatic": false,
+      "match": {},
+      "settings": {
+        "denoiser_prefilter": "ACCURATE",
+        "denoiser_quality": "HIGH",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "transparent_bounces": 4,
+        "renderer_initialization": "guarded",
+        "device": "CPU",
+        "denoiser": "compositor-oidn",
+        "workers": 1,
+        "threads": "available",
+        "thread_cap": 6,
+        "denoiser_input_passes": "RGB_ALBEDO_NORMAL"
+      },
+      "evidence": "Explicit initialization experiment; not selected automatically"
+    }
+  ]
+}

@@ -6,8 +6,6 @@ import json
 import os
 from pathlib import Path
 import shutil
-import subprocess
-import sys
 import tempfile
 from time import monotonic
 from typing import Literal
@@ -74,7 +72,11 @@ class PilotConfig(Strict):
     focal_length_mm: float = Field(default=35, ge=8, le=150)
     sensor_width_mm: float = Field(default=36, ge=5, le=100)
     principal_point_fraction: tuple[float, float] = (.5, .5)
-    threads: int = Field(default=6, ge=1, le=32)
+    input_bundle_identity: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    execution_profile: str = Field(default="auto", pattern=r"^[a-z0-9][a-z0-9-]{0,63}$")
+    execution_policy: Path | None = None
+    threads: int | None = Field(default=None, ge=1, le=64)
+    workers: int | None = Field(default=None, ge=1, le=4)
     fast_samples: int = Field(default=32, ge=1, le=1024)
     quality_samples: int = Field(default=128, ge=1, le=4096)
     scenes: int = Field(default=3, ge=1, le=100)
@@ -120,6 +122,7 @@ def load_config(path):
     config=PilotConfig.model_validate(json.loads(path.read_text()))
     def local(value):return (path.parent/value).resolve()
     return config.model_copy(update={
+        'execution_policy':local(config.execution_policy) if config.execution_policy is not None else None,
         'reference_pool':local(config.reference_pool),'artwork':tuple(local(p) for p in config.artwork),
         'environments':tuple(local(p) for p in config.environments),
         'grounds':tuple(g.model_copy(update={'material_file':local(g.material_file)}) for g in config.grounds)})
@@ -155,6 +158,9 @@ def reference_scenes(pool):
 
 def prepare(config_path,output):
     config=load_config(config_path);output=Path(output).resolve()
+    from .blender_execution import load_catalog
+    execution_catalog=load_catalog(config.execution_policy).model_dump(mode='json')
+    if config.execution_profile!='auto' and config.execution_profile not in {p['id'] for p in execution_catalog['profiles']}:raise ValueError('Unknown execution profile')
     scenes,reference=reference_scenes(config.reference_pool)
     assets=[];grounds=[]
     for g in config.grounds:
@@ -189,6 +195,9 @@ def prepare(config_path,output):
     contract={'config':config.model_dump(mode='json'),'reference':reference,'assets':assets,'artwork':artwork,
               'harness_source_sha256':digest_file(__file__),
               'renderer_script_sha256':digest_file(Path(__file__).resolve().parents[2]/'experiments/blenderproc/render.py')}
+    source_root=Path(__file__).resolve().parents[2]
+    sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
+    contract['harness_sources']={name:digest_file(source_root/name) for name in sources}
     jobs=[]
     for scene_index in range(config.scenes):
         scene=scenes[scene_index%len(scenes)]
@@ -210,7 +219,7 @@ def prepare(config_path,output):
         jobs.append({**first,'id':'diagnostic-'+case,'case':case,'scene':scene,'benchmark':False})
     jobs.sort(key=lambda j:(j['quality']!='fast',j['scene_index']))
     contract['jobs_sha256']=digest(jobs)
-    runtime={'artwork':artwork,'grounds':grounds,'environments':environments,'config':config.model_dump(mode='json')}
+    runtime={'artwork':artwork,'grounds':grounds,'environments':environments,'config':config.model_dump(mode='json'),'execution_catalog':execution_catalog}
     contract['runtime_sha256']=digest(runtime)
     identity=digest(contract)
     if output.exists():
@@ -219,7 +228,7 @@ def prepare(config_path,output):
         return stored
     output.mkdir(parents=True)
     study={'schema_version':1,'identity':identity,'contract':contract,'jobs':jobs,'artwork':artwork,'grounds':grounds,
-           'environments':environments,'config':config.model_dump(mode='json')}
+           'environments':environments,'config':config.model_dump(mode='json'),'execution_catalog':execution_catalog}
     atomic_json(output/'study.json',study)
     return study
 
@@ -257,6 +266,7 @@ def annotation_rows(visible,full,image_id,first_id=1):
 def load_study(root):
     value=json.loads((Path(root)/'study.json').read_text())
     runtime={key:value[key] for key in ('config','artwork','grounds','environments')}
+    if 'execution_catalog' in value:runtime['execution_catalog']=value['execution_catalog']
     if (digest(value['contract'])!=value['identity'] or digest(value['jobs'])!=value['contract']['jobs_sha256']
             or digest(runtime)!=value['contract']['runtime_sha256']):
         raise ValueError('Study contract or job plan changed')
@@ -272,6 +282,11 @@ def completed_outputs(root,study):
         if row.get('status') not in {'accepted','rejected'}:raise ValueError('Unknown scene result status')
         if row['status']=='accepted' and set(row.get('files',{}))!={'rgb.png','masks.npz'}:raise ValueError('Incomplete accepted scene files')
         if row.get('identity')!=study['identity'] or row.get('job')!=job:raise ValueError('Stale scene result')
+        if 'execution_catalog' in study and row.get('status')=='accepted':
+            from .blender_execution import load_execution
+            execution=load_execution(root,study)
+            if execution['study_identity']!=study['identity'] or row.get('execution',{}).get('selection_identity')!=execution['selection']['identity']:
+                raise ValueError('Scene execution selection changed')
         for file,expected in row.get('files',{}).items():
             if digest_file(path/file)!=expected:raise ValueError('Completed scene checksum mismatch')
         rows.append((job,path,row))
@@ -323,8 +338,10 @@ def _export_coco(root):
 def validate_inputs(study,renderer):
     """Refuse mutable external inputs/source before any new render or resume."""
     contract=study['contract']
+    expected_sources=[(Path(__file__).resolve().parents[2]/name,sha) for name,sha in contract.get('harness_sources',{}).items()]
     expected=[(Path(__file__),contract['harness_source_sha256']),
               (renderer,contract['renderer_script_sha256'])]
+    expected.extend(expected_sources)
     expected.extend((item['path'],item['sha256']) for item in study['artwork'])
     for ground in study['grounds']:
         expected.extend((path,ground['provenance']['maps'][role]['sha256']) for role,path in ground['maps'].items())
@@ -347,8 +364,6 @@ def run_study(root,blenderproc,blender_install_path,*,job_ids=None):
 
 def _run_study(root,blenderproc,blender_install_path,*,job_ids=None):
     """One isolated Blender session; guards apply to its complete descendant tree."""
-    import psutil
-    import signal
     root=Path(root).resolve();study=load_study(root)
     renderer=Path(__file__).resolve().parents[2]/'experiments/blenderproc/render.py'
     validate_inputs(study,renderer)
@@ -359,62 +374,14 @@ def _run_study(root,blenderproc,blender_install_path,*,job_ids=None):
             raise ValueError('Exported study is frozen; prepare a fresh study before adding scenes')
     previous=json.loads((root/'runs.json').read_text()) if (root/'runs.json').exists() else []
     remaining=study['config']['study_seconds']-sum(r['command_seconds'] for r in previous)
-    if remaining<=0:raise ValueError('Study rendering budget already exhausted')
     selected=set(job_ids or [j['id'] for j in study['jobs']])
     if not selected.issubset({j['id'] for j in study['jobs']}):raise ValueError('Unknown job IDs')
-    command=[str(Path(blenderproc).resolve()),'run',str(renderer),str(root/'study.json'),
-             '--blender-install-path',str(Path(blender_install_path).resolve()),
-             '--temp-dir',str(root/'blender-temp'),'--jobs',*sorted(selected)]
-    started=monotonic();initial_swap=psutil.swap_memory().sout;observations=[];reason=None
-    with (root/f'run-{len(previous):02d}.log').open('w') as log:
-        process=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT,start_new_session=os.name=='posix',
-            env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','BLENDER_USER_CONFIG':str(root/'blender-user-config')})
-        try:
-            while True:
-                available=psutil.virtual_memory().available;swap=psutil.swap_memory().sout-initial_swap
-                try:
-                    parent=psutil.Process(process.pid);tree=[parent,*parent.children(recursive=True)]
-                except psutil.Error:tree=[]
-                rss=0
-                for child in tree:
-                    try:rss+=child.memory_info().rss
-                    except psutil.Error:pass
-                elapsed=monotonic()-started
-                observations.append({'seconds':elapsed,'rss_bytes':rss,'available_bytes':available,'swap_out_delta_bytes':swap})
-                reason=('available-memory-floor' if available<2*2**30 else 'process-tree-RSS' if rss>10*2**30 else
-                        'host-swap-out' if swap>16*2**20 else 'study-time-budget' if elapsed>=remaining else None)
-                atomic_json(root/'progress.json',{'status':'running','elapsed_seconds':elapsed,'remaining_budget_seconds':max(0,remaining-elapsed),
-                            'completed_scenes':len(list((root/'scenes').glob('*/result.json')))})
-                if reason:break
-                try:code=process.wait(timeout=.25);break
-                except subprocess.TimeoutExpired:pass
-        except KeyboardInterrupt:
-            reason='keyboard-interrupted'
-        except Exception as error:
-            reason='monitor-failed: '+type(error).__name__
-        finally:
-            if process.poll() is None:
-                try:children=psutil.Process(process.pid).children(recursive=True)
-                except psutil.Error:children=[]
-                try:
-                    if os.name=='posix':os.killpg(process.pid,signal.SIGTERM)
-                    else:process.terminate()
-                except ProcessLookupError:pass
-                try:process.wait(timeout=5)
-                except subprocess.TimeoutExpired:process.kill();process.wait(timeout=5)
-                for child in children:
-                    try:child.kill()
-                    except psutil.Error:pass
-                psutil.wait_procs(children,timeout=3)
-    code=process.returncode
-    record={'status':'budget-limited' if reason=='study-time-budget' else 'interrupted' if reason=='keyboard-interrupted' else 'guard-aborted' if reason else 'complete' if code==0 else 'failed',
-            'reason':reason,'returncode':code,'command_seconds':monotonic()-started,'selected_jobs':sorted(selected),
-            'peak_rss_bytes':max((v['rss_bytes'] for v in observations),default=0),'minimum_available_bytes':min((v['available_bytes'] for v in observations),default=None),
-            'swap_out_delta_bytes':max((v['swap_out_delta_bytes'] for v in observations),default=0),
-            'guards':{'min_available_gib':2,'rss_limit_gib':10,'max_swap_out_mib':16}}
-    atomic_json(root/f'run-{len(previous):02d}-resources.json',observations)
-    previous.append(record);atomic_json(root/'runs.json',previous);atomic_json(root/'progress.json',record)
-    return record
+    if selected<={j['id'] for j,p,r in completed}:
+        return {'status':'complete','already_complete':True,'command_seconds':0,'selected_jobs':sorted(selected)}
+    if remaining<=0:raise ValueError('Study rendering budget already exhausted')
+    if 'execution_catalog' not in study:raise ValueError('Legacy CPU study; prepare a fresh study for saved execution profiles')
+    from .blender_runner import execute
+    return execute(root,study,blenderproc,blender_install_path,selected,previous,remaining)
 
 
 def export_yolo(root):
@@ -497,6 +464,7 @@ def report(root):
                 if box:values.append(box[2]/mask.shape[1])
     summary={'identity':study['identity'],'accepted':len(accepted),'rejected':len(rows)-len(accepted),
              'planned':len(study['jobs']),'reference':study['contract']['reference'],
+             'execution':json.loads((root/'execution.json').read_text()) if (root/'execution.json').exists() else None,
              'achieved_baseline_width_fraction_quantiles':np.quantile(values,[.1,.5,.9]).tolist() if values else None,
              'runs':json.loads((root/'runs.json').read_text()) if (root/'runs.json').exists() else [],
              'costs':[{'job':j['id'],'setup_and_attempts':r['attempts'],'rgb_render_seconds':r['rgb_render_seconds'],

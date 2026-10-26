@@ -21,11 +21,10 @@
     "../../outputs/blender-assets/overcast_soil_puresky.json"
   ],
   "resolution": [
-    512,
-    512
+    1280,
+    1280
   ],
   "scenes": 3,
-  "threads": 6,
   "study_seconds": 7200,
   "quality_treatments": [
     "base",
@@ -80,5 +79,10 @@
       "id": "haze",
       "haze_density": 0.008
     }
-  ]
+  ],
+  "execution_profile": "auto",
+  "threads": null,
+  "workers": null,
+  "fast_samples": 32,
+  "quality_samples": 128
 }

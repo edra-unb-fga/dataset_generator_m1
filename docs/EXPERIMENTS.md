@@ -183,3 +183,10 @@ retains polygon fidelity. `scripts/blenderproc_pilot.py` runs the isolated workf
 `scripts/report_blender_comparison.py` authors compact portable evidence. Raw assets and study pools
 stay ignored. The sparse feature study cannot establish detector transfer or universal engine speed;
 `BLENDERPROC_COMPARISON.md` retains the later repeated/equal-budget real-evaluation protocol.
+
+
+The [Blender execution follow-up](experiments/blender-execution-v1/README.md) retains the Colab T4
+native-GPU-denoising findings, the source/input-bundle qualification and paired initialization evidence.
+`scripts/study_blender_execution.py` reads saved matrices for alternating-order trials and exact mask
+checks. Hardware policies remain explicit data; low-sample denoising probes and repeated initialization
+studies retain distinct scopes and throughput denominators.
