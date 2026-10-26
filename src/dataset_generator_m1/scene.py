@@ -13,7 +13,7 @@ from .assets import AssetCatalog, AssetRecord
 from .annotation_evidence import visible_coverages
 from .backgrounds import BackgroundSample
 from .filters import TransformTrace, apply_pipeline_traced
-from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox
+from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox, warp_rgba
 from .scene_occlusion import SceneOccluder, composite_occluders, sample_occluders
 from .surface_effects import apply_scene_lighting, sample_lighting
 from .models import ResolvedProfile
@@ -461,11 +461,12 @@ class SceneRenderer:
             timings["foreground_effects"] = timings.get("foreground_effects", 0) + sum(trace.duration_ns for trace in traces)
             effect_traces.extend(self._trace_record(trace, index) for trace in traces)
             started = self.clock()
-            rgba = rotate_rgba(rgba, instance.angle_degrees, self.resolved.family.rotation.mode)
+            premultiplied = self.profile.scene.foreground_resampling == "premultiplied"
+            rgba = rotate_rgba(rgba, instance.angle_degrees, self.resolved.family.rotation.mode, premultiplied=premultiplied)
             timings["foreground_rotation"] = timings.get("foreground_rotation", 0) + max(0, self.clock() - started)
             target_width = max(1, int(round(camera_w * instance.width_fraction)))
             started = self.clock()
-            rgba = resize_rgba(rgba, target_width)
+            rgba = resize_rgba(rgba, target_width, premultiplied=premultiplied)
             timings["foreground_resize"] = timings.get("foreground_resize", 0) + max(0, self.clock() - started)
             started = self.clock()
             local_bbox = visible_bbox(rgba)
@@ -480,22 +481,26 @@ class SceneRenderer:
             asset_to_output = plan.scene_to_output @ asset_to_scene
             timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
             started = self.clock()
-            warped_rgb = cv2.warpPerspective(
-                rgba[:, :, :3],
-                asset_to_output,
-                (out_w, out_h),
-                flags=cv2.INTER_LINEAR,
-                borderMode=cv2.BORDER_CONSTANT,
-                borderValue=(0, 0, 0),
-            )
-            warped_alpha = cv2.warpPerspective(
-                rgba[:, :, 3],
-                asset_to_output,
-                (out_w, out_h),
-                flags=cv2.INTER_LINEAR,
-                borderMode=cv2.BORDER_CONSTANT,
-                borderValue=0,
-            )
+            if premultiplied:
+                warped = warp_rgba(rgba, asset_to_output, (out_w, out_h), premultiplied=True)
+                warped_rgb, warped_alpha = warped[:, :, :3], warped[:, :, 3]
+            else:
+                warped_rgb = cv2.warpPerspective(
+                    rgba[:, :, :3],
+                    asset_to_output,
+                    (out_w, out_h),
+                    flags=cv2.INTER_LINEAR,
+                    borderMode=cv2.BORDER_CONSTANT,
+                    borderValue=(0, 0, 0),
+                )
+                warped_alpha = cv2.warpPerspective(
+                    rgba[:, :, 3],
+                    asset_to_output,
+                    (out_w, out_h),
+                    flags=cv2.INTER_LINEAR,
+                    borderMode=cv2.BORDER_CONSTANT,
+                    borderValue=0,
+                )
             timings["foreground_warp"] = timings.get("foreground_warp", 0) + max(0, self.clock() - started)
             started = self.clock()
             clipped_bbox = _bbox_from_mask(warped_alpha, self.resolved.family.annotation.alpha_threshold)

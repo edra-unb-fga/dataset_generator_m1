@@ -289,6 +289,7 @@ def load_profile(
     # configuration fields and must accept the same overrides as inline values.
     from .models import ExecutionConfig
     resolved_values['execution'] = {**ExecutionConfig().model_dump(mode='json'), **resolved_values['execution']}
+    resolved_values["scene"].setdefault("foreground_resampling", "legacy")
     for override_path, value in applied.items():
         _set_leaf(resolved_values, override_path, value)
 
@@ -324,10 +325,10 @@ def load_profile(
         sources.append(partition_path)
     unique_sources = list(dict.fromkeys(item.resolve() for item in sources))
     source_hashes = {item.as_posix(): _sha256(item) for item in unique_sources}
-    from .renderer_version import RENDERER_SEMANTICS
+    from .renderer_version import RENDERER_SEMANTICS, contract_profile
     contract = {
         "renderer_semantics": RENDERER_SEMANTICS,
-        "profile": profile.model_dump(mode="json"),
+        "profile": contract_profile(profile),
         "family": family.model_dump(mode="json"),
         "recipes": recipes.model_dump(mode="json"),
         "source_hashes": source_hashes,

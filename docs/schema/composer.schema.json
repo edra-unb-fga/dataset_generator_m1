@@ -999,6 +999,22 @@
           "default": null,
           "title": "Canvas Scale"
         },
+        "foreground_resampling": {
+          "anyOf": [
+            {
+              "enum": [
+                "legacy",
+                "premultiplied"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Foreground Resampling"
+        },
         "lighting": {
           "anyOf": [
             {

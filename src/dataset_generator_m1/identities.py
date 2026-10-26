@@ -3,7 +3,7 @@ import hashlib
 import json
 from importlib.metadata import version
 import platform
-from .renderer_version import RENDERER_SEMANTICS
+from .renderer_version import RENDERER_SEMANTICS, contract_profile
 
 
 def digest(value) -> str:
@@ -16,7 +16,7 @@ def software_identity() -> dict:
 
 
 def generation_contract(resolved, catalog) -> dict:
-    payload = resolved.profile.model_dump(mode="json")
+    payload = contract_profile(resolved.profile)
     for key in ("execution", "telemetry", "report"):
         payload.pop(key, None)
     for key in ("label", "tags", "max_wall_seconds", "max_rejection_rate"):
