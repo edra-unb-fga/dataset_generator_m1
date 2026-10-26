@@ -1,0 +1,775 @@
+{
+  "software": {
+    "python": "3.13.16",
+    "numpy": "2.5.1",
+    "opencv-python-headless": "5.0.0.93",
+    "albumentations": "2.0.8",
+    "Pillow": "12.3.0"
+  },
+  "samples": 20,
+  "warmups": 2,
+  "edge_fixture": [
+    {
+      "mode": "legacy",
+      "changed_pixels": 200,
+      "max_channel_delta": 64
+    },
+    {
+      "mode": "premultiplied",
+      "changed_pixels": 0,
+      "max_channel_delta": 0
+    }
+  ],
+  "families": {
+    "landing": {
+      "records": [
+        {
+          "slot": 2,
+          "attempt": 0,
+          "synthesis_ns": 242466423,
+          "render_ns": {
+            "legacy": 271669410,
+            "premultiplied": 365848596
+          },
+          "changed_pixels": 1789,
+          "maximum_channel_delta": 69,
+          "mean_absolute_delta": 0.019537353515625
+        },
+        {
+          "slot": 3,
+          "attempt": 0,
+          "synthesis_ns": 249459825,
+          "render_ns": {
+            "premultiplied": 755761007,
+            "legacy": 451087206
+          },
+          "changed_pixels": 12077,
+          "maximum_channel_delta": 67,
+          "mean_absolute_delta": 0.07207478841145833
+        },
+        {
+          "slot": 4,
+          "attempt": 0,
+          "synthesis_ns": 1272919156,
+          "render_ns": {
+            "legacy": 215488641,
+            "premultiplied": 349648474
+          },
+          "changed_pixels": 4374,
+          "maximum_channel_delta": 62,
+          "mean_absolute_delta": 0.042591756184895836
+        },
+        {
+          "slot": 5,
+          "attempt": 0,
+          "synthesis_ns": 2706703707,
+          "render_ns": {
+            "premultiplied": 498938377,
+            "legacy": 270858953
+          },
+          "changed_pixels": 1559,
+          "maximum_channel_delta": 70,
+          "mean_absolute_delta": 0.01820943196614583
+        },
+        {
+          "slot": 6,
+          "attempt": 0,
+          "synthesis_ns": 2824874966,
+          "render_ns": {
+            "legacy": 172683753,
+            "premultiplied": 218660903
+          },
+          "changed_pixels": 2571,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.021859130859375
+        },
+        {
+          "slot": 7,
+          "attempt": 0,
+          "synthesis_ns": 1247908298,
+          "render_ns": {
+            "premultiplied": 829154567,
+            "legacy": 526911484
+          },
+          "changed_pixels": 7217,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.04267862955729167
+        },
+        {
+          "slot": 8,
+          "attempt": 0,
+          "synthesis_ns": 1607575483,
+          "render_ns": {
+            "legacy": 309433548,
+            "premultiplied": 493802040
+          },
+          "changed_pixels": 10300,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.09850138346354166
+        },
+        {
+          "slot": 9,
+          "attempt": 0,
+          "synthesis_ns": 1732475476,
+          "render_ns": {
+            "premultiplied": 420197250,
+            "legacy": 274537268
+          },
+          "changed_pixels": 18299,
+          "maximum_channel_delta": 66,
+          "mean_absolute_delta": 0.068905029296875
+        },
+        {
+          "slot": 10,
+          "attempt": 0,
+          "synthesis_ns": 1429394369,
+          "render_ns": {
+            "legacy": 246192410,
+            "premultiplied": 695336063
+          },
+          "changed_pixels": 3480,
+          "maximum_channel_delta": 61,
+          "mean_absolute_delta": 0.036260579427083335
+        },
+        {
+          "slot": 11,
+          "attempt": 0,
+          "synthesis_ns": 254629902,
+          "render_ns": {
+            "premultiplied": 560515509,
+            "legacy": 441645139
+          },
+          "changed_pixels": 5241,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.051592203776041665
+        },
+        {
+          "slot": 12,
+          "attempt": 1,
+          "synthesis_ns": 1976573796,
+          "render_ns": {
+            "legacy": 610020329,
+            "premultiplied": 828736323
+          },
+          "changed_pixels": 15952,
+          "maximum_channel_delta": 65,
+          "mean_absolute_delta": 0.11021809895833333
+        },
+        {
+          "slot": 13,
+          "attempt": 0,
+          "synthesis_ns": 266408849,
+          "render_ns": {
+            "premultiplied": 397050527,
+            "legacy": 223232915
+          },
+          "changed_pixels": 6232,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.059031982421875
+        },
+        {
+          "slot": 14,
+          "attempt": 0,
+          "synthesis_ns": 2354515028,
+          "render_ns": {
+            "legacy": 342842365,
+            "premultiplied": 638290095
+          },
+          "changed_pixels": 8908,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.08774515787760416
+        },
+        {
+          "slot": 15,
+          "attempt": 0,
+          "synthesis_ns": 1754486332,
+          "render_ns": {
+            "premultiplied": 557496484,
+            "legacy": 301249938
+          },
+          "changed_pixels": 8881,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.0862298583984375
+        },
+        {
+          "slot": 16,
+          "attempt": 0,
+          "synthesis_ns": 1551386521,
+          "render_ns": {
+            "legacy": 432504743,
+            "premultiplied": 635815771
+          },
+          "changed_pixels": 7515,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.06930684407552083
+        },
+        {
+          "slot": 17,
+          "attempt": 0,
+          "synthesis_ns": 1744620265,
+          "render_ns": {
+            "premultiplied": 627899025,
+            "legacy": 259866304
+          },
+          "changed_pixels": 6734,
+          "maximum_channel_delta": 69,
+          "mean_absolute_delta": 0.0673345947265625
+        },
+        {
+          "slot": 18,
+          "attempt": 0,
+          "synthesis_ns": 240034394,
+          "render_ns": {
+            "legacy": 524641192,
+            "premultiplied": 736948660
+          },
+          "changed_pixels": 9498,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.0927459716796875
+        },
+        {
+          "slot": 19,
+          "attempt": 0,
+          "synthesis_ns": 2964680769,
+          "render_ns": {
+            "premultiplied": 626960494,
+            "legacy": 374972844
+          },
+          "changed_pixels": 7332,
+          "maximum_channel_delta": 62,
+          "mean_absolute_delta": 0.0697137451171875
+        },
+        {
+          "slot": 20,
+          "attempt": 0,
+          "synthesis_ns": 242831563,
+          "render_ns": {
+            "legacy": 327246097,
+            "premultiplied": 612580908
+          },
+          "changed_pixels": 6866,
+          "maximum_channel_delta": 61,
+          "mean_absolute_delta": 0.06887105305989584
+        },
+        {
+          "slot": 21,
+          "attempt": 0,
+          "synthesis_ns": 1150875695,
+          "render_ns": {
+            "premultiplied": 613866825,
+            "legacy": 368011288
+          },
+          "changed_pixels": 10592,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.111185302734375
+        }
+      ],
+      "exact_alpha_masks_annotations": true,
+      "median_render_ms": {
+        "legacy": 318.33982249999997,
+        "premultiplied": 613.2238665
+      }
+    },
+    "manometro": {
+      "records": [
+        {
+          "slot": 2,
+          "attempt": 0,
+          "synthesis_ns": 239742882,
+          "render_ns": {
+            "legacy": 260835930,
+            "premultiplied": 307075098
+          },
+          "changed_pixels": 20,
+          "maximum_channel_delta": 1,
+          "mean_absolute_delta": 1.1800130208333333e-05
+        },
+        {
+          "slot": 3,
+          "attempt": 0,
+          "synthesis_ns": 227763418,
+          "render_ns": {
+            "premultiplied": 413998632,
+            "legacy": 305660465
+          },
+          "changed_pixels": 1105,
+          "maximum_channel_delta": 5,
+          "mean_absolute_delta": 0.0008992513020833333
+        },
+        {
+          "slot": 4,
+          "attempt": 0,
+          "synthesis_ns": 1007261780,
+          "render_ns": {
+            "legacy": 132131406,
+            "premultiplied": 178592093
+          },
+          "changed_pixels": 725,
+          "maximum_channel_delta": 6,
+          "mean_absolute_delta": 0.0007383219401041666
+        },
+        {
+          "slot": 5,
+          "attempt": 0,
+          "synthesis_ns": 2389761233,
+          "render_ns": {
+            "premultiplied": 257180907,
+            "legacy": 227439691
+          },
+          "changed_pixels": 7,
+          "maximum_channel_delta": 1,
+          "mean_absolute_delta": 4.2724609375e-06
+        },
+        {
+          "slot": 6,
+          "attempt": 0,
+          "synthesis_ns": 2533890320,
+          "render_ns": {
+            "legacy": 166119377,
+            "premultiplied": 208016605
+          },
+          "changed_pixels": 1368,
+          "maximum_channel_delta": 8,
+          "mean_absolute_delta": 0.0012713623046875
+        },
+        {
+          "slot": 7,
+          "attempt": 1,
+          "synthesis_ns": 2513788460,
+          "render_ns": {
+            "premultiplied": 221179859,
+            "legacy": 179339782
+          },
+          "changed_pixels": 1939,
+          "maximum_channel_delta": 4,
+          "mean_absolute_delta": 0.0013730875651041666
+        },
+        {
+          "slot": 8,
+          "attempt": 0,
+          "synthesis_ns": 1372921409,
+          "render_ns": {
+            "legacy": 182580825,
+            "premultiplied": 233394688
+          },
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_absolute_delta": 0.0
+        },
+        {
+          "slot": 9,
+          "attempt": 0,
+          "synthesis_ns": 1699513486,
+          "render_ns": {
+            "premultiplied": 233233704,
+            "legacy": 178274660
+          },
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_absolute_delta": 0.0
+        },
+        {
+          "slot": 10,
+          "attempt": 0,
+          "synthesis_ns": 1050118257,
+          "render_ns": {
+            "legacy": 141995418,
+            "premultiplied": 240016844
+          },
+          "changed_pixels": 58,
+          "maximum_channel_delta": 1,
+          "mean_absolute_delta": 3.173828125e-05
+        },
+        {
+          "slot": 11,
+          "attempt": 1,
+          "synthesis_ns": 247914404,
+          "render_ns": {
+            "premultiplied": 306316136,
+            "legacy": 210806814
+          },
+          "changed_pixels": 917,
+          "maximum_channel_delta": 3,
+          "mean_absolute_delta": 0.0005576578776041667
+        },
+        {
+          "slot": 12,
+          "attempt": 1,
+          "synthesis_ns": 1226618423,
+          "render_ns": {
+            "legacy": 482296576,
+            "premultiplied": 539978350
+          },
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_absolute_delta": 0.0
+        },
+        {
+          "slot": 13,
+          "attempt": 1,
+          "synthesis_ns": 253756602,
+          "render_ns": {
+            "premultiplied": 397481719,
+            "legacy": 347403550
+          },
+          "changed_pixels": 17,
+          "maximum_channel_delta": 1,
+          "mean_absolute_delta": 8.544921875e-06
+        },
+        {
+          "slot": 14,
+          "attempt": 0,
+          "synthesis_ns": 1365560545,
+          "render_ns": {
+            "legacy": 126276828,
+            "premultiplied": 227927492
+          },
+          "changed_pixels": 804,
+          "maximum_channel_delta": 2,
+          "mean_absolute_delta": 0.00031351725260416667
+        },
+        {
+          "slot": 15,
+          "attempt": 0,
+          "synthesis_ns": 1071624724,
+          "render_ns": {
+            "premultiplied": 298582189,
+            "legacy": 200273909
+          },
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_absolute_delta": 0.0
+        },
+        {
+          "slot": 16,
+          "attempt": 0,
+          "synthesis_ns": 1061181914,
+          "render_ns": {
+            "legacy": 295825382,
+            "premultiplied": 395980982
+          },
+          "changed_pixels": 1119,
+          "maximum_channel_delta": 3,
+          "mean_absolute_delta": 0.000755615234375
+        },
+        {
+          "slot": 17,
+          "attempt": 1,
+          "synthesis_ns": 1595774954,
+          "render_ns": {
+            "premultiplied": 288675597,
+            "legacy": 195809136
+          },
+          "changed_pixels": 81,
+          "maximum_channel_delta": 2,
+          "mean_absolute_delta": 4.679361979166667e-05
+        },
+        {
+          "slot": 18,
+          "attempt": 0,
+          "synthesis_ns": 227064743,
+          "render_ns": {
+            "legacy": 363566490,
+            "premultiplied": 412220830
+          },
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_absolute_delta": 0.0
+        },
+        {
+          "slot": 19,
+          "attempt": 0,
+          "synthesis_ns": 2520077481,
+          "render_ns": {
+            "premultiplied": 298324427,
+            "legacy": 199837805
+          },
+          "changed_pixels": 18,
+          "maximum_channel_delta": 1,
+          "mean_absolute_delta": 1.0986328125e-05
+        },
+        {
+          "slot": 20,
+          "attempt": 0,
+          "synthesis_ns": 239490242,
+          "render_ns": {
+            "legacy": 228616538,
+            "premultiplied": 324609374
+          },
+          "changed_pixels": 1402,
+          "maximum_channel_delta": 3,
+          "mean_absolute_delta": 0.0007425944010416666
+        },
+        {
+          "slot": 21,
+          "attempt": 0,
+          "synthesis_ns": 1008461496,
+          "render_ns": {
+            "premultiplied": 298243230,
+            "legacy": 227864339
+          },
+          "changed_pixels": 47,
+          "maximum_channel_delta": 1,
+          "mean_absolute_delta": 2.7872721354166667e-05
+        }
+      ],
+      "exact_alpha_masks_annotations": true,
+      "median_render_ms": {
+        "legacy": 205.54036150000002,
+        "premultiplied": 298.2838285
+      }
+    },
+    "landing-pad": {
+      "records": [
+        {
+          "slot": 2,
+          "attempt": 0,
+          "synthesis_ns": 218132533,
+          "render_ns": {
+            "legacy": 298238290,
+            "premultiplied": 417825719
+          },
+          "changed_pixels": 2979,
+          "maximum_channel_delta": 70,
+          "mean_absolute_delta": 0.023597819010416667
+        },
+        {
+          "slot": 3,
+          "attempt": 0,
+          "synthesis_ns": 235220056,
+          "render_ns": {
+            "premultiplied": 678926938,
+            "legacy": 385912252
+          },
+          "changed_pixels": 12015,
+          "maximum_channel_delta": 67,
+          "mean_absolute_delta": 0.0667938232421875
+        },
+        {
+          "slot": 4,
+          "attempt": 0,
+          "synthesis_ns": 1085819309,
+          "render_ns": {
+            "legacy": 287807610,
+            "premultiplied": 480621095
+          },
+          "changed_pixels": 4439,
+          "maximum_channel_delta": 37,
+          "mean_absolute_delta": 0.025211588541666666
+        },
+        {
+          "slot": 5,
+          "attempt": 0,
+          "synthesis_ns": 2705260028,
+          "render_ns": {
+            "premultiplied": 506512735,
+            "legacy": 292523615
+          },
+          "changed_pixels": 3730,
+          "maximum_channel_delta": 66,
+          "mean_absolute_delta": 0.04333292643229167
+        },
+        {
+          "slot": 6,
+          "attempt": 0,
+          "synthesis_ns": 2562874373,
+          "render_ns": {
+            "legacy": 236940252,
+            "premultiplied": 343725379
+          },
+          "changed_pixels": 4084,
+          "maximum_channel_delta": 65,
+          "mean_absolute_delta": 0.03543233235677083
+        },
+        {
+          "slot": 7,
+          "attempt": 0,
+          "synthesis_ns": 1014466680,
+          "render_ns": {
+            "premultiplied": 752593389,
+            "legacy": 463676634
+          },
+          "changed_pixels": 6916,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.034391682942708335
+        },
+        {
+          "slot": 8,
+          "attempt": 0,
+          "synthesis_ns": 1094015061,
+          "render_ns": {
+            "legacy": 251269261,
+            "premultiplied": 496417610
+          },
+          "changed_pixels": 3975,
+          "maximum_channel_delta": 36,
+          "mean_absolute_delta": 0.022169596354166668
+        },
+        {
+          "slot": 9,
+          "attempt": 0,
+          "synthesis_ns": 1709137510,
+          "render_ns": {
+            "premultiplied": 486385939,
+            "legacy": 272453627
+          },
+          "changed_pixels": 7530,
+          "maximum_channel_delta": 66,
+          "mean_absolute_delta": 0.038838094075520836
+        },
+        {
+          "slot": 10,
+          "attempt": 0,
+          "synthesis_ns": 1532853900,
+          "render_ns": {
+            "legacy": 383787202,
+            "premultiplied": 831987323
+          },
+          "changed_pixels": 7508,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.053414713541666665
+        },
+        {
+          "slot": 11,
+          "attempt": 0,
+          "synthesis_ns": 253875850,
+          "render_ns": {
+            "premultiplied": 579762222,
+            "legacy": 363561986
+          },
+          "changed_pixels": 1623,
+          "maximum_channel_delta": 34,
+          "mean_absolute_delta": 0.009518025716145833
+        },
+        {
+          "slot": 12,
+          "attempt": 1,
+          "synthesis_ns": 949593694,
+          "render_ns": {
+            "legacy": 543488541,
+            "premultiplied": 745227904
+          },
+          "changed_pixels": 6269,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.0612451171875
+        },
+        {
+          "slot": 13,
+          "attempt": 0,
+          "synthesis_ns": 243919073,
+          "render_ns": {
+            "premultiplied": 421695071,
+            "legacy": 198000477
+          },
+          "changed_pixels": 4053,
+          "maximum_channel_delta": 36,
+          "mean_absolute_delta": 0.022722371419270835
+        },
+        {
+          "slot": 14,
+          "attempt": 0,
+          "synthesis_ns": 1459985917,
+          "render_ns": {
+            "legacy": 303835806,
+            "premultiplied": 693491860
+          },
+          "changed_pixels": 6462,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.044861857096354166
+        },
+        {
+          "slot": 15,
+          "attempt": 0,
+          "synthesis_ns": 1193618384,
+          "render_ns": {
+            "premultiplied": 627553683,
+            "legacy": 368382630
+          },
+          "changed_pixels": 7013,
+          "maximum_channel_delta": 62,
+          "mean_absolute_delta": 0.053152058919270835
+        },
+        {
+          "slot": 16,
+          "attempt": 0,
+          "synthesis_ns": 1298523292,
+          "render_ns": {
+            "legacy": 429439085,
+            "premultiplied": 756591517
+          },
+          "changed_pixels": 8475,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.08352030436197917
+        },
+        {
+          "slot": 17,
+          "attempt": 0,
+          "synthesis_ns": 1812501863,
+          "render_ns": {
+            "premultiplied": 640609174,
+            "legacy": 240218518
+          },
+          "changed_pixels": 2725,
+          "maximum_channel_delta": 66,
+          "mean_absolute_delta": 0.024186808268229165
+        },
+        {
+          "slot": 18,
+          "attempt": 0,
+          "synthesis_ns": 256002097,
+          "render_ns": {
+            "legacy": 507623987,
+            "premultiplied": 671486192
+          },
+          "changed_pixels": 5432,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.0467462158203125
+        },
+        {
+          "slot": 19,
+          "attempt": 0,
+          "synthesis_ns": 2973893203,
+          "render_ns": {
+            "premultiplied": 660602681,
+            "legacy": 338990731
+          },
+          "changed_pixels": 4930,
+          "maximum_channel_delta": 63,
+          "mean_absolute_delta": 0.0360858154296875
+        },
+        {
+          "slot": 20,
+          "attempt": 0,
+          "synthesis_ns": 400801810,
+          "render_ns": {
+            "legacy": 387245549,
+            "premultiplied": 763509049
+          },
+          "changed_pixels": 5171,
+          "maximum_channel_delta": 59,
+          "mean_absolute_delta": 0.03411275227864583
+        },
+        {
+          "slot": 21,
+          "attempt": 0,
+          "synthesis_ns": 1460001477,
+          "render_ns": {
+            "premultiplied": 573701873,
+            "legacy": 301601523
+          },
+          "changed_pixels": 5647,
+          "maximum_channel_delta": 64,
+          "mean_absolute_delta": 0.05273824055989584
+        }
+      ],
+      "exact_alpha_masks_annotations": true,
+      "median_render_ms": {
+        "legacy": 321.41326849999996,
+        "premultiplied": 634.0814285
+      }
+    }
+  },
+  "cost_scope": "paired renderer; synthesis shared, encode/write excluded",
+  "source": "57cec2e",
+  "historical_compatibility": "frozen pre-option strict/generation identities matched; external historical resume verified separately"
+}
