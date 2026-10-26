@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "reference_pool": "../../outputs/reference-pad-pool",
+  "artwork": [
+    "../../foregrounds/landing_pad_foregrounds/landing-base.png",
+    "../../foregrounds/landing_pad_foregrounds/takeoff-base.png"
+  ],
+  "grounds": [
+    {
+      "material_file": "../../outputs/blender-assets/Ground068.json"
+    },
+    {
+      "material_file": "../../outputs/blender-assets/Asphalt012.json"
+    },
+    {
+      "material_file": "../../outputs/blender-assets/Concrete034.json"
+    }
+  ],
+  "environments": [
+    "../../outputs/blender-assets/kloofendal_48d_partly_cloudy_puresky.json",
+    "../../outputs/blender-assets/overcast_soil_puresky.json"
+  ],
+  "resolution": [
+    512,
+    512
+  ],
+  "scenes": 3,
+  "threads": 6,
+  "study_seconds": 7200,
+  "quality_treatments": [
+    "base",
+    "night-mixed"
+  ],
+  "treatments": [
+    {
+      "id": "base"
+    },
+    {
+      "id": "satin",
+      "roughness": 0.25
+    },
+    {
+      "id": "matte",
+      "roughness": 0.8
+    },
+    {
+      "id": "environment",
+      "lighting": "environment"
+    },
+    {
+      "id": "overcast",
+      "lighting": "overcast"
+    },
+    {
+      "id": "night-mixed",
+      "lighting": "night-mixed",
+      "noise_std": 0.02
+    },
+    {
+      "id": "dof",
+      "depth_of_field": true,
+      "aperture_fstop": 2
+    },
+    {
+      "id": "motion",
+      "camera_speed_mps": 2,
+      "shutter_seconds": 0.06666666666666667
+    },
+    {
+      "id": "distortion",
+      "distortion": [
+        -0.15,
+        0.03,
+        0,
+        0.001,
+        -0.001
+      ]
+    },
+    {
+      "id": "haze",
+      "haze_density": 0.008
+    }
+  ]
+}

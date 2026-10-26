@@ -1,0 +1,435 @@
+{
+  "$defs": {
+    "Ground": {
+      "additionalProperties": false,
+      "properties": {
+        "material_file": {
+          "format": "path",
+          "title": "Material File",
+          "type": "string"
+        }
+      },
+      "required": [
+        "material_file"
+      ],
+      "title": "Ground",
+      "type": "object"
+    },
+    "Treatment": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "paired_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Paired Reference"
+        },
+        "lighting": {
+          "default": "sun",
+          "enum": [
+            "sun",
+            "environment",
+            "overcast",
+            "shade",
+            "night-single",
+            "night-mixed"
+          ],
+          "title": "Lighting",
+          "type": "string"
+        },
+        "roughness": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Roughness",
+          "type": "number"
+        },
+        "normal_strength": {
+          "default": 0.2,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Normal Strength",
+          "type": "number"
+        },
+        "uv_scale_m": {
+          "default": 2,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Uv Scale M",
+          "type": "number"
+        },
+        "uv_rotation_degrees": {
+          "default": 0,
+          "title": "Uv Rotation Degrees",
+          "type": "number"
+        },
+        "shadows": {
+          "default": true,
+          "title": "Shadows",
+          "type": "boolean"
+        },
+        "occluder": {
+          "default": false,
+          "title": "Occluder",
+          "type": "boolean"
+        },
+        "haze_density": {
+          "default": 0,
+          "maximum": 0.05,
+          "minimum": 0,
+          "title": "Haze Density",
+          "type": "number"
+        },
+        "exposure_ev": {
+          "default": 0,
+          "maximum": 8,
+          "minimum": -8,
+          "title": "Exposure Ev",
+          "type": "number"
+        },
+        "tone": {
+          "default": "AgX",
+          "enum": [
+            "AgX",
+            "Standard"
+          ],
+          "title": "Tone",
+          "type": "string"
+        },
+        "noise_std": {
+          "default": 0,
+          "maximum": 0.1,
+          "minimum": 0,
+          "title": "Noise Std",
+          "type": "number"
+        },
+        "aperture_fstop": {
+          "default": 8,
+          "maximum": 64,
+          "minimum": 0.7,
+          "title": "Aperture Fstop",
+          "type": "number"
+        },
+        "depth_of_field": {
+          "default": false,
+          "title": "Depth Of Field",
+          "type": "boolean"
+        },
+        "focus_distance_m": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Focus Distance M"
+        },
+        "camera_speed_mps": {
+          "default": 0,
+          "maximum": 20,
+          "minimum": 0,
+          "title": "Camera Speed Mps",
+          "type": "number"
+        },
+        "shutter_seconds": {
+          "default": 0.016666666666666666,
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Shutter Seconds",
+          "type": "number"
+        },
+        "distortion": {
+          "default": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxItems": 5,
+          "minItems": 5,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Distortion",
+          "type": "array"
+        },
+        "camera_distance_scale": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "maximum": 5,
+          "title": "Camera Distance Scale",
+          "type": "number"
+        },
+        "camera_roll_degrees": {
+          "default": 0,
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Camera Roll Degrees",
+          "type": "number"
+        },
+        "camera_azimuth_degrees": {
+          "default": 0,
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Camera Azimuth Degrees",
+          "type": "number"
+        },
+        "view_degrees": {
+          "default": 20,
+          "maximum": 65,
+          "minimum": 0,
+          "title": "View Degrees",
+          "type": "number"
+        },
+        "sun_elevation_degrees": {
+          "default": 45,
+          "maximum": 90,
+          "minimum": 5,
+          "title": "Sun Elevation Degrees",
+          "type": "number"
+        },
+        "light_power_w": {
+          "default": 800,
+          "exclusiveMinimum": 0,
+          "maximum": 10000,
+          "title": "Light Power W",
+          "type": "number"
+        },
+        "light_size_m": {
+          "default": 0.7,
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "title": "Light Size M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Treatment",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 20261026,
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "reference_pool": {
+      "format": "path",
+      "title": "Reference Pool",
+      "type": "string"
+    },
+    "artwork": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "format": "path",
+          "type": "string"
+        }
+      ],
+      "title": "Artwork",
+      "type": "array"
+    },
+    "grounds": {
+      "maxItems": 3,
+      "minItems": 3,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/Ground"
+        },
+        {
+          "$ref": "#/$defs/Ground"
+        },
+        {
+          "$ref": "#/$defs/Ground"
+        }
+      ],
+      "title": "Grounds",
+      "type": "array"
+    },
+    "environments": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "format": "path",
+          "type": "string"
+        }
+      ],
+      "title": "Environments",
+      "type": "array"
+    },
+    "width_metres": {
+      "default": 1,
+      "exclusiveMinimum": 0,
+      "maximum": 10,
+      "title": "Width Metres",
+      "type": "number"
+    },
+    "thickness_metres": {
+      "default": 0.003,
+      "exclusiveMinimum": 0,
+      "maximum": 0.1,
+      "title": "Thickness Metres",
+      "type": "number"
+    },
+    "resolution": {
+      "default": [
+        512,
+        512
+      ],
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "title": "Resolution",
+      "type": "array"
+    },
+    "focal_length_mm": {
+      "default": 35,
+      "maximum": 150,
+      "minimum": 8,
+      "title": "Focal Length Mm",
+      "type": "number"
+    },
+    "sensor_width_mm": {
+      "default": 36,
+      "maximum": 100,
+      "minimum": 5,
+      "title": "Sensor Width Mm",
+      "type": "number"
+    },
+    "principal_point_fraction": {
+      "default": [
+        0.5,
+        0.5
+      ],
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Principal Point Fraction",
+      "type": "array"
+    },
+    "threads": {
+      "default": 6,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Threads",
+      "type": "integer"
+    },
+    "fast_samples": {
+      "default": 32,
+      "maximum": 1024,
+      "minimum": 1,
+      "title": "Fast Samples",
+      "type": "integer"
+    },
+    "quality_samples": {
+      "default": 128,
+      "maximum": 4096,
+      "minimum": 1,
+      "title": "Quality Samples",
+      "type": "integer"
+    },
+    "scenes": {
+      "default": 3,
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Scenes",
+      "type": "integer"
+    },
+    "quality_treatments": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Quality Treatments",
+      "type": "array"
+    },
+    "study_seconds": {
+      "default": 7200,
+      "exclusiveMinimum": 0,
+      "maximum": 7200,
+      "title": "Study Seconds",
+      "type": "number"
+    },
+    "treatments": {
+      "items": {
+        "$ref": "#/$defs/Treatment"
+      },
+      "title": "Treatments",
+      "type": "array"
+    }
+  },
+  "required": [
+    "reference_pool",
+    "artwork",
+    "grounds",
+    "environments",
+    "treatments"
+  ],
+  "title": "PilotConfig",
+  "type": "object"
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "asset_id": "Concrete034",
+  "material_id": "ambientcg/Concrete034",
+  "provider": "ambientCG",
+  "source_page": "https://ambientcg.com/a/Concrete034",
+  "license": "CC0-1.0",
+  "license_url": "https://docs.ambientcg.com/license/",
+  "resolution": "1K-JPG",
+  "physical_dimensions": {
+    "width": 110,
+    "height": 55,
+    "depth": 0
+  },
+  "normal_convention": "OpenGL",
+  "archive": {
+    "url": "https://ambientcg.com/get?file=Concrete034_1K-JPG.zip",
+    "sha256": "5839d284d94ffb8d2a56df742ec522b13dd311c52dbd42b8fd33f0409ceedb81",
+    "size_bytes": 3657575
+  },
+  "maps": {
+    "color": {
+      "member": "Concrete034_1K-JPG_Color.jpg",
+      "sha256": "8ceb9186d990b31fce785e06fdc6974c160f1d27c43f6160266f164deba713aa",
+      "size_bytes": 269501
+    },
+    "normal": {
+      "member": "Concrete034_1K-JPG_NormalGL.jpg",
+      "sha256": "e509eb9dfa978e780fbebfd2acacc2ce158b5b7ced722ddc0759039dd51e18ca",
+      "size_bytes": 821681
+    },
+    "roughness": {
+      "member": "Concrete034_1K-JPG_Roughness.jpg",
+      "sha256": "a4a9e39857a19afd23a778e5abf44fcdf6bd7f93918f1cf6878b41933e553511",
+      "size_bytes": 217708
+    },
+    "displacement": {
+      "member": "Concrete034_1K-JPG_Displacement.jpg",
+      "sha256": "136226ea667221e6a62ce23853148ecda4309222c1dea253fa6245709ded9a8a",
+      "size_bytes": 189234
+    }
+  }
+}
