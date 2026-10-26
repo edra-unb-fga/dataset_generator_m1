@@ -338,3 +338,14 @@ RGB by alpha during rotation, resize and perspective projection; it preserves th
 alpha path, geometry and annotations. Composition remains encoded RGB. Omitted legacy mode keeps
 historical strict/normalized identities; nonlegacy mode participates in both and cannot cross-resume.
 See `SURFACE_RENDERING.md` and `experiments/alpha-resampling-v1/README.md` for cost and paired evidence.
+
+
+### Optional physical research harness
+
+The source-checkout workflow in `experiments/blenderproc/README.md` is separate from core generation,
+its planar pool and its dependency set. It pins BlenderProc/Blender versions, nominal physical
+parameters and source/asset/job identities, applies bounded process-tree resource guards, and exports
+canonical COCO full/visible sharp reference-pose geometry to the existing evaluator. Optional YOLO
+conversion reports fidelity or whole-format unavailability. Rendering and export share exclusive
+study ownership; export freezes the completed dataset. See `REALISM_ROUND_TWO.md` for the scope and
+`experiments/blender-pilot-v1/README.md` for evidence and remaining calibration/transfer limits.

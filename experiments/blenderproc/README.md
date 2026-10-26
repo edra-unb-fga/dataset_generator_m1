@@ -87,3 +87,13 @@ microbenchmark renders consume budget but are excluded from the single-output co
 These views test plausible engineering configurations. Real-world model benefit, calibrated materials,
 reference camera distributions and unseen deployment performance remain unknown. See
 `docs/REALISM_ROUND_TWO.md` and `docs/BLENDERPROC_COMPARISON.md`.
+
+The first render may download/install the pinned Blender runtime beneath `--blender-install-path`;
+allow its disk/network setup separately from steady-state generation. Installation and asset-acquisition
+wall time are not automatically benchmarked. The live pilot was exercised on Linux CPU; Windows CI
+covers the host contracts/core workflow, not a native Blender render. Report authoring also requires
+Pillow and NumPy (core dependencies) plus optional Matplotlib:
+
+```sh
+uv run --with matplotlib python scripts/report_blender_comparison.py --study outputs/experiments/pilot --pristine PATH_TO_PRISTINE_POOL --surface PATH_TO_SURFACE_POOL --output outputs/experiments/pilot-compact
+```

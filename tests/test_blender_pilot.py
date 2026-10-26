@@ -139,3 +139,18 @@ def test_prepared_input_and_host_source_changes_rejected(tmp_path,monkeypatch):
         (pool/name).write_bytes(b'original')
     study['contract']['harness_source_sha256']='changed'
     with pytest.raises(ValueError,match='changed'):pilot.validate_inputs(study,renderer)
+
+
+def test_export_freezes_missing_prepared_jobs_before_launch(tmp_path,monkeypatch):
+    from dataset_generator_m1 import blender_pilot as pilot
+    scene=fake_study(tmp_path)
+    study=json.loads((tmp_path/'study.json').read_text())
+    study['jobs'].append({'id':'later','scene':{'negative':False},'scene_index':1})
+    study['contract']['jobs_sha256']=digest(study['jobs']);study['identity']=digest(study['contract'])
+    row=json.loads((scene/'result.json').read_text());row['identity']=study['identity']
+    (scene/'result.json').write_text(json.dumps(row));(tmp_path/'study.json').write_text(json.dumps(study))
+    export_coco(tmp_path)
+    monkeypatch.setattr(pilot,'validate_inputs',lambda *args:None)
+    monkeypatch.setattr(pilot.subprocess,'Popen',lambda *args,**kwargs:pytest.fail('must not launch after freeze'))
+    with pytest.raises(ValueError,match='frozen'):
+        pilot.run_study(tmp_path,'unused','unused',job_ids=['later'])

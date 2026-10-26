@@ -171,3 +171,15 @@ The [3–6 worker tuning study](experiments/execution-tuning-v1/README.md) scree
 then confirms single-threaded 3/4/5/6-worker policies over three 48-image repetitions. It introduces
 portable capacity candidates and evidence-bound local recommendations without promoting a hardware-
 class speed default. Five workers is the local 5%-tolerance choice; six has the highest measured median.
+
+
+## Optional physical material, lighting and camera pilot
+
+The [BlenderProc pilot](experiments/blender-pilot-v1/README.md) compares nominal plastic panels over
+three hash-pinned CC0 PBR grounds and two HDR environments, with paired day/night, roughness, UV,
+shadow, haze, DOF, camera-motion and distortion treatments. Geometric full/visible masks remain sharp
+at the reference pose. Canonical COCO/evaluator preparation is required; bounded optional YOLO output
+retains polygon fidelity. `scripts/blenderproc_pilot.py` runs the isolated workflow and
+`scripts/report_blender_comparison.py` authors compact portable evidence. Raw assets and study pools
+stay ignored. The sparse feature study cannot establish detector transfer or universal engine speed;
+`BLENDERPROC_COMPARISON.md` retains the later repeated/equal-budget real-evaluation protocol.
