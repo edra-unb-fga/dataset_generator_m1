@@ -483,7 +483,8 @@ class SceneRenderer:
             started = self.clock()
             if premultiplied:
                 warped = warp_rgba(rgba, asset_to_output, (out_w, out_h), premultiplied=True)
-                warped_rgb, warped_alpha = warped[:, :, :3], warped[:, :, 3]
+                warped_rgb, warped_alpha = warped[:, :, :3], warped[:, :, 3].copy()
+                # Retained coverage must not pin the full four-channel warp.
             else:
                 warped_rgb = cv2.warpPerspective(
                     rgba[:, :, :3],
