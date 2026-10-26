@@ -19,3 +19,17 @@ Normal/roughness maps, physical sun angles, cast shadows, specular response and 
 Full target alpha precedes later target/external occlusion. Visible alpha is its remaining contribution. `visible_support_fraction` counts visible/full pixels above the family alpha threshold **within the image**; it is independent of the historical frame-clipping `visible_bbox_fraction`. Final boxes derive from visible masks. Fully hidden and below-floor targets lose annotations and archive entries with typed rejections. Best-effort retains survivor IDs; require-count rejects incomplete candidates after occlusion. Accidental empty positives are rejected; intentional negatives remain valid. Below-floor target pixels may remain in the image as unlabeled fragments, an explicit consequence of this acceptance policy to review against future real-label conventions.
 
 Occluder polygons/opacity enter geometry signatures; appearance-only study invariants remain strict. Scene records include layer coordinates/colors, stream seeds, output support and the acceptance floor. Exclusive occlusion/annotation timings and advisory temporary-memory estimates include enabled work. Workspace is streamed per layer rather than retained per occluder. No new default renderer features activate by omission.
+
+## Optional alpha-correct resampling
+
+`inline.scene.foreground_resampling: premultiplied` filters RGB weighted by alpha during foreground
+rotation, resize and perspective projection, then returns straight RGBA. Integer alpha, geometry,
+coverage masks and annotations remain unchanged. This prevents fully transparent hidden RGB from
+contaminating visible edges. It does not change encoded-RGB composition or simulate lighting.
+
+The default `legacy` path retains historical pixels and contract identities when omitted. Corrected
+mode participates in strict and normalized generation identities and cannot resume a legacy pool.
+Changing a composer file explicitly still changes its strict source identity. Use a fresh pool with
+`examples/configs/landing-pad_premultiplied.yaml`; existing builtin bundles remain untouched.
+The estimator includes the enabled float filtering workspace. See `REALISM_ROUND_TWO.md` for the
+separate scheduler and optional physical-rendering scope.

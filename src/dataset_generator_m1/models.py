@@ -174,6 +174,7 @@ class SurfaceWearConfig(StrictModel):
 
 
 class SceneConfig(StrictModel):
+    foreground_resampling: Literal["legacy", "premultiplied"] = "legacy"
     canvas_scale: float = Field(default=2.0, ge=1.25)
     camera: CameraConfig = Field(default_factory=CameraConfig)
     perspective: PerspectiveConfig = Field(default_factory=PerspectiveConfig)
@@ -279,6 +280,7 @@ class BackgroundAffineInline(StrictModel):
 
 
 class SceneInline(StrictModel):
+    foreground_resampling: Literal["legacy", "premultiplied"] | None = None
     canvas_scale: float | None = Field(default=None, ge=1.25)
     camera: CameraInline | None = None
     perspective: PerspectiveInline | None = None

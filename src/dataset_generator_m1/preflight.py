@@ -257,6 +257,8 @@ def run_preflight(
     runtime = _runtime_estimate(request, metadata, observations, knowledge)
     if (request.resolved.profile.scene.lighting is not None or request.resolved.profile.scene.occlusion is not None) and not observations:
         runtime["confidence"] += "-scene-effects-unmeasured"
+    if request.resolved.profile.scene.foreground_resampling == "premultiplied" and not observations:
+        runtime["confidence"] += "-resampling-unmeasured"
     if probe_triggered:
         runtime["confidence"] = "local-probe"
     warning_codes = list(dict.fromkeys(str(code) for code in metadata.get("warning_codes", ())))
