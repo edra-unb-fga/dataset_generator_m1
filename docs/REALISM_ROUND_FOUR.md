@@ -79,3 +79,9 @@ after 41,795,584 bytes. The available-memory and process-RSS measures were not t
 No further rendering or timing was attempted in this session. Runtime testing of the final motion,
 distortion and textured-wall changes, held-out visual review, 2D/3D timing confirmation and 1280px
 quality remain incomplete. See the report for evidence and reproduction commands.
+
+
+A single guarded retry at 22:56 UTC on 2026-10-27 also stopped during Blender startup: the monitored
+process tree peaked at 974,893,056 bytes RSS, minimum available system memory was 9,781,575,680 bytes,
+and system-wide swap-out increased by 49,864,704 bytes. No image completed; subsequent rendering and
+timing were not attempted. Swap is host-wide, so this signal does not attribute those writes to Blender.

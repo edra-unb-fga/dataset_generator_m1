@@ -379,5 +379,16 @@
       "resources": {},
       "scenes": []
     }
+  },
+  "retry_once": {
+    "status": "guard-aborted",
+    "resources": {
+      "status": "guard-aborted",
+      "reason": "host-swap-out",
+      "peak_rss_bytes": 974893056,
+      "minimum_available_bytes": 9781575680,
+      "swap_out_delta_bytes": 49864704
+    },
+    "scenes": []
   }
 }
