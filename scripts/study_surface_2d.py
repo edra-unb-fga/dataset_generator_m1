@@ -32,7 +32,7 @@ from dataset_generator_m1.preparation import PreparationRequest, prepare_generat
 class Variant(BaseModel):
     model_config = ConfigDict(extra='forbid', frozen=True)
     name: str = Field(pattern=r'^[a-z0-9][a-z0-9-]{0,63}$')
-    wear: SurfaceWearConfig
+    wear: SurfaceWearConfig | None
     shade: EnvironmentalShadeConfig | None = None
     repetitions: int | None = Field(default=None, ge=1, le=5)
 
@@ -94,8 +94,9 @@ def cell_profile(base, matrix, variant, resolution, count, policy):
         payload['scene']['lighting'] = {k: v for k, v in lighting.items() if k != 'shade'}
     # Keep every unrelated appearance transform, but replace existing local wear.
     payload['appearance']['foreground'] = [v for v in payload['appearance']['foreground'] if v['type'] != 'SurfaceWear']
-    payload['appearance']['foreground'].append({'id': 'shared-wear', 'type': 'SurfaceWear',
-        'probability': 1., 'params': variant.wear.model_dump(mode='json')})
+    if variant.wear is not None:
+        payload['appearance']['foreground'].append({'id': 'shared-wear', 'type': 'SurfaceWear',
+            'probability': 1., 'params': variant.wear.model_dump(mode='json')})
     payload['run']['num_images'] = count
     payload['output']['image_size'] = list(resolution)
     payload['execution'] = policy.model_dump(mode='json')

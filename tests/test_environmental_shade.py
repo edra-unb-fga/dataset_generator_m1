@@ -142,3 +142,22 @@ def test_inline_disabled_shade_overrides_enabled_profile_and_renders_unshaded(tm
     assert not np.array_equal(actual.image, shaded.image)
     assert all(np.array_equal(x, y) for x, y in zip(actual.full_coverages, shaded.full_coverages))
     assert all(np.array_equal(x, y) for x, y in zip(actual.visible_coverages, shaded.visible_coverages))
+
+
+@pytest.mark.parametrize('override', [{'probability': .2}, {'probability': 0}, {'strength': [0, 0]}])
+def test_partial_inline_shade_preserves_other_referenced_lighting_values(tmp_path, override):
+    import yaml
+    from helpers import write_derived_composer
+    from dataset_generator_m1.config import load_profile
+    lighting = {'probability': .35, 'gain': [.6, .7], 'gradient': [.3, .4],
+                'tint': .08, 'source_assumption': 'baked',
+                'shade': {'probability': .9, 'strength': [.5, .6], 'radius_fraction': [.7, .8]}}
+    path = write_derived_composer(tmp_path, 'landing-pad', {'scene': {'lighting': lighting}})
+    raw = yaml.safe_load(path.read_text())
+    raw['inline'] = {'scene': {'lighting': {'shade': override}}}
+    path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    resolved = load_profile(path)
+    actual = resolved.profile.scene.lighting.model_dump(mode='json', context={'preserve_disabled_shade': True})
+    expected = {**lighting, 'shade': {**lighting['shade'], **override}}
+    assert actual == expected
+    assert resolved.reference_graph['scene']['inline']['lighting'] == {'shade': override}

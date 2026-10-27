@@ -120,7 +120,7 @@ def run(config, matrix_file, output_dir, blenderproc, install):
                             measured, rows = checked_phase(cell, study, measured_ids, blenderproc, install)
                             execution = json.loads((cell/'execution.json').read_text())['selection']
                             selected_workers = execution['settings']['workers']
-                            if measured[1]['workers'] != selected_workers or measured[1]['command_seconds'] <= 0:
+                            if measured[1]['workers'] != min(selected_workers, len(measured_ids)) or measured[1]['command_seconds'] <= 0:
                                 raise ValueError('Invalid measured worker count or timing')
                             signature = evidence(rows)
                             pair = (size, repeat)

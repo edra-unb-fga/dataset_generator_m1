@@ -48,7 +48,9 @@ amplitude recorded separately; it does not change the flat panel silhouette.
 
 The opt-in `landing-pad_surface-pristine.yaml`, `landing-pad_surface-moderate.yaml`
 and `landing-pad_surface-stress.yaml` composers share the same capture stack and
-scene settings. Only local wear differs. Stress is an explicit diagnostic, not an
+scene settings. The pristine composer omits local wear; moderate and stress enable it.
+The severity study separately records a zero-strength operation as a paired control;
+its cost is not the same as omitting the operation. Stress is an explicit diagnostic, not an
 ordinary realism recipe. The separate `landing-pad_environmental-shade.yaml`
 composer adds this candidate beneath `inline.scene.lighting`:
 

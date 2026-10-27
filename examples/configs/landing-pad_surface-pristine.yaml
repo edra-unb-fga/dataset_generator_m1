@@ -10,15 +10,7 @@ background_mixing: builtin:background_mixing/standard
 appearance:
   preset: ../profiles/appearance/surface-study-camera/profile.yaml
   inline:
-    foreground:
-    - id: shared-wear
-      type: SurfaceWear
-      probability: 1.0
-      params:
-        fade: 0
-        dirt: 0
-        scratches: 0
-        marks: 0
+    foreground: []
 execution: builtin:execution/standard
 telemetry: builtin:telemetry/standard
 reporting: builtin:reporting/standard

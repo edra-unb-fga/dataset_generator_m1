@@ -57,3 +57,23 @@ def test_paired_study_produces_inspected_pools_and_exact_coco(tmp_path):
 def test_matrix_rejects_invalid_or_ambiguous_study_shapes(change):
     with pytest.raises(ValueError):
         study.Matrix.model_validate({**matrix_value(), **change})
+
+
+
+def test_omitted_wear_is_explicit_and_removes_only_the_wear_operation():
+    from dataset_generator_m1.config import load_profile
+    from dataset_generator_m1.models import TransformSpec
+    with pytest.raises(ValueError):
+        study.Variant.model_validate({'name': 'missing-treatment'})
+    omitted = study.Variant.model_validate({'name': 'omitted', 'wear': None})
+    matrix = study.Matrix.model_validate(matrix_value())
+    base = load_profile('examples/configs/landing-pad_surface-moderate.yaml')
+    retained = TransformSpec(type='RandomGamma', id='retained', params={'gamma_limit': [90, 110]})
+    appearance = base.profile.appearance.model_copy(update={'foreground': (*base.profile.appearance.foreground, retained)})
+    base = base.model_copy(update={'profile': base.profile.model_copy(update={'appearance': appearance})})
+    current = study.cell_profile(base, matrix, omitted, (96, 96), 2, base.profile.execution)
+    assert current.profile.appearance.foreground == (retained,)
+    zero = study.Variant.model_validate(matrix_value()['variants'][0])
+    control = study.cell_profile(base, matrix, zero, (96, 96), 2, base.profile.execution)
+    assert [effect.type for effect in control.profile.appearance.foreground] == ['RandomGamma', 'SurfaceWear']
+    assert control.profile.appearance.foreground[-1].params['fade'] == 0

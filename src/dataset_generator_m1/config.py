@@ -235,6 +235,12 @@ def load_profile(
             # Canonical profile serialization still omits disabled shade by default.
             inline = inline_model.model_dump(mode="json", exclude_none=True,
                 context={"preserve_disabled_shade": True})
+            if subject == "scene" and inline_model.lighting is not None:
+                # Nested lighting models carry defaults for validation; those are
+                # not overrides unless explicitly provided by the composer.
+                inline["lighting"] = inline_model.lighting.model_dump(
+                    mode="json", exclude_none=True, exclude_unset=True,
+                    context={"preserve_disabled_shade": True})
             value = _merge_inline(value, inline)
             node["inline"] = inline
         resolved_values[subject] = value["family"] if subject == "family" else value
