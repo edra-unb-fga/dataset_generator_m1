@@ -1,0 +1,17 @@
+schema_version: 2
+family: builtin:family/landing-pad
+run: builtin:run/landing-pad-standard
+assets: builtin:assets/landing-pad
+output: builtin:output/standard
+sampling: builtin:sampling/landing-pad-standard
+scene: builtin:scene/standard
+background_recipes: builtin:background_recipes/standard
+background_mixing: builtin:background_mixing/standard
+appearance: {preset: builtin:appearance/realistic-heavy}
+execution: builtin:execution/standard
+telemetry: builtin:telemetry/standard
+reporting: builtin:reporting/standard
+# Experimental candidate: paired visual and cost review required before promotion.
+inline:
+  scene:
+    compositing: linear-srgb

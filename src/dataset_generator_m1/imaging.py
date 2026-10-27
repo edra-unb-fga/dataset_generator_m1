@@ -161,3 +161,23 @@ def clip_bbox(bbox: BBox, width: int, height: int) -> BBox | None:
         return None
     return x1, y1, x2, y2
 
+
+
+def composite_linear_srgb(base: np.ndarray, foreground: np.ndarray, alpha: np.ndarray) -> np.ndarray:
+    """Composite straight-alpha sRGB colors using linear light in bounded row tiles.
+
+    Alpha is linear coverage in [0, 1]; foreground may be RGB image or a color.
+    Each composited layer is encoded back to 8-bit sRGB before the next layer.
+    This experimental option changes colors only; geometry and coverage are untouched.
+    """
+    from .surface_effects import linear_to_srgb, srgb_to_linear
+
+    result = np.empty_like(base)
+    for top in range(0, base.shape[0], 128):
+        bottom = min(base.shape[0], top + 128)
+        amount = alpha[top:bottom, :, None].astype(np.float32, copy=False)
+        source = foreground if foreground.ndim == 1 else foreground[top:bottom]
+        linear = srgb_to_linear(base[top:bottom]) * (1.0 - amount)
+        linear += srgb_to_linear(source) * amount
+        result[top:bottom] = linear_to_srgb(linear)
+    return result

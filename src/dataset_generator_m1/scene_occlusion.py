@@ -4,6 +4,8 @@ from dataclasses import dataclass
 import cv2
 import numpy as np
 
+from .imaging import composite_linear_srgb
+
 
 @dataclass(frozen=True)
 class SceneOccluder:
@@ -47,7 +49,7 @@ def sample_occluders(config, camera_rect, rng):
     return tuple(layers)
 
 
-def composite_occluders(rgb, layers, scene_to_output):
+def composite_occluders(rgb, layers, scene_to_output, *, compositing="legacy"):
     """Stream one projected layer and cumulative external coverage in output coordinates."""
     if not layers:
         return rgb, None
@@ -62,6 +64,9 @@ def composite_occluders(rgb, layers, scene_to_output):
         mask = np.zeros((h,w),np.uint8)
         cv2.fillPoly(mask,[np.rint(points*256).astype(np.int32)],255,lineType=cv2.LINE_AA,shift=8)
         alpha = mask.astype(np.float32)/255.*layer.opacity
-        result = np.rint(np.clip(result.astype(np.float32)*(1-alpha[:,:,None])+np.array(layer.color,np.float32)*alpha[:,:,None],0,255)).astype(np.uint8)
+        if compositing == "linear-srgb":
+            result = composite_linear_srgb(result, np.array(layer.color, np.uint8), alpha)
+        else:
+            result = np.rint(np.clip(result.astype(np.float32)*(1-alpha[:,:,None])+np.array(layer.color,np.float32)*alpha[:,:,None],0,255)).astype(np.uint8)
         total = alpha+total*(1-alpha)
     return result,np.rint(total*255).astype(np.uint8)

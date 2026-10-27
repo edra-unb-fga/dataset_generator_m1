@@ -1,5 +1,134 @@
 {
   "$defs": {
+    "CameraStudy": {
+      "additionalProperties": false,
+      "properties": {
+        "preset": {
+          "const": "drone",
+          "default": "drone",
+          "title": "Preset",
+          "type": "string"
+        },
+        "tilt_max_degrees": {
+          "default": 55,
+          "maximum": 65,
+          "minimum": 0,
+          "title": "Tilt Max Degrees",
+          "type": "number"
+        },
+        "tilt_scale_degrees": {
+          "default": 18.10855,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Tilt Scale Degrees",
+          "type": "number"
+        },
+        "ground_spans": {
+          "default": [
+            0.5,
+            1.5
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Ground Spans",
+          "type": "array"
+        },
+        "extent_bounds_m": {
+          "default": [
+            40,
+            500
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Extent Bounds M",
+          "type": "array"
+        },
+        "footprint_margin": {
+          "default": 1.1,
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Footprint Margin",
+          "type": "number"
+        },
+        "tile_bounds_m": {
+          "default": [
+            0.1,
+            500
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Tile Bounds M",
+          "type": "array"
+        },
+        "distance_scale_bounds": {
+          "default": [
+            0.25,
+            4
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Distance Scale Bounds",
+          "type": "array"
+        },
+        "distance_solver_iterations": {
+          "default": 48,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Distance Solver Iterations",
+          "type": "integer"
+        },
+        "distance_relative_tolerance": {
+          "default": 0.01,
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Distance Relative Tolerance",
+          "type": "number"
+        },
+        "material_mode": {
+          "default": "view-relative",
+          "enum": [
+            "view-relative",
+            "fixed-physical"
+          ],
+          "title": "Material Mode",
+          "type": "string"
+        }
+      },
+      "title": "CameraStudy",
+      "type": "object"
+    },
     "Casters": {
       "additionalProperties": false,
       "properties": {
@@ -39,6 +168,172 @@
         }
       },
       "title": "Casters",
+      "type": "object"
+    },
+    "EnvironmentGeometrySettings": {
+      "additionalProperties": false,
+      "properties": {
+        "min_half_width_m": {
+          "default": 2.5,
+          "exclusiveMinimum": 0,
+          "maximum": 500,
+          "title": "Min Half Width M",
+          "type": "number"
+        },
+        "camera_horizontal_margin_m": {
+          "default": 2,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Camera Horizontal Margin M",
+          "type": "number"
+        },
+        "min_room_height_m": {
+          "default": 3,
+          "exclusiveMinimum": 0,
+          "maximum": 500,
+          "title": "Min Room Height M",
+          "type": "number"
+        },
+        "camera_ceiling_margin_m": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Camera Ceiling Margin M",
+          "type": "number"
+        },
+        "outdoor_wall_height_m": {
+          "default": 1.5,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Outdoor Wall Height M",
+          "type": "number"
+        },
+        "wall_thickness_m": {
+          "default": 0.1,
+          "exclusiveMinimum": 0,
+          "maximum": 2,
+          "title": "Wall Thickness M",
+          "type": "number"
+        },
+        "wall_color": {
+          "default": [
+            0.48,
+            0.48,
+            0.45
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Wall Color",
+          "type": "array"
+        },
+        "wall_roughness": {
+          "default": 0.85,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Wall Roughness",
+          "type": "number"
+        },
+        "wall_ground_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wall Ground Index"
+        },
+        "wall_texture_repeats": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Wall Texture Repeats",
+          "type": "number"
+        },
+        "indoor_light_power_w": {
+          "default": 800,
+          "exclusiveMinimum": 0,
+          "maximum": 10000,
+          "title": "Indoor Light Power W",
+          "type": "number"
+        },
+        "indoor_light_color": {
+          "default": [
+            1,
+            0.9,
+            0.75
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Indoor Light Color",
+          "type": "array"
+        },
+        "indoor_light_size_m": {
+          "default": 2,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Indoor Light Size M",
+          "type": "number"
+        },
+        "indoor_light_ceiling_offset_m": {
+          "default": 0.15,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Indoor Light Ceiling Offset M",
+          "type": "number"
+        }
+      },
+      "title": "EnvironmentGeometrySettings",
+      "type": "object"
+    },
+    "EnvironmentMix": {
+      "additionalProperties": false,
+      "properties": {
+        "open": {
+          "default": 0.8,
+          "minimum": 0,
+          "title": "Open",
+          "type": "number"
+        },
+        "indoor": {
+          "default": 0.1,
+          "minimum": 0,
+          "title": "Indoor",
+          "type": "number"
+        },
+        "outdoor": {
+          "default": 0.1,
+          "minimum": 0,
+          "title": "Outdoor",
+          "type": "number"
+        }
+      },
+      "title": "EnvironmentMix",
       "type": "object"
     },
     "Ground": {
@@ -555,6 +850,39 @@
       "default": 1,
       "title": "Schema Version",
       "type": "integer"
+    },
+    "camera_study": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CameraStudy"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "environment_mix": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EnvironmentMix"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "environment_geometry_settings": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EnvironmentGeometrySettings"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "seed": {
       "default": 20261026,

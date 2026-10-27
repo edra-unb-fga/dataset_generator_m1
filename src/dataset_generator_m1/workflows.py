@@ -19,6 +19,7 @@ from .config import load_profile, load_yaml_strict
 from .generator import GenerationOptions, generate_pool
 from .models import GenerationProfile, ResolvedProfile, RunConfig, VariantCatalog
 from .scene import ScenePlanner, SceneRenderer, derive_seed
+from .renderer_version import derived_profile_payload
 
 
 def validate_project(resolved: ResolvedProfile) -> dict[str, Any]:
@@ -120,7 +121,7 @@ def preview_scenes(
         config["report"] = {**config["report"], "qa_samples": samples}
         profile = GenerationProfile.model_validate(config)
         contract_hash = hashlib.sha256(
-            json.dumps({"base": base.contract_hash, "variant": name, "profile": profile.model_dump(mode="json")}, sort_keys=True).encode()
+            json.dumps({"base": base.contract_hash, "variant": name, "profile": derived_profile_payload(profile.model_dump(mode="json"))}, sort_keys=True).encode()
         ).hexdigest()
         resolved = base.model_copy(update={"profile": profile, "contract_hash": contract_hash})
         results[name] = generate_pool(resolved, output / name, GenerationOptions(display="quiet", workers=1))

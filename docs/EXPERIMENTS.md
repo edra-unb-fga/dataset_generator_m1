@@ -208,3 +208,15 @@ assets, portable archives and application intermediates stay ignored. The tracke
 selected review figures and standalone HTML intentionally retain synthetic examples only. Reserved
 scene combinations are reviewed once after development selection; real references and trained-model
 outcomes remain absent rather than inferred from visual preference.
+
+
+## Camera and environment engineering screen
+
+See [round four](REALISM_ROUND_FOUR.md) and its [partial visual report](experiments/camera-environments-v1/README.md).
+`scripts/study_camera_environments.py` consumes a saved paired matrix and resource-guarded optional
+Blender runs; `scripts/study_linear_compositing.py` compares paired 2D visual fixtures, and
+`scripts/study_linear_compositing_timing.py` defines a separate guarded timing study. Completed-cell
+archives are hash-verified and packaged between timed cells. The initial 2D screen preserved mask and
+annotation evidence; earlier plain-wall 3D samples were reviewed as prototypes. Two subsequent
+3D attempts hit the existing system swap-out guard; the final 3D visual and performance checks were
+not completed. Do not treat the aborted run or single smoke renders as a throughput comparison.

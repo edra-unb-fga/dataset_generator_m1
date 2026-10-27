@@ -45,6 +45,7 @@ def test_only_new_legacy_field_is_elided_from_hash_payload():
     resolved = load_profile('examples/configs/landing-pad_minimal.yaml')
     payload = resolved.profile.model_dump(mode='json')
     payload['scene'].pop('foreground_resampling')
+    payload['scene'].pop('compositing')
     assert contract_profile(resolved.profile) == payload
     scene = resolved.profile.scene.model_copy(update={'foreground_resampling': 'premultiplied'})
     changed = resolved.model_copy(update={'profile': resolved.profile.model_copy(update={'scene': scene})})

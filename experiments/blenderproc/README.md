@@ -12,8 +12,8 @@ uv run python scripts/blenderproc_pilot.py bridge --assets-dir outputs/blender-a
 ```
 
 `assets` fetches the reviewed CC0 manifests in `assets/`, verifies hashes and reuses valid
-local files offline. A selection can contain 1–6 ground materials and 1–3 HDR environments; the
-round-three expansion is limited to three additional grounds and one HDR. AmbientCG archives use the existing bounded acquisition path; HDR files have
+local files offline. A selection can contain 1–6 ground materials and 1–3 HDR environments; these are current
+validated harness limits, not a two-asset limit. AmbientCG archives use the existing bounded acquisition path; HDR files have
 bounded HTTPS downloads. Raw files stay ignored. Inspect and adjust the generated normal 2D composers
 before generation. The bridge discovers verified material manifests, uses only their color maps as backgrounds in legacy
 material order followed by additional materials, and uses a planar UV recipe, normal core
@@ -288,3 +288,59 @@ To regenerate the reviewed execution figures from the retained evidence archive,
 `scripts/report_blender_execution.py --evidence-dir PATH --output-dir PATH` in the host environment
 with Matplotlib installed. Optional `--denoising` and `--cpu-study` inputs include the earlier denoising
 analysis and local CPU qualification. The authoring script produces Markdown, compact JSON and PNGs.
+
+### Drone camera study
+
+`pilot-drone.example.json` opts new studies into a scene-seeded drone pose. Yaw and
+heading-relative tilt direction are uniform; tilt follows the saved bounded exponential.
+Treatments and quality variants share the sealed scene pose. The renderer aims at the
+reference group, matches its median target width within the saved distance bounds, and
+records achieved width and bound failures. A single ordinary pad is centered. Ground
+extent follows the projected footprint within saved bounds; a horizon or extent clamp is
+recorded. View-relative material mode samples the number of material spans across the
+central view, subject to saved tile bounds; fixed-physical mode uses each treatment's
+`uv_scale_m`. Result diagnostics retain nominal and achieved values. Existing configs
+without `camera_study` retain their scalar camera and 40 m ground behavior.
+
+
+### Explicit environment geometry
+
+`pilot-environment-mix.example.json` opts into an 80/10/10 weighted open, indoor,
+and outdoor mix. The weights need not sum to one; selection is deterministic per scene
+and shared by paired treatments and quality levels. The indoor example forces an enclosed
+room, with a ceiling above the camera and an area light; the outdoor example forces a
+bounded, open-top layout. Walls and ceilings are real renderable meshes and therefore
+cast shadows and can occlude the target. Room dimensions adapt to include the camera
+and target, so camera height affects their size. Geometry dimensions are recorded in
+result diagnostics. HDR world lighting and sun are disabled inside the room; saved
+treatment lamps still apply. Omit `environment_mix` for the original open scene.
+
+Environment geometry settings are saved under `environment_geometry_settings`: minimum room
+half-width and height, margins around the camera, outdoor wall height, wall thickness, color
+and roughness, and indoor area-light power, color, size and ceiling offset. The room expands
+to contain the camera. `wall_ground_index` chooses the color map of an existing licensed
+`grounds` entry; `wall_texture_repeats` sets UV repetitions per face. Set the index to null
+for a plain-colored wall. The examples choose the Concrete034 ground entry explicitly; this
+is a prototype requiring visual and annotation review, not a calibrated material library.
+
+## Material provenance and completed-cell handoff
+
+Locally supplied non-CC0 ground and environment manifests must declare `license`, `author`,
+`source_url`, `license_url`, `attribution`, `restrictions`, `allow_local_render_and_dataset: true`,
+and an explicit boolean `allow_redistribution`. These are user-supplied declarations rather than
+independent legal verification. Portable input bundles refuse assets without redistribution permission;
+existing CC0 shorthand remains valid. The built-in asset downloader and 2D bridge remain CC0-only.
+
+For a completed, settled surface-study cell, package and verify the snapshot between timed commands:
+
+```sh
+python scripts/handoff_study_cell.py package --root STUDY --cell CELL --archive CELL.tar.gz
+python scripts/handoff_study_cell.py import --archive CELL.tar.gz --output IMPORTS
+```
+
+A configured CLI can download a packaged cell with `handoff_study_cell.py colab --remote PATH
+--output IMPORTS --cache DOWNLOADS --executable EXECUTABLE --session SESSION`. The controller must
+pause the remote study before transfer and wait for transfer and verification before starting a new
+timed command. The local lease cannot control a remote machine. A failed archive download restarts
+that archive; already verified cells are retained. This interface was tested locally and with a fake
+CLI, not against a live Colab runtime in this round.

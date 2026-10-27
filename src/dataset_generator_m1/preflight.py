@@ -237,6 +237,8 @@ def run_preflight(
                     "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_SCENE_LIGHTING_UNCALIBRATED"]}
     if request.resolved.profile.scene.occlusion is not None:
         metadata = {**metadata, "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_SCENE_OCCLUSION_UNCALIBRATED"]}
+    if request.resolved.profile.scene.compositing == "linear-srgb":
+        metadata = {**metadata, "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_LINEAR_COMPOSITING_UNVALIDATED"]}
     environment = environment_class()
     observations, observation_warnings = read_matching_observations(
         request.observation_path, request.resolved, request.workers, environment
@@ -259,6 +261,8 @@ def run_preflight(
         runtime["confidence"] += "-scene-effects-unmeasured"
     if request.resolved.profile.scene.foreground_resampling == "premultiplied" and not observations:
         runtime["confidence"] += "-resampling-unmeasured"
+    if request.resolved.profile.scene.compositing == "linear-srgb" and not observations:
+        runtime["confidence"] += "-compositing-unmeasured"
     if probe_triggered:
         runtime["confidence"] = "local-probe"
     warning_codes = list(dict.fromkeys(str(code) for code in metadata.get("warning_codes", ())))

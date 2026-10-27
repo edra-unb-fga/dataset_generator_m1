@@ -35,6 +35,7 @@ def safe_relative(value):
 
 def build_bundle(config_path, destination):
     from .blender_pilot import load_config, reference_scenes
+    from .asset_licenses import validate_asset_license
     from .inspection import _LocalLinks
     config=load_config(config_path);reference_scenes(config.reference_pool)
     source=Path(__file__).resolve().parents[2];destination=Path(destination).resolve()
@@ -56,7 +57,7 @@ def build_bundle(config_path, destination):
             target=staging/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(value,indent=2)+'\n')
             files[name]={'sha256':file_hash(target),'bytes':target.stat().st_size}
         # Explicit source roots only. No git metadata, credentials, arbitrary workspace or caches.
-        for name in ['pyproject.toml','uv.lock','scripts/blenderproc_pilot.py','scripts/study_surface_integration.py','scripts/study_surface_performance.py','scripts/study_surface_2d.py']:
+        for name in ['pyproject.toml','uv.lock','scripts/blenderproc_pilot.py','scripts/study_surface_integration.py','scripts/study_surface_performance.py','scripts/study_surface_2d.py','scripts/handoff_study_cell.py','scripts/study_camera_environments.py']:
             add(source/name,'source/'+name)
         for base in [source/'src/dataset_generator_m1',source/'experiments/blenderproc']:
             for path in sorted(base.rglob('*')):
@@ -68,7 +69,8 @@ def build_bundle(config_path, destination):
             name=f'inputs/artwork-{index}'+path.suffix.lower();add(path,name);value['artwork'].append(name)
         value['grounds']=[]
         for index,g in enumerate(config.grounds):
-            record=json.loads(g.material_file.read_text());name=f'inputs/ground-{index}.json';write(name,record)
+            record=json.loads(g.material_file.read_text());validate_asset_license(record,redistribution=True)
+            name=f'inputs/ground-{index}.json';write(name,record)
             for role,item in record['maps'].items():
                 path=g.material_file.parent/record['asset_id']/(role+'.jpg')
                 if file_hash(path)!=item['sha256']:raise ValueError('Ground map changed')
@@ -76,7 +78,8 @@ def build_bundle(config_path, destination):
             value['grounds'].append({'material_file':name})
         value['environments']=[]
         for index,path in enumerate(config.environments):
-            record=json.loads(path.read_text());hdr=path.parent/record['path']
+            record=json.loads(path.read_text());validate_asset_license(record,redistribution=True)
+            hdr=path.parent/record['path']
             if file_hash(hdr)!=record['sha256']:raise ValueError('Environment changed')
             record['path']=f'environment-{index}.hdr';name=f'inputs/environment-{index}.json'
             add(hdr,'inputs/'+record['path']);write(name,record);value['environments'].append(name)

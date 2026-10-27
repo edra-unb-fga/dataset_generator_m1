@@ -70,6 +70,22 @@ def test_scene_offset_resolves_and_wraps_reference_indices(tmp_path,monkeypatch)
         selected=pilot.prepare(path,tmp_path/('study-'+name))
         quality=[job['treatment']['id'] for job in selected['jobs'] if job['case']=='ordinary' and job['quality']=='quality' and job['scene_index']==0]
         assert quality==expected
+    config['environment_mix']={'open':0,'indoor':1,'outdoor':0}
+    config['environment_geometry_settings']={'wall_ground_index':0,'wall_texture_repeats':2}
+    config['quality_treatments']=[]
+    path.write_text(json.dumps(config))
+    enclosed=pilot.prepare(path,tmp_path/'study-indoor')
+    assert all(job['environment_geometry']=='indoor' for job in enclosed['jobs'])
+    assert enclosed['config']['environment_geometry_settings']['wall_ground_index']==0
+    assert enclosed['config']['environment_geometry_settings']['wall_texture_repeats']==2
+    with pytest.raises(ValueError,match='index out of range'):
+        pilot.PilotConfig.model_validate({**config,'environment_geometry_settings':{'wall_ground_index':1}})
+    with pytest.raises(ValueError,match='ceiling margin'):
+        pilot.EnvironmentGeometrySettings(camera_ceiling_margin_m=.01)
+    assert 'environment_mix' not in study['config']
+    with pytest.raises(ValueError,match='positive total'):pilot.EnvironmentMix(open=0,indoor=0,outdoor=0)
+    config.pop('environment_mix')
+    config.pop('environment_geometry_settings')
     config['quality_treatments']=['unknown']
     with pytest.raises(ValueError,match='Unknown quality treatment'):pilot.PilotConfig.model_validate(config)
     config['quality_treatments']=[]

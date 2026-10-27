@@ -12,6 +12,8 @@ import tempfile
 from time import perf_counter
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'src'))
+from dataset_generator_m1.blender_camera import rotation_matrix, ground_geometry, environment_bounds
 from runtime import configure as configure_execution, evidence as execution_evidence
 import bpy
 from blenderproc.python.utility.GlobalStorage import GlobalStorage
@@ -78,12 +80,12 @@ def light(name,kind,location,power,color,size,target=(0,0,0)):
     return obj
 
 
-def ground_material(ground,treatment):
+def ground_material(ground,treatment,extent=40,tile_override=None):
     mat,shader=material('ground',roughness=.8)
     nodes=mat.node_tree.nodes;links=mat.node_tree.links
     coord=nodes.new('ShaderNodeTexCoord');mapping=nodes.new('ShaderNodeMapping')
-    tile=treatment['uv_scale_m']
-    mapping.inputs['Scale'].default_value=(40/tile,40/tile,1)
+    tile=tile_override if tile_override is not None else treatment['uv_scale_m']
+    mapping.inputs['Scale'].default_value=(extent/tile,extent/tile,1)
     mapping.inputs['Rotation'].default_value[2]=math.radians(treatment['uv_rotation_degrees'])
     mapping.inputs['Location'].default_value=(*treatment.get('ground_uv_offset',(0,0)),0)
     links.new(coord.outputs['UV'],mapping.inputs['Vector'])
@@ -98,6 +100,41 @@ def ground_material(ground,treatment):
     return mat
 
 
+def environment_geometry(kind, position, settings, grounds, camera_speed_mps, shutter_seconds):
+    """Build enclosing surfaces using saved dimensions and material choices."""
+    if kind == 'open':
+        return None
+    bounds=environment_bounds(position,settings,camera_speed_mps,shutter_seconds)
+    half=bounds['half_width_m'];height=bounds['ceiling_height_m']
+    wall_height=height if kind == 'indoor' else settings['outdoor_wall_height_m']
+    wall_mat,shader=material('environment-wall',(*settings['wall_color'],1),settings['wall_roughness'])
+    index=settings['wall_ground_index']
+    if index is not None:
+        texture=image_node(wall_mat,grounds[index]['maps']['color'])
+        coord=wall_mat.node_tree.nodes.new('ShaderNodeTexCoord')
+        mapping=wall_mat.node_tree.nodes.new('ShaderNodeMapping')
+        repeats=settings['wall_texture_repeats']
+        mapping.inputs['Scale'].default_value=(repeats,repeats,1)
+        links=wall_mat.node_tree.links
+        links.new(coord.outputs['UV'],mapping.inputs['Vector'])
+        links.new(mapping.outputs['Vector'],texture.inputs['Vector'])
+        links.new(texture.outputs['Color'],shader.inputs['Base Color'])
+    def box(name, location, scale):
+        bpy.ops.mesh.primitive_cube_add(size=1,location=location)
+        obj=bpy.context.object;obj.name=name;obj.scale=scale;obj.data.materials.append(wall_mat)
+    thickness=settings['wall_thickness_m']
+    for axis in (-1,1):
+        box(f'environment-wall-x-{axis}',(axis*half,0,wall_height/2),(thickness,2*half,wall_height))
+        box(f'environment-wall-y-{axis}',(0,axis*half,wall_height/2),(2*half,thickness,wall_height))
+    if kind == 'indoor':
+        box('environment-ceiling',(0,0,height),(2*half,2*half,thickness))
+        light('environment-ceiling-light','AREA',(0,0,height-settings['indoor_light_ceiling_offset_m']),
+              settings['indoor_light_power_w'],settings['indoor_light_color'],settings['indoor_light_size_m'])
+    return {'kind':kind,'half_width_m':half,'wall_height_m':wall_height,
+            'ceiling_height_m':height if kind == 'indoor' else None,
+            'camera_motion_margin_m':bounds['camera_motion_margin_m'],'settings':settings}
+
+
 def build_scene(study,job,attempt):
     bproc.clean_up(clean_up_camera=True)
     scene=bpy.context.scene;t=job['treatment'];config=study['config']
@@ -109,20 +146,59 @@ def build_scene(study,job,attempt):
     scene.render.fps=24
     width,height=config['resolution'];focal=width*config['focal_length_mm']/config['sensor_width_mm']
     K=np.array([[focal,0,(width-1)*config['principal_point_fraction'][0]],[0,focal,(height-1)*config['principal_point_fraction'][1]],[0,0,1.]])
-    bproc.camera.set_intrinsics_from_K_matrix(K,width,height,clip_start=.03,clip_end=200)
+    bproc.camera.set_intrinsics_from_K_matrix(K,width,height,clip_start=.03,clip_end=1000 if job.get('camera_pose') else 200)
     fractions=[obj['fraction'] for obj in job['scene']['objects']] or [.18]
     extents=[abs(math.cos(math.radians(o['angle'])))+study['artwork'][o['artwork_index']]['aspect']*abs(math.sin(math.radians(o['angle']))) for o in job['scene']['objects']] or [1.]
     distance=config['width_metres']*float(np.median(extents))*(config['focal_length_mm']/config['sensor_width_mm'])/max(.04,float(np.median(fractions)))*t['camera_distance_scale']
-    if job['case']=='closeup':distance*=.45
-    angle=math.radians(t['view_degrees'])
-    azimuth=math.radians(t['camera_azimuth_degrees'])
-    position=np.array([distance*math.sin(angle)*math.sin(azimuth),-distance*math.sin(angle)*math.cos(azimuth),distance*math.cos(angle)])
-    rotation=bproc.camera.rotation_from_forward_vec(-position,inplane_rot=math.radians(t['camera_roll_degrees']))
+    if job['case']=='closeup' and not job.get('camera_pose'):distance*=.45
+    pose=job.get('camera_pose')
+    camera_evidence=None
+    ground_evidence=None
+    if pose:
+        settings=config['camera_study']
+        rotation=rotation_matrix(pose)
+        reference_distance=distance/t['camera_distance_scale']
+        # Match the median projected panel width to the reference, within saved bounds.
+        def projected_fraction(distance_value):
+            position_value=rotation[:,2]*distance_value
+            values=[]
+            for obj in job['scene']['objects']:
+                a=math.radians(obj['angle']); aspect=study['artwork'][obj['artwork_index']]['aspect']
+                points=[]
+                for x,y in ((-.5,-.5),(-.5,.5),(.5,-.5),(.5,.5)):
+                    x*=config['width_metres']; y*=config['width_metres']*aspect
+                    world=np.array([x*math.cos(a)-y*math.sin(a),x*math.sin(a)+y*math.cos(a),config['thickness_metres']/2])
+                    camera=rotation.T@(world-position_value)
+                    if camera[2]>=0:return float('inf')
+                    points.append(focal*camera[0]/-camera[2])
+                values.append((max(points)-min(points))/width)
+            return float(np.median(values)) if values else None
+        target=float(np.median(fractions))
+        lo,hi=[reference_distance*x for x in settings['distance_scale_bounds']]
+        if job['scene']['objects']:
+            for _ in range(settings['distance_solver_iterations']):
+                mid=(lo+hi)/2
+                if projected_fraction(mid)>target:lo=mid
+                else:hi=mid
+            distance=(lo+hi)/2
+        else:distance=reference_distance
+        if job['case']=='closeup':distance*=.45
+        position=rotation[:,2]*distance
+        achieved=projected_fraction(distance)
+        camera_evidence={'pose':pose,'target_width_fraction':target if achieved is not None else None,
+                         'representative_centered_width_fraction':achieved,
+                         'distance_bound_reached': bool(job['case']!='closeup' and achieved is not None and abs(achieved-target)>target*settings['distance_relative_tolerance']),
+                         'deliberate_closeup_distance_scale':.45 if job['case']=='closeup' else None}
+    else:
+        angle=math.radians(t['view_degrees'])
+        azimuth=math.radians(t['camera_azimuth_degrees'])
+        position=np.array([distance*math.sin(angle)*math.sin(azimuth),-distance*math.sin(angle)*math.cos(azimuth),distance*math.cos(angle)])
+        rotation=bproc.camera.rotation_from_forward_vec(-position,inplane_rot=math.radians(t['camera_roll_degrees']))
     matrix=bproc.math.build_transformation_mat(position,rotation)
     # A continuous translating camera, stationary targets. Pose0 is label reference.
     for frame in (-1,0,1):
-        pose=matrix.copy();pose[0,3]+=frame*t['camera_speed_mps']/24
-        bproc.camera.add_camera_pose(pose,frame=frame)
+        frame_pose=matrix.copy();frame_pose[0,3]+=frame*t['camera_speed_mps']/24
+        bproc.camera.add_camera_pose(frame_pose,frame=frame)
     scene.frame_start=0;scene.frame_end=1;scene.frame_set(0)
     camera=scene.camera
     if t['depth_of_field']:
@@ -132,8 +208,26 @@ def build_scene(study,job,attempt):
         bproc.renderer.enable_motion_blur(motion_blur_length=t['shutter_seconds']*24)
     mapping=None
     if any(t['distortion']):mapping=bproc.camera.set_lens_distortion(*t['distortion'])
-    bpy.ops.mesh.primitive_plane_add(size=40)
-    ground=bpy.context.object;ground.name='ground';ground.data.materials.append(ground_material(study['grounds'][job['ground_index']],t))
+    if job.get('camera_pose'):
+        internal_K=bproc.camera.get_intrinsics_as_K_matrix() if mapping is not None else K
+        bounds=None
+        if mapping is not None:
+            # BlenderProc maps every output pixel to its undistorted internal render.
+            bounds=(float(np.min(mapping[1]))-1,float(np.min(mapping[0]))-1,
+                    float(np.max(mapping[1]))+1,float(np.max(mapping[0]))+1)
+        motion=t['camera_speed_mps']*max(1/24,t['shutter_seconds']/2) if t['camera_speed_mps'] else 0
+        ground_evidence=ground_geometry(position,rotation,internal_K,(width,height),settings,t['uv_scale_m'],
+                                        job['camera_pose']['ground_spans'],pixel_bounds=bounds,motion_m=motion,
+                                        distorted=mapping is not None)
+        if settings['material_mode']=='fixed-physical':
+            ground_evidence['tile_m']=t['uv_scale_m']
+            ground_evidence['achieved_spans']=(ground_evidence['central_view_width_m']/t['uv_scale_m'] if ground_evidence['central_view_width_m'] else None)
+        ground_evidence['material_mode']=settings['material_mode']
+    extent=ground_evidence['extent_m'] if ground_evidence else 40
+    tile=ground_evidence['tile_m'] if ground_evidence else None
+    bpy.ops.mesh.primitive_plane_add(size=extent)
+    ground=bpy.context.object;ground.name='ground';ground.data.materials.append(ground_material(study['grounds'][job['ground_index']],t,extent,tile))
+    geometry=environment_geometry(job.get('environment_geometry','open'),position,config.get('environment_geometry_settings'),study['grounds'],t['camera_speed_mps'],t['shutter_seconds'])
     world=scene.world;world.use_nodes=True
     background=world.node_tree.nodes.get('Background')
     tex=world.node_tree.nodes.new('ShaderNodeTexEnvironment')
@@ -145,7 +239,8 @@ def build_scene(study,job,attempt):
     world.node_tree.links.new(tex.outputs['Color'],background.inputs['Color'])
     background.inputs['Strength'].default_value=.015 if t['lighting'].startswith('night') else (.7 if t['lighting']=='overcast' else .08 if t['lighting']=='shade' else .25)
     if t.get('environment_strength') is not None:background.inputs['Strength'].default_value=t['environment_strength']
-    if t['lighting']=='sun':
+    if job.get('environment_geometry')=='indoor':background.inputs['Strength'].default_value=0
+    if t['lighting']=='sun' and job.get('environment_geometry')!='indoor':
         elev=math.radians(t['sun_elevation_degrees'])
         light('sun','SUN',(-5,-5,7*math.tan(elev)),2.0,(1,.94,.85),.025)
     if t.get('lamps') is not None:
@@ -158,7 +253,9 @@ def build_scene(study,job,attempt):
     rng=np.random.default_rng(job['seed']+attempt*100003)
     for index,planned in enumerate(job['scene']['objects']):
         u,v=planned['center']
-        if attempt:u+=rng.uniform(-.025,.025);v+=rng.uniform(-.025,.025)
+        if pose and len(job['scene']['objects'])==1 and job['case']!='clipped':u=v=.5
+        if attempt and not (pose and len(job['scene']['objects'])==1 and job['case']!='clipped'):
+            u+=rng.uniform(-.025,.025);v+=rng.uniform(-.025,.025)
         ray=rotation@np.array([(u*width-K[0,2])/focal,-(v*height-K[1,2])/focal,-1.])
         at=position+ray*((config['thickness_metres']/2-position[2])/ray[2])
         at[2]=config['thickness_metres']/2
@@ -166,6 +263,21 @@ def build_scene(study,job,attempt):
         if job['case']=='overlap' and index==1:
             at=np.array(pads[0].location)+np.array([.04,.03,config['thickness_metres']])
         pads.append(panel(f'pad-{index}',study['artwork'][planned['artwork_index']],config['width_metres'],config['thickness_metres'],at,planned['angle'],t['roughness'],t.get('pad_bump_strength') if t.get('pad_bump_strength') is not None else t['normal_strength'],t.get('pad_bump_distance_m',.00015),job.get('wear_maps',[None]*len(job['scene']['objects']))[index]))
+    if camera_evidence is not None:
+        # Measure the final rigid panels at their actual planned positions (before lens distortion).
+        actual=[]
+        for obj in pads:
+            a=obj.rotation_euler[2]; aspect=study['artwork'][job['scene']['objects'][len(actual)]['artwork_index']]['aspect']
+            xs=[]
+            for x,y in ((-.5,-.5),(-.5,.5),(.5,-.5),(.5,.5)):
+                x*=config['width_metres'];y*=config['width_metres']*aspect
+                world=np.array([obj.location.x+x*math.cos(a)-y*math.sin(a),obj.location.y+x*math.sin(a)+y*math.cos(a),obj.location.z+config['thickness_metres']/2])
+                camera_local=rotation.T@(world-position)
+                if camera_local[2]>=0:xs=[];break
+                xs.append(focal*camera_local[0]/-camera_local[2])
+            actual.append((max(xs)-min(xs))/width if xs else None)
+        camera_evidence['actual_projected_width_fractions_before_distortion']=actual
+        camera_evidence['actual_widths_include_clipping']=False
     caster_records=[]
     if t['shadows'] and t.get('casters') is None:
         for index in range(3):
@@ -192,7 +304,7 @@ def build_scene(study,job,attempt):
         shader=nodes.new('ShaderNodeVolumePrincipled');shader.inputs['Density'].default_value=t['haze_density']
         output=nodes.new('ShaderNodeOutputMaterial');mat.node_tree.links.new(shader.outputs['Volume'],output.inputs['Volume'])
         volume.data.materials.append(mat)
-    return [obj.name for obj in pads],volume.name if volume else None,mapping,K,distance,caster_records
+    return [obj.name for obj in pads],volume.name if volume else None,mapping,K,distance,caster_records,camera_evidence,ground_evidence,geometry
 
 
 def distorted(value,mapping,size,interpolate):
@@ -220,7 +332,7 @@ def run_job(study,job,root):
     if (destination/'result.json').exists():return
     config=study['config'];attempts=[]
     for attempt in range(8):
-        setup_started=perf_counter();pads,volume,mapping,K,distance,casters=build_scene(study,job,attempt)
+        setup_started=perf_counter();pads,volume,mapping,K,distance,casters,camera_evidence,ground_evidence,geometry=build_scene(study,job,attempt)
         setup_seconds=perf_counter()-setup_started
         # Labels use sharp geometry at pose0, independent of beauty DOF/blur.
         scene=bpy.context.scene;dof=scene.camera.data.dof.use_dof;motion=scene.render.use_motion_blur
@@ -283,7 +395,7 @@ def run_job(study,job,root):
                             'ground_normal_strength':job['treatment'].get('ground_normal_strength') if job['treatment'].get('ground_normal_strength') is not None else job['treatment']['normal_strength'],
                             'lamps':[{'name':o.name,'type':o.data.type,'location':list(o.location),'color':list(o.data.color),'power':o.data.energy,'rotation_euler':list(o.rotation_euler)} for o in scene.objects if o.type=='LIGHT'],
                             'treatment':job['treatment'],'wear_maps':job.get('wear_maps',[]),'casters':casters},
-                        'camera_distance_metres':distance,'reference_masks':'single-ray sharp geometry at frame0',
+                        'environment_geometry_diagnostics':geometry,'camera_distance_metres':distance,'camera_diagnostics':camera_evidence,'ground_diagnostics':ground_evidence,'reference_masks':'single-ray sharp geometry at frame0',
                         'noise_model':'post-display RGB Gaussian approximation, not calibrated sensor simulation',
                         'files':{name:hashlib.sha256((staging/name).read_bytes()).hexdigest() for name in ('rgb.png','masks.npz')}}
                 atomic_json(staging/'result.json',record)
