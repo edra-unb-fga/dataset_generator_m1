@@ -1,0 +1,50 @@
+{
+  "asset_id": "dry_branches_medium_01",
+  "provider": "Poly Haven",
+  "source_page": "https://polyhaven.com/a/dry_branches_medium_01",
+  "provider_api": "https://api.polyhaven.com/files/dry_branches_medium_01",
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "format": "glTF 2.0; locally packaged GLB",
+  "resolution": "1k",
+  "units": "meters per glTF 2.0 specification; provider width 1.3 m",
+  "up_axis": "Y in glTF 2.0 coordinates",
+  "dependencies": {
+    "dry_branches_medium_01_1k.gltf": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/dry_branches_medium_01/dry_branches_medium_01_1k.gltf",
+      "size_bytes": 5844,
+      "sha256": "23f328ded9be1e151ccd7994b303c70221551544c4857a71474c1c01a14b8a22",
+      "provider_md5": "bd6d60dff97c59a80d770f94f23b566b"
+    },
+    "textures/dry_branches_medium_01_arm_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dry_branches_medium_01/dry_branches_medium_01_arm_1k.jpg",
+      "size_bytes": 831180,
+      "sha256": "6d1ba6f4763d2815301a15bf62eaf68c345cecafb107e2681d12f26fbc657f5a",
+      "provider_md5": "a0c5fface8ffdf81a806fcd5cf05788f"
+    },
+    "textures/dry_branches_medium_01_diff_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dry_branches_medium_01/dry_branches_medium_01_diff_1k.jpg",
+      "size_bytes": 778799,
+      "sha256": "1fbaf810a9ca29d2faf0a179834e8dce10cf4854bafe13f63af111030b3ec660",
+      "provider_md5": "2b01d9d1613c88496250f64828566f7c"
+    },
+    "textures/dry_branches_medium_01_nor_gl_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dry_branches_medium_01/dry_branches_medium_01_nor_gl_1k.jpg",
+      "size_bytes": 1170647,
+      "sha256": "62f5205bfec599000bb7a430e003bbada939bc8d7976a7d3ab7709fd5893413c",
+      "provider_md5": "d374fbbd8c4829310104cce0de7cd826"
+    },
+    "dry_branches_medium_01.bin": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/dry_branches_medium_01/dry_branches_medium_01.bin",
+      "size_bytes": 465172,
+      "sha256": "969da1e8cbb2d8201e7fa0fc0dac5b19ef354b32c3d8c62dd9faa7cb3833d8ca",
+      "provider_md5": "10de852c8bf38e3f3ca5fb1d6c8de9d0"
+    }
+  },
+  "derived_glb": {
+    "path": "dry_branches_medium_01_1k.glb",
+    "size_bytes": 3249380,
+    "sha256": "b97d49317522b3ca0ecbdbe7ecc028117cfe7b719db5a25a31e42cf3da34cf2e",
+    "method": "Embedded original glTF buffer and JPEG image bytes in a GLB container; no mesh or image re-encoding."
+  }
+}
