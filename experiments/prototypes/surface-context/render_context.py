@@ -1,5 +1,5 @@
-"""BlenderProc entry for isolated context prototypes; no normal pipeline changes."""
 import blenderproc as bproc
+# BlenderProc entry for isolated context prototypes; no normal pipeline changes.
 import argparse
 import hashlib
 import json
