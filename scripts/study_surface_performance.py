@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import statistics
 from pathlib import Path
@@ -67,7 +68,14 @@ def phase_ids(benchmark, variant):
             [f'{i:03d}-{variant}-fast' for i in range(warmups, warmups + benchmark['measured'])])
 
 
-def run(config, matrix_file, output_dir, blenderproc, install):
+def validate_study_id(value):
+    if not isinstance(value, str) or re.fullmatch(r'[a-z0-9][a-z0-9-]{0,63}', value) is None:
+        raise ValueError('Study ID must be a lowercase alphanumeric/hyphen slug of at most 64 characters')
+    return value
+
+
+def run(config, matrix_file, output_dir, blenderproc, install, study_id='performance'):
+    study_id = validate_study_id(study_id)
     root, matrix_file = Path(output_dir).resolve(), Path(matrix_file).resolve()
     config = Path(config).resolve()
     matrix = json.loads(matrix_file.read_text())
@@ -76,7 +84,7 @@ def run(config, matrix_file, output_dir, blenderproc, install):
     base = load_config(config).model_dump(mode='json')
     driver = Path(__file__).resolve()
     with CoordinatorLease(root):
-        performance = root/'performance'
+        performance = root/study_id
         if performance.exists():
             raise ValueError('Performance evidence already exists; do not retry or overwrite cells')
         design = {'matrix': matrix, 'matrix_sha256': digest_file(matrix_file)}
@@ -87,7 +95,7 @@ def run(config, matrix_file, output_dir, blenderproc, install):
         performance.mkdir()
         shutil.copyfile(driver, performance/'driver-source.py')
         atomic_json(performance/'matrix.json', matrix)
-        atomic_json(performance/'provenance.json', {'matrix_sha256': design['matrix_sha256'],
+        atomic_json(performance/'provenance.json', {'study_id': study_id, 'matrix_sha256': design['matrix_sha256'],
             'driver_sha256': digest_file(driver), 'config_sha256': digest_file(config),
             'resolved_config': base, 'blenderproc': str(Path(blenderproc).resolve()),
             'blender_install_path': str(Path(install).resolve()),
@@ -99,7 +107,7 @@ def run(config, matrix_file, output_dir, blenderproc, install):
                 for repeat in range(benchmark['repetitions']):
                     variants = ('core', 'wear') if repeat % 2 == 0 else ('wear', 'core')
                     for variant in variants:
-                        name = f'performance-{size}-{repeat:02d}-{variant}'
+                        name = f'{study_id}-{size}-{repeat:02d}-{variant}'
                         if any(e['name'] == name for e in ledger.value['entries']):
                             raise ValueError('Cell already reserved')
                         allowance = ledger.allowance('final')
@@ -146,13 +154,13 @@ def run(config, matrix_file, output_dir, blenderproc, install):
                 'median_images_per_second': statistics.median(r['images_per_second'] for r in records
                     if r['resolution'] == size and r['variant'] == variant)}
                 for size in benchmark['resolutions'] for variant in ('core', 'wear')]
-            result = {'status': 'complete', 'checks': {'paired_geometry_acceptance_masks_equal': True,
+            result = {'study_id': study_id, 'status': 'complete', 'checks': {'paired_geometry_acceptance_masks_equal': True,
                 'all_measured_accepted': True, 'resolved_worker_counts_match': True}, 'records': records, 'medians': medians,
                 'budget_used_seconds': ledger.used(), 'limitations': ['Environment-local confirmation; no cross-machine speed claim.']}
             atomic_json(performance/'summary.json', result)
             return result
         except BaseException as error:
-            atomic_json(performance/'summary.json', {'status': 'failed', 'error': str(error),
+            atomic_json(performance/'summary.json', {'study_id': study_id, 'status': 'failed', 'error': str(error),
                 'records': records, 'budget_used_seconds': ledger.used()})
             raise
 
@@ -161,8 +169,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('config', 'matrix', 'output-dir', 'blenderproc', 'blender-install-path'):
         parser.add_argument('--'+name, required=True)
+    parser.add_argument('--study-id', default='performance')
     args = parser.parse_args()
-    run(args.config, args.matrix, args.output_dir, args.blenderproc, args.blender_install_path)
+    run(args.config, args.matrix, args.output_dir, args.blenderproc, args.blender_install_path, args.study_id)
 
 
 if __name__ == '__main__':

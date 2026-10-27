@@ -56,3 +56,17 @@ def test_benchmark_rejects_invalid_inputs(change):
     benchmark.update(change)
     with pytest.raises(ValueError):
         module.validate_benchmark(benchmark)
+
+
+@pytest.mark.parametrize('study_id', ['', '.', '..', '../other', '/tmp/other', 'A', '-bad', 'a_b', 'a'*65])
+def test_invalid_study_ids_fail_before_any_io(tmp_path, study_id):
+    output = tmp_path/'output'
+    with pytest.raises(ValueError, match='Study ID'):
+        module.run('missing-config', 'missing-matrix', output, 'missing-blenderproc', 'missing-install', study_id)
+    assert not output.exists()
+
+
+def test_study_id_accepts_default_and_isolated_slug():
+    assert module.validate_study_id('performance') == 'performance'
+    assert module.validate_study_id('performance-isolated') == 'performance-isolated'
+    assert module.validate_study_id('a'*64) == 'a'*64
