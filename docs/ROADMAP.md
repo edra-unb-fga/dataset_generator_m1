@@ -99,3 +99,13 @@ bottleneck. The separately recorded initialization study controls its renderer-s
 see `experiments/blender-execution-v1/README.md`. This is engineering execution evidence, not completion
 of #28/#64. The next planning session can concentrate on representative material/lighting/camera
 conditions and eventual real-image/model evidence; major renderer/annotation redesign remains separate.
+
+
+The [surface integration round](REALISM_ROUND_THREE.md) adds shared deterministic RGB/data wear maps,
+independent material/UV/light controls in the optional harness, and an opt-in shared 2D environmental
+shade candidate. The [round report](experiments/surface-integration-v1/README.md) records paired
+coverage, native crops, measured costs and explicit negative/limited verdicts. Production defaults
+remain unchanged. General caster recipes, calibrated material/camera response, richer scene geometry
+and real detector evidence remain planning work under #62/#63/#64 and #59/#61. The isolated context
+prototype branch is evidence for that discussion, not a promoted mesh-import backend. #28 remains a
+multi-hardware performance requirement.

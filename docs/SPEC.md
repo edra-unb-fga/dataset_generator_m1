@@ -358,3 +358,24 @@ identity jointly define a run. Workers receive disjoint jobs under one coordinat
 changed hardware/selection or source cannot cross-resume. `bundle` creates verified portable
 source/input archives for local/Colab execution without a clone; manifests exclude unrelated workspace
 files and credentials. This does not add GPU or distributed execution to the core planar generator.
+
+
+### Shared surface study controls
+
+The optional host wear-map helper reuses the exact legacy RGB wear fields and produces registered
+albedo, linear roughness and qualitative height PNGs with source/configuration hashes. Appearance-only
+wear preserves foreground alpha; bump does not change the rigid flat panel silhouette. Independent
+pad bump, ground normal/UV, environment and contextual light/caster controls belong to the optional
+physical harness. They do not enable new production defaults or a general 3D backend.
+
+Optional `scene.lighting.shade` adds a bounded soft scene-coordinate attenuation field after common
+composition and before capture. Its independent random stream leaves geometry and existing lighting
+draws unchanged. Disabled inline overrides survive profile merging while omitted/disabled canonical
+serialization remains compatible. It is environmental shade approximation, not geometric contact
+shadowing or calibrated reflectance. See `SURFACE_RENDERING.md` for bounds and limits.
+
+`REALISM_ROUND_THREE.md` and the saved matrices define the bounded engineering study: exact paired
+geometry/masks within each engine, shared source/coverage intent across engines, explicit specialist
+and stress roles, conservative restart-safe GPU budget accounting, and a reserved combination review.
+The reference offset wraps; reserved combinations are not held-out real captures or globally unseen
+layouts. Physical/model-transfer claims and production promotion require later evidence.

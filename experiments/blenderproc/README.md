@@ -11,10 +11,12 @@ uv run python scripts/blenderproc_pilot.py assets --output-dir outputs/blender-a
 uv run python scripts/blenderproc_pilot.py bridge --assets-dir outputs/blender-assets --foreground-dir foregrounds/landing_pad_foregrounds --output-dir configs/local/blender-bridge
 ```
 
-`assets` fetches only the reviewed five CC0 manifests in `assets/`, verifies hashes and reuses valid
-local files offline. AmbientCG archives use the existing bounded acquisition path; HDR files have
+`assets` fetches the reviewed CC0 manifests in `assets/`, verifies hashes and reuses valid
+local files offline. A selection can contain 1–6 ground materials and 1–3 HDR environments; the
+round-three expansion is limited to three additional grounds and one HDR. AmbientCG archives use the existing bounded acquisition path; HDR files have
 bounded HTTPS downloads. Raw files stay ignored. Inspect and adjust the generated normal 2D composers
-before generation. The bridge uses only color maps as backgrounds, a planar UV recipe, normal core
+before generation. The bridge discovers verified material manifests, uses only their color maps as backgrounds in legacy
+material order followed by additional materials, and uses a planar UV recipe, normal core
 pool/evaluation workflows, and either pristine or existing surface-camera appearance plus opt-in
 premultiplied filtering. It is not another 2D renderer.
 
@@ -45,7 +47,15 @@ roughness and fine bump response. Ground UV scale is metres per tile; normal map
 not support geometry. Geometry, contact and coarse environmental casters are deliberately simple.
 The source maps are PBR assets, not measured target materials.
 
-The reference pool supplies target/count/projected-width support and source 2D images. World placement
+The reference pool supplies target/count/projected-width support and source 2D images. The shared
+comparison core targets 20 independent reference intents, preserving artwork and source hashes, count,
+size coverage intent and annotation conventions. Exact paired controls apply within an engine; the
+2D and 3D outputs do not promise pixel matching or identical projections. `scene_offset` selects the
+starting reference row and each job records `reference_scene_index`; selection wraps modulo the pool
+length. Check the recorded indices against the actual pool before making a holdout claim. The planned
+20-intent core includes all reference layouts; the reserved phase uses indices 4–9 with a new seed,
+while development review uses 0–2. Treat reserved results as new synthetic combinations, not held-out
+layouts or real holdout evidence, and do not tune after reserved review. World placement
 backprojects reference centers through the configured camera. Rotation-aware camera distance aims
 for similar target widths; measured achieved distributions remain evidence, not calibrated equality.
 Closeups/clipping/overlap/hidden/negative diagnostics are separate cases. Do not infer physical camera
@@ -61,6 +71,70 @@ Explicit sun uses diffuse overcast HDR fill to avoid adding a second misaligned 
 not a reconstructed deployment location. Night supports one/mixed artificial area lights and weak
 ambient fill. Haze uses a bounded volume, hidden during geometric annotation passes.
 
+## Saved surface controls
+
+Treatments are strict saved JSON data; see `pilot.schema.json` and
+`studies/surface-integration.json` for the complete fields, bounds and examples. `roughness` is the
+nominal plastic roughness. `pad_bump_strength` and `ground_normal_strength` separately control pad
+bump and ground normal response; when omitted or null each falls back to legacy `normal_strength`.
+`pad_bump_distance_m` controls bump amplitude, not mesh displacement. `uv_scale_m`,
+`uv_rotation_degrees` and `ground_uv_offset` share one ground mapping across color, roughness and
+normal textures. HDR selection uses zero-based `environment_index`, rotation and strength; omitted
+selection preserves the legacy lighting-dependent first/second environment choice, falling back to
+the first when only one is available.
+
+A `lamps` list supplies area-light location, color, target, power and size. Omitting it preserves the
+legacy lighting-specific area lamps; an explicit empty list selects no area lamps. A sun treatment
+still adds its sun light. `casters` enables deterministic,
+grounded procedural shadow casters using saved count, seed, distance, height and width; count zero
+selects none. With `shadows` enabled and `casters` omitted or null, the legacy three-post fixture is
+retained. New procedural casters are camera-invisible; scene results record their resolved transforms
+and light/material diagnostics. These coarse fixtures are not a reconstructed environment.
+
+Optional `wear` uses the same bounded `SurfaceWear` parameters and deterministic fields as 2D RGB
+wear. `wear_seed` can explicitly fix the field seed; otherwise preparation derives a seed per job and
+object. Host preparation generates source-sized, registered 8-bit PNGs in artwork UV coordinates
+with top-left origin: sRGB RGB/RGBA albedo and linear grayscale roughness and height. Original alpha
+is preserved; height changes shading only. The renderer treats roughness and height as non-color data.
+The manifest records configuration, seed, map dimensions, encoding, paths and hashes, and maps are
+verified before render/resume. These are qualitative plastic approximations, not measured reflectance.
+
+`quality_treatments` omitted or null schedules quality jobs for the first treatment, preserving the
+historical default. `[]` schedules none; a nonempty list schedules quality jobs only for those IDs.
+The phase controller supplies this selection explicitly. Production 2D defaults remain unchanged.
+
+## Round-three surface study
+
+The file-backed matrix declares recipes, phase selections, resolutions, sample counts and budgets:
+`experiments/blenderproc/studies/surface-integration.json`. `core` and `wear` are shared-core
+comparisons; candidates isolate mapping/context, `stress-wear` is deliberately heavy, and `glint`
+and `night` are specialists with declared deviations. Their goals are experimental, not calibrated
+training recommendations. `studies/surface-2d.json` specifies the complementary 2D study. Separate
+prototype worktrees may explore procedural or CC0 mesh context; mesh import is not promoted into the
+main harness or core backend. See `docs/REALISM_ROUND_THREE.md` and
+`docs/experiments/surface-integration-v1/README.md` for the agreement and eventual evidence.
+
+Run a fresh phase cell and inspect its shared budget, using saved configuration and matrix paths:
+
+```sh
+uv run python scripts/study_surface_integration.py budget --matrix experiments/blenderproc/studies/surface-integration.json --output-dir outputs/experiments/surface-integration
+uv run python scripts/study_surface_integration.py run --config configs/local/pilot.json --matrix experiments/blenderproc/studies/surface-integration.json --output-dir outputs/experiments/surface-integration --phase development --cell-id development-01 --blenderproc .cache/blenderproc-venv/bin/blenderproc --blender-install-path .cache/blender
+```
+
+Optional `--recipes ID...` selects a nonempty subset of the matrix recipes. Each cell is prepared
+fresh, with a unique ID, and `design.json` freezes the matrix contents and SHA-256; each cell's
+`surface-origin.json` records phase, recipes and controller SHA-256. Editing the matrix requires a new
+study root. `budget.json` conservatively charges interrupted reservations until reconciled against
+recorded run evidence. The saved policy caps the shared rendering/probe/warmup/retry budget at 7200 s,
+prototype work at 1440 s and each prototype cell at 720 s, while retaining at least 1800 s for final
+work. Setup and short local controls are reported separately; the existing RAM/swap safeguards remain.
+
+The matrix targets 640-square previews, 1280-square quality and selected performance confirmation of
+2 warmups plus 20 measured outputs across 3 alternating repetitions when budget permits. Incomplete
+cells remain exploratory. Report accepted outputs divided by the appropriate common wall time and
+keep startup, annotation/retry, encoding/export and resources separate; do not sum concurrent
+per-image durations or infer a cross-engine multiplier from different hosts or workloads.
+
 ## Annotation and output contract
 
 RGB can have DOF/motion blur; masks use sharp geometry at reference pose/frame0. Visible masks include
@@ -70,8 +144,8 @@ Masks are canonical binary full/visible arrays with COCO RLE. No optical coverag
 
 Candidates with any0<visible/full in-frame support<25% are resampled up to8 attempts; cost and reasons
 are retained. Fully hidden targets have no annotation; accidental empty positives are rejected and
-intentional negatives are explicit. Nothing changes normal 2D acceptance. Appearance/noise/shadows do
-not alter reference masks.
+intentional negatives are explicit. Nothing changes normal 2D acceptance. Appearance, noise and
+shading do not alter reference masks; camera-visible caster or occluder geometry can alter visible masks.
 
 Required exports are `coco-visible.json`, `coco-full.json`, evaluation manifests and per-image metadata.
 Optional YOLO detection/segmentation conversion is atomic per format, bounded by5min and2000 contour
@@ -172,10 +246,11 @@ studies resume through `render` in their extracted source checkout. An interrupt
 bootstrap preserves its evidence and requires an explicit later export of partial results.
 
 The explicit file manifest contains only the required source checkout subset, locked dependency
-metadata, approved artwork, hash-pinned PBR/HDR files and a validated reference pool with referenced
+metadata, approved artwork, hash-pinned PBR/HDR files, generated wear derivatives and a validated reference pool with referenced
 QA artifacts. It omits Git state, caches, arbitrary workspace files and credentials. The input bundle
 identity enters the new study contract. Absolute local input roots are relocated; source contents
-and source-asset hashes remain pinned. Inspect the manifest before sharing a bundle outside your
+and source-asset hashes remain pinned; regenerated wear map hashes are checked against the bundled
+derivatives. Create a fresh bundle after any pinned source, config or input change. Inspect the manifest before sharing a bundle outside your
 own runtime. Colab allocations remain variable; rerun capability detection in every fresh study.
 
 ## Reproducing execution studies
