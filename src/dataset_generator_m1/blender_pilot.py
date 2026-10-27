@@ -115,7 +115,7 @@ class PilotConfig(Strict):
     quality_samples: int = Field(default=128, ge=1, le=4096)
     scenes: int = Field(default=3, ge=1, le=100)
     scene_offset: int = Field(default=0, ge=0, le=1000000)
-    quality_treatments: tuple[str, ...] = ()
+    quality_treatments: tuple[str, ...] | None = None
     study_seconds: float = Field(default=7200, gt=0, le=7200)
     treatments: tuple[Treatment, ...]
 
@@ -132,7 +132,7 @@ class PilotConfig(Strict):
             raise ValueError('Unique nonempty treatment IDs required')
         if any(t.paired_reference is not None and t.paired_reference not in ids for t in self.treatments):
             raise ValueError('Unknown paired reference treatment')
-        if set(self.quality_treatments)-set(ids):
+        if self.quality_treatments is not None and set(self.quality_treatments)-set(ids):
             raise ValueError('Unknown quality treatment')
         if self.quality_samples<self.fast_samples:
             raise ValueError('Quality samples must be at least fast samples')
@@ -236,12 +236,13 @@ def prepare(config_path,output):
     sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','src/dataset_generator_m1/wear_materials.py','src/dataset_generator_m1/surface_effects.py','src/dataset_generator_m1/models.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
     contract['harness_sources']={name:digest_file(source_root/name) for name in sources}
     jobs=[]
+    quality_treatments=(config.treatments[0].id,) if config.quality_treatments is None else config.quality_treatments
     for scene_index in range(config.scenes):
         reference_scene_index=(config.scene_offset+scene_index)%len(scenes)
         scene=scenes[reference_scene_index]
         for treatment in config.treatments:
             for quality in ('fast','quality'):
-                if quality=='quality' and treatment.id not in (config.quality_treatments or (config.treatments[0].id,)):
+                if quality=='quality' and treatment.id not in quality_treatments:
                     continue
                 # All fast coverage precedes expensive quality comparisons.
                 jobs.append({'id':f'{scene_index:03d}-{treatment.id}-{quality}', 'seed':config.seed+scene_index,

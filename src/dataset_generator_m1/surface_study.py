@@ -101,7 +101,11 @@ def run_cell(root, base_config, matrix_path, phase, cell_id, blenderproc, instal
         atomic_json(root/'design.json', design)
         ledger = BudgetLedger(root, policy)
         setting = matrix['phases'][phase]
-        allowance = ledger.reserve(cell_id, setting['track'])
+        if any(entry['name'] == cell_id for entry in ledger.value['entries']):
+            raise ValueError('Cell already reserved; use a new ID for retries')
+        allowance = ledger.allowance(setting['track'])
+        if allowance <= 0:
+            raise ValueError('Budget or final reserve prevents further work')
         config = load_config(base_config).model_dump(mode='json')
         config.update(setting['config'])
         ids = recipe_ids if recipe_ids is not None else setting['recipes']
@@ -116,8 +120,12 @@ def run_cell(root, base_config, matrix_path, phase, cell_id, blenderproc, instal
         configuration = root/'configs'/(cell_id+'.json')
         atomic_json(configuration, config)
         study = prepare(configuration, cell)
+        # Input validation/map preparation performs no Blender work. Reserve only
+        # after it succeeds, under the same exclusive study ownership.
+        ledger.reserve(cell_id, setting['track'])
         atomic_json(cell/'surface-origin.json', {'phase': phase, 'cell_id': cell_id,
                     'matrix_sha256': design['matrix_sha256'], 'track': setting['track'],
+                    'controller_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                     'recipes': {name: matrix['recipes'][name] for name in ids}})
         try:
             outcome = run_study(cell, blenderproc, install)

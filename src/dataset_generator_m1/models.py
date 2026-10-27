@@ -153,9 +153,10 @@ class SceneLightingConfig(StrictModel):
     shade: EnvironmentalShadeConfig | None = None
 
     @model_serializer(mode="wrap")
-    def serialize_omitted_shade(self, handler):
+    def serialize_omitted_shade(self, handler, info):
         result = handler(self)
-        if self.shade is None or self.shade.probability == 0 or self.shade.strength[1] == 0:
+        preserve_disabled = isinstance(info.context, dict) and info.context.get('preserve_disabled_shade', False)
+        if self.shade is None or (not preserve_disabled and (self.shade.probability == 0 or self.shade.strength[1] == 0)):
             result.pop('shade', None)
         return result
 

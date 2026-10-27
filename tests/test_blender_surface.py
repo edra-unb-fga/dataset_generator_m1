@@ -62,5 +62,16 @@ def test_scene_offset_resolves_and_wraps_reference_indices(tmp_path,monkeypatch)
     jobs=[j for j in study['jobs'] if j['case']=='ordinary' and j['quality']=='fast']
     assert [j['reference_scene_index'] for j in jobs]==[2,0,1]
     assert [j['scene']['reference_image'] for j in jobs]==['2','0','1']
+    for name,selection,expected in [('omitted',None,['base']),('empty',[],[]),('selected',['second'],['second'])]:
+        config['treatments']=[{'id':'base'},{'id':'second'}]
+        if selection is None:config.pop('quality_treatments',None)
+        else:config['quality_treatments']=selection
+        path.write_text(json.dumps(config))
+        selected=pilot.prepare(path,tmp_path/('study-'+name))
+        quality=[job['treatment']['id'] for job in selected['jobs'] if job['case']=='ordinary' and job['quality']=='quality' and job['scene_index']==0]
+        assert quality==expected
+    config['quality_treatments']=['unknown']
+    with pytest.raises(ValueError,match='Unknown quality treatment'):pilot.PilotConfig.model_validate(config)
+    config['quality_treatments']=[]
     config['scene_offset']=-1
     with pytest.raises(ValueError):pilot.PilotConfig.model_validate(config)

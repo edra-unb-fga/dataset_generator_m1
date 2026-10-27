@@ -755,12 +755,19 @@
       "type": "integer"
     },
     "quality_treatments": {
-      "default": [],
-      "items": {
-        "type": "string"
-      },
-      "title": "Quality Treatments",
-      "type": "array"
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Quality Treatments"
     },
     "study_seconds": {
       "default": 7200,

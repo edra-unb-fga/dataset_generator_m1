@@ -45,3 +45,24 @@ def test_budget_rejects_invalid_evidence_and_detects_overrun(tmp_path):
     assert json.loads((tmp_path/'budget.json').read_text())['entries'][0]['charged_seconds'] == 13
     with pytest.raises(ValueError):
         BudgetPolicy(**{**POLICY, 'prototype_seconds': 100})
+
+
+def test_invalid_prelaunch_inputs_do_not_spend_or_poison_cell_id(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from dataset_generator_m1 import surface_study as module
+    matrix = {'budget': POLICY, 'phases': {'preview': {'track': 'development', 'config': {},
+               'recipes': ['base']}}, 'recipes': {'base': {'treatment': {}}}}
+    path = tmp_path/'matrix.json'
+    path.write_text(json.dumps(matrix))
+    monkeypatch.setattr(module, 'load_config', lambda _: SimpleNamespace(model_dump=lambda **_: {'study_seconds': 100}))
+    def invalid_asset(*args):
+        raise ValueError('Bad asset')
+    monkeypatch.setattr(module, 'prepare', invalid_asset)
+    root = tmp_path/'study'
+    with pytest.raises(ValueError, match='Unknown'):
+        module.run_cell(root, 'config', path, 'preview', 'reusable', 'blenderproc', 'blender', recipe_ids=['typo'])
+    assert BudgetLedger(root, POLICY).used() == 0
+    with pytest.raises(ValueError, match='Bad asset'):
+        module.run_cell(root, 'config', path, 'preview', 'reusable', 'blenderproc', 'blender')
+    assert BudgetLedger(root, POLICY).used() == 0
+    assert not BudgetLedger(root, POLICY).value['entries']

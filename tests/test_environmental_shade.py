@@ -98,3 +98,47 @@ def test_renderer_shade_keeps_masks_lighting_draws_and_capture_order():
     d = SceneRenderer(off).render(plan, background)
     assert np.array_equal(a.image, d.image)
     assert a.scene_effects == d.scene_effects
+
+
+
+@pytest.mark.parametrize('disabled', [{'probability': 0}, {'strength': [0, 0]}])
+def test_inline_disabled_shade_overrides_enabled_profile_and_renders_unshaded(tmp_path, disabled):
+    import yaml
+    from helpers import write_derived_composer
+    from dataset_generator_m1.assets import build_asset_catalog
+    from dataset_generator_m1.backgrounds import BackgroundSynthesizer
+    from dataset_generator_m1.config import load_profile
+    from dataset_generator_m1.scene import ScenePlanner, SceneRenderer
+    lighting = SceneLightingConfig(shade=EnvironmentalShadeConfig(probability=1, strength=(.6, .6),
+                                                                  radius_fraction=(.8, .8)))
+    path = write_derived_composer(tmp_path, 'landing-pad', {
+        'scene': {'lighting': lighting.model_dump(mode='json')},
+        'output': {'image_size': [128, 96], 'image_format': 'png'}})
+    raw = yaml.safe_load(path.read_text())
+    raw['appearance'] = {'preset': 'builtin:appearance/no-appearance'}
+    path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    enabled = load_profile(path)
+    raw['inline'] = {'scene': {'lighting': {'shade': disabled}}}
+    path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    off = load_profile(path)
+    shade = off.profile.scene.lighting.shade
+    assert shade is not None
+    assert shade.probability == 0 if 'probability' in disabled else shade.strength == (0, 0)
+    assert 'shade' not in off.profile.scene.lighting.model_dump(mode='json')
+    assert off.reference_graph['scene']['inline']['lighting']['shade'].items() >= disabled.items()
+    # An explicit unshaded resolved profile establishes the expected pixel result.
+    unshaded = off.model_copy(update={'profile': off.profile.model_copy(update={
+        'scene': off.profile.scene.model_copy(update={'lighting': off.profile.scene.lighting.model_copy(update={'shade': None})})})})
+    catalog = build_asset_catalog(off)
+    plan = ScenePlanner(off, catalog).plan(0, 0)
+    assert plan.geometry_signature() == ScenePlanner(enabled, catalog).plan(0, 0).geometry_signature()
+    background = BackgroundSynthesizer(catalog, off.recipes).synthesize(plan.recipe_id, plan.canvas_size,
+                                                                       np.random.default_rng(2))
+    baseline = SceneRenderer(unshaded).render(plan, background)
+    actual = SceneRenderer(off).render(plan, background)
+    shaded = SceneRenderer(enabled).render(plan, background)
+    assert np.array_equal(actual.image, baseline.image)
+    assert actual.scene_effects == baseline.scene_effects
+    assert not np.array_equal(actual.image, shaded.image)
+    assert all(np.array_equal(x, y) for x, y in zip(actual.full_coverages, shaded.full_coverages))
+    assert all(np.array_equal(x, y) for x, y in zip(actual.visible_coverages, shaded.visible_coverages))
