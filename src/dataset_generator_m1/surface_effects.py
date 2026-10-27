@@ -1,6 +1,8 @@
 """Bounded qualitative planar appearance, without a physical material/lighting model."""
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import cv2
 import numpy as np
 
@@ -13,10 +15,21 @@ def validate_surface_wear(params: dict, stage: str) -> None:
     SurfaceWearConfig.model_validate(params)
 
 
-def apply_surface_wear(rgb: np.ndarray, params: dict, rng: np.random.Generator):
-    """Rasterize normalized local marks on a fixed-width workspace, preserving source alpha upstream."""
-    config = SurfaceWearConfig.model_validate(params)
-    h, w = rgb.shape[:2]
+@dataclass(frozen=True)
+class WearFields:
+    """Registered, strength-weighted local fields; no source image or alpha is modified."""
+
+    dirt: np.ndarray
+    scratches: np.ndarray
+    evidence: dict
+
+
+def generate_wear_fields(shape: tuple[int, int], config: SurfaceWearConfig,
+                         rng: np.random.Generator) -> WearFields:
+    """Rasterize the historical normalized lattice without changing its random draws."""
+    h, w = shape
+    if h < 1 or w < 1:
+        raise ValueError('Wear field dimensions must be positive')
     # Fixed normalized lattice means doubling source resolution does not resample the marks.
     work_w, work_h = 512, min(2048, max(1, round(512*h/w)))
     dirt = np.zeros((work_h, work_w), np.float32)
@@ -35,11 +48,26 @@ def apply_surface_wear(rgb: np.ndarray, params: dict, rng: np.random.Generator):
     dirt = cv2.GaussianBlur(dirt, (0, 0), 2.)
     dirt = cv2.resize(dirt, (w, h), interpolation=cv2.INTER_LINEAR)[:, :, None]*config.dirt
     scratches = cv2.resize(scratches, (w, h), interpolation=cv2.INTER_LINEAR)[:, :, None]*config.scratches
+    return WearFields(dirt, scratches, {'config': config.model_dump(mode='json'), 'local_marks': marks})
+
+
+def apply_wear_fields(rgb: np.ndarray, config: SurfaceWearConfig, fields: WearFields) -> np.ndarray:
+    """Historical encoded-RGB appearance path, shared by 2D and 3D albedo preparation."""
+    dirt, scratches = fields.dirt, fields.scratches
+    if dirt.shape != (*rgb.shape[:2], 1) or scratches.shape != dirt.shape:
+        raise ValueError('Wear fields and image must have identical dimensions')
     result = rgb.astype(np.float32)
     result = result*(1-config.fade) + np.array([174, 170, 151], np.float32)*config.fade
     result = result*(1-dirt) + np.array([92, 78, 51], np.float32)*dirt
     result = result*(1-scratches) + np.array([209, 204, 183], np.float32)*scratches
-    return np.rint(np.clip(result, 0, 255)).astype(np.uint8), {'config': config.model_dump(mode='json'), 'local_marks': marks}
+    return np.rint(np.clip(result, 0, 255)).astype(np.uint8)
+
+
+def apply_surface_wear(rgb: np.ndarray, params: dict, rng: np.random.Generator):
+    """Apply normalized local RGB wear, preserving source alpha upstream."""
+    config = SurfaceWearConfig.model_validate(params)
+    fields = generate_wear_fields(rgb.shape[:2], config, rng)
+    return apply_wear_fields(rgb, config, fields), fields.evidence
 
 
 def srgb_to_linear(rgb):
@@ -68,8 +96,25 @@ def sample_lighting(config, rng):
     return evidence
 
 
-def apply_scene_lighting(rgb, scene_to_output, canvas_size, evidence):
-    if evidence is None or not evidence['applied']:
+def sample_environmental_shade(config, rng):
+    """Sample a smooth, qualitative canopy/shade patch on its own random stream."""
+    if config is None or config.probability == 0 or config.strength[1] == 0:
+        return None
+    evidence = {'applied': bool(rng.random() < config.probability),
+                'model': 'scene-soft-ellipse-shade-v1',
+                'physical_claim': 'qualitative-environmental-shade'}
+    if evidence['applied']:
+        evidence.update(center=rng.uniform(-.15, 1.15, 2).tolist(),
+                        radius=rng.uniform(*config.radius_fraction, 2).tolist(),
+                        angle=float(rng.uniform(0, 2*np.pi)),
+                        strength=float(rng.uniform(*config.strength)))
+    return evidence
+
+
+def apply_scene_lighting(rgb, scene_to_output, canvas_size, evidence, shade=None):
+    lighting_active = evidence is not None and evidence['applied']
+    shade_active = shade is not None and shade['applied'] and shade.get('strength', 0) > 0
+    if not lighting_active and not shade_active:
         return rgb
     inverse = np.linalg.inv(scene_to_output)
     h, w = rgb.shape[:2]
@@ -82,7 +127,18 @@ def apply_scene_lighting(rgb, scene_to_output, canvas_size, evidence):
             raise ValueError('Scene illumination inverse homography crosses infinity')
         sx = (inverse[0, 0]*xs+inverse[0, 1]*ys+inverse[0, 2])/denominator/canvas_size[0]-.5
         sy = (inverse[1, 0]*xs+inverse[1, 1]*ys+inverse[1, 2])/denominator/canvas_size[1]-.5
-        field = np.clip(evidence['gain']+evidence['gradient'][0]*sx+evidence['gradient'][1]*sy, .1, 2.)
-        factor = field[:, :, None]*(1+np.array(evidence['tint'], np.float32))
+        if lighting_active:
+            field = np.clip(evidence['gain']+evidence['gradient'][0]*sx+evidence['gradient'][1]*sy, .1, 2.)
+            factor = field[:, :, None]*(1+np.array(evidence['tint'], np.float32))
+        else:
+            factor = np.ones((*sx.shape, 1), np.float32)
+        if shade_active:
+            # One analytic elliptical Gaussian has no raster workspace tied to canvas size.
+            dx, dy = sx+.5-shade['center'][0], sy+.5-shade['center'][1]
+            cosine, sine = np.cos(shade['angle']), np.sin(shade['angle'])
+            u = (cosine*dx+sine*dy)/shade['radius'][0]
+            v = (-sine*dx+cosine*dy)/shade['radius'][1]
+            attenuation = 1-shade['strength']*np.exp(-.5*(u*u+v*v))
+            factor = factor*attenuation[:, :, None]
         result[top:top+len(ys)] = linear_to_srgb(srgb_to_linear(rgb[top:top+len(ys)])*factor)
     return result

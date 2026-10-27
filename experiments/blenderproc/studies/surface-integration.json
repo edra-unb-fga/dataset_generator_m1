@@ -1,0 +1,483 @@
+{
+  "schema_version": 1,
+  "budget": {
+    "total_seconds": 7200,
+    "prototype_seconds": 1440,
+    "final_reserve_seconds": 1800,
+    "cell_seconds": 1800,
+    "prototype_cell_seconds": 720
+  },
+  "iteration_limits": {
+    "cue_families": 3,
+    "rounds_per_family": 2,
+    "candidates_per_round": 2,
+    "specialists_per_engine": 2
+  },
+  "benchmark": {
+    "warmups": 2,
+    "measured": 20,
+    "repetitions": 3,
+    "resolutions": [
+      [
+        640,
+        640
+      ],
+      [
+        1280,
+        1280
+      ]
+    ]
+  },
+  "recipes": {
+    "core": {
+      "role": "shared-core",
+      "goal": "Frozen pristine material/lighting baseline",
+      "deviations": [],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 2,
+        "casters": {
+          "count": 0
+        }
+      }
+    },
+    "wear": {
+      "role": "shared-core",
+      "goal": "Isolate registered albedo/roughness/bump wear",
+      "deviations": [],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 2,
+        "casters": {
+          "count": 0
+        },
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        }
+      }
+    },
+    "integration": {
+      "role": "candidate",
+      "goal": "Reduce visible repetition and add shared contextual shade",
+      "deviations": [
+        "UV scale/orientation and caster geometry"
+      ],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 8,
+        "casters": {
+          "count": 6,
+          "seed": 401,
+          "distance_m": 6,
+          "height_m": 3.4,
+          "width_m": 0.35
+        },
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        },
+        "uv_rotation_degrees": 23,
+        "ground_uv_offset": [
+          0.17,
+          0.33
+        ]
+      }
+    },
+    "stress-wear": {
+      "role": "stress",
+      "goal": "Expose failure under heavy artwork obscuration",
+      "deviations": [
+        "Heavy wear; not an ordinary training recipe"
+      ],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 2,
+        "casters": {
+          "count": 0
+        },
+        "wear": {
+          "fade": 0.22,
+          "dirt": 0.5,
+          "scratches": 0.4,
+          "marks": 24,
+          "scratch_width": 0.002
+        }
+      }
+    },
+    "glint": {
+      "role": "specialist",
+      "goal": "Plastic material response under oblique environment lighting",
+      "deviations": [
+        "Oblique/reflection-sensitive view",
+        "Reduced roughness"
+      ],
+      "treatment": {
+        "roughness": 0.25,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 8,
+        "casters": {
+          "count": 0
+        },
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        },
+        "view_degrees": 55,
+        "camera_azimuth_degrees": 45,
+        "lighting": "environment",
+        "environment_index": 0,
+        "environment_strength": 0.5
+      }
+    },
+    "night": {
+      "role": "specialist",
+      "goal": "Coherent mixed-light material/ground response",
+      "deviations": [
+        "Mixed artificial lighting"
+      ],
+      "treatment": {
+        "roughness": 0.38,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 8,
+        "casters": {
+          "count": 0
+        },
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        },
+        "lighting": "night-mixed",
+        "environment_strength": 0.012,
+        "lamps": [
+          {
+            "location": [
+              -2,
+              -1,
+              4
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.84,
+              0.65
+            ],
+            "power_w": 500,
+            "size_m": 1.2
+          },
+          {
+            "location": [
+              3,
+              2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.62,
+              0.75,
+              1
+            ],
+            "power_w": 150,
+            "size_m": 2
+          }
+        ]
+      }
+    },
+    "uv-scale": {
+      "role": "candidate",
+      "goal": "Isolate 2m to8m mapping scale",
+      "deviations": [
+        "Ground UV scale"
+      ],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 8,
+        "casters": {
+          "count": 0
+        }
+      }
+    },
+    "context": {
+      "role": "candidate",
+      "goal": "Isolate contextual shadows on fixed8m ground",
+      "deviations": [
+        "Caster geometry; compare uv-scale"
+      ],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 8,
+        "casters": {
+          "count": 6,
+          "seed": 401,
+          "distance_m": 6,
+          "height_m": 6,
+          "width_m": 0.35
+        }
+      }
+    },
+    "glint-clean": {
+      "role": "control",
+      "goal": "Pristine reflection-sensitive control",
+      "deviations": [
+        "Oblique/reflection-sensitive view",
+        "Reduced roughness"
+      ],
+      "treatment": {
+        "roughness": 0.25,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 8,
+        "casters": {
+          "count": 0
+        },
+        "wear": null,
+        "view_degrees": 55,
+        "camera_azimuth_degrees": 45,
+        "lighting": "environment",
+        "environment_index": 0,
+        "environment_strength": 0.5
+      }
+    },
+    "night-clean": {
+      "role": "control",
+      "goal": "Pristine mixed-light control",
+      "deviations": [
+        "Mixed artificial lighting"
+      ],
+      "treatment": {
+        "roughness": 0.38,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 8,
+        "casters": {
+          "count": 0
+        },
+        "wear": null,
+        "lighting": "night-mixed",
+        "environment_strength": 0.012,
+        "lamps": [
+          {
+            "location": [
+              -2,
+              -1,
+              4
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.84,
+              0.65
+            ],
+            "power_w": 500,
+            "size_m": 1.2
+          },
+          {
+            "location": [
+              3,
+              2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.62,
+              0.75,
+              1
+            ],
+            "power_w": 150,
+            "size_m": 2
+          }
+        ]
+      }
+    },
+    "close-clean": {
+      "role": "control",
+      "goal": "Pristine closeup control",
+      "deviations": [
+        "Closeup support"
+      ],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 2,
+        "casters": {
+          "count": 0
+        },
+        "camera_distance_scale": 0.5
+      }
+    },
+    "close-wear": {
+      "role": "candidate",
+      "goal": "Worn closeup control",
+      "deviations": [
+        "Closeup support"
+      ],
+      "treatment": {
+        "roughness": 0.5,
+        "pad_bump_strength": 0.2,
+        "ground_normal_strength": 0.2,
+        "uv_scale_m": 2,
+        "casters": {
+          "count": 0
+        },
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        },
+        "camera_distance_scale": 0.5
+      }
+    }
+  },
+  "phases": {
+    "development": {
+      "track": "development",
+      "recipes": [
+        "core",
+        "wear",
+        "uv-scale",
+        "context",
+        "glint-clean",
+        "glint",
+        "night-clean",
+        "night",
+        "close-clean",
+        "close-wear"
+      ],
+      "quality_recipes": [
+        "core"
+      ],
+      "config": {
+        "resolution": [
+          640,
+          640
+        ],
+        "scenes": 3,
+        "fast_samples": 32,
+        "quality_samples": 32,
+        "study_seconds": 7200
+      }
+    },
+    "core": {
+      "track": "final",
+      "recipes": [
+        "core",
+        "wear"
+      ],
+      "quality_recipes": [
+        "core"
+      ],
+      "config": {
+        "resolution": [
+          640,
+          640
+        ],
+        "scenes": 20,
+        "fast_samples": 32,
+        "quality_samples": 32,
+        "study_seconds": 7200
+      }
+    },
+    "quality": {
+      "track": "final",
+      "recipes": [
+        "core",
+        "wear",
+        "uv-scale",
+        "context",
+        "glint-clean",
+        "glint",
+        "night-clean",
+        "night",
+        "close-clean",
+        "close-wear",
+        "stress-wear"
+      ],
+      "quality_recipes": [
+        "wear",
+        "glint",
+        "night",
+        "close-wear"
+      ],
+      "config": {
+        "resolution": [
+          1280,
+          1280
+        ],
+        "scenes": 3,
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "study_seconds": 7200
+      }
+    },
+    "reserved": {
+      "track": "final",
+      "recipes": [
+        "core",
+        "wear",
+        "integration",
+        "glint",
+        "night"
+      ],
+      "quality_recipes": [
+        "core"
+      ],
+      "config": {
+        "seed": 20261029,
+        "resolution": [
+          1280,
+          1280
+        ],
+        "scenes": 6,
+        "fast_samples": 32,
+        "quality_samples": 32,
+        "study_seconds": 7200,
+        "scene_offset": 4
+      }
+    }
+  }
+}
