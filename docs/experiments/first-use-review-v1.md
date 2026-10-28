@@ -31,5 +31,8 @@ environment were available; dependency installation, a clean machine and Blender
 - A fresh agent completed an interactive `start` journey for a two-image pad pool and detection export.
   It found a crash on exit, a silent gallery action and empty validation/test splits in the export. The
   CLI now exits normally, shows the gallery path and displays split counts and empty-split warnings.
+  A second fresh-agent terminal journey confirmed all three changes, generated one image, and verified
+  the QA gallery and detection export exist. The read-only worktree's cache blocked the first attempt;
+  running the same source from a writable checkout let the agent complete the check.
 - Remaining UX research: first-time asset acquisition and actual CPU/GPU rendering, failure diagnostics
   for active inspection, and real human walkthroughs.
