@@ -74,3 +74,12 @@ Bounds are strength 0–.8 and normalized radii .04–1.2. This is a qualitative
 approximation of environmental shade; it cannot infer scene geometry, remove baked
 photographic shadows, or produce physical contact shadows. Keep it experimental
 unless paired visual evidence supports retention. Existing defaults remain unchanged.
+
+
+## Experimental linear-light composition
+
+Set `inline.scene.compositing: linear-srgb` to blend both targets and procedural occluders in linear
+light. The default is `legacy`; the new option changes pixel colors without changing coverage, alpha,
+geometry or acceptance. Each layer is encoded back to 8-bit sRGB before the next layer, so this is
+not a single high-precision whole-scene accumulation. The initial review supports opt-in testing, not
+a realism or detector-benefit claim. See `experiments/camera-environments-v1/README.md`.

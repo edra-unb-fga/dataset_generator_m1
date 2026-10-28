@@ -200,6 +200,7 @@ class SurfaceWearConfig(StrictModel):
 
 
 class SceneConfig(StrictModel):
+    compositing: Literal["legacy", "linear-srgb"] = "legacy"
     foreground_resampling: Literal["legacy", "premultiplied"] = "legacy"
     canvas_scale: float = Field(default=2.0, ge=1.25)
     camera: CameraConfig = Field(default_factory=CameraConfig)
@@ -306,6 +307,7 @@ class BackgroundAffineInline(StrictModel):
 
 
 class SceneInline(StrictModel):
+    compositing: Literal["legacy", "linear-srgb"] | None = None
     foreground_resampling: Literal["legacy", "premultiplied"] | None = None
     canvas_scale: float | None = Field(default=None, ge=1.25)
     camera: CameraInline | None = None

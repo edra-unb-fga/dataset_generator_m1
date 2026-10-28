@@ -153,6 +153,10 @@ def memory_components(resolved, workers, window, native_threads, shapes):
         foreground = max(foreground, 40*(shapes['foreground_pixels']+shapes['foreground_rotated_pixels']),
                          40*(shapes['foreground_rotated_pixels']+resized))
         render = max(render, retained_render+foreground+80*output)
+    if resolved.profile.scene.compositing == "linear-srgb":
+        # Output image and alpha persist while float RGB transfer/blending arrays
+        # are allocated in bounded 128-row tiles (including temporary ufunc arrays).
+        render = max(render, retained_render + foreground + output*8 + width*min(height, 128)*160)
     if resolved.profile.scene.lighting is not None:
         shade = resolved.profile.scene.lighting.shade
         tile_bytes = 80 if shade is not None and shade.probability > 0 and shade.strength[1] > 0 else 40

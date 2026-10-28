@@ -208,3 +208,27 @@ assets, portable archives and application intermediates stay ignored. The tracke
 selected review figures and standalone HTML intentionally retain synthetic examples only. Reserved
 scene combinations are reviewed once after development selection; real references and trained-model
 outcomes remain absent rather than inferred from visual preference.
+
+
+## Camera and environment engineering screen
+
+See [round four](REALISM_ROUND_FOUR.md) and its [partial visual report](experiments/camera-environments-v1/README.md).
+`scripts/study_camera_environments.py` consumes a saved paired matrix and resource-guarded optional
+Blender runs; `scripts/study_linear_compositing.py` compares paired 2D visual fixtures, and
+`scripts/study_linear_compositing_timing.py` defines a separate guarded timing study. Completed-cell
+archives are hash-verified and packaged between timed cells. The initial 2D screen preserved mask and
+annotation evidence; earlier plain-wall 3D samples were reviewed as prototypes. Two subsequent
+3D attempts hit the existing system swap-out guard; the final 3D visual and performance checks were
+not completed. Do not treat the aborted run or single smoke renders as a throughput comparison.
+
+
+## Quick L4 and T4 execution screen
+
+The [Colab GPU screen](experiments/colab-quick-screen-v1/README.md) compares small matched camera
+scenes on L4 and T4 with saved, explicitly experimental worker policies. It records observed resource
+use, compute-unit rates, exact within-resolution mask checks and the excluded overlapping-transfer
+screen. Four measured scenes per setting cannot establish a hardware-class default or realism.
+
+The exploratory [L4 worker/thread screen](experiments/l4-worker-scaling-v1/README.md) records paired 640² and 1280² outputs, an eight-worker case, separate system RAM and GPU memory guards, sampled utilization and automatic shutdown evidence. Its short cases do not justify a general hardware default.
+
+The [L4 camera/environment continuation](experiments/l4-camera-completion-v1/README.md) follows the blocked local screen with fresh held-out scenes, exact COCO-mask round trips, bounded wall-clearance fixes, a repeated ground-mode timing check and an offline visual report. The [paired 2D CPU timing](experiments/linear-colab-timing-v1/README.md) measures linear compositing separately.

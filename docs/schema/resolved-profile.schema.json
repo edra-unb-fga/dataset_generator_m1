@@ -691,6 +691,15 @@
           "title": "Canvas Scale",
           "type": "number"
         },
+        "compositing": {
+          "default": "legacy",
+          "enum": [
+            "legacy",
+            "linear-srgb"
+          ],
+          "title": "Compositing",
+          "type": "string"
+        },
         "foreground_resampling": {
           "default": "legacy",
           "enum": [

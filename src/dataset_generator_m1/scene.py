@@ -13,7 +13,7 @@ from .assets import AssetCatalog, AssetRecord
 from .annotation_evidence import visible_coverages
 from .backgrounds import BackgroundSample
 from .filters import TransformTrace, apply_pipeline_traced
-from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox, warp_rgba
+from .imaging import composite_linear_srgb, read_rgba, resize_rgba, rotate_rgba, visible_bbox, warp_rgba
 from .scene_occlusion import SceneOccluder, composite_occluders, sample_occluders
 from .surface_effects import apply_scene_lighting, sample_lighting, sample_environmental_shade
 from .models import ResolvedProfile
@@ -542,7 +542,10 @@ class SceneRenderer:
             timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
             started = self.clock()
             alpha = warped_alpha[:, :, None].astype(np.float32) / 255.0
-            rendered = np.clip(warped_rgb.astype(np.float32) * alpha + rendered.astype(np.float32) * (1.0 - alpha), 0, 255).astype(np.uint8)
+            if self.profile.scene.compositing == "linear-srgb":
+                rendered = composite_linear_srgb(rendered, warped_rgb, alpha[:, :, 0])
+            else:
+                rendered = np.clip(warped_rgb.astype(np.float32) * alpha + rendered.astype(np.float32) * (1.0 - alpha), 0, 255).astype(np.uint8)
             timings["foreground_composition"] = timings.get("foreground_composition", 0) + max(0, self.clock() - started)
             started = self.clock()
             x1, y1, x2, y2 = clipped_bbox
@@ -577,7 +580,8 @@ class SceneRenderer:
 
         started = self.clock()
         try:
-            rendered, external_coverage = composite_occluders(rendered, plan.occluders, plan.scene_to_output)
+            rendered, external_coverage = composite_occluders(rendered, plan.occluders, plan.scene_to_output,
+                                                        compositing=self.profile.scene.compositing)
         except ValueError as exc:
             raise SceneRejected(f"occluder projection rejected: {exc}",rejected) from exc
         timings["scene_occlusion"] = max(0,self.clock()-started)

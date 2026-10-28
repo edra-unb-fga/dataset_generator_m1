@@ -15,6 +15,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from .models import SurfaceWearConfig
+from .blender_camera import sample_pose
 
 
 class Strict(BaseModel):
@@ -93,8 +94,75 @@ class Ground(Strict):
     material_file: Path
 
 
+class CameraStudy(Strict):
+    preset: Literal['drone'] = 'drone'
+    tilt_max_degrees: float = Field(default=55, ge=0, le=65)
+    tilt_scale_degrees: float = Field(default=18.10855, gt=0, le=100)
+    ground_spans: tuple[float, float] = (.5, 1.5)
+    extent_bounds_m: tuple[float, float] = (40, 500)
+    footprint_margin: float = Field(default=1.1, ge=1, le=3)
+    tile_bounds_m: tuple[float, float] = (.1, 500)
+    distance_scale_bounds: tuple[float, float] = (.25, 4)
+    distance_solver_iterations: int = Field(default=48, ge=1, le=100)
+    distance_relative_tolerance: float = Field(default=.01, gt=0, le=1)
+    material_mode: Literal['view-relative', 'fixed-physical'] = 'view-relative'
+
+    @model_validator(mode='after')
+    def ordered_bounds(self):
+        for bounds in (self.ground_spans, self.extent_bounds_m, self.tile_bounds_m, self.distance_scale_bounds):
+            if bounds[0] <= 0 or bounds[0] > bounds[1]:
+                raise ValueError('Camera and ground bounds must be positive and ordered')
+        return self
+
+
+class EnvironmentMix(Strict):
+    open: float = Field(default=.8, ge=0)
+    indoor: float = Field(default=.1, ge=0)
+    outdoor: float = Field(default=.1, ge=0)
+
+    @model_validator(mode="after")
+    def positive_total(self):
+        if self.open + self.indoor + self.outdoor <= 0:
+            raise ValueError("Environment weights must have a positive total")
+        return self
+
+
+class EnvironmentGeometrySettings(Strict):
+    min_half_width_m: float = Field(default=2.5, gt=0, le=500)
+    camera_horizontal_margin_m: float = Field(default=2, gt=0, le=100)
+    min_room_height_m: float = Field(default=3, gt=0, le=500)
+    camera_ceiling_margin_m: float = Field(default=1, gt=0, le=100)
+    outdoor_wall_height_m: float = Field(default=1.5, gt=0, le=100)
+    wall_thickness_m: float = Field(default=.1, gt=0, le=2)
+    wall_color: tuple[float, float, float] = (.48, .48, .45)
+    wall_roughness: float = Field(default=.85, ge=0, le=1)
+    wall_ground_index: int | None = Field(default=None, ge=0)
+    wall_texture_repeats: float = Field(default=1, gt=0, le=100)
+    indoor_light_power_w: float = Field(default=800, gt=0, le=10000)
+    indoor_light_color: tuple[float, float, float] = (1, .9, .75)
+    indoor_light_size_m: float = Field(default=2, gt=0, le=100)
+    indoor_light_ceiling_offset_m: float = Field(default=.15, gt=0, le=100)
+
+    @model_validator(mode='after')
+    def valid_colors(self):
+        if any(not 0 <= value <= 1 for color in (self.wall_color, self.indoor_light_color) for value in color):
+            raise ValueError('Environment colors must be in [0,1]')
+        if self.camera_horizontal_margin_m <= self.wall_thickness_m / 2:
+            raise ValueError('Camera horizontal margin must exceed half the wall thickness')
+        if self.camera_ceiling_margin_m <= self.wall_thickness_m / 2:
+            raise ValueError('Camera ceiling margin must exceed half the wall thickness')
+        if self.indoor_light_ceiling_offset_m <= self.wall_thickness_m / 2:
+            raise ValueError('Indoor light offset must clear the ceiling')
+        if self.indoor_light_ceiling_offset_m >= self.min_room_height_m:
+            raise ValueError('Indoor light offset must be below minimum room height')
+        return self
+
+
 class PilotConfig(Strict):
     schema_version: Literal[1] = 1
+    camera_study: CameraStudy | None = None
+    environment_mix: EnvironmentMix | None = None
+    environment_geometry_settings: EnvironmentGeometrySettings | None = None
     seed: int = Field(default=20261026, ge=0)
     reference_pool: Path
     artwork: tuple[Path, Path]
@@ -110,7 +178,7 @@ class PilotConfig(Strict):
     execution_profile: str = Field(default="auto", pattern=r"^[a-z0-9][a-z0-9-]{0,63}$")
     execution_policy: Path | None = None
     threads: int | None = Field(default=None, ge=1, le=64)
-    workers: int | None = Field(default=None, ge=1, le=4)
+    workers: int | None = Field(default=None, ge=1, le=8)
     fast_samples: int = Field(default=32, ge=1, le=1024)
     quality_samples: int = Field(default=128, ge=1, le=4096)
     scenes: int = Field(default=3, ge=1, le=100)
@@ -121,6 +189,12 @@ class PilotConfig(Strict):
 
     @model_validator(mode='after')
     def validate_shape(self):
+        if self.environment_geometry_settings is not None:
+            if self.environment_mix is None:
+                raise ValueError('Environment geometry settings require environment_mix')
+            index=self.environment_geometry_settings.wall_ground_index
+            if index is not None and index >= len(self.grounds):
+                raise ValueError('Wall ground material index out of range')
         if any(not 64<=value<=2048 for value in self.resolution):
             raise ValueError('Pilot resolution is bounded to64–2048 per dimension')
         if any(not 0<=v<=1 for v in self.principal_point_fraction):
@@ -195,6 +269,7 @@ def reference_scenes(pool):
 
 def prepare(config_path,output):
     config=load_config(config_path);output=Path(output).resolve()
+    from .asset_licenses import validate_asset_license
     from .blender_execution import load_catalog
     execution_catalog=load_catalog(config.execution_policy).model_dump(mode='json')
     if config.execution_profile!='auto' and config.execution_profile not in {p['id'] for p in execution_catalog['profiles']}:raise ValueError('Unknown execution profile')
@@ -202,7 +277,7 @@ def prepare(config_path,output):
     assets=[];grounds=[]
     for g in config.grounds:
         record=json.loads(g.material_file.read_text())
-        if record.get('license')!='CC0-1.0':raise ValueError('Only declared CC0 materials allowed')
+        validate_asset_license(record)
         maps={}
         for role,item in record['maps'].items():
             file=g.material_file.parent/record['asset_id']/(role+'.jpg')
@@ -210,12 +285,16 @@ def prepare(config_path,output):
             maps[role]=str(file.resolve())
         grounds.append({'maps':maps,'provenance':record})
         assets.append({'kind':'ground','manifest':record})
+    settings=config.environment_geometry_settings
+    if settings is not None and settings.wall_ground_index is not None and 'color' not in grounds[settings.wall_ground_index]['maps']:
+        raise ValueError('Selected wall ground material requires a color map')
     environments=[]
     for file in config.environments:
         record=json.loads(file.read_text())
         hdr=file.parent/record['path']
-        if record.get('license')!='CC0-1.0' or digest_file(hdr)!=record['sha256']:
-            raise ValueError('CC0 environment or hash mismatch')
+        validate_asset_license(record)
+        if digest_file(hdr)!=record['sha256']:
+            raise ValueError('Environment hash mismatch')
         environments.append(str(hdr.resolve()));assets.append({'kind':'environment','manifest':record})
     artwork=[]
     for file in config.artwork:
@@ -229,17 +308,33 @@ def prepare(config_path,output):
         for obj in scene['objects']:
             if obj['source_sha256'] not in by_hash:raise ValueError('Reference artwork revision differs from the physical pilot')
             obj['artwork_index']=by_hash[obj['source_sha256']]
-    contract={'config':config.model_dump(mode='json'),'reference':reference,'assets':assets,'artwork':artwork,
+    config_data=config.model_dump(mode='json')
+    if config.environment_mix is None:
+        config_data.pop('environment_mix')
+        config_data.pop('environment_geometry_settings')
+    elif config.environment_geometry_settings is None:
+        config_data['environment_geometry_settings']=EnvironmentGeometrySettings().model_dump(mode='json')
+    if config.camera_study is None:
+        config_data.pop('camera_study')
+    contract={'config':config_data,'reference':reference,'assets':assets,'artwork':artwork,
               'harness_source_sha256':digest_file(__file__),
               'renderer_script_sha256':digest_file(Path(__file__).resolve().parents[2]/'experiments/blenderproc/render.py')}
     source_root=Path(__file__).resolve().parents[2]
-    sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','src/dataset_generator_m1/wear_materials.py','src/dataset_generator_m1/surface_effects.py','src/dataset_generator_m1/models.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
+    sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_camera.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','src/dataset_generator_m1/wear_materials.py','src/dataset_generator_m1/surface_effects.py','src/dataset_generator_m1/models.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
+    if any(asset['manifest'].get('license') != 'CC0-1.0' for asset in assets):
+        sources.append('src/dataset_generator_m1/asset_licenses.py')
     contract['harness_sources']={name:digest_file(source_root/name) for name in sources}
     jobs=[]
     quality_treatments=(config.treatments[0].id,) if config.quality_treatments is None else config.quality_treatments
     for scene_index in range(config.scenes):
         reference_scene_index=(config.scene_offset+scene_index)%len(scenes)
         scene=scenes[reference_scene_index]
+        pose=sample_pose(config.seed+scene_index, config.camera_study.model_dump(mode='json')) if config.camera_study else None
+        environment_kind=None
+        if config.environment_mix is not None:
+            weights=config.environment_mix.model_dump()
+            probabilities=np.array(list(weights.values()),dtype=float);probabilities/=probabilities.sum()
+            environment_kind=str(np.random.default_rng(config.seed+scene_index+271828).choice(list(weights),p=probabilities))
         for treatment in config.treatments:
             for quality in ('fast','quality'):
                 if quality=='quality' and treatment.id not in quality_treatments:
@@ -250,6 +345,8 @@ def prepare(config_path,output):
                              'samples':config.fast_samples if quality=='fast' else config.quality_samples,'quality':quality,
                              'ground_index':scene_index%len(grounds),'case':'ordinary',
                              'benchmark':scene_index==0 and treatment.id==config.treatments[0].id})
+                if pose is not None:jobs[-1]['camera_pose']=pose
+                if environment_kind is not None:jobs[-1]['environment_geometry']=environment_kind
     first=jobs[0]
     for case in ('negative','clipped','occluded','fully-hidden','overlap','closeup'):
         scene=dict(first['scene'])
@@ -284,7 +381,7 @@ def prepare(config_path,output):
                 manifests.append(manifest)
             job['wear_maps']=manifests
         contract['jobs_sha256']=digest(jobs)
-        runtime={'artwork':artwork,'grounds':grounds,'environments':environments,'config':config.model_dump(mode='json'),'execution_catalog':execution_catalog}
+        runtime={'artwork':artwork,'grounds':grounds,'environments':environments,'config':config_data,'execution_catalog':execution_catalog}
         contract['runtime_sha256']=digest(runtime)
         identity=digest(contract)
         if output.exists():
@@ -296,7 +393,7 @@ def prepare(config_path,output):
         if (Path(map_temp)/'wear').exists():shutil.copytree(Path(map_temp)/'wear',output/'wear')
 
     study={'schema_version':1,'identity':identity,'contract':contract,'jobs':jobs,'artwork':artwork,'grounds':grounds,
-           'environments':environments,'config':config.model_dump(mode='json'),'execution_catalog':execution_catalog}
+           'environments':environments,'config':config_data,'execution_catalog':execution_catalog}
     atomic_json(output/'study.json',study)
     return study
 

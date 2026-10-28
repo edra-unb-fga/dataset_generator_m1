@@ -1,0 +1,326 @@
+{
+  "schema_version": 1,
+  "scope": "exploratory clean confirmation, four measured scenes per case, 640 or 1280 pixels, 32 samples",
+  "accounting": {
+    "l4_cu_per_hour": 1.54,
+    "t4_cu_per_hour_inferred": 1.07,
+    "balance_before": 160.0,
+    "balance_after": 159.72,
+    "total_cu_rounded": 0.28,
+    "end_to_end_cost_includes": "both runtimes, setup, warmups, exploratory and confirmation runs, packaging and transfer"
+  },
+  "archives": {
+    "l4": {
+      "sha256": "0832057b2a07f1fba03fb0410f153c4652b82f09e23221285578a96e43750f9f",
+      "bytes": 29591627,
+      "script_sha256": "ee1caeee31f8d145d47e61251d4b44087558c5d8aef98727d9a73d4947372332",
+      "status": "complete",
+      "wall_seconds": 151.91177826900093
+    },
+    "t4": {
+      "sha256": "347b7b1388a858fc087c941050f27d233435cb43d8c3245c925ba0177fc52c38",
+      "bytes": 16280348,
+      "script_sha256": "ee1caeee31f8d145d47e61251d4b44087558c5d8aef98727d9a73d4947372332",
+      "status": "complete",
+      "wall_seconds": 117.87082712900002
+    }
+  },
+  "results": {
+    "l4": [
+      {
+        "case": "640-1w",
+        "resolution": [
+          640,
+          640
+        ],
+        "workers": 1,
+        "threads": 2,
+        "accepted": 4,
+        "command_seconds": 8.518572910999865,
+        "images_per_second": 0.4695622191405886,
+        "estimated_images_per_cu": 1097.6779148741032,
+        "peak_rss_bytes": 1484771328,
+        "sampled_peak_gpu_memory_mib": 1598.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379",
+            "visible": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379"
+          },
+          "002-core-fast": {
+            "full": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844",
+            "visible": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844"
+          },
+          "003-core-fast": {
+            "full": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3",
+            "visible": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3"
+          },
+          "004-core-fast": {
+            "full": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd",
+            "visible": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd"
+          }
+        },
+        "device_name": "NVIDIA L4",
+        "gpu_memory_mib": 23034
+      },
+      {
+        "case": "640-2w",
+        "resolution": [
+          640,
+          640
+        ],
+        "workers": 2,
+        "threads": 1,
+        "accepted": 4,
+        "command_seconds": 6.979613171000892,
+        "images_per_second": 0.5730976634377563,
+        "estimated_images_per_cu": 1339.708823620729,
+        "peak_rss_bytes": 2774941696,
+        "sampled_peak_gpu_memory_mib": 3200.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379",
+            "visible": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379"
+          },
+          "002-core-fast": {
+            "full": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844",
+            "visible": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844"
+          },
+          "003-core-fast": {
+            "full": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3",
+            "visible": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3"
+          },
+          "004-core-fast": {
+            "full": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd",
+            "visible": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd"
+          }
+        },
+        "device_name": "NVIDIA L4",
+        "gpu_memory_mib": 23034
+      },
+      {
+        "case": "1280-1w",
+        "resolution": [
+          1280,
+          1280
+        ],
+        "workers": 1,
+        "threads": 2,
+        "accepted": 4,
+        "command_seconds": 18.567920109000625,
+        "images_per_second": 0.21542531293319372,
+        "estimated_images_per_cu": 503.59164062305024,
+        "peak_rss_bytes": 1592729600,
+        "sampled_peak_gpu_memory_mib": 2116.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "41709f48241d7d79e95144d933c120397429f5205e3996c77dda5a900194ff2f",
+            "visible": "41709f48241d7d79e95144d933c120397429f5205e3996c77dda5a900194ff2f"
+          },
+          "002-core-fast": {
+            "full": "877a05c59f6d3154c633a89ffe8ec2a4ca34b54cc59780f95b50780defc1c3e2",
+            "visible": "877a05c59f6d3154c633a89ffe8ec2a4ca34b54cc59780f95b50780defc1c3e2"
+          },
+          "003-core-fast": {
+            "full": "e7414d128cbf2817cd89f76f27a7e9abeeaa8b6907ce66578d63afd81faa933c",
+            "visible": "e7414d128cbf2817cd89f76f27a7e9abeeaa8b6907ce66578d63afd81faa933c"
+          },
+          "004-core-fast": {
+            "full": "8f9b2393a9fc36fe344870f7fbf8db843ae623a2dfeb2dd8f0feb2b40d691ca6",
+            "visible": "8f9b2393a9fc36fe344870f7fbf8db843ae623a2dfeb2dd8f0feb2b40d691ca6"
+          }
+        },
+        "device_name": "NVIDIA L4",
+        "gpu_memory_mib": 23034
+      },
+      {
+        "case": "640-4w",
+        "resolution": [
+          640,
+          640
+        ],
+        "workers": 4,
+        "threads": 1,
+        "accepted": 4,
+        "command_seconds": 6.3067788560001645,
+        "images_per_second": 0.6342381889915906,
+        "estimated_images_per_cu": 1482.6347275128091,
+        "peak_rss_bytes": 5136891904,
+        "sampled_peak_gpu_memory_mib": 5968.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379",
+            "visible": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379"
+          },
+          "002-core-fast": {
+            "full": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844",
+            "visible": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844"
+          },
+          "003-core-fast": {
+            "full": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3",
+            "visible": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3"
+          },
+          "004-core-fast": {
+            "full": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd",
+            "visible": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd"
+          }
+        },
+        "device_name": "NVIDIA L4",
+        "gpu_memory_mib": 23034
+      },
+      {
+        "case": "1280-2w",
+        "resolution": [
+          1280,
+          1280
+        ],
+        "workers": 2,
+        "threads": 1,
+        "accepted": 4,
+        "command_seconds": 13.957799780999267,
+        "images_per_second": 0.2865781185259008,
+        "estimated_images_per_cu": 669.9228744761317,
+        "peak_rss_bytes": 3125383168,
+        "sampled_peak_gpu_memory_mib": 4216.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "41709f48241d7d79e95144d933c120397429f5205e3996c77dda5a900194ff2f",
+            "visible": "41709f48241d7d79e95144d933c120397429f5205e3996c77dda5a900194ff2f"
+          },
+          "002-core-fast": {
+            "full": "877a05c59f6d3154c633a89ffe8ec2a4ca34b54cc59780f95b50780defc1c3e2",
+            "visible": "877a05c59f6d3154c633a89ffe8ec2a4ca34b54cc59780f95b50780defc1c3e2"
+          },
+          "003-core-fast": {
+            "full": "e7414d128cbf2817cd89f76f27a7e9abeeaa8b6907ce66578d63afd81faa933c",
+            "visible": "e7414d128cbf2817cd89f76f27a7e9abeeaa8b6907ce66578d63afd81faa933c"
+          },
+          "004-core-fast": {
+            "full": "8f9b2393a9fc36fe344870f7fbf8db843ae623a2dfeb2dd8f0feb2b40d691ca6",
+            "visible": "8f9b2393a9fc36fe344870f7fbf8db843ae623a2dfeb2dd8f0feb2b40d691ca6"
+          }
+        },
+        "device_name": "NVIDIA L4",
+        "gpu_memory_mib": 23034
+      }
+    ],
+    "t4": [
+      {
+        "case": "640-1w",
+        "resolution": [
+          640,
+          640
+        ],
+        "workers": 1,
+        "threads": 2,
+        "accepted": 4,
+        "command_seconds": 10.753509228000041,
+        "images_per_second": 0.371971596916919,
+        "estimated_images_per_cu": 1251.4932232718768,
+        "peak_rss_bytes": 1408897024,
+        "sampled_peak_gpu_memory_mib": 1037.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379",
+            "visible": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379"
+          },
+          "002-core-fast": {
+            "full": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844",
+            "visible": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844"
+          },
+          "003-core-fast": {
+            "full": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3",
+            "visible": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3"
+          },
+          "004-core-fast": {
+            "full": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd",
+            "visible": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd"
+          }
+        },
+        "device_name": "Tesla T4",
+        "gpu_memory_mib": 15360
+      },
+      {
+        "case": "640-2w",
+        "resolution": [
+          640,
+          640
+        ],
+        "workers": 2,
+        "threads": 1,
+        "accepted": 4,
+        "command_seconds": 12.67760645300001,
+        "images_per_second": 0.3155169719796315,
+        "estimated_images_per_cu": 1061.552429090349,
+        "peak_rss_bytes": 2504306688,
+        "sampled_peak_gpu_memory_mib": 1973.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379",
+            "visible": "1a9be49c4f6a546f824f55a9d44891c0780944306ad8949e0aa00719e067d379"
+          },
+          "002-core-fast": {
+            "full": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844",
+            "visible": "4812accd85d1493109367de48171de7a20f386619f0de469056a8d7997d76844"
+          },
+          "003-core-fast": {
+            "full": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3",
+            "visible": "319ba3854ab48582b8079f86066a205b2fef2f5540cb01519ab743d6967f71c3"
+          },
+          "004-core-fast": {
+            "full": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd",
+            "visible": "473580dc2ed6979edc493d53fd15297a2f3f070a95a9ef50a6de6662b78dd1bd"
+          }
+        },
+        "device_name": "Tesla T4",
+        "gpu_memory_mib": 15360
+      },
+      {
+        "case": "1280-1w",
+        "resolution": [
+          1280,
+          1280
+        ],
+        "workers": 1,
+        "threads": 2,
+        "accepted": 4,
+        "command_seconds": 26.44804017699994,
+        "images_per_second": 0.1512399396412944,
+        "estimated_images_per_cu": 508.8446567370652,
+        "peak_rss_bytes": 1386115072,
+        "sampled_peak_gpu_memory_mib": 1545.0,
+        "mask_hashes": {
+          "001-core-fast": {
+            "full": "41709f48241d7d79e95144d933c120397429f5205e3996c77dda5a900194ff2f",
+            "visible": "41709f48241d7d79e95144d933c120397429f5205e3996c77dda5a900194ff2f"
+          },
+          "002-core-fast": {
+            "full": "877a05c59f6d3154c633a89ffe8ec2a4ca34b54cc59780f95b50780defc1c3e2",
+            "visible": "877a05c59f6d3154c633a89ffe8ec2a4ca34b54cc59780f95b50780defc1c3e2"
+          },
+          "003-core-fast": {
+            "full": "e7414d128cbf2817cd89f76f27a7e9abeeaa8b6907ce66578d63afd81faa933c",
+            "visible": "e7414d128cbf2817cd89f76f27a7e9abeeaa8b6907ce66578d63afd81faa933c"
+          },
+          "004-core-fast": {
+            "full": "8f9b2393a9fc36fe344870f7fbf8db843ae623a2dfeb2dd8f0feb2b40d691ca6",
+            "visible": "8f9b2393a9fc36fe344870f7fbf8db843ae623a2dfeb2dd8f0feb2b40d691ca6"
+          }
+        },
+        "device_name": "Tesla T4",
+        "gpu_memory_mib": 15360
+      }
+    ]
+  },
+  "warnings": [
+    "One clean confirmation per setting, not repeated statistical evidence.",
+    "The initial screen overlapped progress-file transfer; it is excluded from benchmark conclusions.",
+    "Images per compute unit extrapolates measured-command throughput and reported runtime rate; excludes setup, probes, warmups, export and transfer.",
+    "Standard L4 machine provided the only available shape; no separate regular-vs-high-memory comparison."
+  ],
+  "mask_checks": "All four measured scenes match full and visible mask hashes across tested workers and GPUs at each resolution.",
+  "input_bundle": {
+    "sha256": "3e6fc59ba63becd971d546d85ebd87ad3fa20488fe0dafbca078b14ed297514d",
+    "identity": "f96656c4bef52e0f198b3b3ab6cfd87447330c11f9504520f4a01a481811f4e3",
+    "source_commit": "44f14f7"
+  }
+}

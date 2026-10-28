@@ -115,13 +115,19 @@ def pool_evidence(pool):
     return digest(content), rows
 
 
-def run_pool(current, pool, observations):
+def run_pool(current, pool, observations, *, acknowledged_codes=()):
     plan = plan_execution(current)
     started = perf_counter()
     prepared = prepare_generation(PreparationRequest(current, pool, plan.workers, observations))
     preparation_seconds = perf_counter()-started
     started = perf_counter()
-    summary = generate_pool(current, pool, GenerationOptions(display='quiet', output_format='json', prepared=prepared))
+    required=set(prepared.preflight['required_acknowledgements'])
+    receipt=None
+    if required and required.issubset(set(acknowledged_codes)):
+        from dataset_generator_m1.preflight import confirm_preflight
+        receipt=pool.parent/(pool.name+'-preflight-receipt.json')
+        confirm_preflight(prepared.preflight,receipt)
+    summary = generate_pool(current, pool, GenerationOptions(display='quiet', output_format='json', prepared=prepared, receipt_path=receipt))
     generation_seconds = perf_counter()-started
     inspection = inspect_pool(pool)
     if (summary['status'] != 'complete' or inspection['status'] != 'valid' or

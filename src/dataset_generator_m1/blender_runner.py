@@ -13,7 +13,7 @@ def monitor(commands, root, name, seconds, guards, *, gpu=False):
     import psutil
     from .blender_pilot import atomic_json
     started=monotonic();swap0=psutil.swap_memory().sout;observations=[];gpu_samples=[];reason=None
-    processes=[];logs=[];last_gpu=-1
+    processes=[];logs=[];last_gpu=-1;gpu_free=None
     try:
         for index,command in enumerate(commands):
             log=(root/f'{name}-worker-{index}.log').open('w');logs.append(log)
@@ -32,15 +32,18 @@ def monitor(commands, root, name, seconds, guards, *, gpu=False):
             elapsed=monotonic()-started;available=psutil.virtual_memory().available;swap=max(0,psutil.swap_memory().sout-swap0)
             observations.append({'seconds':elapsed,'rss_bytes':rss,'available_bytes':available,'swap_out_delta_bytes':swap})
             if gpu and elapsed-last_gpu>=1:
-                last_gpu=elapsed
+                last_gpu=elapsed;gpu_free=None
                 try:
-                    usage=subprocess.run(['nvidia-smi','--query-gpu=utilization.gpu,memory.used','--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=3)
+                    usage=subprocess.run(['nvidia-smi','--query-gpu=utilization.gpu,memory.used,memory.free','--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=3,check=True)
                     values=[list(map(float,line.split(','))) for line in usage.stdout.splitlines()]
-                    gpu_samples.append({'seconds':elapsed,'devices':[{'utilization_percent':x[0],'memory_mib':x[1]} for x in values]})
-                except (OSError,ValueError,subprocess.TimeoutExpired):pass
+                    gpu_samples.append({'seconds':elapsed,'devices':[{'utilization_percent':x[0],'memory_mib':x[1],'free_memory_mib':x[2]} for x in values]})
+                    gpu_free=min((x[2] for x in values),default=None)
+                except (OSError,ValueError,IndexError,subprocess.SubprocessError):pass
             reason=('available-memory-floor' if available<guards['min_available_gib']*2**30 else
                     'process-tree-RSS' if rss>guards['rss_limit_gib']*2**30 else
                     'host-swap-out' if swap>guards['max_swap_out_mib']*2**20 else
+                    'gpu-telemetry-unavailable' if gpu and guards.get('min_gpu_free_mib') is not None and gpu_free is None else
+                    'gpu-memory-floor' if gpu_free is not None and guards.get('min_gpu_free_mib') is not None and gpu_free<guards['min_gpu_free_mib'] else
                     'study-time-budget' if elapsed>=seconds else None)
             atomic_json(root/'progress.json',{'status':'running','phase':name,'elapsed_seconds':elapsed,
                 'remaining_budget_seconds':max(0,seconds-elapsed),'completed_scenes':len(list((root/'scenes').glob('*/result.json')))})

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "local-cpu": {
+      "status": "existing local CPU policy; no new comparable throughput measurement",
+      "rules": [
+        {
+          "max_pixels": null,
+          "execution_profile": "cpu",
+          "workers": 1,
+          "threads": 6
+        }
+      ]
+    },
+    "colab-t4-screen": {
+      "status": "experimental: one clean four-image cell per case; not a universal default",
+      "rules": [
+        {
+          "max_pixels": null,
+          "execution_profile": "gpu-guarded",
+          "workers": 1,
+          "threads": 2
+        }
+      ]
+    },
+    "colab-l4-screen": {
+      "status": "experimental: one clean four-image cell per case; high-memory 12-core L4 shape",
+      "rules": [
+        {
+          "max_pixels": 409600,
+          "execution_profile": "gpu-guarded",
+          "workers": 4,
+          "threads": 1
+        },
+        {
+          "max_pixels": null,
+          "execution_profile": "gpu-guarded",
+          "workers": 2,
+          "threads": 1
+        }
+      ]
+    },
+    "colab-l4-camera-study": {
+      "status": "experimental L4 camera study: 640px 6x2 ran successfully; 1280px 4x1 led a short single-run screen. Not a universal default.",
+      "rules": [
+        {
+          "max_pixels": 409600,
+          "execution_profile": "gpu-guarded",
+          "workers": 6,
+          "threads": 2
+        },
+        {
+          "max_pixels": null,
+          "execution_profile": "gpu-guarded",
+          "workers": 4,
+          "threads": 1
+        }
+      ]
+    }
+  }
+}

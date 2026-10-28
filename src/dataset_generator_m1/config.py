@@ -300,6 +300,7 @@ def load_profile(
     from .models import ExecutionConfig
     resolved_values['execution'] = {**ExecutionConfig().model_dump(mode='json'), **resolved_values['execution']}
     resolved_values["scene"].setdefault("foreground_resampling", "legacy")
+    resolved_values["scene"].setdefault("compositing", "legacy")
     for override_path, value in applied.items():
         _set_leaf(resolved_values, override_path, value)
 

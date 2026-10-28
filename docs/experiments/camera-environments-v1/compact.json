@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "2d": {
+    "fixture_count": 8,
+    "rendered_images": 24,
+    "notes": [
+      "generic-rgba substitutes a generated alpha-gradient asset into the pad family; it is not a separate family",
+      "shade is a qualitative scene-wide elliptical field, not a physical shadow",
+      "each layer is quantized to 8-bit sRGB between linear-light compositing steps"
+    ],
+    "fixtures": [
+      {
+        "subject": "landing-pad",
+        "occlusion": false,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.026956380208333332,
+            "max_abs_rgb_difference": 20,
+            "changed_pixel_fraction": 0.00453125
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 18.791604817708333,
+            "max_abs_rgb_difference": 51,
+            "changed_pixel_fraction": 1.0
+          }
+        }
+      },
+      {
+        "subject": "landing-pad",
+        "occlusion": true,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.13759765625,
+            "max_abs_rgb_difference": 47,
+            "changed_pixel_fraction": 0.01392578125
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 18.754225260416668,
+            "max_abs_rgb_difference": 51,
+            "changed_pixel_fraction": 1.0
+          }
+        }
+      },
+      {
+        "subject": "landing",
+        "occlusion": false,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0648046875,
+            "max_abs_rgb_difference": 43,
+            "changed_pixel_fraction": 0.006533203125
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 19.961637369791667,
+            "max_abs_rgb_difference": 53,
+            "changed_pixel_fraction": 0.999462890625
+          }
+        }
+      },
+      {
+        "subject": "landing",
+        "occlusion": true,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.68513671875,
+            "max_abs_rgb_difference": 53,
+            "changed_pixel_fraction": 0.0254296875
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 19.77908203125,
+            "max_abs_rgb_difference": 53,
+            "changed_pixel_fraction": 0.9999609375
+          }
+        }
+      },
+      {
+        "subject": "manometro",
+        "occlusion": false,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.04603190104166666,
+            "max_abs_rgb_difference": 49,
+            "changed_pixel_fraction": 0.004912109375
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 19.31248046875,
+            "max_abs_rgb_difference": 52,
+            "changed_pixel_fraction": 0.998505859375
+          }
+        }
+      },
+      {
+        "subject": "manometro",
+        "occlusion": true,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.3817903645833333,
+            "max_abs_rgb_difference": 53,
+            "changed_pixel_fraction": 0.015986328125
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 19.211194661458332,
+            "max_abs_rgb_difference": 52,
+            "changed_pixel_fraction": 0.998857421875
+          }
+        }
+      },
+      {
+        "subject": "generic-rgba",
+        "occlusion": false,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0301953125,
+            "max_abs_rgb_difference": 10,
+            "changed_pixel_fraction": 0.009130859375
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 18.89171875,
+            "max_abs_rgb_difference": 46,
+            "changed_pixel_fraction": 1.0
+          }
+        }
+      },
+      {
+        "subject": "generic-rgba",
+        "occlusion": true,
+        "treatments": {
+          "legacy": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.0,
+            "max_abs_rgb_difference": 0,
+            "changed_pixel_fraction": 0.0
+          },
+          "linear": {
+            "comparison_baseline": "legacy",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 0.19027994791666666,
+            "max_abs_rgb_difference": 41,
+            "changed_pixel_fraction": 0.016650390625
+          },
+          "linear-shade": {
+            "comparison_baseline": "linear",
+            "annotation_equal": true,
+            "masks_equal": true,
+            "mean_abs_rgb_difference": 18.839986979166667,
+            "max_abs_rgb_difference": 46,
+            "changed_pixel_fraction": 1.0
+          }
+        }
+      }
+    ]
+  },
+  "early_prototype": {
+    "open-r1": {
+      "status": "complete",
+      "resources": {
+        "status": "complete",
+        "reason": null,
+        "peak_rss_bytes": 1121079296,
+        "minimum_available_bytes": 9585807360,
+        "swap_out_delta_bytes": 0
+      },
+      "scenes": [
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "tilt": 44.87568625479786,
+          "mask_present": true,
+          "rgb_present": true,
+          "attempts": 1,
+          "supports": [
+            [
+              1.0
+            ]
+          ]
+        }
+      ]
+    },
+    "indoor-r1": {
+      "status": "complete",
+      "resources": {
+        "status": "complete",
+        "reason": null,
+        "peak_rss_bytes": 1122676736,
+        "minimum_available_bytes": 9538588672,
+        "swap_out_delta_bytes": 0
+      },
+      "scenes": [
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "tilt": 44.87568625479786,
+          "mask_present": true,
+          "rgb_present": true,
+          "attempts": 1,
+          "supports": [
+            [
+              1.0
+            ]
+          ]
+        }
+      ]
+    },
+    "outdoor-r1": {
+      "status": "complete",
+      "resources": {
+        "status": "complete",
+        "reason": null,
+        "peak_rss_bytes": 1237733376,
+        "minimum_available_bytes": 9466912768,
+        "swap_out_delta_bytes": 0
+      },
+      "scenes": [
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "tilt": 44.87568625479786,
+          "mask_present": true,
+          "rgb_present": true,
+          "attempts": 1,
+          "supports": [
+            [
+              1.0
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "development_partial": [
+    {
+      "cell": "open-fixed",
+      "resources": {
+        "status": "guard-aborted",
+        "reason": "host-swap-out",
+        "peak_rss_bytes": 1222385664,
+        "minimum_available_bytes": 9423380480,
+        "swap_out_delta_bytes": 46096384
+      },
+      "rows": [
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "tilt": 44.87568625479786
+        },
+        {
+          "job": "002-core-fast",
+          "status": "accepted",
+          "tilt": 3.179115465988197
+        }
+      ]
+    }
+  ],
+  "current_reduced": {
+    "open-view": {
+      "status": "guard-aborted",
+      "resources": {
+        "status": "guard-aborted",
+        "reason": "host-swap-out",
+        "peak_rss_bytes": 1205051392,
+        "minimum_available_bytes": 9599975424,
+        "swap_out_delta_bytes": 41795584
+      },
+      "scenes": []
+    },
+    "indoor-view": {
+      "status": "missing",
+      "resources": {},
+      "scenes": []
+    },
+    "outdoor-view": {
+      "status": "missing",
+      "resources": {},
+      "scenes": []
+    },
+    "motion-distortion": {
+      "status": "missing",
+      "resources": {},
+      "scenes": []
+    }
+  },
+  "retry_once": {
+    "status": "guard-aborted",
+    "resources": {
+      "status": "guard-aborted",
+      "reason": "host-swap-out",
+      "peak_rss_bytes": 974893056,
+      "minimum_available_bytes": 9781575680,
+      "swap_out_delta_bytes": 49864704
+    },
+    "scenes": []
+  }
+}

@@ -23,6 +23,19 @@
           "maximum": 1800,
           "title": "Probe Timeout Seconds",
           "type": "number"
+        },
+        "min_gpu_free_mib": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Gpu Free Mib"
         }
       },
       "required": [
@@ -187,7 +200,7 @@
           "type": "string"
         },
         "workers": {
-          "maximum": 4,
+          "maximum": 8,
           "minimum": 1,
           "title": "Workers",
           "type": "integer"

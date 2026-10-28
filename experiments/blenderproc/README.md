@@ -12,8 +12,8 @@ uv run python scripts/blenderproc_pilot.py bridge --assets-dir outputs/blender-a
 ```
 
 `assets` fetches the reviewed CC0 manifests in `assets/`, verifies hashes and reuses valid
-local files offline. A selection can contain 1–6 ground materials and 1–3 HDR environments; the
-round-three expansion is limited to three additional grounds and one HDR. AmbientCG archives use the existing bounded acquisition path; HDR files have
+local files offline. A selection can contain 1–6 ground materials and 1–3 HDR environments; these are current
+validated harness limits, not a two-asset limit. AmbientCG archives use the existing bounded acquisition path; HDR files have
 bounded HTTPS downloads. Raw files stay ignored. Inspect and adjust the generated normal 2D composers
 before generation. The bridge discovers verified material manifests, uses only their color maps as backgrounds in legacy
 material order followed by additional materials, and uses a planar UV recipe, normal core
@@ -35,9 +35,58 @@ uv run python -m dataset_generator_m1 evaluate prepare --manifest outputs/experi
 `render --jobs ID...` selects prepared jobs for diagnostics. Completed outputs are atomically committed
 and hash-checked on restart. Exclusive coordinator ownership prevents concurrent render writers; exporting freezes the completed dataset against later appended scenes. Config, reference pool, asset/artwork revisions, source and job plan are
 bound into study identity. Rendering time accumulates across retries/resume; a changed contract needs
-a fresh study. The parent watches the complete Blender process tree at 0.25 s, stops at 2 GiB available
-RAM, 10 GiB summed RSS, 16 MiB additional global swap-out or the remaining study budget, and records the
-stop. Guards are retained rather than lowered. Budget-limited output may still be exported explicitly.
+a fresh study. The parent watches the complete Blender process tree at 0.25 s and enforces the saved
+execution catalog's host RAM, process-tree RSS, system swap-out and time guards. The historical catalog
+uses a 2 GiB available-RAM floor and 10 GiB summed-RSS cap; these are fixed research safeguards, not
+machine-independent capacity estimates. An optional `min_gpu_free_mib` guard stops GPU work if sampled
+free VRAM falls below its limit or NVIDIA telemetry is unavailable. GPU and host RAM are separate.
+Budget-limited output may still be exported explicitly.
+
+For one-command setup, generate a fresh policy and prepare the study together:
+
+```sh
+uv run python scripts/prepare_blenderproc_run.py \
+  --config configs/local/pilot.json \
+  --output-dir outputs/experiments/l4-camera-run \
+  --screen-profile colab-l4-camera-study --gpu-guard required
+uv run python scripts/blenderproc_pilot.py render \
+  --output-dir outputs/experiments/l4-camera-run/study \
+  --blenderproc .cache/blenderproc-venv/bin/blenderproc --blender-install-path .cache/blender
+```
+
+The optional L4 camera selection is an explicit experimental recommendation, not a universal hardware
+default: it selects 6 workers × 2 threads for up to 640² and 4 × 1 for larger images. The 1280² 4 × 1
+screen was a single short comparison. Omit `--screen-profile` to preserve the config's selection.
+The setup prints the resolved guards and retains the measured basis, policy and resolved config beside
+`study/`. Render and resume use that frozen policy; a fresh setup remeasures current headroom. A failed
+setup keeps its status and diagnostics in the output directory; retry in a new directory.
+
+`--gpu-guard auto` (the default) measures NVIDIA VRAM when an NVIDIA tool is present and a GPU or
+automatic profile may use it; an explicitly selected GPU profile fails if NVIDIA telemetry is missing.
+`required` insists on NVIDIA VRAM telemetry, and `off` explicitly disables any inherited VRAM guard and records the decision in the guard basis. The
+adaptive GPU utility currently supports exactly one NVIDIA GPU; on multi-GPU hosts it fails rather
+than selecting a card implicitly. The lower-level monitor currently guards against the lowest free
+VRAM among NVIDIA devices, which is conservative but does not isolate the selected GPU. On systems
+without NVIDIA telemetry, automatic selection may still choose a non-NVIDIA GPU, so setup reports
+that no VRAM guard was measured. Use a separately reviewed policy when that limitation matters.
+
+To create a fresh, machine-specific catalog, adjust the fractions and reserve floors in
+`execution/adaptive-guards.json`, then run on the machine that will render:
+
+```sh
+uv run python scripts/blenderproc_adaptive_guards.py \
+  --policy experiments/blenderproc/execution/profiles.json \
+  --settings experiments/blenderproc/execution/adaptive-guards.json \
+  --output configs/local/adaptive-execution.json --gpu
+```
+
+Omit `--gpu` for CPU-only work. The command refuses to overwrite an existing policy and saves a
+`.basis.json` with measured headroom and parameters. Set `execution_policy` in the pilot config to the
+new file before preparing; the prepared study freezes the resolved guards. Measure again for a new
+study on different hardware or if headroom has materially changed. Summed RSS counts shared pages more
+than once, so this is a conservative monitoring threshold rather than a physical-memory forecast.
+The adaptive fractions are configurable provisional safeguards, not proven universal defaults. A guard
+stop is evidence to investigate, not a reason to silently weaken the limits.
 
 ## Physical and camera assumptions
 
@@ -194,7 +243,8 @@ uv run python scripts/blenderproc_pilot.py profiles --policy configs/local/my-bl
 To save a local policy, copy that JSON, edit its rules/settings, then set `execution_policy` in the
 study config to its relative filename. Set `execution_profile` to a profile ID for an explicit choice.
 Optional study `threads` and `workers` values override the selected profile and are recorded; leave
-them null/omitted for automatic defaults. Older local configs containing `threads:6` still explicitly
+them null/omitted for automatic defaults. The current worker limit is eight; it is a safety bound,
+not evidence that eight workers are optimal on every machine. Older local configs containing `threads:6` still explicitly
 request six threads and should remove that value to adopt the saved hardware policy.
 
 CPU-fast and raw-reference profiles are explicit quality choices and never selected as silent
@@ -212,7 +262,8 @@ relaunching Blender. Source changes also require fresh preparation. Historical C
 readable/exportable; they cannot append renders under the new source/profile contract.
 
 One coordinator owns the study and partitions disjoint prepared job IDs between persistent Blender
-workers. All worker trees share the original host-RAM/swap/time guards; Blender configuration,
+workers. All worker trees share the selected catalog's host-RAM/swap/time guards and optional GPU
+free-memory guard; Blender configuration,
 Matplotlib cache and temporary directories are isolated. Probe/setup and common concurrent render
 wall times are separate entries in `runs.json`. Per-image times must never be summed into aggregate
 parallel throughput. Worker completion without all selected scene records is a failure.
@@ -288,3 +339,60 @@ To regenerate the reviewed execution figures from the retained evidence archive,
 `scripts/report_blender_execution.py --evidence-dir PATH --output-dir PATH` in the host environment
 with Matplotlib installed. Optional `--denoising` and `--cpu-study` inputs include the earlier denoising
 analysis and local CPU qualification. The authoring script produces Markdown, compact JSON and PNGs.
+
+### Drone camera study
+
+`pilot-drone.example.json` opts new studies into a scene-seeded drone pose. Yaw and
+heading-relative tilt direction are uniform; tilt follows the saved bounded exponential.
+Treatments and quality variants share the sealed scene pose. The renderer aims at the
+reference group, matches its median target width within the saved distance bounds, and
+records achieved width and bound failures. A single ordinary pad is centered. Ground
+extent follows the projected footprint within saved bounds; a horizon or extent clamp is
+recorded. View-relative material mode samples the number of material spans across the
+central view, subject to saved tile bounds; fixed-physical mode uses each treatment's
+`uv_scale_m`. Result diagnostics retain nominal and achieved values. Existing configs
+without `camera_study` retain their scalar camera and 40 m ground behavior.
+
+
+### Explicit environment geometry
+
+`pilot-environment-mix.example.json` opts into an 80/10/10 weighted open, indoor,
+and outdoor mix. The weights need not sum to one; selection is deterministic per scene
+and shared by paired treatments and quality levels. The indoor example forces an enclosed
+room, with a ceiling above the camera and an area light; the outdoor example forces a
+bounded, open-top layout. Walls and ceilings are real renderable meshes and therefore
+cast shadows and can occlude the target. Room dimensions adapt to include the camera
+and target, so camera height affects their size. Geometry dimensions are recorded in
+result diagnostics. HDR world lighting and sun are disabled inside the room; saved
+treatment lamps still apply. Omit `environment_mix` for the original open scene.
+
+Environment geometry settings are saved under `environment_geometry_settings`: minimum room
+half-width and height, margins around the camera, outdoor wall height, wall thickness, color
+and roughness, and indoor area-light power, color, size and ceiling offset. The room expands
+to contain the camera and the complete rotated footprints of placed targets. The saved horizontal
+camera margin also supplies target-to-wall clearance; result diagnostics record the target extent. `wall_ground_index` chooses the color map of an existing licensed
+`grounds` entry; `wall_texture_repeats` sets UV repetitions per face. Set the index to null
+for a plain-colored wall. The examples choose the Concrete034 ground entry explicitly; this
+is a prototype requiring visual and annotation review, not a calibrated material library.
+
+## Material provenance and completed-cell handoff
+
+Locally supplied non-CC0 ground and environment manifests must declare `license`, `author`,
+`source_url`, `license_url`, `attribution`, `restrictions`, `allow_local_render_and_dataset: true`,
+and an explicit boolean `allow_redistribution`. These are user-supplied declarations rather than
+independent legal verification. Portable input bundles refuse assets without redistribution permission;
+existing CC0 shorthand remains valid. The built-in asset downloader and 2D bridge remain CC0-only.
+
+For a completed, settled surface-study cell, package and verify the snapshot between timed commands:
+
+```sh
+python scripts/handoff_study_cell.py package --root STUDY --cell CELL --archive CELL.tar.gz
+python scripts/handoff_study_cell.py import --archive CELL.tar.gz --output IMPORTS
+```
+
+A configured CLI can download a packaged cell with `handoff_study_cell.py colab --remote PATH
+--output IMPORTS --cache DOWNLOADS --executable EXECUTABLE --session SESSION`. The controller must
+pause the remote study before transfer and wait for transfer and verification before starting a new
+timed command. The local lease cannot control a remote machine. A failed archive download restarts
+that archive; already verified cells are retained. This interface was tested locally and with a fake
+CLI, not against a live Colab runtime in this round.

@@ -109,3 +109,11 @@ remain unchanged. General caster recipes, calibrated material/camera response, r
 and real detector evidence remain planning work under #62/#63/#64 and #59/#61. The isolated context
 prototype branch is evidence for that discussion, not a promoted mesh-import backend. #28 remains a
 multi-hardware performance requirement.
+
+
+The [camera and environment round](REALISM_ROUND_FOUR.md) introduces opt-in drone tilt/ground
+controls, a prototype for explicitly configured rooms and outdoor walls, experimental linear-light
+2D compositing and verified cell handoff. The [round evidence](experiments/camera-environments-v1/README.md)
+is partial: repeated host swap-out guard stops prevented final 3D visual qualification and new speed
+studies. Keep environment geometry experimental, production defaults unchanged, and complete those
+checks before promoting it. Real-image, model-transfer and multi-hardware requirements remain open.

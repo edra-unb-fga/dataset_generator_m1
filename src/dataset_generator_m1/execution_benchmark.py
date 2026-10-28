@@ -11,6 +11,7 @@ from .inspection import inspect_pool
 from .models import ExecutionConfig, GenerationProfile
 from .execution import plan_execution
 from .preparation import PreparationRequest, prepare_generation
+from .renderer_version import derived_profile_payload
 
 
 def _signature(root: Path) -> str:
@@ -56,7 +57,7 @@ def production_benchmark(resolved, output_dir, *, matrix_file=None, samples=20, 
             payload["run"]["num_images"] = samples
             profile = GenerationProfile.model_validate(payload)
             current = resolved.model_copy(update={"profile": profile,
-                "contract_hash": digest({"base": resolved.contract_hash, "benchmark_profile": payload}),
+                "contract_hash": digest({"base": resolved.contract_hash, "benchmark_profile": derived_profile_payload(payload)}),
                 "applied_overrides": {**resolved.applied_overrides, "benchmark.execution": policy.model_dump(), "benchmark.samples": samples}})
             plan = plan_execution(current)
             pool = root / f"{repeat:02d}-{name}"

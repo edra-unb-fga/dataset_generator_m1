@@ -96,3 +96,10 @@ def test_policy_digest_preserves_the_exact_prepared_payload():
     for p in value['profiles']:p['match'].pop('min_cpu_count',None)
     selection=resolve_execution(value,hardware(),(640,640))
     assert selection['catalog_sha256']==fingerprint(value)
+
+
+def test_explicit_eight_workers_is_allowed_but_nine_is_rejected():
+    catalog=load_catalog()
+    assert resolve_execution(catalog,hardware(cpu=12), (640,640), profile='gpu-guarded', workers=8, threads=1)['settings']['workers']==8
+    with pytest.raises(ValueError):
+        resolve_execution(catalog,hardware(cpu=12), (640,640), profile='gpu-guarded', workers=9, threads=1)

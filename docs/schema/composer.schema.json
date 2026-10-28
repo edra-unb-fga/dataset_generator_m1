@@ -1050,6 +1050,22 @@
           "default": null,
           "title": "Canvas Scale"
         },
+        "compositing": {
+          "anyOf": [
+            {
+              "enum": [
+                "legacy",
+                "linear-srgb"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Compositing"
+        },
         "foreground_resampling": {
           "anyOf": [
             {

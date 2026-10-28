@@ -379,3 +379,13 @@ geometry/masks within each engine, shared source/coverage intent across engines,
 and stress roles, conservative restart-safe GPU budget accounting, and a reserved combination review.
 The reference offset wraps; reserved combinations are not held-out real captures or globally unseen
 layouts. Physical/model-transfer claims and production promotion require later evidence.
+
+
+### Experimental linear-light composition
+
+`scene.compositing` selects `legacy` (default) or `linear-srgb`. The optional linear mode decodes
+sRGB, blends target RGB and projected procedural occluder colors using linear coverage, and encodes
+each layer back to 8-bit sRGB. It changes appearance only: sampling, the shared homography, alpha,
+full/visible coverage and annotations remain unchanged. Legacy omission preserves its existing
+identity and behavior. This mode remains experimental; the initial paired screen and its limits are
+recorded in `experiments/camera-environments-v1/README.md`.

@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "reference_pool": "../../outputs/reference-pad-pool",
+  "artwork": [
+    "../../foregrounds/landing_pad_foregrounds/landing-base.png",
+    "../../foregrounds/landing_pad_foregrounds/takeoff-base.png"
+  ],
+  "grounds": [
+    {
+      "material_file": "../../outputs/blender-assets/Ground068.json"
+    },
+    {
+      "material_file": "../../outputs/blender-assets/Asphalt012.json"
+    },
+    {
+      "material_file": "../../outputs/blender-assets/Concrete034.json"
+    }
+  ],
+  "environments": [
+    "../../outputs/blender-assets/kloofendal_48d_partly_cloudy_puresky.json",
+    "../../outputs/blender-assets/overcast_soil_puresky.json"
+  ],
+  "resolution": [
+    640,
+    640
+  ],
+  "scenes": 3,
+  "study_seconds": 7200,
+  "quality_treatments": [
+    "base",
+    "night-mixed"
+  ],
+  "treatments": [
+    {
+      "id": "base"
+    },
+    {
+      "id": "satin",
+      "roughness": 0.25
+    },
+    {
+      "id": "matte",
+      "roughness": 0.8
+    },
+    {
+      "id": "environment",
+      "lighting": "environment"
+    },
+    {
+      "id": "overcast",
+      "lighting": "overcast"
+    },
+    {
+      "id": "night-mixed",
+      "lighting": "night-mixed",
+      "noise_std": 0.02
+    },
+    {
+      "id": "dof",
+      "depth_of_field": true,
+      "aperture_fstop": 2
+    },
+    {
+      "id": "motion",
+      "camera_speed_mps": 2,
+      "shutter_seconds": 0.06666666666666667
+    },
+    {
+      "id": "distortion",
+      "distortion": [
+        -0.15,
+        0.03,
+        0,
+        0.001,
+        -0.001
+      ]
+    },
+    {
+      "id": "haze",
+      "haze_density": 0.008
+    }
+  ],
+  "execution_profile": "auto",
+  "threads": null,
+  "workers": null,
+  "fast_samples": 32,
+  "quality_samples": 128,
+  "camera_study": {
+    "preset": "drone",
+    "tilt_max_degrees": 55,
+    "tilt_scale_degrees": 18.10855,
+    "ground_spans": [
+      0.5,
+      1.5
+    ],
+    "extent_bounds_m": [
+      40,
+      500
+    ],
+    "footprint_margin": 1.1,
+    "tile_bounds_m": [
+      0.1,
+      500
+    ],
+    "distance_scale_bounds": [
+      0.25,
+      4
+    ],
+    "material_mode": "view-relative",
+    "distance_solver_iterations": 48,
+    "distance_relative_tolerance": 0.01
+  },
+  "environment_mix": {
+    "open": 0,
+    "indoor": 0,
+    "outdoor": 1
+  },
+  "environment_geometry_settings": {
+    "min_half_width_m": 2.5,
+    "camera_horizontal_margin_m": 2.0,
+    "min_room_height_m": 3.0,
+    "camera_ceiling_margin_m": 1.0,
+    "outdoor_wall_height_m": 1.5,
+    "wall_thickness_m": 0.1,
+    "wall_color": [
+      0.48,
+      0.48,
+      0.45
+    ],
+    "wall_roughness": 0.85,
+    "wall_ground_index": 2,
+    "wall_texture_repeats": 2.0,
+    "indoor_light_power_w": 800.0,
+    "indoor_light_color": [
+      1.0,
+      0.9,
+      0.75
+    ],
+    "indoor_light_size_m": 2.0,
+    "indoor_light_ceiling_offset_m": 0.15
+  }
+}
