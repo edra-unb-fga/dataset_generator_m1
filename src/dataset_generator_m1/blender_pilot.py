@@ -178,7 +178,7 @@ class PilotConfig(Strict):
     execution_profile: str = Field(default="auto", pattern=r"^[a-z0-9][a-z0-9-]{0,63}$")
     execution_policy: Path | None = None
     threads: int | None = Field(default=None, ge=1, le=64)
-    workers: int | None = Field(default=None, ge=1, le=4)
+    workers: int | None = Field(default=None, ge=1, le=8)
     fast_samples: int = Field(default=32, ge=1, le=1024)
     quality_samples: int = Field(default=128, ge=1, le=4096)
     scenes: int = Field(default=3, ge=1, le=100)

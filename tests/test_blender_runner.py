@@ -94,3 +94,34 @@ def test_monitor_reaps_orphan_when_wrapper_exits_before_first_sample(tmp_path):
             p.wait(timeout=2)
         except psutil.TimeoutExpired:
             assert p.status()==psutil.STATUS_ZOMBIE
+
+
+def test_gpu_free_memory_guard_stops_workers(tmp_path, monkeypatch):
+    import os
+    binary=tmp_path/'nvidia-smi'
+    binary.write_text('#!/bin/sh\necho "80, 23000, 500"\n')
+    binary.chmod(0o755)
+    monkeypatch.setenv('PATH',str(tmp_path)+os.pathsep+os.environ.get('PATH',''))
+    guards={'min_available_gib':0.001,'rss_limit_gib':100,'max_swap_out_mib':1000,'min_gpu_free_mib':1000}
+    result=runner.monitor([[sys.executable,'-c','import time; time.sleep(60)']],tmp_path,'gpu',10,guards,gpu=True)
+    assert result['status']=='guard-aborted' and result['reason']=='gpu-memory-floor'
+    assert json.loads((tmp_path/'gpu-gpu.json').read_text())[0]['devices'][0]['free_memory_mib']==500
+
+
+def test_gpu_guard_fails_closed_if_telemetry_unavailable(tmp_path, monkeypatch):
+    monkeypatch.setenv('PATH',str(tmp_path))
+    guards={'min_available_gib':0.001,'rss_limit_gib':100,'max_swap_out_mib':1000,'min_gpu_free_mib':1000}
+    result=runner.monitor([[sys.executable,'-c','import time; time.sleep(60)']],tmp_path,'gpu-missing',10,guards,gpu=True)
+    assert result['reason']=='gpu-telemetry-unavailable' and result['status']=='guard-aborted'
+
+
+def test_gpu_guard_rejects_stale_telemetry_after_initial_success(tmp_path, monkeypatch):
+    import os
+    marker=tmp_path/'called'
+    binary=tmp_path/'nvidia-smi'
+    binary.write_text('#!/bin/sh\nif [ -f "'+str(marker)+'" ]; then exit 1; fi\ntouch "'+str(marker)+'"\necho "80, 1000, 23000"\n')
+    binary.chmod(0o755)
+    monkeypatch.setenv('PATH',str(tmp_path)+os.pathsep+os.environ.get('PATH',''))
+    guards={'min_available_gib':0.001,'rss_limit_gib':100,'max_swap_out_mib':1000,'min_gpu_free_mib':1000}
+    result=runner.monitor([[sys.executable,'-c','import time; time.sleep(60)']],tmp_path,'gpu-stale',10,guards,gpu=True)
+    assert result['reason']=='gpu-telemetry-unavailable' and result['status']=='guard-aborted'

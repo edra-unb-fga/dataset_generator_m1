@@ -35,9 +35,30 @@ uv run python -m dataset_generator_m1 evaluate prepare --manifest outputs/experi
 `render --jobs ID...` selects prepared jobs for diagnostics. Completed outputs are atomically committed
 and hash-checked on restart. Exclusive coordinator ownership prevents concurrent render writers; exporting freezes the completed dataset against later appended scenes. Config, reference pool, asset/artwork revisions, source and job plan are
 bound into study identity. Rendering time accumulates across retries/resume; a changed contract needs
-a fresh study. The parent watches the complete Blender process tree at 0.25 s, stops at 2 GiB available
-RAM, 10 GiB summed RSS, 16 MiB additional global swap-out or the remaining study budget, and records the
-stop. Guards are retained rather than lowered. Budget-limited output may still be exported explicitly.
+a fresh study. The parent watches the complete Blender process tree at 0.25 s and enforces the saved
+execution catalog's host RAM, process-tree RSS, system swap-out and time guards. The historical catalog
+uses a 2 GiB available-RAM floor and 10 GiB summed-RSS cap; these are fixed research safeguards, not
+machine-independent capacity estimates. An optional `min_gpu_free_mib` guard stops GPU work if sampled
+free VRAM falls below its limit or NVIDIA telemetry is unavailable. GPU and host RAM are separate.
+Budget-limited output may still be exported explicitly.
+
+To create a fresh, machine-specific catalog, adjust the fractions and reserve floors in
+`execution/adaptive-guards.json`, then run on the machine that will render:
+
+```sh
+uv run python scripts/blenderproc_adaptive_guards.py \
+  --policy experiments/blenderproc/execution/profiles.json \
+  --settings experiments/blenderproc/execution/adaptive-guards.json \
+  --output configs/local/adaptive-execution.json --gpu
+```
+
+Omit `--gpu` for CPU-only work. The command refuses to overwrite an existing policy and saves a
+`.basis.json` with measured headroom and parameters. Set `execution_policy` in the pilot config to the
+new file before preparing; the prepared study freezes the resolved guards. Measure again for a new
+study on different hardware or if headroom has materially changed. Summed RSS counts shared pages more
+than once, so this is a conservative monitoring threshold rather than a physical-memory forecast.
+The adaptive fractions are configurable provisional safeguards, not proven universal defaults. A guard
+stop is evidence to investigate, not a reason to silently weaken the limits.
 
 ## Physical and camera assumptions
 
@@ -194,7 +215,8 @@ uv run python scripts/blenderproc_pilot.py profiles --policy configs/local/my-bl
 To save a local policy, copy that JSON, edit its rules/settings, then set `execution_policy` in the
 study config to its relative filename. Set `execution_profile` to a profile ID for an explicit choice.
 Optional study `threads` and `workers` values override the selected profile and are recorded; leave
-them null/omitted for automatic defaults. Older local configs containing `threads:6` still explicitly
+them null/omitted for automatic defaults. The current worker limit is eight; it is a safety bound,
+not evidence that eight workers are optimal on every machine. Older local configs containing `threads:6` still explicitly
 request six threads and should remove that value to adopt the saved hardware policy.
 
 CPU-fast and raw-reference profiles are explicit quality choices and never selected as silent
@@ -212,7 +234,8 @@ relaunching Blender. Source changes also require fresh preparation. Historical C
 readable/exportable; they cannot append renders under the new source/profile contract.
 
 One coordinator owns the study and partitions disjoint prepared job IDs between persistent Blender
-workers. All worker trees share the original host-RAM/swap/time guards; Blender configuration,
+workers. All worker trees share the selected catalog's host-RAM/swap/time guards and optional GPU
+free-memory guard; Blender configuration,
 Matplotlib cache and temporary directories are isolated. Probe/setup and common concurrent render
 wall times are separate entries in `runs.json`. Per-image times must never be summed into aggregate
 parallel throughput. Worker completion without all selected scene records is a failure.

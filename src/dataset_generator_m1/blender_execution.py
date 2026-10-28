@@ -17,7 +17,7 @@ class Strict(BaseModel):
 class Settings(Strict):
     device: Literal['CPU', 'GPU']
     denoiser: Literal['compositor-oidn', 'compositor-fast', 'native-gpu-oidn', 'native-cpu-oidn', 'none']
-    workers: int = Field(ge=1, le=4)
+    workers: int = Field(ge=1, le=8)
     threads: int | Literal['available']
     thread_cap: int = Field(ge=1, le=64)
     denoiser_prefilter: Literal['ACCURATE', 'FAST', 'NONE']
@@ -72,6 +72,7 @@ class Guards(Strict):
     rss_limit_gib: float = Field(gt=0)
     max_swap_out_mib: float = Field(ge=0)
     probe_timeout_seconds: float = Field(gt=0, le=1800)
+    min_gpu_free_mib: float | None = Field(default=None, ge=0)
 
 
 class Catalog(Strict):

@@ -1043,7 +1043,7 @@
     "workers": {
       "anyOf": [
         {
-          "maximum": 4,
+          "maximum": 8,
           "minimum": 1,
           "type": "integer"
         },
