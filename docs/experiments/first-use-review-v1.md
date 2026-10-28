@@ -28,5 +28,8 @@ environment were available; dependency installation, a clean machine and Blender
 - The sandbox could not write the default `uv` cache and could not download a missing dependency;
   an existing `.venv` was usable. This is an environment-specific observation, not proof that ordinary
   installation is broken. Re-test installation on a fresh, network-enabled machine.
-- Remaining UX research: interactive `start`, first-time asset acquisition and actual CPU/GPU rendering,
-  failure diagnostics for active inspection, and real human walkthroughs.
+- A fresh agent completed an interactive `start` journey for a two-image pad pool and detection export.
+  It found a crash on exit, a silent gallery action and empty validation/test splits in the export. The
+  CLI now exits normally, shows the gallery path and displays split counts and empty-split warnings.
+- Remaining UX research: first-time asset acquisition and actual CPU/GPU rendering, failure diagnostics
+  for active inspection, and real human walkthroughs.

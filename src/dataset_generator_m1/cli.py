@@ -439,6 +439,11 @@ def main(argv: list[str] | None = None) -> int:
         return int(exc.code)
     try:
         result = _run(args)
+        if args.command == "start":
+            if result.get("status") == "cancelled":
+                Console().print("Guided workflow cancelled.")
+                return 0
+            return 0 if result.get("status") == "complete" else 1
         if args.output_format == "json":
             sys.stdout.write(json.dumps(result, separators=(",", ":")) + "\n")
         elif result.get("status") not in {"valid", "complete", "complete_with_warnings"}:

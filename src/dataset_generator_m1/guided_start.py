@@ -529,14 +529,17 @@ def run_guided_start(
     while True:
         action = ask("Next action", choices=actions, default="exit")
         if action == "qa":
-            webbrowser.open((output_dir / "qa" / "index.html").resolve().as_uri())
+            gallery = (output_dir / "qa" / "index.html").resolve()
+            console.print(f"QA gallery: {gallery}")
+            if not webbrowser.open(gallery.as_uri()):
+                console.print("Could not open a browser; open the gallery path above manually.")
         elif action == "inspect":
             inspection = inspect_pool(output_dir)
             console.print(render_results_dashboard(summary, inspection))
         elif action in {"export-detection", "export-segmentation"}:
             task = action.removeprefix("export-")
             destination = output_dir.with_name(output_dir.name + f"-yolo-{task}")
-            export_pools(
+            exported = export_pools(
                 [output_dir],
                 destination,
                 ExportOptions(
@@ -548,7 +551,13 @@ def run_guided_start(
                     mask_semantics="family",
                 ),
             )
-            console.print(Panel(str(destination), title=f"YOLO {task} export"))
+            counts = exported["split_counts"]
+            count_text = ", ".join(f"{name}: {count}" for name, count in counts.items())
+            empty = [name for name, count in counts.items() if count == 0]
+            detail = f"{destination}\nSplit samples: {count_text}"
+            if empty:
+                detail += f"\nEmpty splits: {', '.join(empty)}. Review split suitability before training."
+            console.print(Panel(detail, title=f"YOLO {task} export"))
         elif action == "resume":
             summary = generate_pool(
                 resolved,
