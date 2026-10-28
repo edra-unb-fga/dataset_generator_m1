@@ -190,3 +190,21 @@ native-GPU-denoising findings, the source/input-bundle qualification and paired 
 `scripts/study_blender_execution.py` reads saved matrices for alternating-order trials and exact mask
 checks. Hardware policies remain explicit data; low-sample denoising probes and repeated initialization
 studies retain distinct scopes and throughput denominators.
+
+
+## Shared surface integration study
+
+The [surface integration evidence](experiments/surface-integration-v1/README.md) follows
+[round three](REALISM_ROUND_THREE.md). `scripts/study_surface_2d.py` runs production paired pools;
+`scripts/study_surface_integration.py` runs saved physical cue/qualification cells under a single
+conservative budget ledger. `scripts/study_surface_performance.py` separates warmups from measured
+whole-command throughput, rotates pristine/wear order and checks exact within-engine mask/geometry
+invariants. Resolved hardware profiles remain saved data. Source/input/controller fingerprints and
+all probe/render/warmup/retry costs accompany the measurements; local setup/export costs have separate
+denominators. No measured CPU/GPU ratio is a causal engine speed ratio across these hosts.
+
+`scripts/report_surface_integration.py` builds the visual report from retained evidence. Raw pools,
+assets, portable archives and application intermediates stay ignored. The tracked compact evidence,
+selected review figures and standalone HTML intentionally retain synthetic examples only. Reserved
+scene combinations are reviewed once after development selection; real references and trained-model
+outcomes remain absent rather than inferred from visual preference.

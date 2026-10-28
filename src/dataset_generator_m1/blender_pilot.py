@@ -14,10 +14,33 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from .models import SurfaceWearConfig
 
 
 class Strict(BaseModel):
     model_config = ConfigDict(extra='forbid', frozen=True, allow_inf_nan=False)
+
+
+class Lamp(Strict):
+    location: tuple[float, float, float] = (-2, -2, 3)
+    color: tuple[float, float, float] = (1, .78, .52)
+    target: tuple[float, float, float] = (0, 0, 0)
+    power_w: float = Field(default=800, gt=0, le=10000)
+    size_m: float = Field(default=.7, gt=0, le=10)
+
+    @model_validator(mode='after')
+    def valid_color(self):
+        if any(not 0 <= x <= 1 for x in self.color) or self.location == self.target:
+            raise ValueError('Lamp color must be in [0,1] and target differ from location')
+        return self
+
+
+class Casters(Strict):
+    count: int = Field(default=3, ge=0, le=12)
+    seed: int = Field(default=0, ge=0)
+    distance_m: float = Field(default=6, ge=3, le=18)
+    height_m: float = Field(default=3, gt=0, le=8)
+    width_m: float = Field(default=.12, gt=0, le=2)
 
 
 class Treatment(Strict):
@@ -26,6 +49,17 @@ class Treatment(Strict):
     lighting: Literal['sun', 'environment', 'overcast', 'shade', 'night-single', 'night-mixed'] = 'sun'
     roughness: float = Field(default=.5, ge=0, le=1)
     normal_strength: float = Field(default=.2, ge=0, le=2)
+    wear: SurfaceWearConfig | None = None
+    wear_seed: int | None = Field(default=None, ge=0)
+    pad_bump_strength: float | None = Field(default=None, ge=0, le=2)
+    pad_bump_distance_m: float = Field(default=.00015, ge=0, le=.01)
+    ground_normal_strength: float | None = Field(default=None, ge=0, le=2)
+    ground_uv_offset: tuple[float, float] = (0, 0)
+    environment_index: int | None = Field(default=None, ge=0)
+    environment_rotation_degrees: float = Field(default=0, ge=-360, le=360)
+    environment_strength: float | None = Field(default=None, ge=0, le=10)
+    lamps: tuple[Lamp, ...] | None = Field(default=None, max_length=8)
+    casters: Casters | None = None
     uv_scale_m: float = Field(default=2, gt=0, le=100)
     uv_rotation_degrees: float = 0
     shadows: bool = True
@@ -64,8 +98,8 @@ class PilotConfig(Strict):
     seed: int = Field(default=20261026, ge=0)
     reference_pool: Path
     artwork: tuple[Path, Path]
-    grounds: tuple[Ground, Ground, Ground]
-    environments: tuple[Path, Path]
+    grounds: tuple[Ground, ...] = Field(min_length=1, max_length=6)
+    environments: tuple[Path, ...] = Field(min_length=1, max_length=3)
     width_metres: float = Field(default=1, gt=0, le=10)
     thickness_metres: float = Field(default=.003, gt=0, le=.1)
     resolution: tuple[int, int] = (512, 512)
@@ -80,7 +114,8 @@ class PilotConfig(Strict):
     fast_samples: int = Field(default=32, ge=1, le=1024)
     quality_samples: int = Field(default=128, ge=1, le=4096)
     scenes: int = Field(default=3, ge=1, le=100)
-    quality_treatments: tuple[str, ...] = ()
+    scene_offset: int = Field(default=0, ge=0, le=1000000)
+    quality_treatments: tuple[str, ...] | None = None
     study_seconds: float = Field(default=7200, gt=0, le=7200)
     treatments: tuple[Treatment, ...]
 
@@ -90,12 +125,14 @@ class PilotConfig(Strict):
             raise ValueError('Pilot resolution is bounded to64–2048 per dimension')
         if any(not 0<=v<=1 for v in self.principal_point_fraction):
             raise ValueError('Principal point fractions must be in[0,1]')
+        if any(t.environment_index is not None and t.environment_index >= len(self.environments) for t in self.treatments):
+            raise ValueError('Environment index out of range')
         ids=[t.id for t in self.treatments]
         if not ids or len(ids)!=len(set(ids)):
             raise ValueError('Unique nonempty treatment IDs required')
         if any(t.paired_reference is not None and t.paired_reference not in ids for t in self.treatments):
             raise ValueError('Unknown paired reference treatment')
-        if set(self.quality_treatments)-set(ids):
+        if self.quality_treatments is not None and set(self.quality_treatments)-set(ids):
             raise ValueError('Unknown quality treatment')
         if self.quality_samples<self.fast_samples:
             raise ValueError('Quality samples must be at least fast samples')
@@ -196,20 +233,22 @@ def prepare(config_path,output):
               'harness_source_sha256':digest_file(__file__),
               'renderer_script_sha256':digest_file(Path(__file__).resolve().parents[2]/'experiments/blenderproc/render.py')}
     source_root=Path(__file__).resolve().parents[2]
-    sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
+    sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','src/dataset_generator_m1/wear_materials.py','src/dataset_generator_m1/surface_effects.py','src/dataset_generator_m1/models.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
     contract['harness_sources']={name:digest_file(source_root/name) for name in sources}
     jobs=[]
+    quality_treatments=(config.treatments[0].id,) if config.quality_treatments is None else config.quality_treatments
     for scene_index in range(config.scenes):
-        scene=scenes[scene_index%len(scenes)]
+        reference_scene_index=(config.scene_offset+scene_index)%len(scenes)
+        scene=scenes[reference_scene_index]
         for treatment in config.treatments:
             for quality in ('fast','quality'):
-                if quality=='quality' and treatment.id not in (config.quality_treatments or (config.treatments[0].id,)):
+                if quality=='quality' and treatment.id not in quality_treatments:
                     continue
                 # All fast coverage precedes expensive quality comparisons.
                 jobs.append({'id':f'{scene_index:03d}-{treatment.id}-{quality}', 'seed':config.seed+scene_index,
-                             'scene_index':scene_index,'scene':scene,'treatment':treatment.model_dump(mode='json'),
+                             'scene_index':scene_index,'reference_scene_index':reference_scene_index,'scene':scene,'treatment':treatment.model_dump(mode='json'),
                              'samples':config.fast_samples if quality=='fast' else config.quality_samples,'quality':quality,
-                             'ground_index':scene_index%3,'case':'ordinary',
+                             'ground_index':scene_index%len(grounds),'case':'ordinary',
                              'benchmark':scene_index==0 and treatment.id==config.treatments[0].id})
     first=jobs[0]
     for case in ('negative','clipped','occluded','fully-hidden','overlap','closeup'):
@@ -218,15 +257,44 @@ def prepare(config_path,output):
         scene['negative']=case=='negative'
         jobs.append({**first,'id':'diagnostic-'+case,'case':case,'scene':scene,'benchmark':False})
     jobs.sort(key=lambda j:(j['quality']!='fast',j['scene_index']))
-    contract['jobs_sha256']=digest(jobs)
-    runtime={'artwork':artwork,'grounds':grounds,'environments':environments,'config':config.model_dump(mode='json'),'execution_catalog':execution_catalog}
-    contract['runtime_sha256']=digest(runtime)
-    identity=digest(contract)
-    if output.exists():
-        stored=load_study(output)
-        if stored['identity']!=identity:raise ValueError('Existing study has a different configuration/source identity')
-        return stored
-    output.mkdir(parents=True)
+    for job in jobs:
+        settings=job['treatment']['casters']
+        job['casters']=[]
+        if settings and job['treatment']['shadows']:
+            rng=np.random.default_rng(settings['seed']+job['scene_index'])
+            for index in range(settings['count']):
+                theta=2*np.pi*(index+rng.uniform(-.2,.2))/max(1,settings['count'])
+                radius=settings['distance_m'];height=settings['height_m'];width=settings['width_m']
+                job['casters'].append({'location':[float(radius*np.cos(theta)),float(radius*np.sin(theta)),height/2],
+                                       'scale':[width,width,height],'visible_camera':False})
+    # Prepare maps in a disposable directory; publish only after the full contract is sealed.
+    with tempfile.TemporaryDirectory() as map_temp:
+        from .wear_materials import prepare_wear_maps
+        for job in jobs:
+            treatment=job['treatment']
+            if treatment['wear'] is None:
+                continue
+            manifests=[]
+            for index, obj in enumerate(job['scene']['objects']):
+                seed=treatment['wear_seed'] if treatment['wear_seed'] is not None else job['seed']+index
+                relative=Path('wear')/job['id']/str(index)
+                manifest=prepare_wear_maps(artwork[obj['artwork_index']]['path'],treatment['wear'],seed,Path(map_temp)/relative,roughness=treatment['roughness'])
+                for entry in manifest['maps'].values():
+                    entry['path']=str(output/relative/Path(entry['path']).name)
+                manifests.append(manifest)
+            job['wear_maps']=manifests
+        contract['jobs_sha256']=digest(jobs)
+        runtime={'artwork':artwork,'grounds':grounds,'environments':environments,'config':config.model_dump(mode='json'),'execution_catalog':execution_catalog}
+        contract['runtime_sha256']=digest(runtime)
+        identity=digest(contract)
+        if output.exists():
+            stored=load_study(output)
+            if stored['identity']!=identity:raise ValueError('Existing study has a different configuration/source identity')
+            validate_inputs(stored,source_root/'experiments/blenderproc/render.py')
+            return stored
+        output.mkdir(parents=True)
+        if (Path(map_temp)/'wear').exists():shutil.copytree(Path(map_temp)/'wear',output/'wear')
+
     study={'schema_version':1,'identity':identity,'contract':contract,'jobs':jobs,'artwork':artwork,'grounds':grounds,
            'environments':environments,'config':config.model_dump(mode='json'),'execution_catalog':execution_catalog}
     atomic_json(output/'study.json',study)
@@ -343,6 +411,9 @@ def validate_inputs(study,renderer):
               (renderer,contract['renderer_script_sha256'])]
     expected.extend(expected_sources)
     expected.extend((item['path'],item['sha256']) for item in study['artwork'])
+    for job in study.get('jobs',[]):
+        for manifest in job.get('wear_maps',[]):
+            expected.extend((entry['path'],entry['sha256']) for entry in manifest['maps'].values())
     for ground in study['grounds']:
         expected.extend((path,ground['provenance']['maps'][role]['sha256']) for role,path in ground['maps'].items())
     manifests=[a['manifest'] for a in contract['assets'] if a['kind']=='environment']
@@ -523,8 +594,14 @@ def report(root):
 def fetch_assets(manifest_dir,output):
     """Acquire only the small reviewed hash-pinned CC0 set, with bounded existing downloads."""
     from .materials import fetch_material, download_bytes
+    files=sorted(Path(manifest_dir).glob('*.json'))
+    records=[json.loads(file.read_text()) for file in files]
+    grounds=sum('maps' in item for item in records);environments=len(records)-grounds
+    if not 1<=grounds<=6 or not 1<=environments<=3:
+        raise ValueError('Expected 1–6 reviewed grounds and 1–3 reviewed environments')
+    if any(item.get('license')!='CC0-1.0' for item in records):raise ValueError('Non-CC0 pilot asset')
     output=Path(output);output.mkdir(parents=True,exist_ok=True);results=[]
-    for file in sorted(Path(manifest_dir).glob('*.json')):
+    for file in files:
         item=json.loads(file.read_text())
         if item.get('license')!='CC0-1.0':raise ValueError('Non-CC0 pilot asset')
         if 'maps' in item:
@@ -541,7 +618,6 @@ def fetch_assets(manifest_dir,output):
         destination=output/file.name
         if destination.exists() and json.loads(destination.read_text())!=item:raise ValueError('Asset selection already differs')
         atomic_json(destination,item)
-    if len(results)!=5:raise ValueError('Expected the reviewed3 ground +2 environment manifests')
     return results
 
 
@@ -552,6 +628,21 @@ def bridge_composers(assets_dir,foreground_dir,output,*,workers=1):
     assets_dir=Path(assets_dir).resolve();foreground_dir=Path(foreground_dir).resolve();output=Path(output).resolve()
     if output.exists():raise ValueError('Fresh composer output directory required')
     if not 1<=workers<=32:raise ValueError('workers must be1–32')
+    materials=[]
+    for manifest in sorted(assets_dir.glob('*.json')):
+        record=json.loads(manifest.read_text())
+        if 'maps' not in record:continue
+        if record.get('license')!='CC0-1.0' or 'color' not in record['maps']:
+            raise ValueError('Bridge requires reviewed CC0 color maps')
+        name=record['asset_id']
+        if Path(name).name!=name:raise ValueError('Invalid material asset ID')
+        color=assets_dir/name/'color.jpg'
+        if digest_file(color)!=record['maps']['color']['sha256']:raise ValueError('Bridge material color map hash mismatch')
+        materials.append((name,color))
+    if not materials:raise ValueError('Bridge needs reviewed material manifests')
+    if len({name for name,_ in materials})!=len(materials):raise ValueError('Duplicate bridge material ID')
+    legacy=('Ground068','Asphalt012','Concrete034')
+    materials.sort(key=lambda item:(legacy.index(item[0]) if item[0] in legacy else len(legacy),item[0]))
     output.mkdir(parents=True)
     mixing=output/'mixing.yaml';mixing.write_text(yaml.safe_dump({'schema_version':1,'subject':'background_mixing','value':{'recipe_weights':{'planar':1.0}}}))
     paths=[]
@@ -559,7 +650,7 @@ def bridge_composers(assets_dir,foreground_dir,output,*,workers=1):
         value=yaml.safe_load((repository/'examples/configs/landing-pad_minimal.yaml').read_text())
         value['background_mixing']=str(mixing)
         value['appearance']={'preset':'builtin:appearance/'+('no-appearance' if mode=='pristine' else 'surface-camera')}
-        value['inline']={'assets':{'backgrounds':{'paths':[str(assets_dir/name/'color.jpg') for name in ('Ground068','Asphalt012','Concrete034')],'recursive':False},
+        value['inline']={'assets':{'backgrounds':{'paths':[str(color) for _,color in materials],'recursive':False},
             'foregrounds':{'paths':[str(foreground_dir)],'recursive':True}},
             'background_recipes':{'recipe_file':str(repository/'examples/configs/texture_recipes.yaml')},
             'output':{'image_format':'png'},

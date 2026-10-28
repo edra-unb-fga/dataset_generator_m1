@@ -1,5 +1,46 @@
 {
   "$defs": {
+    "Casters": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "default": 3,
+          "maximum": 12,
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "seed": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "distance_m": {
+          "default": 6,
+          "maximum": 18,
+          "minimum": 3,
+          "title": "Distance M",
+          "type": "number"
+        },
+        "height_m": {
+          "default": 3,
+          "exclusiveMinimum": 0,
+          "maximum": 8,
+          "title": "Height M",
+          "type": "number"
+        },
+        "width_m": {
+          "default": 0.12,
+          "exclusiveMinimum": 0,
+          "maximum": 2,
+          "title": "Width M",
+          "type": "number"
+        }
+      },
+      "title": "Casters",
+      "type": "object"
+    },
     "Ground": {
       "additionalProperties": false,
       "properties": {
@@ -13,6 +54,135 @@
         "material_file"
       ],
       "title": "Ground",
+      "type": "object"
+    },
+    "Lamp": {
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "default": [
+            -2,
+            -2,
+            3
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Location",
+          "type": "array"
+        },
+        "color": {
+          "default": [
+            1,
+            0.78,
+            0.52
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Color",
+          "type": "array"
+        },
+        "target": {
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Target",
+          "type": "array"
+        },
+        "power_w": {
+          "default": 800,
+          "exclusiveMinimum": 0,
+          "maximum": 10000,
+          "title": "Power W",
+          "type": "number"
+        },
+        "size_m": {
+          "default": 0.7,
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "title": "Size M",
+          "type": "number"
+        }
+      },
+      "title": "Lamp",
+      "type": "object"
+    },
+    "SurfaceWearConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "fade": {
+          "default": 0.06,
+          "maximum": 0.6,
+          "minimum": 0,
+          "title": "Fade",
+          "type": "number"
+        },
+        "dirt": {
+          "default": 0.18,
+          "maximum": 0.8,
+          "minimum": 0,
+          "title": "Dirt",
+          "type": "number"
+        },
+        "scratches": {
+          "default": 0.12,
+          "maximum": 0.8,
+          "minimum": 0,
+          "title": "Scratches",
+          "type": "number"
+        },
+        "marks": {
+          "default": 12,
+          "maximum": 64,
+          "minimum": 0,
+          "title": "Marks",
+          "type": "integer"
+        },
+        "scratch_width": {
+          "default": 0.002,
+          "exclusiveMinimum": 0,
+          "maximum": 0.03,
+          "title": "Scratch Width",
+          "type": "number"
+        }
+      },
+      "title": "SurfaceWearConfig",
       "type": "object"
     },
     "Treatment": {
@@ -61,6 +231,144 @@
           "minimum": 0,
           "title": "Normal Strength",
           "type": "number"
+        },
+        "wear": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SurfaceWearConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "wear_seed": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wear Seed"
+        },
+        "pad_bump_strength": {
+          "anyOf": [
+            {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pad Bump Strength"
+        },
+        "pad_bump_distance_m": {
+          "default": 0.00015,
+          "maximum": 0.01,
+          "minimum": 0,
+          "title": "Pad Bump Distance M",
+          "type": "number"
+        },
+        "ground_normal_strength": {
+          "anyOf": [
+            {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ground Normal Strength"
+        },
+        "ground_uv_offset": {
+          "default": [
+            0,
+            0
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Ground Uv Offset",
+          "type": "array"
+        },
+        "environment_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment Index"
+        },
+        "environment_rotation_degrees": {
+          "default": 0,
+          "maximum": 360,
+          "minimum": -360,
+          "title": "Environment Rotation Degrees",
+          "type": "number"
+        },
+        "environment_strength": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment Strength"
+        },
+        "lamps": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Lamp"
+              },
+              "maxItems": 8,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lamps"
+        },
+        "casters": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Casters"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "uv_scale_m": {
           "default": 2,
@@ -276,35 +584,21 @@
       "type": "array"
     },
     "grounds": {
-      "maxItems": 3,
-      "minItems": 3,
-      "prefixItems": [
-        {
-          "$ref": "#/$defs/Ground"
-        },
-        {
-          "$ref": "#/$defs/Ground"
-        },
-        {
-          "$ref": "#/$defs/Ground"
-        }
-      ],
+      "items": {
+        "$ref": "#/$defs/Ground"
+      },
+      "maxItems": 6,
+      "minItems": 1,
       "title": "Grounds",
       "type": "array"
     },
     "environments": {
-      "maxItems": 2,
-      "minItems": 2,
-      "prefixItems": [
-        {
-          "format": "path",
-          "type": "string"
-        },
-        {
-          "format": "path",
-          "type": "string"
-        }
-      ],
+      "items": {
+        "format": "path",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "minItems": 1,
       "title": "Environments",
       "type": "array"
     },
@@ -453,13 +747,27 @@
       "title": "Scenes",
       "type": "integer"
     },
+    "scene_offset": {
+      "default": 0,
+      "maximum": 1000000,
+      "minimum": 0,
+      "title": "Scene Offset",
+      "type": "integer"
+    },
     "quality_treatments": {
-      "default": [],
-      "items": {
-        "type": "string"
-      },
-      "title": "Quality Treatments",
-      "type": "array"
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Quality Treatments"
     },
     "study_seconds": {
       "default": 7200,

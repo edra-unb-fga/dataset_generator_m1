@@ -10,7 +10,7 @@ The shipped `surface-camera` preset combines mild wear with restrained exposure,
 
 Pool records retain realized seeds, sampled parameters and exclusive scene-lighting timing, alongside ordinary foreground effect traces. Cost identities include scene settings; preflight marks unmeasured enabled scene effects and budgets their temporary memory. Renderer semantics `planar-surface-v3.1` require a fresh pool after this upgrade; old pools remain inspectable and exportable. Same-version resume remains supported.
 
-Normal/roughness maps, physical sun angles, cast shadows, specular response and raised targets remain deferred to #62/#63. Future BlenderProc comparisons (#64) must match conditions and annotation policies, distinguish textured planes from physical scenes, and include cold start, scene reuse, output/QA and asset preparation costs. Equal dataset-size and equal generation-time comparisons answer different questions. This round installs no Blender runtime.
+The core 2D renderer does not simulate normal/roughness response, physical sun angles, cast shadows, specular response or raised targets; richer physical behavior remains tracked in #62/#63. The optional host map preparation below supports controlled 3D material studies without adding a physical renderer to the core. Future BlenderProc comparisons (#64) must match conditions and annotation policies, distinguish textured planes from physical scenes, and include cold start, scene reuse, output/QA and asset preparation costs. Equal dataset-size and equal generation-time comparisons answer different questions. This round installs no Blender runtime.
 
 ## Procedural occlusion
 
@@ -33,3 +33,44 @@ Changing a composer file explicitly still changes its strict source identity. Us
 `examples/configs/landing-pad_premultiplied.yaml`; existing builtin bundles remain untouched.
 The estimator includes the enabled float filtering workspace. See `REALISM_ROUND_TWO.md` for the
 separate scheduler and optional physical-rendering scope.
+
+
+## Shared wear maps and conditional environmental shade
+
+The host-only `prepare_wear_maps(artwork, params, seed, output_dir, *, roughness=.5)`
+helper shares `SurfaceWear` fields with the optional 3D harness. It accepts RGB/RGBA
+arrays or image paths and writes registered, source-sized PNG albedo, roughness and
+height maps. The returned manifest includes configuration, field seed, dimensions,
+channel encodings, hashes and the top-left artwork-UV convention. Albedo follows
+the existing encoded-RGB wear blend exactly; RGBA alpha is unchanged. Roughness
+and height are linear data. Height is a qualitative bump input, with renderer-side
+amplitude recorded separately; it does not change the flat panel silhouette.
+
+The opt-in `landing-pad_surface-pristine.yaml`, `landing-pad_surface-moderate.yaml`
+and `landing-pad_surface-stress.yaml` composers share the same capture stack and
+scene settings. The pristine composer omits local wear; moderate and stress enable it.
+The severity study separately records a zero-strength operation as a paired control;
+its cost is not the same as omitting the operation. Stress is an explicit diagnostic, not an
+ordinary realism recipe. The separate `landing-pad_environmental-shade.yaml`
+composer adds this candidate beneath `inline.scene.lighting`:
+
+```yaml
+shade:
+  probability: 0.7
+  strength: [0.12, 0.4]
+  radius_fraction: [0.12, 0.45]
+```
+
+One soft elliptical Gaussian attenuates linear RGB across all composed surfaces.
+Its center, axes, angle and strength are sampled in normalized scene coordinates
+from an independent `scene-environmental-shade` stream. Shade activation is independent
+of the parent gain/gradient field probability. Gain/gradient/tint draws,
+geometry, alpha, masks and annotations are unchanged. The inverse shared
+homography carries the field through the global camera transform before final
+capture effects. Workspace is bounded to 128 output rows. Absence, probability
+zero, or zero maximum strength disables shade and preserves old normalized lighting
+serialization; changing a source composer still changes strict source provenance.
+Bounds are strength 0–.8 and normalized radii .04–1.2. This is a qualitative
+approximation of environmental shade; it cannot infer scene geometry, remove baked
+photographic shadows, or produce physical contact shadows. Keep it experimental
+unless paired visual evidence supports retention. Existing defaults remain unchanged.

@@ -88,11 +88,16 @@ def test_job_plan_tampering_and_checkpoint_file_set_are_rejected(tmp_path):
 def test_bridge_uses_complete_typed_composers_and_only_color_maps(tmp_path):
     from dataset_generator_m1.blender_pilot import bridge_composers
     from dataset_generator_m1.config import load_profile
-    paths=bridge_composers(tmp_path/'assets',tmp_path/'artwork',tmp_path/'composers',workers=2)
+    assets=tmp_path/'assets';assets.mkdir()
+    for name in ('Concrete034','Extra','Asphalt012','Ground068'):
+        directory=assets/name;directory.mkdir();color=directory/'color.jpg';color.write_bytes(name.encode())
+        (assets/(name+'.json')).write_text(json.dumps({'asset_id':name,'license':'CC0-1.0','maps':{'color':{'sha256':digest_file(color)}}}))
+    (assets/'sky.json').write_text(json.dumps({'asset_id':'sky','license':'CC0-1.0','path':'sky.hdr'}))
+    paths=bridge_composers(assets,tmp_path/'artwork',tmp_path/'composers',workers=2)
     profiles=[load_profile(p) for p in paths]
     assert profiles[0].profile.output.image_format=='png'
     assert set(profiles[0].profile.background_synthesis.recipe_weights)=={'planar'}
-    assert all(p.endswith('color.jpg') for p in profiles[0].profile.assets.backgrounds.paths)
+    assert [Path(p).parent.name for p in profiles[0].profile.assets.backgrounds.paths]==['Ground068','Asphalt012','Concrete034','Extra']
     assert profiles[1].profile.scene.foreground_resampling=='premultiplied'
     assert profiles[1].profile.scene.lighting is not None
 

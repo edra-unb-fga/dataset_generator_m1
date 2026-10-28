@@ -56,7 +56,7 @@ def build_bundle(config_path, destination):
             target=staging/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(value,indent=2)+'\n')
             files[name]={'sha256':file_hash(target),'bytes':target.stat().st_size}
         # Explicit source roots only. No git metadata, credentials, arbitrary workspace or caches.
-        for name in ['pyproject.toml','uv.lock','scripts/blenderproc_pilot.py']:
+        for name in ['pyproject.toml','uv.lock','scripts/blenderproc_pilot.py','scripts/study_surface_integration.py','scripts/study_surface_performance.py','scripts/study_surface_2d.py']:
             add(source/name,'source/'+name)
         for base in [source/'src/dataset_generator_m1',source/'experiments/blenderproc']:
             for path in sorted(base.rglob('*')):
@@ -96,6 +96,23 @@ def build_bundle(config_path, destination):
             if not path.is_relative_to(config.reference_pool):raise ValueError('Reference file escapes pool')
             add(path,'inputs/reference/'+path.relative_to(config.reference_pool).as_posix())
         write('config.json',value)
+        if any(t.wear is not None for t in config.treatments):
+            from .blender_pilot import prepare
+            with tempfile.TemporaryDirectory() as prepared_temp:
+                prepared=Path(prepared_temp)/'study'
+                study=prepare(config_path,prepared)
+                wear_hashes={}
+                for job in study['jobs']:
+                    if 'wear_maps' not in job:continue
+                    wear_hashes[job['id']]=[]
+                    for map_set in job['wear_maps']:
+                        hashes={}
+                        for role,entry in map_set['maps'].items():
+                            path=Path(entry['path']);relative=path.relative_to(prepared)
+                            add(path,'derivatives/'+relative.as_posix())
+                            hashes[role]=entry['sha256']
+                        wear_hashes[job['id']].append(hashes)
+                write('derivatives/wear-hashes.json',wear_hashes)
         manifest={'schema_version':1,'files':files};manifest['identity']=identity(manifest)
         (staging/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
         with tarfile.open(staging/'bundle.tar.gz','w:gz') as tar:
@@ -163,6 +180,13 @@ def run_bundle(archive, workspace, *, expected_sha256=None, jobs=None, blender_i
         config=json.loads((workspace/'config.json').read_text());config['input_bundle_identity']=manifest['identity']
         (workspace/'run-config.json').write_text(json.dumps(config,indent=2))
         run('prepare',[*base,'prepare','--config',str(workspace/'run-config.json'),'--output-dir',str(study)])
+        expected_path=workspace/'derivatives/wear-hashes.json'
+        if expected_path.exists():
+            expected=json.loads(expected_path.read_text())
+            prepared=json.loads((study/'study.json').read_text())
+            actual={job['id']:[{role:entry['sha256'] for role,entry in item['maps'].items()} for item in job['wear_maps']]
+                    for job in prepared['jobs'] if 'wear_maps' in job}
+            if actual!=expected:raise ValueError('Bundle wear derivatives differ from prepared study')
         command=[*base,'render','--output-dir',str(study),'--blenderproc',str(blenderproc),'--blender-install-path',str(Path(blender_install_path).resolve() if blender_install_path else workspace/'blender')]
         if jobs:command.extend(['--jobs',*jobs])
         run('render',command)

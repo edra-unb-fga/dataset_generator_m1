@@ -4,7 +4,7 @@ from pathlib import Path
 import math
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator, model_serializer
 
 
 class StrictModel(BaseModel):
@@ -126,6 +126,23 @@ class BackgroundAffineConfig(StrictModel):
         return self
 
 
+class EnvironmentalShadeConfig(StrictModel):
+    """Bounded qualitative scene-wide shade; does not simulate contact shadows."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+    probability: float = Field(default=0.7, ge=0, le=1)
+    strength: tuple[float, float] = (0.12, 0.4)
+    radius_fraction: tuple[float, float] = (0.12, 0.45)
+
+    @model_validator(mode="after")
+    def validate_ranges(self):
+        _ordered_range(self.strength, "shade.strength", 0)
+        _ordered_range(self.radius_fraction, "shade.radius_fraction", .04)
+        if self.strength[1] > .8 or self.radius_fraction[1] > 1.2:
+            raise ValueError("Shade limits: strength<=.8, radius_fraction<=1.2")
+        return self
+
+
 class SceneLightingConfig(StrictModel):
     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
     probability: float = Field(default=0.8, ge=0, le=1)
@@ -133,6 +150,15 @@ class SceneLightingConfig(StrictModel):
     gradient: tuple[float, float] = (0.05, 0.25)
     tint: float = Field(default=0.025, ge=0, le=0.1)
     source_assumption: Literal["unknown", "baked", "unlit-approximation"] = "unknown"
+    shade: EnvironmentalShadeConfig | None = None
+
+    @model_serializer(mode="wrap")
+    def serialize_omitted_shade(self, handler, info):
+        result = handler(self)
+        preserve_disabled = isinstance(info.context, dict) and info.context.get('preserve_disabled_shade', False)
+        if self.shade is None or (not preserve_disabled and (self.shade.probability == 0 or self.shade.strength[1] == 0)):
+            result.pop('shade', None)
+        return result
 
     @model_validator(mode="after")
     def validate_ranges(self):

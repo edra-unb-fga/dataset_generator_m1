@@ -1,0 +1,37 @@
+schema_version: 2
+family: builtin:family/landing-pad
+run: builtin:run/landing-pad-standard
+assets: builtin:assets/landing-pad
+output: builtin:output/standard
+sampling: builtin:sampling/landing-pad-standard
+scene: builtin:scene/standard
+background_recipes: builtin:background_recipes/standard
+background_mixing: builtin:background_mixing/standard
+appearance:
+  preset: ../profiles/appearance/surface-study-camera/profile.yaml
+  inline:
+    foreground:
+    - id: shared-wear
+      type: SurfaceWear
+      probability: 1.0
+      params:
+        fade: 0.06
+        dirt: 0.18
+        scratches: 0.12
+        marks: 12
+execution: builtin:execution/standard
+telemetry: builtin:telemetry/standard
+reporting: builtin:reporting/standard
+inline:
+  scene:
+    lighting:
+      source_assumption: unknown
+      shade:
+        probability: 0.7
+        strength:
+        - 0.12
+        - 0.4
+        radius_fraction:
+        - 0.12
+        - 0.45
+    foreground_resampling: premultiplied

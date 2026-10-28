@@ -472,6 +472,57 @@
       "title": "ComposerInline",
       "type": "object"
     },
+    "EnvironmentalShadeConfig": {
+      "additionalProperties": false,
+      "description": "Bounded qualitative scene-wide shade; does not simulate contact shadows.",
+      "properties": {
+        "probability": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Probability",
+          "type": "number"
+        },
+        "radius_fraction": {
+          "default": [
+            0.12,
+            0.45
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Radius Fraction",
+          "type": "array"
+        },
+        "strength": {
+          "default": [
+            0.12,
+            0.4
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Strength",
+          "type": "array"
+        }
+      },
+      "title": "EnvironmentalShadeConfig",
+      "type": "object"
+    },
     "ExecutionInline": {
       "additionalProperties": false,
       "properties": {
@@ -1097,6 +1148,17 @@
           "minimum": 0,
           "title": "Probability",
           "type": "number"
+        },
+        "shade": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EnvironmentalShadeConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "source_assumption": {
           "default": "unknown",

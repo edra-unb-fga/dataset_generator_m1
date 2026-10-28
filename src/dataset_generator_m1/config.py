@@ -231,8 +231,18 @@ def load_profile(
         value, found_sources, found_metadata, node = _load_bundle(reference, config_path, subject)
         inline_model = getattr(composer.inline, subject, None)
         if inline_model is not None:
-            value = _merge_inline(value, inline_model.model_dump(mode="json", exclude_none=True))
-            node["inline"] = inline_model.model_dump(mode="json", exclude_none=True)
+            # A disabled shade is a meaningful override until after profile merge.
+            # Canonical profile serialization still omits disabled shade by default.
+            inline = inline_model.model_dump(mode="json", exclude_none=True,
+                context={"preserve_disabled_shade": True})
+            if subject == "scene" and inline_model.lighting is not None:
+                # Nested lighting models carry defaults for validation; those are
+                # not overrides unless explicitly provided by the composer.
+                inline["lighting"] = inline_model.lighting.model_dump(
+                    mode="json", exclude_none=True, exclude_unset=True,
+                    context={"preserve_disabled_shade": True})
+            value = _merge_inline(value, inline)
+            node["inline"] = inline
         resolved_values[subject] = value["family"] if subject == "family" else value
         sources.extend(found_sources)
         metadata.extend(found_metadata)

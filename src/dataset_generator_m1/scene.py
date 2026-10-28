@@ -15,7 +15,7 @@ from .backgrounds import BackgroundSample
 from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import read_rgba, resize_rgba, rotate_rgba, visible_bbox, warp_rgba
 from .scene_occlusion import SceneOccluder, composite_occluders, sample_occluders
-from .surface_effects import apply_scene_lighting, sample_lighting
+from .surface_effects import apply_scene_lighting, sample_lighting, sample_environmental_shade
 from .models import ResolvedProfile
 from .placement_diagnostics import (
     bounded_spatial_histogram,
@@ -623,7 +623,12 @@ class SceneRenderer:
         lighting_seed = derive_seed(self.profile.run.seed, plan.slot, plan.candidate_attempt, "scene-lighting")
         started = self.clock()
         lighting = sample_lighting(self.profile.scene.lighting, np.random.default_rng(lighting_seed))
-        rendered = apply_scene_lighting(rendered, plan.scene_to_output, plan.canvas_size, lighting)
+        shade_config = self.profile.scene.lighting.shade if self.profile.scene.lighting is not None else None
+        shade_seed = derive_seed(self.profile.run.seed, plan.slot, plan.candidate_attempt, "scene-environmental-shade")
+        shade = sample_environmental_shade(shade_config, np.random.default_rng(shade_seed))
+        rendered = apply_scene_lighting(rendered, plan.scene_to_output, plan.canvas_size, lighting, shade)
+        if shade is not None:
+            lighting = {**lighting, 'shade': {'seed': shade_seed, **shade}}
         timings["scene_lighting"] = max(0, self.clock()-started)
         scene_effects = {
             "lighting": {"seed": lighting_seed, **lighting} if lighting is not None else None,

@@ -41,7 +41,7 @@ def material(name,color=(.2,.2,.2,1),roughness=.5):
     return result,shader
 
 
-def panel(name,artwork,width,thickness,location,angle,roughness,normal_strength):
+def panel(name,artwork,width,thickness,location,angle,roughness,normal_strength,bump_distance,wear=None):
     height=width*artwork['aspect']
     bpy.ops.mesh.primitive_cube_add(size=1,location=location)
     obj=bpy.context.object;obj.name=name
@@ -53,13 +53,18 @@ def panel(name,artwork,width,thickness,location,angle,roughness,normal_strength)
             vertex=obj.data.vertices[obj.data.loops[loop_index].vertex_index].co
             uv.data[loop_index].uv=(vertex.x/width+.5,vertex.y/height+.5)
     mat,shader=material(name+'-plastic',roughness=roughness)
-    texture=image_node(mat,artwork['path'])
+    texture=image_node(mat,wear['maps']['albedo']['path'] if wear else artwork['path'])
     mat.node_tree.links.new(texture.outputs['Color'],shader.inputs['Base Color'])
     # Fine surface normals alter reflection, never the rigid support geometry.
-    noise=mat.node_tree.nodes.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=350
+    if wear:
+        noise=image_node(mat,wear['maps']['height']['path'],True)
+        rough=image_node(mat,wear['maps']['roughness']['path'],True)
+        mat.node_tree.links.new(rough.outputs['Color'],shader.inputs['Roughness'])
+    else:
+        noise=mat.node_tree.nodes.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=350
     bump=mat.node_tree.nodes.new('ShaderNodeBump');bump.inputs['Strength'].default_value=normal_strength
-    bump.inputs['Distance'].default_value=.00015
-    mat.node_tree.links.new(noise.outputs['Fac'],bump.inputs['Height']);mat.node_tree.links.new(bump.outputs['Normal'],shader.inputs['Normal'])
+    bump.inputs['Distance'].default_value=bump_distance
+    mat.node_tree.links.new(noise.outputs['Color'] if wear else noise.outputs['Fac'],bump.inputs['Height']);mat.node_tree.links.new(bump.outputs['Normal'],shader.inputs['Normal'])
     obj.data.materials.append(mat);obj.rotation_euler[2]=math.radians(angle)
     return obj
 
@@ -80,6 +85,7 @@ def ground_material(ground,treatment):
     tile=treatment['uv_scale_m']
     mapping.inputs['Scale'].default_value=(40/tile,40/tile,1)
     mapping.inputs['Rotation'].default_value[2]=math.radians(treatment['uv_rotation_degrees'])
+    mapping.inputs['Location'].default_value=(*treatment.get('ground_uv_offset',(0,0)),0)
     links.new(coord.outputs['UV'],mapping.inputs['Vector'])
     for role,socket in (('color','Base Color'),('roughness','Roughness')):
         if role not in ground['maps']:continue
@@ -87,7 +93,7 @@ def ground_material(ground,treatment):
         links.new(mapping.outputs['Vector'],texture.inputs['Vector']);links.new(texture.outputs['Color'],shader.inputs[socket])
     if 'normal' in ground['maps']:
         texture=image_node(mat,ground['maps']['normal'],True);links.new(mapping.outputs['Vector'],texture.inputs['Vector'])
-        normal=nodes.new('ShaderNodeNormalMap');normal.inputs['Strength'].default_value=treatment['normal_strength']
+        normal=nodes.new('ShaderNodeNormalMap');normal.inputs['Strength'].default_value=treatment.get('ground_normal_strength') if treatment.get('ground_normal_strength') is not None else treatment['normal_strength']
         links.new(texture.outputs['Color'],normal.inputs['Color']);links.new(normal.outputs['Normal'],shader.inputs['Normal'])
     return mat
 
@@ -131,14 +137,21 @@ def build_scene(study,job,attempt):
     world=scene.world;world.use_nodes=True
     background=world.node_tree.nodes.get('Background')
     tex=world.node_tree.nodes.new('ShaderNodeTexEnvironment')
-    envindex=0 if t['lighting']=='environment' else 1
+    envindex=envindex_for(t,len(study['environments']))
+    coords=world.node_tree.nodes.new('ShaderNodeTexCoord');envmap=world.node_tree.nodes.new('ShaderNodeMapping')
+    envmap.inputs['Rotation'].default_value[2]=math.radians(t.get('environment_rotation_degrees',0))
+    world.node_tree.links.new(coords.outputs['Generated'],envmap.inputs['Vector']);world.node_tree.links.new(envmap.outputs['Vector'],tex.inputs['Vector'])
     tex.image=bpy.data.images.load(study['environments'][envindex],check_existing=True)
     world.node_tree.links.new(tex.outputs['Color'],background.inputs['Color'])
     background.inputs['Strength'].default_value=.015 if t['lighting'].startswith('night') else (.7 if t['lighting']=='overcast' else .08 if t['lighting']=='shade' else .25)
+    if t.get('environment_strength') is not None:background.inputs['Strength'].default_value=t['environment_strength']
     if t['lighting']=='sun':
         elev=math.radians(t['sun_elevation_degrees'])
         light('sun','SUN',(-5,-5,7*math.tan(elev)),2.0,(1,.94,.85),.025)
-    if t['lighting'].startswith('night'):
+    if t.get('lamps') is not None:
+        for index,lamp in enumerate(t['lamps']):
+            light(f'lamp-{index}','AREA',lamp['location'],lamp['power_w'],lamp['color'],lamp['size_m'],lamp['target'])
+    elif t['lighting'].startswith('night'):
         light('lamp','AREA',(-2,-2,3),t['light_power_w'],(1,.78,.52),t['light_size_m'])
         if t['lighting']=='night-mixed':light('lamp-blue','AREA',(3,1,2),t['light_power_w']*.6,(.55,.7,1),t['light_size_m']*1.5)
     pads=[]
@@ -152,12 +165,19 @@ def build_scene(study,job,attempt):
         if job['case']=='clipped' and index==0:at[0]+=distance*.4
         if job['case']=='overlap' and index==1:
             at=np.array(pads[0].location)+np.array([.04,.03,config['thickness_metres']])
-        pads.append(panel(f'pad-{index}',study['artwork'][planned['artwork_index']],config['width_metres'],config['thickness_metres'],at,planned['angle'],t['roughness'],t['normal_strength']))
-    if t['shadows']:
-        # Nearby geometry casts coherent shadows; placement may also occlude a pad.
+        pads.append(panel(f'pad-{index}',study['artwork'][planned['artwork_index']],config['width_metres'],config['thickness_metres'],at,planned['angle'],t['roughness'],t.get('pad_bump_strength') if t.get('pad_bump_strength') is not None else t['normal_strength'],t.get('pad_bump_distance_m',.00015),job.get('wear_maps',[None]*len(job['scene']['objects']))[index]))
+    caster_records=[]
+    if t['shadows'] and t.get('casters') is None:
         for index in range(3):
-            bpy.ops.mesh.primitive_cube_add(size=1,location=(-2+index*.6,-1,1.6))
-            obj=bpy.context.object;obj.name=f'ambient-caster-{index}';obj.scale=(.07,.08,3.2)
+            location=(-2+index*.6,-1,1.6);scale=(.07,.08,3.2)
+            bpy.ops.mesh.primitive_cube_add(size=1,location=location)
+            obj=bpy.context.object;obj.name=f'ambient-caster-{index}';obj.scale=scale
+            caster_records.append({'name':obj.name,'location':list(location),'scale':list(scale),'visible_camera':True,'fixture':'legacy-posts'})
+    for index,planned in enumerate(job.get('casters',[])):
+        bpy.ops.mesh.primitive_cube_add(size=1,location=planned['location'])
+        obj=bpy.context.object;obj.name=f'ambient-caster-{index}';obj.scale=planned['scale']
+        obj.visible_camera=planned['visible_camera']
+        caster_records.append({'name':obj.name,**planned,'fixture':'procedural'})
     if (t['occluder'] or job['case'] in ('occluded','fully-hidden')) and pads:
         at=np.array(pads[0].location)
         if job['case']=='fully-hidden':scale=(2.,2.,.1)
@@ -172,7 +192,7 @@ def build_scene(study,job,attempt):
         shader=nodes.new('ShaderNodeVolumePrincipled');shader.inputs['Density'].default_value=t['haze_density']
         output=nodes.new('ShaderNodeOutputMaterial');mat.node_tree.links.new(shader.outputs['Volume'],output.inputs['Volume'])
         volume.data.materials.append(mat)
-    return [obj.name for obj in pads],volume.name if volume else None,mapping,K,distance
+    return [obj.name for obj in pads],volume.name if volume else None,mapping,K,distance,caster_records
 
 
 def distorted(value,mapping,size,interpolate):
@@ -190,12 +210,17 @@ def segmentation(pads,temp,mapping,size):
     return np.stack([ids==indices.get(name,-1) for name in pads]) if pads else np.zeros((0,size[1],size[0]),bool)
 
 
+def envindex_for(treatment,environment_count):
+    value=treatment.get('environment_index')
+    return value if value is not None else (0 if treatment['lighting']=='environment' else min(1,environment_count-1))
+
+
 def run_job(study,job,root):
     started=perf_counter();destination=root/'scenes'/job['id']
     if (destination/'result.json').exists():return
     config=study['config'];attempts=[]
     for attempt in range(8):
-        setup_started=perf_counter();pads,volume,mapping,K,distance=build_scene(study,job,attempt)
+        setup_started=perf_counter();pads,volume,mapping,K,distance,casters=build_scene(study,job,attempt)
         setup_seconds=perf_counter()-setup_started
         # Labels use sharp geometry at pose0, independent of beauty DOF/blur.
         scene=bpy.context.scene;dof=scene.camera.data.dof.use_dof;motion=scene.render.use_motion_blur
@@ -252,6 +277,12 @@ def run_job(study,job,root):
                             'output_resolution':config['resolution'],'numpy':np.__version__,
                             'camera_to_world_opengl':np.asarray(scene.camera.matrix_world).tolist(),
                             'motion_blur':motion,'depth_of_field':dof},'intrinsics_K_before_distortion':K.tolist(),
+                        'surface_diagnostics':{'ground_index':job['ground_index'],'environment_index':envindex_for(job['treatment'],len(study['environments'])),
+                            'environment_strength':scene.world.node_tree.nodes.get('Background').inputs['Strength'].default_value,
+                            'pad_bump_strength':job['treatment'].get('pad_bump_strength') if job['treatment'].get('pad_bump_strength') is not None else job['treatment']['normal_strength'],
+                            'ground_normal_strength':job['treatment'].get('ground_normal_strength') if job['treatment'].get('ground_normal_strength') is not None else job['treatment']['normal_strength'],
+                            'lamps':[{'name':o.name,'type':o.data.type,'location':list(o.location),'color':list(o.data.color),'power':o.data.energy,'rotation_euler':list(o.rotation_euler)} for o in scene.objects if o.type=='LIGHT'],
+                            'treatment':job['treatment'],'wear_maps':job.get('wear_maps',[]),'casters':casters},
                         'camera_distance_metres':distance,'reference_masks':'single-ray sharp geometry at frame0',
                         'noise_model':'post-display RGB Gaussian approximation, not calibrated sensor simulation',
                         'files':{name:hashlib.sha256((staging/name).read_bytes()).hexdigest() for name in ('rgb.png','masks.npz')}}

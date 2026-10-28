@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "samples": 20,
+  "warmups": 2,
+  "repetitions": 3,
+  "resolutions": [
+    [
+      640,
+      640
+    ],
+    [
+      1280,
+      1280
+    ]
+  ],
+  "shared_scene": {
+    "foreground_resampling": "premultiplied",
+    "lighting": {
+      "probability": 1,
+      "gain": [
+        1,
+        1
+      ],
+      "gradient": [
+        0,
+        0
+      ],
+      "tint": 0,
+      "source_assumption": "unknown"
+    }
+  },
+  "prepare_evaluation": true,
+  "variants": [
+    {
+      "name": "omitted",
+      "wear": null
+    },
+    {
+      "name": "pristine",
+      "wear": {
+        "fade": 0,
+        "dirt": 0,
+        "scratches": 0,
+        "marks": 0
+      }
+    }
+  ]
+}

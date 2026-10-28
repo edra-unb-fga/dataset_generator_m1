@@ -154,7 +154,9 @@ def memory_components(resolved, workers, window, native_threads, shapes):
                          40*(shapes['foreground_rotated_pixels']+resized))
         render = max(render, retained_render+foreground+80*output)
     if resolved.profile.scene.lighting is not None:
-        render = max(render,retained_render+width*min(height,128)*40+output*3)
+        shade = resolved.profile.scene.lighting.shade
+        tile_bytes = 80 if shade is not None and shade.probability > 0 and shade.strength[1] > 0 else 40
+        render = max(render,retained_render+width*min(height,128)*tile_bytes+output*3)
     if resolved.profile.scene.occlusion is not None:
         render = max(render,retained_render+output*52)
     evidence = 3*canvas+(32+6*instances)*output

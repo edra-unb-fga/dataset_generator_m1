@@ -1,0 +1,50 @@
+{
+  "asset_id": "rock_07",
+  "provider": "Poly Haven",
+  "source_page": "https://polyhaven.com/a/rock_07",
+  "provider_api": "https://api.polyhaven.com/files/rock_07",
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "format": "glTF 2.0; locally packaged GLB",
+  "resolution": "1k",
+  "units": "meters per glTF 2.0 specification; provider width 0.3 m",
+  "up_axis": "Y in glTF 2.0 coordinates",
+  "dependencies": {
+    "rock_07_1k.gltf": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/rock_07/rock_07_1k.gltf",
+      "size_bytes": 2979,
+      "sha256": "efcc2dcaa133ff8ad5c865dc2135772e8f5dbc83fa38db2ee2cf25382436b6e6",
+      "provider_md5": "2bdb563c126a9d284e60e94951759e2f"
+    },
+    "rock_07.bin": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/rock_07/rock_07.bin",
+      "size_bytes": 468936,
+      "sha256": "e4a532a6d6cf4a08c288f501b790f32cba0528136a29959ce774c3cd39369e7e",
+      "provider_md5": "817b2cfd1626cb06f18a825f87f58ec3"
+    },
+    "textures/rock_07_arm_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_07/rock_07_arm_1k.jpg",
+      "size_bytes": 309735,
+      "sha256": "1ed76e9a8542c76bdc6b7b018720ae1f52cd75d9f5ae719f613de3f5032cf4da",
+      "provider_md5": "530bfd2a510fe6f778bb1198a2395574"
+    },
+    "textures/rock_07_diff_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_07/rock_07_diff_1k.jpg",
+      "size_bytes": 635452,
+      "sha256": "8ff1965aa1664cc4abcc0131c44ee2b97ab14d6e131d7a51429ff261eeb101c8",
+      "provider_md5": "b68ac1824bb3bd3867641b830ad02099"
+    },
+    "textures/rock_07_nor_gl_1k.jpg": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_07/rock_07_nor_gl_1k.jpg",
+      "size_bytes": 766986,
+      "sha256": "57cb2210951aeb376164fce5f7c65f03e5599def04873b56cad0f173c275d78d",
+      "provider_md5": "d3a2a0df0db0177c4df8ef644b003652"
+    }
+  },
+  "derived_glb": {
+    "path": "rock_07_1k.glb",
+    "size_bytes": 2183004,
+    "sha256": "2678e71f19b1133270d75ef9c6e046b01dc44f52a44cc5c9fe897a7f902e0960",
+    "method": "Embedded original glTF buffer and JPEG image bytes in a GLB container; no mesh or image re-encoding."
+  }
+}
