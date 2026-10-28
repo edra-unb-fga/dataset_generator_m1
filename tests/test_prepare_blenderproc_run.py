@@ -53,3 +53,20 @@ def test_guard_setup_failure_records_error_without_preparing(tmp_path,monkeypatc
     with pytest.raises(RuntimeError,match='exactly one NVIDIA GPU'):
         module.prepare_run('experiments/blenderproc/pilot-fast.example.json',tmp_path/'bad',screen_profile='colab-l4-camera-study')
     assert json.loads((tmp_path/'bad'/'setup-status.json').read_text())['status']=='failed'
+
+
+def test_explicit_gpu_guard_off_clears_inherited_limit(tmp_path,monkeypatch):
+    source=json.loads(Path('experiments/blenderproc/execution/profiles.json').read_text())
+    source['guards']['min_gpu_free_mib']=1234
+    policy=tmp_path/'source-policy.json';policy.write_text(json.dumps(source))
+    config=json.loads(Path('experiments/blenderproc/pilot-fast.example.json').read_text())
+    config['execution_policy']=str(policy)
+    config_path=tmp_path/'config.json';config_path.write_text(json.dumps(config))
+    monkeypatch.setattr(module,'prepare',lambda config,output: {'identity':'test-identity'})
+    result=module.prepare_run(config_path,tmp_path/'run',gpu_guard='off')
+    basis=json.loads(Path(result['guard_basis']).read_text())
+    saved=json.loads(Path(result['execution_policy']).read_text())
+    assert not result['gpu_guard_active'] and not result['gpu_guard_measured']
+    assert saved['guards']['min_gpu_free_mib'] is None
+    assert basis['gpu_guard_disabled_explicitly'] is True
+    assert json.loads(policy.read_text())['guards']['min_gpu_free_mib']==1234

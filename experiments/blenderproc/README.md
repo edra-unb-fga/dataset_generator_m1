@@ -63,7 +63,7 @@ setup keeps its status and diagnostics in the output directory; retry in a new d
 
 `--gpu-guard auto` (the default) measures NVIDIA VRAM when an NVIDIA tool is present and a GPU or
 automatic profile may use it; an explicitly selected GPU profile fails if NVIDIA telemetry is missing.
-`required` insists on NVIDIA VRAM telemetry, and `off` explicitly opts out of measuring it. The
+`required` insists on NVIDIA VRAM telemetry, and `off` explicitly disables any inherited VRAM guard and records the decision in the guard basis. The
 adaptive GPU utility currently supports exactly one NVIDIA GPU; on multi-GPU hosts it fails rather
 than selecting a card implicitly. The lower-level monitor currently guards against the lowest free
 VRAM among NVIDIA devices, which is conservative but does not isolate the selected GPU. On systems

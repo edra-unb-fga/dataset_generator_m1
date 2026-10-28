@@ -49,6 +49,7 @@ def prepare_run(config_path, output_dir, *, screen_profile=None, gpu_guard='auto
         cmd=[sys.executable,str(ROOT/'scripts/blenderproc_adaptive_guards.py'),'--policy',str(source_policy),
              '--settings',str(settings),'--output',str(policy)]
         if guard_gpu:cmd.append('--gpu')
+        elif gpu_guard=='off':cmd.append('--disable-gpu-guard')
         try:subprocess.run(cmd,check=True,capture_output=True,text=True,timeout=30)
         except subprocess.CalledProcessError as exc:
             raise RuntimeError('Adaptive guard setup failed: '+exc.stderr.strip()) from exc
