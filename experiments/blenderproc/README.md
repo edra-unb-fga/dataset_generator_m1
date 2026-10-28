@@ -42,6 +42,34 @@ machine-independent capacity estimates. An optional `min_gpu_free_mib` guard sto
 free VRAM falls below its limit or NVIDIA telemetry is unavailable. GPU and host RAM are separate.
 Budget-limited output may still be exported explicitly.
 
+For one-command setup, generate a fresh policy and prepare the study together:
+
+```sh
+uv run python scripts/prepare_blenderproc_run.py \
+  --config configs/local/pilot.json \
+  --output-dir outputs/experiments/l4-camera-run \
+  --screen-profile colab-l4-camera-study --gpu-guard required
+uv run python scripts/blenderproc_pilot.py render \
+  --output-dir outputs/experiments/l4-camera-run/study \
+  --blenderproc .cache/blenderproc-venv/bin/blenderproc --blender-install-path .cache/blender
+```
+
+The optional L4 camera selection is an explicit experimental recommendation, not a universal hardware
+default: it selects 6 workers × 2 threads for up to 640² and 4 × 1 for larger images. The 1280² 4 × 1
+screen was a single short comparison. Omit `--screen-profile` to preserve the config's selection.
+The setup prints the resolved guards and retains the measured basis, policy and resolved config beside
+`study/`. Render and resume use that frozen policy; a fresh setup remeasures current headroom. A failed
+setup keeps its status and diagnostics in the output directory; retry in a new directory.
+
+`--gpu-guard auto` (the default) measures NVIDIA VRAM when an NVIDIA tool is present and a GPU or
+automatic profile may use it; an explicitly selected GPU profile fails if NVIDIA telemetry is missing.
+`required` insists on NVIDIA VRAM telemetry, and `off` explicitly opts out of measuring it. The
+adaptive GPU utility currently supports exactly one NVIDIA GPU; on multi-GPU hosts it fails rather
+than selecting a card implicitly. The lower-level monitor currently guards against the lowest free
+VRAM among NVIDIA devices, which is conservative but does not isolate the selected GPU. On systems
+without NVIDIA telemetry, automatic selection may still choose a non-NVIDIA GPU, so setup reports
+that no VRAM guard was measured. Use a separately reviewed policy when that limitation matters.
+
 To create a fresh, machine-specific catalog, adjust the fractions and reserve floors in
 `execution/adaptive-guards.json`, then run on the machine that will render:
 
