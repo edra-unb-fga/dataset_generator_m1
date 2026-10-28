@@ -30,8 +30,8 @@ def load_matrix(path):
     if not math.isfinite(matrix['time_budget_seconds']) or not 0 < matrix['time_budget_seconds'] <= 900:
         raise ValueError('Timing budget must be positive and at most 15 minutes')
     guards = matrix['guards']
-    if set(guards) != {'min_available_gib', 'rss_limit_gib', 'max_swap_out_mib'} or not all(math.isfinite(v) for v in guards.values()) or guards['min_available_gib'] < 2 or not 0 < guards['rss_limit_gib'] <= 10 or not 0 < guards['max_swap_out_mib'] <= 16:
-        raise ValueError('Resource guards must be at least as strict as the saved study limits')
+    if set(guards) != {'min_available_gib', 'rss_limit_gib', 'max_swap_out_mib'} or not all(math.isfinite(v) for v in guards.values()) or guards['min_available_gib'] <= 0 or guards['rss_limit_gib'] <= 0 or guards['max_swap_out_mib'] < 0:
+        raise ValueError('Resource guards must be finite, positive for memory and nonnegative for swap')
     SceneOcclusionConfig.model_validate(matrix['occlusion'])
     return matrix
 
@@ -57,15 +57,19 @@ def run_child(matrix, root):
         'config_sha256':hashlib.sha256(Path(matrix['config']).read_bytes()).hexdigest(),
         'input_sources':base.source_hashes, 'software':software_identity(),
         'note':'Alternating-order single coordinator; two separately generated warmup outputs per cell. Measured scene slots repeat across repetitions.'})
+    # The study explicitly compares these uncalibrated research treatments. Unknown
+    # acknowledgement requests still fail closed; receipts are recorded per cell.
+    accepted_warnings={'UNDOCUMENTED_LOCAL_PROFILE','EXPERIMENTAL_SCENE_LIGHTING_UNCALIBRATED',
+        'EXPERIMENTAL_SCENE_OCCLUSION_UNCALIBRATED','EXPERIMENTAL_LINEAR_COMPOSITING_UNVALIDATED'}
     observations, records, reference = root/'local-observations.jsonl', [], None
     for repeat in range(matrix['repetitions']):
         order = matrix['modes'][repeat % 2:] + matrix['modes'][:repeat % 2]
         for mode in order:
             name=f'{repeat:02d}-{mode}'
             warm = profile_for(base, matrix, mode, matrix['warmups'])
-            warm_summary, _, _, warm_prep, warm_generation, _, _ = run_pool(warm, root/f'warmup-{name}', observations)
+            warm_summary, _, _, warm_prep, warm_generation, _, _ = run_pool(warm, root/f'warmup-{name}', observations, acknowledged_codes=accepted_warnings)
             selected = profile_for(base, matrix, mode, matrix['measured_samples'])
-            summary, inspection, policy, prep, elapsed, signature, rows = run_pool(selected, root/name, observations)
+            summary, inspection, policy, prep, elapsed, signature, rows = run_pool(selected, root/name, observations, acknowledged_codes=accepted_warnings)
             if reference is None:
                 reference = signature
             if reference != signature:

@@ -74,3 +74,12 @@ def test_environment_bounds_cover_shutter_trajectory_and_surface_clearance():
         assert inner_wall >= abs(position[1])+settings['camera_horizontal_margin_m']
         assert bounds['ceiling_height_m']-settings['wall_thickness_m']/2 >= position[2]+settings['camera_ceiling_margin_m']
         assert bounds['camera_motion_margin_m']==travel
+
+
+def test_environment_bounds_enclose_target_footprints_as_well_as_camera():
+    settings=EnvironmentGeometrySettings().model_dump(mode='json')
+    corners=[(10.0,-8.0),(-12.0,3.0)]
+    bounds=environment_bounds(np.array([1.,2.,4.]),settings,0,1/60,corners)
+    interior=bounds['half_width_m']-settings['wall_thickness_m']/2
+    assert bounds['target_extent_m']==12.0
+    assert all(interior >= max(abs(x),abs(y))+settings['camera_horizontal_margin_m'] for x,y in corners)

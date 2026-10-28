@@ -1,0 +1,36 @@
+{
+  "bundles": {
+    "development": "bb2734da80fc52b214020fc40d97528e80bf184c0ccc49ceaac3fde0a1e9f71b",
+    "holdout": "431c2b139c4c02a0b7fd2b0bcccc2dd2642d79466486a85dd14c6b203ce09a62"
+  },
+  "total_seconds": 1800,
+  "phases": [
+    {
+      "name": "development",
+      "kind": "camera",
+      "workspace": "development",
+      "matrix": "development-matrix.json",
+      "seconds": 700
+    },
+    {
+      "name": "holdout",
+      "kind": "camera",
+      "workspace": "holdout",
+      "matrix": "holdout-matrix.json",
+      "seconds": 400
+    },
+    {
+      "name": "quality",
+      "kind": "camera",
+      "workspace": "development",
+      "matrix": "quality-matrix.json",
+      "seconds": 400
+    },
+    {
+      "name": "speed",
+      "kind": "speed",
+      "workspace": "development",
+      "seconds": 500
+    }
+  ]
+}

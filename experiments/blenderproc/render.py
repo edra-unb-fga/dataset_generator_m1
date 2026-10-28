@@ -100,11 +100,11 @@ def ground_material(ground,treatment,extent=40,tile_override=None):
     return mat
 
 
-def environment_geometry(kind, position, settings, grounds, camera_speed_mps, shutter_seconds):
+def environment_geometry(kind, position, settings, grounds, camera_speed_mps, shutter_seconds, target_corners=()):
     """Build enclosing surfaces using saved dimensions and material choices."""
     if kind == 'open':
         return None
-    bounds=environment_bounds(position,settings,camera_speed_mps,shutter_seconds)
+    bounds=environment_bounds(position,settings,camera_speed_mps,shutter_seconds,target_corners)
     half=bounds['half_width_m'];height=bounds['ceiling_height_m']
     wall_height=height if kind == 'indoor' else settings['outdoor_wall_height_m']
     wall_mat,shader=material('environment-wall',(*settings['wall_color'],1),settings['wall_roughness'])
@@ -132,7 +132,7 @@ def environment_geometry(kind, position, settings, grounds, camera_speed_mps, sh
               settings['indoor_light_power_w'],settings['indoor_light_color'],settings['indoor_light_size_m'])
     return {'kind':kind,'half_width_m':half,'wall_height_m':wall_height,
             'ceiling_height_m':height if kind == 'indoor' else None,
-            'camera_motion_margin_m':bounds['camera_motion_margin_m'],'settings':settings}
+            'camera_motion_margin_m':bounds['camera_motion_margin_m'],'target_extent_m':bounds['target_extent_m'],'settings':settings}
 
 
 def build_scene(study,job,attempt):
@@ -227,7 +227,6 @@ def build_scene(study,job,attempt):
     tile=ground_evidence['tile_m'] if ground_evidence else None
     bpy.ops.mesh.primitive_plane_add(size=extent)
     ground=bpy.context.object;ground.name='ground';ground.data.materials.append(ground_material(study['grounds'][job['ground_index']],t,extent,tile))
-    geometry=environment_geometry(job.get('environment_geometry','open'),position,config.get('environment_geometry_settings'),study['grounds'],t['camera_speed_mps'],t['shutter_seconds'])
     world=scene.world;world.use_nodes=True
     background=world.node_tree.nodes.get('Background')
     tex=world.node_tree.nodes.new('ShaderNodeTexEnvironment')
@@ -263,6 +262,15 @@ def build_scene(study,job,attempt):
         if job['case']=='overlap' and index==1:
             at=np.array(pads[0].location)+np.array([.04,.03,config['thickness_metres']])
         pads.append(panel(f'pad-{index}',study['artwork'][planned['artwork_index']],config['width_metres'],config['thickness_metres'],at,planned['angle'],t['roughness'],t.get('pad_bump_strength') if t.get('pad_bump_strength') is not None else t['normal_strength'],t.get('pad_bump_distance_m',.00015),job.get('wear_maps',[None]*len(job['scene']['objects']))[index]))
+    # Build the room only after targets are placed: enclose their complete rigid footprints,
+    # including clipped/rotated cases, instead of letting walls cut through the panels.
+    corners=[]
+    for index,obj in enumerate(pads):
+        angle=obj.rotation_euler[2]; aspect=study['artwork'][job['scene']['objects'][index]['artwork_index']]['aspect']
+        for x,y in ((-.5,-.5),(-.5,.5),(.5,-.5),(.5,.5)):
+            x*=config['width_metres'];y*=config['width_metres']*aspect
+            corners.append((obj.location.x+x*math.cos(angle)-y*math.sin(angle),obj.location.y+x*math.sin(angle)+y*math.cos(angle)))
+    geometry=environment_geometry(job.get('environment_geometry','open'),position,config.get('environment_geometry_settings'),study['grounds'],t['camera_speed_mps'],t['shutter_seconds'],corners)
     if camera_evidence is not None:
         # Measure the final rigid panels at their actual planned positions (before lens distortion).
         actual=[]

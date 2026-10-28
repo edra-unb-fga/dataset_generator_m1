@@ -230,3 +230,5 @@ use, compute-unit rates, exact within-resolution mask checks and the excluded ov
 screen. Four measured scenes per setting cannot establish a hardware-class default or realism.
 
 The exploratory [L4 worker/thread screen](experiments/l4-worker-scaling-v1/README.md) records paired 640² and 1280² outputs, an eight-worker case, separate system RAM and GPU memory guards, sampled utilization and automatic shutdown evidence. Its short cases do not justify a general hardware default.
+
+The [L4 camera/environment continuation](experiments/l4-camera-completion-v1/README.md) follows the blocked local screen with fresh held-out scenes, exact COCO-mask round trips, bounded wall-clearance fixes, a repeated ground-mode timing check and an offline visual report. The [paired 2D CPU timing](experiments/linear-colab-timing-v1/README.md) measures linear compositing separately.

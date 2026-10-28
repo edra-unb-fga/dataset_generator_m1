@@ -1,0 +1,4656 @@
+{
+  "phases": {
+    "development": {
+      "status": "complete",
+      "error": null,
+      "records": [
+        {
+          "cell": "open-fixed",
+          "status": "complete",
+          "reason": null,
+          "seconds": 10.769523278000008,
+          "workers": 6,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2172264209243116,
+                  0.1356503929254575,
+                  0.1798152420383581,
+                  0.1391566263382919
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.015189921297056,
+                "tile_m": 2.0,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 3.2892042595356434,
+                "central_view_width_m": 6.578408519071287,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "fixed-physical"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ],
+              "full_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.17690663949026403
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 22.127436575435944,
+                "tile_m": 2.0,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 4.696030510221942,
+                "central_view_width_m": 9.392061020443885,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "fixed-physical"
+              },
+              "environment": null,
+              "objects": 1,
+              "visible_pixels": [
+                11562
+              ],
+              "full_pixels": [
+                11562
+              ]
+            },
+            {
+              "job": "002-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261028,
+                  "quaternion_wxyz": [
+                    0.998347597674203,
+                    0.02365546897874842,
+                    -0.014487797727567116,
+                    0.05032491155032564
+                  ],
+                  "yaw_degrees": 5.771469832282037,
+                  "tilt_degrees": 3.179115465988197,
+                  "tilt_direction_degrees": 235.62886888144106,
+                  "ground_spans": 0.5216516882017775
+                },
+                "target_width_fraction": 0.17421875,
+                "representative_centered_width_fraction": 0.17421874999999903,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.19385187329458184,
+                  0.1534115399753276
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 8.698943987699083,
+                "tile_m": 2.0,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.5216516882017775,
+                "achieved_spans": 3.4672564797028986,
+                "central_view_width_m": 6.934512959405797,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "fixed-physical"
+              },
+              "environment": null,
+              "objects": 2,
+              "visible_pixels": [
+                8944,
+                5814
+              ],
+              "full_pixels": [
+                8944,
+                5814
+              ]
+            },
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261029,
+                  "quaternion_wxyz": [
+                    0.21454216200004744,
+                    -0.3530206994991267,
+                    0.13794892278741547,
+                    0.9001767277325515
+                  ],
+                  "yaw_degrees": 153.1891808455916,
+                  "tilt_degrees": 44.5455534198591,
+                  "tilt_direction_degrees": 352.06148002537554,
+                  "ground_spans": 1.3618605102492287
+                },
+                "target_width_fraction": 0.1484375,
+                "representative_centered_width_fraction": 0.1484375000000012,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1483961838264335,
+                  0.05934097472331423,
+                  0.12167799337617344,
+                  0.2657865343448178
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 25.884333441789238,
+                "tile_m": 2.0,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.3618605102492287,
+                "achieved_spans": 5.878424151264087,
+                "central_view_width_m": 11.756848302528175,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "fixed-physical"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ],
+              "full_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261030,
+                  "quaternion_wxyz": [
+                    0.1054752771260105,
+                    -0.059055259115799334,
+                    -0.12474764166050165,
+                    0.9847971710896108
+                  ],
+                  "yaw_degrees": 167.7734455639579,
+                  "tilt_degrees": 15.866567174828356,
+                  "tilt_direction_degrees": 70.78050559262276,
+                  "ground_spans": 0.9747252229734447
+                },
+                "target_width_fraction": 0.175,
+                "representative_centered_width_fraction": 0.1749999999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16496417395467103,
+                  0.208588841106126,
+                  0.1869130908771485
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 7.7093315505558815,
+                "tile_m": 2.0,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9747252229734447,
+                "achieved_spans": 2.3642464880608633,
+                "central_view_width_m": 4.728492976121727,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "fixed-physical"
+              },
+              "environment": null,
+              "objects": 3,
+              "visible_pixels": [
+                10577,
+                15804,
+                16910
+              ],
+              "full_pixels": [
+                10577,
+                15804,
+                16910
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.13125,
+                "representative_centered_width_fraction": 0.1312500000000006,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16560810427094835,
+                  0.13894288478556263,
+                  0.1206232044783048
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 19.700258895076555,
+                "tile_m": 2.0,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 5.168198635696162,
+                "central_view_width_m": 10.336397271392324,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "fixed-physical"
+              },
+              "environment": null,
+              "objects": 3,
+              "visible_pixels": [
+                5653,
+                4760,
+                4268
+              ],
+              "full_pixels": [
+                5653,
+                4760,
+                4268
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "open-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 7.60180183600005,
+          "workers": 6,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2172264209243116,
+                  0.1356503929254575,
+                  0.1798152420383581,
+                  0.1391566263382919
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.015189921297056,
+                "tile_m": 6.796113172830008,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 6.578408519071287,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ],
+              "full_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.17690663949026403
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 22.127436575435944,
+                "tile_m": 9.958355672042641,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347009,
+                "central_view_width_m": 9.392061020443885,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 1,
+              "visible_pixels": [
+                11562
+              ],
+              "full_pixels": [
+                11562
+              ]
+            },
+            {
+              "job": "002-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261028,
+                  "quaternion_wxyz": [
+                    0.998347597674203,
+                    0.02365546897874842,
+                    -0.014487797727567116,
+                    0.05032491155032564
+                  ],
+                  "yaw_degrees": 5.771469832282037,
+                  "tilt_degrees": 3.179115465988197,
+                  "tilt_direction_degrees": 235.62886888144106,
+                  "ground_spans": 0.5216516882017775
+                },
+                "target_width_fraction": 0.17421875,
+                "representative_centered_width_fraction": 0.17421874999999903,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.19385187329458184,
+                  0.1534115399753276
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 8.698943987699083,
+                "tile_m": 13.293377777248738,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.5216516882017775,
+                "achieved_spans": 0.5216516882017775,
+                "central_view_width_m": 6.934512959405797,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 2,
+              "visible_pixels": [
+                8944,
+                5814
+              ],
+              "full_pixels": [
+                8944,
+                5814
+              ]
+            },
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261029,
+                  "quaternion_wxyz": [
+                    0.21454216200004744,
+                    -0.3530206994991267,
+                    0.13794892278741547,
+                    0.9001767277325515
+                  ],
+                  "yaw_degrees": 153.1891808455916,
+                  "tilt_degrees": 44.5455534198591,
+                  "tilt_direction_degrees": 352.06148002537554,
+                  "ground_spans": 1.3618605102492287
+                },
+                "target_width_fraction": 0.1484375,
+                "representative_centered_width_fraction": 0.1484375000000012,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1483961838264335,
+                  0.05934097472331423,
+                  0.12167799337617344,
+                  0.2657865343448178
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 25.884333441789238,
+                "tile_m": 8.632931356807314,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.3618605102492287,
+                "achieved_spans": 1.3618605102492287,
+                "central_view_width_m": 11.756848302528175,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ],
+              "full_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261030,
+                  "quaternion_wxyz": [
+                    0.1054752771260105,
+                    -0.059055259115799334,
+                    -0.12474764166050165,
+                    0.9847971710896108
+                  ],
+                  "yaw_degrees": 167.7734455639579,
+                  "tilt_degrees": 15.866567174828356,
+                  "tilt_direction_degrees": 70.78050559262276,
+                  "ground_spans": 0.9747252229734447
+                },
+                "target_width_fraction": 0.175,
+                "representative_centered_width_fraction": 0.1749999999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16496417395467103,
+                  0.208588841106126,
+                  0.1869130908771485
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 7.7093315505558815,
+                "tile_m": 4.851103536335336,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9747252229734447,
+                "achieved_spans": 0.9747252229734447,
+                "central_view_width_m": 4.728492976121727,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 3,
+              "visible_pixels": [
+                10577,
+                15804,
+                16910
+              ],
+              "full_pixels": [
+                10577,
+                15804,
+                16910
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.13125,
+                "representative_centered_width_fraction": 0.1312500000000006,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16560810427094835,
+                  0.13894288478556263,
+                  0.1206232044783048
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 19.700258895076555,
+                "tile_m": 8.697293001923002,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 1.1884614292179083,
+                "central_view_width_m": 10.336397271392324,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 3,
+              "visible_pixels": [
+                5653,
+                4760,
+                4268
+              ],
+              "full_pixels": [
+                5653,
+                4760,
+                4268
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "indoor-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 8.32111460599998,
+          "workers": 6,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2172264209243116,
+                  0.1356503929254575,
+                  0.1798152420383581,
+                  0.1391566263382919
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.015189921297056,
+                "tile_m": 6.796113172830008,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 6.578408519071287,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 5.467133185129836,
+                "wall_height_m": 6.903000857624406,
+                "ceiling_height_m": 6.903000857624406,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.4171331851298365,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ],
+              "full_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.17690663949026403
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 22.127436575435944,
+                "tile_m": 9.958355672042641,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347009,
+                "central_view_width_m": 9.392061020443885,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 5.486411336152919,
+                "wall_height_m": 4.531505582279003,
+                "ceiling_height_m": 4.531505582279003,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 0.66663136589445,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 1,
+              "visible_pixels": [
+                11562
+              ],
+              "full_pixels": [
+                11562
+              ]
+            },
+            {
+              "job": "002-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261028,
+                  "quaternion_wxyz": [
+                    0.998347597674203,
+                    0.02365546897874842,
+                    -0.014487797727567116,
+                    0.05032491155032564
+                  ],
+                  "yaw_degrees": 5.771469832282037,
+                  "tilt_degrees": 3.179115465988197,
+                  "tilt_direction_degrees": 235.62886888144106,
+                  "ground_spans": 0.5216516882017775
+                },
+                "target_width_fraction": 0.17421875,
+                "representative_centered_width_fraction": 0.17421874999999903,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.19385187329458184,
+                  0.1534115399753276
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 8.698943987699083,
+                "tile_m": 13.293377777248738,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.5216516882017775,
+                "achieved_spans": 0.5216516882017775,
+                "central_view_width_m": 6.934512959405797,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 5.711504233301319,
+                "wall_height_m": 7.776364546408159,
+                "ceiling_height_m": 7.776364546408159,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.6615042333013195,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 2,
+              "visible_pixels": [
+                8944,
+                5814
+              ],
+              "full_pixels": [
+                8944,
+                5814
+              ]
+            },
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261029,
+                  "quaternion_wxyz": [
+                    0.21454216200004744,
+                    -0.3530206994991267,
+                    0.13794892278741547,
+                    0.9001767277325515
+                  ],
+                  "yaw_degrees": 153.1891808455916,
+                  "tilt_degrees": 44.5455534198591,
+                  "tilt_direction_degrees": 352.06148002537554,
+                  "ground_spans": 1.3618605102492287
+                },
+                "target_width_fraction": 0.1484375,
+                "representative_centered_width_fraction": 0.1484375000000012,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1483961838264335,
+                  0.05934097472331423,
+                  0.12167799337617344,
+                  0.2657865343448178
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 25.884333441789238,
+                "tile_m": 8.632931356807314,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.3618605102492287,
+                "achieved_spans": 1.3618605102492287,
+                "central_view_width_m": 11.756848302528175,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 5.869680722508957,
+                "wall_height_m": 5.427264465900304,
+                "ceiling_height_m": 5.427264465900304,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.8196807225089575,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ],
+              "full_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261030,
+                  "quaternion_wxyz": [
+                    0.1054752771260105,
+                    -0.059055259115799334,
+                    -0.12474764166050165,
+                    0.9847971710896108
+                  ],
+                  "yaw_degrees": 167.7734455639579,
+                  "tilt_degrees": 15.866567174828356,
+                  "tilt_direction_degrees": 70.78050559262276,
+                  "ground_spans": 0.9747252229734447
+                },
+                "target_width_fraction": 0.175,
+                "representative_centered_width_fraction": 0.1749999999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16496417395467103,
+                  0.208588841106126,
+                  0.1869130908771485
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 7.7093315505558815,
+                "tile_m": 4.851103536335336,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9747252229734447,
+                "achieved_spans": 0.9747252229734447,
+                "central_view_width_m": 4.728492976121727,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 4.31923001709744,
+                "wall_height_m": 5.442277800456161,
+                "ceiling_height_m": 5.442277800456161,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 2.2692300170974407,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 3,
+              "visible_pixels": [
+                10577,
+                15804,
+                16910
+              ],
+              "full_pixels": [
+                10577,
+                15804,
+                16910
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.13125,
+                "representative_centered_width_fraction": 0.1312500000000006,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16560810427094835,
+                  0.13894288478556263,
+                  0.1206232044783048
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 19.700258895076555,
+                "tile_m": 8.697293001923002,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 1.1884614292179083,
+                "central_view_width_m": 10.336397271392324,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 7.846173045986685,
+                "wall_height_m": 10.565118339342746,
+                "ceiling_height_m": 10.565118339342746,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 5.796173045986685,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 3,
+              "visible_pixels": [
+                5653,
+                4760,
+                4268
+              ],
+              "full_pixels": [
+                5653,
+                4760,
+                4268
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "outdoor-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 8.083097355000007,
+          "workers": 6,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2172264209243116,
+                  0.1356503929254575,
+                  0.1798152420383581,
+                  0.1391566263382919
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.015189921297056,
+                "tile_m": 6.796113172830008,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 6.578408519071287,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 5.467133185129836,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.4171331851298365,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ],
+              "full_pixels": [
+                10458,
+                8827,
+                7762,
+                6117
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.17690663949026403
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 22.127436575435944,
+                "tile_m": 9.958355672042641,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347009,
+                "central_view_width_m": 9.392061020443885,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 5.486411336152919,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 0.66663136589445,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 1,
+              "visible_pixels": [
+                11562
+              ],
+              "full_pixels": [
+                11562
+              ]
+            },
+            {
+              "job": "002-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261028,
+                  "quaternion_wxyz": [
+                    0.998347597674203,
+                    0.02365546897874842,
+                    -0.014487797727567116,
+                    0.05032491155032564
+                  ],
+                  "yaw_degrees": 5.771469832282037,
+                  "tilt_degrees": 3.179115465988197,
+                  "tilt_direction_degrees": 235.62886888144106,
+                  "ground_spans": 0.5216516882017775
+                },
+                "target_width_fraction": 0.17421875,
+                "representative_centered_width_fraction": 0.17421874999999903,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.19385187329458184,
+                  0.1534115399753276
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 8.698943987699083,
+                "tile_m": 13.293377777248738,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.5216516882017775,
+                "achieved_spans": 0.5216516882017775,
+                "central_view_width_m": 6.934512959405797,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 5.711504233301319,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.6615042333013195,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 2,
+              "visible_pixels": [
+                8944,
+                5814
+              ],
+              "full_pixels": [
+                8944,
+                5814
+              ]
+            },
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261029,
+                  "quaternion_wxyz": [
+                    0.21454216200004744,
+                    -0.3530206994991267,
+                    0.13794892278741547,
+                    0.9001767277325515
+                  ],
+                  "yaw_degrees": 153.1891808455916,
+                  "tilt_degrees": 44.5455534198591,
+                  "tilt_direction_degrees": 352.06148002537554,
+                  "ground_spans": 1.3618605102492287
+                },
+                "target_width_fraction": 0.1484375,
+                "representative_centered_width_fraction": 0.1484375000000012,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1483961838264335,
+                  0.05934097472331423,
+                  0.12167799337617344,
+                  0.2657865343448178
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 25.884333441789238,
+                "tile_m": 8.632931356807314,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.3618605102492287,
+                "achieved_spans": 1.3618605102492287,
+                "central_view_width_m": 11.756848302528175,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 5.869680722508957,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.8196807225089575,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ],
+              "full_pixels": [
+                7049,
+                2034,
+                5225,
+                16855
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261030,
+                  "quaternion_wxyz": [
+                    0.1054752771260105,
+                    -0.059055259115799334,
+                    -0.12474764166050165,
+                    0.9847971710896108
+                  ],
+                  "yaw_degrees": 167.7734455639579,
+                  "tilt_degrees": 15.866567174828356,
+                  "tilt_direction_degrees": 70.78050559262276,
+                  "ground_spans": 0.9747252229734447
+                },
+                "target_width_fraction": 0.175,
+                "representative_centered_width_fraction": 0.1749999999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16496417395467103,
+                  0.208588841106126,
+                  0.1869130908771485
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 7.7093315505558815,
+                "tile_m": 4.851103536335336,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9747252229734447,
+                "achieved_spans": 0.9747252229734447,
+                "central_view_width_m": 4.728492976121727,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 4.31923001709744,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 2.2692300170974407,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 3,
+              "visible_pixels": [
+                10577,
+                15804,
+                16910
+              ],
+              "full_pixels": [
+                10577,
+                15804,
+                16910
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.13125,
+                "representative_centered_width_fraction": 0.1312500000000006,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16560810427094835,
+                  0.13894288478556263,
+                  0.1206232044783048
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 19.700258895076555,
+                "tile_m": 8.697293001923002,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 1.1884614292179083,
+                "central_view_width_m": 10.336397271392324,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 7.846173045986685,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 5.796173045986685,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 3,
+              "visible_pixels": [
+                5653,
+                4760,
+                4268
+              ],
+              "full_pixels": [
+                5653,
+                4760,
+                4268
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "motion-distortion",
+          "status": "complete",
+          "reason": null,
+          "seconds": 9.955238595000026,
+          "workers": 3,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2172264209243116,
+                  0.1356503929254575,
+                  0.1798152420383581,
+                  0.1391566263382919
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 12.388607637908585,
+                "tile_m": 7.457336904617839,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 7.218450807889419,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                9092,
+                8313,
+                6766,
+                5174
+              ],
+              "full_pixels": [
+                9092,
+                8313,
+                6766,
+                5174
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.17690663949026403
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 28.739520253688728,
+                "tile_m": 11.71297837758625,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347009,
+                "central_view_width_m": 11.046904858225957,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 1,
+              "visible_pixels": [
+                11562
+              ],
+              "full_pixels": [
+                11562
+              ]
+            },
+            {
+              "job": "002-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261028,
+                  "quaternion_wxyz": [
+                    0.998347597674203,
+                    0.02365546897874842,
+                    -0.014487797727567116,
+                    0.05032491155032564
+                  ],
+                  "yaw_degrees": 5.771469832282037,
+                  "tilt_degrees": 3.179115465988197,
+                  "tilt_direction_degrees": 235.62886888144106,
+                  "ground_spans": 0.5216516882017775
+                },
+                "target_width_fraction": 0.17421875,
+                "representative_centered_width_fraction": 0.17421874999999903,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.19385187329458184,
+                  0.1534115399753276
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 9.525327979608496,
+                "tile_m": 14.522000920403675,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.5216516882017775,
+                "achieved_spans": 0.5216516882017775,
+                "central_view_width_m": 7.575426296196344,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 2,
+              "visible_pixels": [
+                8002,
+                4810
+              ],
+              "full_pixels": [
+                8002,
+                4810
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "indoor-diagnostics",
+          "status": "complete",
+          "reason": null,
+          "seconds": 5.726882747000047,
+          "workers": 3,
+          "rows": [
+            {
+              "job": "diagnostic-negative",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": null,
+                "representative_centered_width_fraction": null,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 9.743161055284869,
+                "tile_m": 6.011301272690975,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 5.8187370482689165,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 3.5001467848264833,
+                "wall_height_m": 6.227099116765847,
+                "ceiling_height_m": 6.227099116765847,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 0.0,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 0,
+              "visible_pixels": [],
+              "full_pixels": []
+            },
+            {
+              "job": "diagnostic-clipped",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.213671875,
+                "representative_centered_width_fraction": 0.21367187500000007,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.28463150364290796,
+                  0.1800911713228593
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 8.29845675625496,
+                "tile_m": 5.119952690629926,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270477,
+                "central_view_width_m": 4.955941659702601,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 6.633940598231033,
+                "wall_height_m": 5.459445035297224,
+                "ceiling_height_m": 5.459445035297224,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 4.583940598231033,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 2,
+              "visible_pixels": [
+                0,
+                15566
+              ],
+              "full_pixels": [
+                0,
+                15566
+              ]
+            },
+            {
+              "job": "diagnostic-occluded",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.213671875,
+                "representative_centered_width_fraction": 0.21367187500000007,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.28863371305100666,
+                  0.1800911713228593
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 8.29845675625496,
+                "tile_m": 5.119952690629926,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270477,
+                "central_view_width_m": 4.955941659702601,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 4.793802401285842,
+                "wall_height_m": 5.459445035297224,
+                "ceiling_height_m": 5.459445035297224,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 2.7438024012858424,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 2,
+              "visible_pixels": [
+                13054,
+                15566
+              ],
+              "full_pixels": [
+                18328,
+                15566
+              ]
+            }
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "cell": "open-view",
+          "job": "000-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 12.452421875
+        },
+        {
+          "cell": "open-view",
+          "job": "001-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 6.905430501302083
+        },
+        {
+          "cell": "open-view",
+          "job": "002-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 2.68388916015625
+        },
+        {
+          "cell": "open-view",
+          "job": "003-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 11.633548990885417
+        },
+        {
+          "cell": "open-view",
+          "job": "004-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 5.573218587239583
+        },
+        {
+          "cell": "open-view",
+          "job": "005-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 2.4812849934895835
+        },
+        {
+          "cell": "indoor-view",
+          "job": "000-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 15.7367236328125
+        },
+        {
+          "cell": "indoor-view",
+          "job": "001-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 24.349857584635416
+        },
+        {
+          "cell": "indoor-view",
+          "job": "002-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 10.81345703125
+        },
+        {
+          "cell": "indoor-view",
+          "job": "003-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 23.445764973958333
+        },
+        {
+          "cell": "indoor-view",
+          "job": "004-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 20.144287109375
+        },
+        {
+          "cell": "indoor-view",
+          "job": "005-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 44.84075764973959
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "000-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 12.540900065104166
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "001-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 8.80892822265625
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "002-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 2.7219205729166664
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "003-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 15.1400146484375
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "004-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 5.61858642578125
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "005-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 2.559989420572917
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "000-core-fast",
+          "all_masks_equal": false,
+          "rgb_mean_abs_difference": 14.033400065104166
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "001-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 6.12236572265625
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "002-core-fast",
+          "all_masks_equal": false,
+          "rgb_mean_abs_difference": 4.226385904947917
+        }
+      ]
+    },
+    "holdout": {
+      "status": "complete",
+      "error": null,
+      "records": [
+        {
+          "cell": "open-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 6.043843562999996,
+          "workers": 3,
+          "rows": [
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.190625,
+                "representative_centered_width_fraction": 0.190624999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.21809969556887382,
+                  0.18918166882496532,
+                  0.16681864240802297,
+                  0.16220322825268854
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 13.224870128507877,
+                "tile_m": 5.8385309062490425,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 1.1884614292179083,
+                "central_view_width_m": 6.938868785373667,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                10845,
+                7856,
+                8244,
+                6354
+              ],
+              "full_pixels": [
+                10845,
+                7856,
+                8244,
+                6354
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261032,
+                  "quaternion_wxyz": [
+                    -0.9430810858627108,
+                    -0.10589001906057158,
+                    -0.08570586488558707,
+                    0.3033807411085544
+                  ],
+                  "yaw_degrees": 324.3349633643326,
+                  "tilt_degrees": 15.65932273600091,
+                  "tilt_direction_degrees": 326.8187309054571,
+                  "ground_spans": 0.9337910784357477
+                },
+                "target_width_fraction": 0.1921875,
+                "representative_centered_width_fraction": 0.19218749999999887,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16744088171581176,
+                  0.2575199408575693,
+                  0.21943371892872995
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 10.428235255885447,
+                "tile_m": 5.869272515814913,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9337910784357477,
+                "achieved_spans": 0.9337910784357477,
+                "central_view_width_m": 5.4806743121761015,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 3,
+              "visible_pixels": [
+                8646,
+                12865,
+                14530
+              ],
+              "full_pixels": [
+                8646,
+                12865,
+                14530
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261033,
+                  "quaternion_wxyz": [
+                    -0.7624159496357116,
+                    0.06149336319680633,
+                    -0.019423959494754093,
+                    0.643865821286833
+                  ],
+                  "yaw_degrees": 279.63732897280283,
+                  "tilt_degrees": 7.394931437710031,
+                  "tilt_direction_degrees": 112.65152870975393,
+                  "ground_spans": 1.4151487687389588
+                },
+                "target_width_fraction": 0.23203125,
+                "representative_centered_width_fraction": 0.23203124999999897,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.22606056857870102,
+                  0.24216002519139224
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 6.903404253156319,
+                "tile_m": 3.493123995194996,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.4151487687389588,
+                "achieved_spans": 1.4151487687389588,
+                "central_view_width_m": 4.943290120852711,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 2,
+              "visible_pixels": [
+                16059,
+                18361
+              ],
+              "full_pixels": [
+                16059,
+                18361
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "indoor-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 6.02706681199993,
+          "workers": 3,
+          "rows": [
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.190625,
+                "representative_centered_width_fraction": 0.190624999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.21809969556887382,
+                  0.18918166882496532,
+                  0.16681864240802297,
+                  0.16220322825268854
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 13.224870128507877,
+                "tile_m": 5.8385309062490425,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 1.1884614292179083,
+                "central_view_width_m": 6.938868785373667,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 6.013249460980716,
+                "wall_height_m": 7.437540639206524,
+                "ceiling_height_m": 7.437540639206524,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.963249460980716,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                10845,
+                7856,
+                8244,
+                6354
+              ],
+              "full_pixels": [
+                10845,
+                7856,
+                8244,
+                6354
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261032,
+                  "quaternion_wxyz": [
+                    -0.9430810858627108,
+                    -0.10589001906057158,
+                    -0.08570586488558707,
+                    0.3033807411085544
+                  ],
+                  "yaw_degrees": 324.3349633643326,
+                  "tilt_degrees": 15.65932273600091,
+                  "tilt_direction_degrees": 326.8187309054571,
+                  "ground_spans": 0.9337910784357477
+                },
+                "target_width_fraction": 0.1921875,
+                "representative_centered_width_fraction": 0.19218749999999887,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16744088171581176,
+                  0.2575199408575693,
+                  0.21943371892872995
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 10.428235255885447,
+                "tile_m": 5.869272515814913,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9337910784357477,
+                "achieved_spans": 0.9337910784357477,
+                "central_view_width_m": 5.4806743121761015,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 4.566991890506741,
+                "wall_height_m": 5.97485130369173,
+                "ceiling_height_m": 5.97485130369173,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 2.516991890506741,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 3,
+              "visible_pixels": [
+                8646,
+                12865,
+                14530
+              ],
+              "full_pixels": [
+                8646,
+                12865,
+                14530
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261033,
+                  "quaternion_wxyz": [
+                    -0.7624159496357116,
+                    0.06149336319680633,
+                    -0.019423959494754093,
+                    0.643865821286833
+                  ],
+                  "yaw_degrees": 279.63732897280283,
+                  "tilt_degrees": 7.394931437710031,
+                  "tilt_direction_degrees": 112.65152870975393,
+                  "ground_spans": 1.4151487687389588
+                },
+                "target_width_fraction": 0.23203125,
+                "representative_centered_width_fraction": 0.23203124999999897,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.22606056857870102,
+                  0.24216002519139224
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 6.903404253156319,
+                "tile_m": 3.493123995194996,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.4151487687389588,
+                "achieved_spans": 1.4151487687389588,
+                "central_view_width_m": 4.943290120852711,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 4.262391445719744,
+                "wall_height_m": 5.8060729068845385,
+                "ceiling_height_m": 5.8060729068845385,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 2.2123914457197436,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 2,
+              "visible_pixels": [
+                16059,
+                18361
+              ],
+              "full_pixels": [
+                16059,
+                18361
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "outdoor-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 6.013746818999948,
+          "workers": 3,
+          "rows": [
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.190625,
+                "representative_centered_width_fraction": 0.190624999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.21809969556887382,
+                  0.18918166882496532,
+                  0.16681864240802297,
+                  0.16220322825268854
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 13.224870128507877,
+                "tile_m": 5.8385309062490425,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 1.1884614292179083,
+                "central_view_width_m": 6.938868785373667,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 6.013249460980716,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.963249460980716,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                10845,
+                7856,
+                8244,
+                6354
+              ],
+              "full_pixels": [
+                10845,
+                7856,
+                8244,
+                6354
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261032,
+                  "quaternion_wxyz": [
+                    -0.9430810858627108,
+                    -0.10589001906057158,
+                    -0.08570586488558707,
+                    0.3033807411085544
+                  ],
+                  "yaw_degrees": 324.3349633643326,
+                  "tilt_degrees": 15.65932273600091,
+                  "tilt_direction_degrees": 326.8187309054571,
+                  "ground_spans": 0.9337910784357477
+                },
+                "target_width_fraction": 0.1921875,
+                "representative_centered_width_fraction": 0.19218749999999887,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16744088171581176,
+                  0.2575199408575693,
+                  0.21943371892872995
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 10.428235255885447,
+                "tile_m": 5.869272515814913,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9337910784357477,
+                "achieved_spans": 0.9337910784357477,
+                "central_view_width_m": 5.4806743121761015,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 4.566991890506741,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 2.516991890506741,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 3,
+              "visible_pixels": [
+                8646,
+                12865,
+                14530
+              ],
+              "full_pixels": [
+                8646,
+                12865,
+                14530
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261033,
+                  "quaternion_wxyz": [
+                    -0.7624159496357116,
+                    0.06149336319680633,
+                    -0.019423959494754093,
+                    0.643865821286833
+                  ],
+                  "yaw_degrees": 279.63732897280283,
+                  "tilt_degrees": 7.394931437710031,
+                  "tilt_direction_degrees": 112.65152870975393,
+                  "ground_spans": 1.4151487687389588
+                },
+                "target_width_fraction": 0.23203125,
+                "representative_centered_width_fraction": 0.23203124999999897,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.22606056857870102,
+                  0.24216002519139224
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 6.903404253156319,
+                "tile_m": 3.493123995194996,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.4151487687389588,
+                "achieved_spans": 1.4151487687389588,
+                "central_view_width_m": 4.943290120852711,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 4.262391445719744,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 2.2123914457197436,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 2,
+              "visible_pixels": [
+                16059,
+                18361
+              ],
+              "full_pixels": [
+                16059,
+                18361
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "motion-distortion",
+          "status": "complete",
+          "reason": null,
+          "seconds": 6.844742235000012,
+          "workers": 3,
+          "rows": [
+            {
+              "job": "003-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261031,
+                  "quaternion_wxyz": [
+                    0.4370894095720064,
+                    -0.11651160288558429,
+                    -0.041349755594732265,
+                    0.890880515077798
+                  ],
+                  "yaw_degrees": 127.73243312667815,
+                  "tilt_degrees": 14.203470787832355,
+                  "tilt_direction_degrees": 45.67346457205388,
+                  "ground_spans": 1.1884614292179083
+                },
+                "target_width_fraction": 0.190625,
+                "representative_centered_width_fraction": 0.190624999999999,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.21809969556887382,
+                  0.18918166882496532,
+                  0.16681864240802297,
+                  0.16220322825268854
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 14.988865408235329,
+                "tile_m": 6.395624518953246,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.1884614292179083,
+                "achieved_spans": 1.1884614292179083,
+                "central_view_width_m": 7.600953056536272,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                10256,
+                7729,
+                7098,
+                5621
+              ],
+              "full_pixels": [
+                10256,
+                7729,
+                7098,
+                5621
+              ]
+            },
+            {
+              "job": "004-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261032,
+                  "quaternion_wxyz": [
+                    -0.9430810858627108,
+                    -0.10589001906057158,
+                    -0.08570586488558707,
+                    0.3033807411085544
+                  ],
+                  "yaw_degrees": 324.3349633643326,
+                  "tilt_degrees": 15.65932273600091,
+                  "tilt_direction_degrees": 326.8187309054571,
+                  "ground_spans": 0.9337910784357477
+                },
+                "target_width_fraction": 0.1921875,
+                "representative_centered_width_fraction": 0.19218749999999887,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.16744088171581176,
+                  0.2575199408575693,
+                  0.21943371892872995
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.682497351111193,
+                "tile_m": 6.437415162967917,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9337910784357477,
+                "achieved_spans": 0.9337910784357477,
+                "central_view_width_m": 6.011200847366446,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 3,
+              "visible_pixels": [
+                7990,
+                11832,
+                13159
+              ],
+              "full_pixels": [
+                7990,
+                11832,
+                13159
+              ]
+            },
+            {
+              "job": "005-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261033,
+                  "quaternion_wxyz": [
+                    -0.7624159496357116,
+                    0.06149336319680633,
+                    -0.019423959494754093,
+                    0.643865821286833
+                  ],
+                  "yaw_degrees": 279.63732897280283,
+                  "tilt_degrees": 7.394931437710031,
+                  "tilt_direction_degrees": 112.65152870975393,
+                  "ground_spans": 1.4151487687389588
+                },
+                "target_width_fraction": 0.23203125,
+                "representative_centered_width_fraction": 0.23203124999999897,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.22606056857870102,
+                  0.24216002519139224
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 7.582909539232923,
+                "tile_m": 3.8164094958512784,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 1.4151487687389588,
+                "achieved_spans": 1.4151487687389588,
+                "central_view_width_m": 5.400787199057607,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 2,
+              "visible_pixels": [
+                15885,
+                16820
+              ],
+              "full_pixels": [
+                15885,
+                16820
+              ]
+            }
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "cell": "indoor-view",
+          "job": "003-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 11.059140625
+        },
+        {
+          "cell": "indoor-view",
+          "job": "004-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 11.4153955078125
+        },
+        {
+          "cell": "indoor-view",
+          "job": "005-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 17.47430501302083
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "003-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 0.8546248372395834
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "004-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 0.7754728190104166
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "005-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 0.4763330078125
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "003-core-fast",
+          "all_masks_equal": false,
+          "rgb_mean_abs_difference": 14.291107584635416
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "004-core-fast",
+          "all_masks_equal": false,
+          "rgb_mean_abs_difference": 7.622738444010417
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "005-core-fast",
+          "all_masks_equal": false,
+          "rgb_mean_abs_difference": 4.312021484375
+        }
+      ]
+    },
+    "quality": {
+      "status": "complete",
+      "error": null,
+      "records": [
+        {
+          "cell": "open-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 11.155607856000074,
+          "workers": 2,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2171649017768229,
+                  0.13562604472074938,
+                  0.17977122842758114,
+                  0.1391245345370208
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.026119283659582,
+                "tile_m": 6.797981090375028,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 6.580216600305162,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                41823,
+                35313,
+                31048,
+                24441
+              ],
+              "full_pixels": [
+                41823,
+                35313,
+                31048,
+                24441
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1767733503074172
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 22.158371486202665,
+                "tile_m": 9.966929797373258,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347009,
+                "central_view_width_m": 9.400147567154418,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 1,
+              "visible_pixels": [
+                46208
+              ],
+              "full_pixels": [
+                46208
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "indoor-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 12.187130466999974,
+          "workers": 2,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2171649017768229,
+                  0.13562604472074938,
+                  0.17977122842758114,
+                  0.1391245345370208
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.026119283659582,
+                "tile_m": 6.797981090375028,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 6.580216600305162,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 5.469421765070632,
+                "wall_height_m": 6.903000857624406,
+                "ceiling_height_m": 6.903000857624406,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.4194217650706324,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                41823,
+                35313,
+                31048,
+                24441
+              ],
+              "full_pixels": [
+                41823,
+                35313,
+                31048,
+                24441
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1767733503074172
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 22.158371486202665,
+                "tile_m": 9.966929797373258,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347009,
+                "central_view_width_m": 9.400147567154418,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "indoor",
+                "half_width_m": 5.486411336152919,
+                "wall_height_m": 4.531505582279003,
+                "ceiling_height_m": 4.531505582279003,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 0.6642105760994537,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 1,
+              "visible_pixels": [
+                46208
+              ],
+              "full_pixels": [
+                46208
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "outdoor-view",
+          "status": "complete",
+          "reason": null,
+          "seconds": 11.674034821000077,
+          "workers": 2,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2171649017768229,
+                  0.13562604472074938,
+                  0.17977122842758114,
+                  0.1391245345370208
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 11.026119283659582,
+                "tile_m": 6.797981090375028,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 6.580216600305162,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 5.469421765070632,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 3.4194217650706324,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 4,
+              "visible_pixels": [
+                41823,
+                35313,
+                31048,
+                24441
+              ],
+              "full_pixels": [
+                41823,
+                35313,
+                31048,
+                24441
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1767733503074172
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 22.158371486202665,
+                "tile_m": 9.966929797373258,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347009,
+                "central_view_width_m": 9.400147567154418,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": false,
+                "motion_margin_m": 0,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": {
+                "kind": "outdoor",
+                "half_width_m": 5.486411336152919,
+                "wall_height_m": 1.5,
+                "ceiling_height_m": null,
+                "camera_motion_margin_m": 0,
+                "target_extent_m": 0.6642105760994537,
+                "settings": {
+                  "min_half_width_m": 2.5,
+                  "camera_horizontal_margin_m": 2.0,
+                  "min_room_height_m": 3.0,
+                  "camera_ceiling_margin_m": 1.0,
+                  "outdoor_wall_height_m": 1.5,
+                  "wall_thickness_m": 0.1,
+                  "wall_color": [
+                    0.48,
+                    0.48,
+                    0.45
+                  ],
+                  "wall_roughness": 0.85,
+                  "wall_ground_index": 2,
+                  "wall_texture_repeats": 2.0,
+                  "indoor_light_power_w": 400.0,
+                  "indoor_light_color": [
+                    1.0,
+                    0.96,
+                    0.9
+                  ],
+                  "indoor_light_size_m": 2.0,
+                  "indoor_light_ceiling_offset_m": 0.15
+                }
+              },
+              "objects": 1,
+              "visible_pixels": [
+                46208
+              ],
+              "full_pixels": [
+                46208
+              ]
+            }
+          ]
+        },
+        {
+          "cell": "motion-distortion",
+          "status": "complete",
+          "reason": null,
+          "seconds": 14.512386093000032,
+          "workers": 2,
+          "rows": [
+            {
+              "job": "000-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261026,
+                  "quaternion_wxyz": [
+                    -0.7760293844612546,
+                    -0.13643572907061438,
+                    -0.04619340578561463,
+                    0.6140275690452196
+                  ],
+                  "yaw_degrees": 283.2949022059461,
+                  "tilt_degrees": 16.563792267546827,
+                  "tilt_direction_degrees": 327.0572431870418,
+                  "ground_spans": 0.9679662995270478
+                },
+                "target_width_fraction": 0.17148437500000002,
+                "representative_centered_width_fraction": 0.17148437499999997,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.2171649017768229,
+                  0.13562604472074938,
+                  0.17977122842758114,
+                  0.1391245345370208
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 12.38112598035068,
+                "tile_m": 7.453703995826857,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9679662995270478,
+                "achieved_spans": 0.9679662995270478,
+                "central_view_width_m": 7.214934274610493,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 4,
+              "visible_pixels": [
+                36253,
+                33278,
+                27107,
+                20595
+              ],
+              "full_pixels": [
+                36253,
+                33278,
+                27107,
+                20595
+              ]
+            },
+            {
+              "job": "001-core-fast",
+              "status": "accepted",
+              "attempts": 1,
+              "camera": {
+                "pose": {
+                  "seed": 20261027,
+                  "quaternion_wxyz": [
+                    -0.9235344030534669,
+                    0.06541955252730045,
+                    -0.37603274477875226,
+                    0.03746816485981113
+                  ],
+                  "yaw_degrees": 355.3535222128452,
+                  "tilt_degrees": 44.87568625479786,
+                  "tilt_direction_degrees": 12.192381363527174,
+                  "ground_spans": 0.9431337190347009
+                },
+                "target_width_fraction": 0.1765625,
+                "representative_centered_width_fraction": 0.17656250000000026,
+                "distance_bound_reached": false,
+                "deliberate_closeup_distance_scale": null,
+                "actual_projected_width_fractions_before_distortion": [
+                  0.1767733503074172
+                ],
+                "actual_widths_include_clipping": false
+              },
+              "ground": {
+                "extent_m": 40.0,
+                "required_extent_m": 28.700242502504057,
+                "tile_m": 11.70297361494238,
+                "nominal_tile_m": 2.0,
+                "requested_spans": 0.9431337190347009,
+                "achieved_spans": 0.9431337190347008,
+                "central_view_width_m": 11.037469029225583,
+                "near_horizon_fallback": false,
+                "extent_clamped": false,
+                "coverage_guaranteed": true,
+                "distortion_bounds_used": true,
+                "motion_margin_m": 0.08333333333333333,
+                "tile_clamped": false,
+                "material_mode": "view-relative"
+              },
+              "environment": null,
+              "objects": 1,
+              "visible_pixels": [
+                46192
+              ],
+              "full_pixels": [
+                46192
+              ]
+            }
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "cell": "indoor-view",
+          "job": "000-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 8.792796630859375
+        },
+        {
+          "cell": "indoor-view",
+          "job": "001-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 23.65613566080729
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "000-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 0.5802081298828125
+        },
+        {
+          "cell": "outdoor-view",
+          "job": "001-core-fast",
+          "all_masks_equal": true,
+          "rgb_mean_abs_difference": 3.0020298258463542
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "000-core-fast",
+          "all_masks_equal": false,
+          "rgb_mean_abs_difference": 16.28187805175781
+        },
+        {
+          "cell": "motion-distortion",
+          "job": "001-core-fast",
+          "all_masks_equal": false,
+          "rgb_mean_abs_difference": 8.356766153971353
+        }
+      ]
+    }
+  },
+  "errors": [],
+  "notes": [
+    "Masks represent sharp frame-zero geometric support, even when RGB includes blur.",
+    "No real-image or trained-model performance evaluation was performed."
+  ],
+  "speed": {
+    "status": "complete",
+    "records": [
+      {
+        "index": 0,
+        "mode": "fixed-physical",
+        "warmup": {
+          "phase": "run-01",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0
+          ],
+          "command_seconds": 6.243917382999939,
+          "peak_rss_bytes": 2570625024,
+          "minimum_available_bytes": 52925796352,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 3022.0,
+          "selected_jobs": [
+            "000-core-fast",
+            "001-core-fast"
+          ],
+          "workers": 2,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "outcome": {
+          "phase": "run-03",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "command_seconds": 7.3451054500000055,
+          "peak_rss_bytes": 7745155072,
+          "minimum_available_bytes": 49051410432,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 8748.0,
+          "selected_jobs": [
+            "002-core-fast",
+            "003-core-fast",
+            "004-core-fast",
+            "005-core-fast",
+            "006-core-fast",
+            "007-core-fast"
+          ],
+          "workers": 6,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "accepted": 6,
+        "images_per_second": 0.8168705052423714
+      },
+      {
+        "index": 1,
+        "mode": "view-relative",
+        "warmup": {
+          "phase": "run-01",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0
+          ],
+          "command_seconds": 5.9674745809999195,
+          "peak_rss_bytes": 2578522112,
+          "minimum_available_bytes": 52926513152,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 3022.0,
+          "selected_jobs": [
+            "000-core-fast",
+            "001-core-fast"
+          ],
+          "workers": 2,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "outcome": {
+          "phase": "run-03",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "command_seconds": 7.305686658000013,
+          "peak_rss_bytes": 7904354304,
+          "minimum_available_bytes": 48935677952,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 9036.0,
+          "selected_jobs": [
+            "002-core-fast",
+            "003-core-fast",
+            "004-core-fast",
+            "005-core-fast",
+            "006-core-fast",
+            "007-core-fast"
+          ],
+          "workers": 6,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "accepted": 6,
+        "images_per_second": 0.8212780373532397
+      },
+      {
+        "index": 2,
+        "mode": "view-relative",
+        "warmup": {
+          "phase": "run-01",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0
+          ],
+          "command_seconds": 6.265637136000009,
+          "peak_rss_bytes": 2566201344,
+          "minimum_available_bytes": 52930936832,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 3022.0,
+          "selected_jobs": [
+            "000-core-fast",
+            "001-core-fast"
+          ],
+          "workers": 2,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "outcome": {
+          "phase": "run-03",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "command_seconds": 7.602808869,
+          "peak_rss_bytes": 7706054656,
+          "minimum_available_bytes": 49176293376,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 8744.0,
+          "selected_jobs": [
+            "002-core-fast",
+            "003-core-fast",
+            "004-core-fast",
+            "005-core-fast",
+            "006-core-fast",
+            "007-core-fast"
+          ],
+          "workers": 6,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "accepted": 6,
+        "images_per_second": 0.7891820119883116
+      },
+      {
+        "index": 3,
+        "mode": "fixed-physical",
+        "warmup": {
+          "phase": "run-01",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0
+          ],
+          "command_seconds": 6.241900122999937,
+          "peak_rss_bytes": 2566598656,
+          "minimum_available_bytes": 52937371648,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 3022.0,
+          "selected_jobs": [
+            "000-core-fast",
+            "001-core-fast"
+          ],
+          "workers": 2,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "outcome": {
+          "phase": "run-03",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "command_seconds": 7.610194415000024,
+          "peak_rss_bytes": 7968481280,
+          "minimum_available_bytes": 48877813760,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 8790.0,
+          "selected_jobs": [
+            "002-core-fast",
+            "003-core-fast",
+            "004-core-fast",
+            "005-core-fast",
+            "006-core-fast",
+            "007-core-fast"
+          ],
+          "workers": 6,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "accepted": 6,
+        "images_per_second": 0.7884161261601595
+      },
+      {
+        "index": 4,
+        "mode": "fixed-physical",
+        "warmup": {
+          "phase": "run-01",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0
+          ],
+          "command_seconds": 6.240995975000033,
+          "peak_rss_bytes": 2574184448,
+          "minimum_available_bytes": 52924686336,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 3022.0,
+          "selected_jobs": [
+            "000-core-fast",
+            "001-core-fast"
+          ],
+          "workers": 2,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "outcome": {
+          "phase": "run-03",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "command_seconds": 7.580625333000057,
+          "peak_rss_bytes": 7498727424,
+          "minimum_available_bytes": 49452724224,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 8728.0,
+          "selected_jobs": [
+            "002-core-fast",
+            "003-core-fast",
+            "004-core-fast",
+            "005-core-fast",
+            "006-core-fast",
+            "007-core-fast"
+          ],
+          "workers": 6,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "accepted": 6,
+        "images_per_second": 0.7914914319641596
+      },
+      {
+        "index": 5,
+        "mode": "view-relative",
+        "warmup": {
+          "phase": "run-01",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0
+          ],
+          "command_seconds": 6.239756044000046,
+          "peak_rss_bytes": 2564694016,
+          "minimum_available_bytes": 52933640192,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 3022.0,
+          "selected_jobs": [
+            "000-core-fast",
+            "001-core-fast"
+          ],
+          "workers": 2,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "outcome": {
+          "phase": "run-03",
+          "status": "complete",
+          "reason": null,
+          "returncodes": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "command_seconds": 7.562425100000041,
+          "peak_rss_bytes": 7675555840,
+          "minimum_available_bytes": 49283616768,
+          "swap_out_delta_bytes": 0,
+          "guards": {
+            "min_available_gib": 5.295809555053712,
+            "rss_limit_gib": 40.969641113281256,
+            "max_swap_out_mib": 16.0,
+            "probe_timeout_seconds": 300.0,
+            "min_gpu_free_mib": 1842.72
+          },
+          "sampled_peak_gpu_memory_mib": 8728.0,
+          "selected_jobs": [
+            "002-core-fast",
+            "003-core-fast",
+            "004-core-fast",
+            "005-core-fast",
+            "006-core-fast",
+            "007-core-fast"
+          ],
+          "workers": 6,
+          "execution_identity": "2ee7d307b619576cb6e3337146a2112b1d79b92f94b77c8ca54b0c8650628fb4",
+          "execution_profile": "gpu-guarded"
+        },
+        "accepted": 6,
+        "images_per_second": 0.7933962876538067
+      }
+    ],
+    "elapsed_seconds": 152.415582083
+  },
+  "annotation_exports": [
+    {
+      "phase": "development",
+      "cell": "indoor-diagnostics",
+      "status": "complete",
+      "images": 3,
+      "instances": 3,
+      "export_seconds": 0.029500095000003057
+    },
+    {
+      "phase": "development",
+      "cell": "indoor-view",
+      "status": "complete",
+      "images": 6,
+      "instances": 17,
+      "export_seconds": 0.06395115000032092
+    },
+    {
+      "phase": "development",
+      "cell": "motion-distortion",
+      "status": "complete",
+      "images": 3,
+      "instances": 7,
+      "export_seconds": 0.02680671899997833
+    },
+    {
+      "phase": "development",
+      "cell": "open-fixed",
+      "status": "complete",
+      "images": 6,
+      "instances": 17,
+      "export_seconds": 0.06426872900010494
+    },
+    {
+      "phase": "development",
+      "cell": "open-view",
+      "status": "complete",
+      "images": 6,
+      "instances": 17,
+      "export_seconds": 0.06290725999951974
+    },
+    {
+      "phase": "development",
+      "cell": "outdoor-view",
+      "status": "complete",
+      "images": 6,
+      "instances": 17,
+      "export_seconds": 0.06635754899980384
+    },
+    {
+      "phase": "holdout",
+      "cell": "indoor-view",
+      "status": "complete",
+      "images": 3,
+      "instances": 9,
+      "export_seconds": 0.03588091399979021
+    },
+    {
+      "phase": "holdout",
+      "cell": "motion-distortion",
+      "status": "complete",
+      "images": 3,
+      "instances": 9,
+      "export_seconds": 0.034664497000449046
+    },
+    {
+      "phase": "holdout",
+      "cell": "open-view",
+      "status": "complete",
+      "images": 3,
+      "instances": 9,
+      "export_seconds": 0.03472363899982156
+    },
+    {
+      "phase": "holdout",
+      "cell": "outdoor-view",
+      "status": "complete",
+      "images": 3,
+      "instances": 9,
+      "export_seconds": 0.03448163100074453
+    },
+    {
+      "phase": "quality",
+      "cell": "indoor-view",
+      "status": "complete",
+      "images": 2,
+      "instances": 5,
+      "export_seconds": 0.08456880900030228
+    },
+    {
+      "phase": "quality",
+      "cell": "motion-distortion",
+      "status": "complete",
+      "images": 2,
+      "instances": 5,
+      "export_seconds": 0.07657043399922259
+    },
+    {
+      "phase": "quality",
+      "cell": "open-view",
+      "status": "complete",
+      "images": 2,
+      "instances": 5,
+      "export_seconds": 0.07925456400062103
+    },
+    {
+      "phase": "quality",
+      "cell": "outdoor-view",
+      "status": "complete",
+      "images": 2,
+      "instances": 5,
+      "export_seconds": 0.07618631500008632
+    }
+  ],
+  "annotation_roundtrip": {
+    "counts": {
+      "annotations": 268,
+      "pixels_exact": 268,
+      "boxes_exact": 268
+    },
+    "errors": []
+  },
+  "high_quality": {
+    "sample_comparisons": [
+      {
+        "cell": "open-view",
+        "job": "000-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.5082912190755209,
+        "samples": 128
+      },
+      {
+        "cell": "open-view",
+        "job": "001-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.34195068359375,
+        "samples": 128
+      },
+      {
+        "cell": "indoor-view",
+        "job": "000-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.5562904866536459,
+        "samples": 128
+      },
+      {
+        "cell": "indoor-view",
+        "job": "001-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.38031636555989584,
+        "samples": 128
+      },
+      {
+        "cell": "outdoor-view",
+        "job": "000-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.5662213134765625,
+        "samples": 128
+      },
+      {
+        "cell": "outdoor-view",
+        "job": "001-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.33902364095052084,
+        "samples": 128
+      },
+      {
+        "cell": "motion-distortion",
+        "job": "000-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.5390041097005208,
+        "samples": 128
+      },
+      {
+        "cell": "motion-distortion",
+        "job": "001-core-fast",
+        "mask_equal": true,
+        "rgb_mean_abs_8bit": 0.3628631591796875,
+        "samples": 128
+      }
+    ],
+    "annotation_roundtrip": {
+      "counts": {
+        "annotations": 40,
+        "pixels_exact": 40,
+        "boxes_exact": 40
+      },
+      "errors": []
+    },
+    "phase_status": "complete"
+  },
+  "2d_timing": {
+    "status": "complete",
+    "samples_per_cell": 4,
+    "warmups_per_cell": 2,
+    "repetitions": 3,
+    "all_geometry_annotations_and_mask_signatures_equal": true,
+    "medians_images_per_second": {
+      "legacy": 2.1085579139171116,
+      "linear-srgb": 2.024365342233735
+    },
+    "median_paired_percent": -3.993597802891402,
+    "paired_results": [
+      {
+        "repeat": 0,
+        "legacy": 2.110332909495673,
+        "linear": 2.0260547007883596,
+        "linear_vs_legacy_percent": -3.993597802891402
+      },
+      {
+        "repeat": 1,
+        "legacy": 2.099068107483655,
+        "linear": 2.024365342233735,
+        "linear_vs_legacy_percent": -3.5588538067720332
+      },
+      {
+        "repeat": 2,
+        "legacy": 2.1085579139171116,
+        "linear": 1.9725705630469321,
+        "linear_vs_legacy_percent": -6.449305943774286
+      }
+    ],
+    "limitations": [
+      "Only four distinct measured scene slots repeat across the three repetitions.",
+      "Generation time includes pool writes; preparation is reported separately.",
+      "Only this machine and configured 640px scenario are measured; no hardware defaults inferred."
+    ]
+  }
+}

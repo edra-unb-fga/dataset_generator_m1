@@ -68,7 +68,7 @@ def ground_geometry(position, rotation, K, size, settings, nominal_tile, spans,
             "tile_clamped": tile != desired}
 
 
-def environment_bounds(position, settings, camera_speed_mps, shutter_seconds):
+def environment_bounds(position, settings, camera_speed_mps, shutter_seconds, target_corners=()):
     """Enclose the animated X trajectory and leave clearance to interior surfaces.
 
     The symmetric full-shutter travel exceeds either centered or one-sided shutter
@@ -79,6 +79,10 @@ def environment_bounds(position, settings, camera_speed_mps, shutter_seconds):
     half = max(settings['min_half_width_m'],
                abs(float(position[0])) + motion + settings['camera_horizontal_margin_m'] + half_thickness,
                abs(float(position[1])) + settings['camera_horizontal_margin_m'] + half_thickness)
+    target_extent = max((max(abs(float(x)), abs(float(y))) for x, y in target_corners), default=0.)
+    if target_extent:
+        half = max(half, target_extent + settings['camera_horizontal_margin_m'] + half_thickness)
     height = max(settings['min_room_height_m'],
                  float(position[2]) + settings['camera_ceiling_margin_m'] + half_thickness)
-    return {'half_width_m': half, 'ceiling_height_m': height, 'camera_motion_margin_m': motion}
+    return {'half_width_m': half, 'ceiling_height_m': height, 'camera_motion_margin_m': motion,
+            'target_extent_m': target_extent}

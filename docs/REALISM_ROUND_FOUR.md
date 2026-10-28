@@ -85,3 +85,48 @@ A single guarded retry at 22:56 UTC on 2026-10-27 also stopped during Blender st
 process tree peaked at 974,893,056 bytes RSS, minimum available system memory was 9,781,575,680 bytes,
 and system-wide swap-out increased by 49,864,704 bytes. No image completed; subsequent rendering and
 timing were not attempted. Swap is host-wide, so this signal does not attribute those writes to Blender.
+
+## Colab L4 continuation
+
+The later authorized L4 continuation first screened the current environment implementation. Its
+indoor and outdoor walls cut through some planned target footprints: the development 002 scene was
+rejected after eight visibility retries in both conditions, and one initially held-out scene had a
+fully hidden target indoors. The follow-up moved room sizing after target placement and encloses the
+rotated target footprints with the saved horizontal clearance. Fresh preparation was required because
+the renderer and camera helper changed.
+
+The adjusted run completed 14 camera cells: 30 development, 12 fresh held-out and eight 1280²
+outputs, all accepted. All 14 independently packaged cell archives passed verified import. The
+completed cells produced 134 visible and 134 full COCO annotations; all 268 segmentation masks and
+boxes round-tripped exactly to their stored geometry masks, and both evaluator manifests per cell
+prepared successfully. Fixed/open/indoor/outdoor ordinary controls retained identical masks within
+the paired sets; the lens-distorted/motion conditions intentionally do not require equality with
+undistorted masks. On these samples, ground diagnostics reported no coverage fallback, extent/tile
+clamping or distance-bound failure. This is not a statistical validation of the pose distribution.
+
+A separate 1280², 128-sample pass completed two paired scenes in each of the four open, indoor,
+outdoor and motion/distortion conditions. All eight geometric masks matched their 32-sample
+counterparts. Forty additional visible/full COCO annotations round-tripped exactly, for 308 exact
+mask and box round trips across the continuation. Mean absolute RGB differences between 32 and 128
+samples ranged from 0.339 to 0.566 on an 8-bit channel scale; this is not a perceptual or realism
+metric. Four additional cell archives were verified. The 128-sample images and paired sheet are in the
+report.
+
+The same L4 run repeated fixed versus view-relative ground scale three times, alternating order,
+with two separate warmups and six measured accepted outputs per cell. Median render-command
+throughput was 0.791 images/s for fixed and 0.793 images/s for view-relative, including worker
+startup and annotation. The small difference is not evidence of a meaningful speed advantage or a
+universal default. A separate 2D 640² CPU study measured median paired linear-compositing overhead
+of about 4%, with matching annotations; see [2D timing](experiments/linear-colab-timing-v1/README.md).
+The two pipelines and workloads cannot be compared as an end-to-end speed ratio from these results.
+
+The [offline camera report](experiments/l4-camera-completion-v1/index.html) embeds the selected
+RGB/mask sheets and records the visual assessment. The walls no longer intersect the tested targets,
+but the simple walls and lighting do not establish convincing room context, and the clean targets
+still look synthetic. An independent GPT-6.1 Terra visual review concurred that the simple walls look artificial and
+that open-view is a candidate for further testing rather than promotion. Real references, calibrated
+materials and camera measurements, trained-model evaluation, broader viewpoint samples and general
+backend integration remain open.
+The original local swap-out stops and failed Colab setup attempts are retained as historical evidence,
+not overwritten or treated as successful benchmarks. Both L4 controllers retrieved verified results
+and stopped; no runtime remained active after the adjusted run.

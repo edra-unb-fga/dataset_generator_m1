@@ -82,6 +82,6 @@ def test_bundle_preserves_redistributable_provenance(tmp_path,monkeypatch):
     result=build_bundle(path,tmp_path/'bundle.tar.gz')
     import tarfile
     with tarfile.open(result['archive']) as archive:
-        assert {'source/scripts/handoff_study_cell.py', 'source/scripts/study_camera_environments.py'} <= set(archive.getnames())
+        assert {'source/scripts/handoff_study_cell.py', 'source/scripts/study_camera_environments.py', 'source/scripts/blenderproc_adaptive_guards.py', 'source/experiments/blenderproc/execution/adaptive-guards.json'} <= set(archive.getnames())
         material=json.load(archive.extractfile('inputs/ground-0.json'))
     assert material['author']=='Example Author' and material['allow_redistribution'] is True

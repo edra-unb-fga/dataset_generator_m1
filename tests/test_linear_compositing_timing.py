@@ -29,14 +29,21 @@ def test_matrix_profiles_change_only_compositing_and_keep_configured_policy():
 
 
 @pytest.mark.parametrize('guards', [
-    {'min_available_gib': 1, 'rss_limit_gib': 10, 'max_swap_out_mib': 16},
-    {'min_available_gib': 2, 'rss_limit_gib': 11, 'max_swap_out_mib': 16},
+    {'min_available_gib': 0, 'rss_limit_gib': 10, 'max_swap_out_mib': 16},
+    {'min_available_gib': 2, 'rss_limit_gib': -1, 'max_swap_out_mib': 16},
     {'min_available_gib': float('nan'), 'rss_limit_gib': 10, 'max_swap_out_mib': 16},
 ])
-def test_guards_cannot_be_weakened(tmp_path, guards):
+def test_invalid_guards_are_rejected(tmp_path, guards):
     matrix = json.loads(Path('experiments/planar/linear-compositing-timing.json').read_text())
     matrix['guards'] = guards
     path = tmp_path / 'matrix.json'
     path.write_text(json.dumps(matrix))
     with pytest.raises(ValueError):
         timing.load_matrix(path)
+
+
+def test_matrix_accepts_explicit_hardware_appropriate_guard(tmp_path):
+    matrix = json.loads(Path('experiments/planar/linear-compositing-timing.json').read_text())
+    matrix['guards'] = {'min_available_gib': 5, 'rss_limit_gib': 30, 'max_swap_out_mib': 16}
+    path = tmp_path / 'matrix.json'; path.write_text(json.dumps(matrix))
+    assert timing.load_matrix(path)['guards'] == matrix['guards']

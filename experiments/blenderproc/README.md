@@ -341,7 +341,8 @@ treatment lamps still apply. Omit `environment_mix` for the original open scene.
 Environment geometry settings are saved under `environment_geometry_settings`: minimum room
 half-width and height, margins around the camera, outdoor wall height, wall thickness, color
 and roughness, and indoor area-light power, color, size and ceiling offset. The room expands
-to contain the camera. `wall_ground_index` chooses the color map of an existing licensed
+to contain the camera and the complete rotated footprints of placed targets. The saved horizontal
+camera margin also supplies target-to-wall clearance; result diagnostics record the target extent. `wall_ground_index` chooses the color map of an existing licensed
 `grounds` entry; `wall_texture_repeats` sets UV repetitions per face. Set the index to null
 for a plain-colored wall. The examples choose the Concrete034 ground entry explicitly; this
 is a prototype requiring visual and annotation review, not a calibrated material library.
