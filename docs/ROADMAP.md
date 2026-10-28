@@ -113,7 +113,9 @@ multi-hardware performance requirement.
 
 The [camera and environment round](REALISM_ROUND_FOUR.md) introduces opt-in drone tilt/ground
 controls, a prototype for explicitly configured rooms and outdoor walls, experimental linear-light
-2D compositing and verified cell handoff. The [round evidence](experiments/camera-environments-v1/README.md)
-is partial: repeated host swap-out guard stops prevented final 3D visual qualification and new speed
-studies. Keep environment geometry experimental, production defaults unchanged, and complete those
-checks before promoting it. Real-image, model-transfer and multi-hardware requirements remain open.
+2D compositing and verified cell handoff. The [initial round evidence](experiments/camera-environments-v1/README.md) is partial because host
+swap-out guards stopped the local runs. The later [L4 completion report](experiments/l4-camera-completion-v1/README.md)
+records the completed camera cells, annotation checks, visual review and limited speed comparisons;
+see [round four](REALISM_ROUND_FOUR.md) for the full scope and limitations. The tested walls and
+lighting remain visibly artificial, so environment geometry stays experimental and production defaults
+remain unchanged. Real-image, model-transfer and multi-hardware requirements remain open.

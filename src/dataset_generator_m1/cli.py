@@ -10,7 +10,6 @@ from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.prompt import Confirm
-from rich.table import Table
 
 from .config import load_profile
 from .catalog import list_profiles, promote_inline_stack, resolved_contract, show_profile
@@ -443,8 +442,15 @@ def main(argv: list[str] | None = None) -> int:
         if args.output_format == "json":
             sys.stdout.write(json.dumps(result, separators=(",", ":")) + "\n")
         elif result.get("status") not in {"valid", "complete", "complete_with_warnings"}:
-            message = result.get("fatal_error") or f"Command ended with status {result.get('status', 'unknown')}"
-            Console(stderr=True).print(Panel.fit(str(message), title="[red]generation failed[/red]", border_style="red"))
+            if args.command == "run" and args.run_command == "inspect":
+                findings = result.get("findings", [])
+                message = "\n".join(f"{item['code']}: {item['message']}" for item in findings)
+                message = message or f"Inspection ended with status {result.get('status', 'unknown')}"
+                title = "[red]inspection failed[/red]"
+            else:
+                message = result.get("fatal_error") or f"Command ended with status {result.get('status', 'unknown')}"
+                title = "[red]generation failed[/red]"
+            Console(stderr=True).print(Panel.fit(str(message), title=title, border_style="red"))
         elif args.display != "quiet":
             if args.command == "preflight":
                 runtime = result["runtime"]
@@ -462,12 +468,13 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 )
             elif args.command == "catalog" and args.catalog_command == "list":
-                table = Table(title="Configuration catalog", expand=True)
-                for heading in ("ID", "Subject", "Status", "Risk"):
-                    table.add_column(heading)
+                console = Console()
+                console.print("Configuration catalog")
                 for item in result["profiles"]:
-                    table.add_row(item["id"], item["subject"], item["status"], item["performance_risk"])
-                Console().print(table)
+                    # Keep IDs whole and copyable even when the terminal is narrow.
+                    console.print(item["id"], soft_wrap=True, markup=False, highlight=False)
+                    console.print(f"  {item['subject']} | {item['status']} | risk: {item['performance_risk']}",
+                                  markup=False, highlight=False)
             elif args.command == "catalog" and args.catalog_command == "show":
                 console = Console()
                 metadata = result["metadata"]
@@ -480,6 +487,16 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 if result["documentation"]:
                     console.print(Markdown(result["documentation"]))
+            elif args.command == "run" and args.run_command == "inspect":
+                Console().print(Panel.fit(
+                    f"Status: {result['status']}\nSamples: {result['samples']}\n"
+                    f"Mask archives: {result['mask_archives']}\nQA links: {result['qa_links']}\n"
+                    f"Pool: {result['pool']}", title="pool inspection"))
+            elif args.command == "run" and args.run_command == "status":
+                Console().print(Panel.fit(
+                    f"State: {result['effective_state']}\n"
+                    f"Actual: {result['actual_state']}\n"
+                    f"Requested: {result['desired_state']}", title="run status"))
             elif args.command == "configure":
                 runtime = result["runtime"]
                 Console().print(

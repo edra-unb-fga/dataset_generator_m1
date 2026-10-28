@@ -20,9 +20,24 @@ material order followed by additional materials, and uses a planar UV recipe, no
 pool/evaluation workflows, and either pristine or existing surface-camera appearance plus opt-in
 premultiplied filtering. It is not another 2D renderer.
 
-Create a valid reference pad pool using a generated composer. Copy `pilot.example.json` (1280²), `pilot-fast.example.json` (640²), or the explicit raw-GPU
-`pilot-reference.example.json` (128/512 samples) to a local
-configuration, update paths, and prepare a fresh output. Relative paths resolve against the config.
+Create a valid reference pad pool using a generated composer. For a small CPU preparation smoke test,
+the following commands use the source example's expected asset and pool paths. The `assets` command
+above must have completed, and can require network access on first use. The pool sample is only an
+engineering smoke test, not a representative study. These commands prepare but do not render a study:
+
+```sh
+uv run python -m dataset_generator_m1 configure --family landing-pad --output configs/local/blender-reference.yaml
+uv run python -m dataset_generator_m1 generate --config configs/local/blender-reference.yaml --num-images 1 --workers 1 --qa-samples 1 --output-dir outputs/reference-pad-pool
+uv run python scripts/prepare_blenderproc_run.py --config experiments/blenderproc/pilot-fast.example.json --output-dir outputs/experiments/cpu-prepared --screen-profile local-cpu
+```
+
+The output directory must be new. `local-cpu` is an explicit single-worker experimental screen,
+not a claim of the best settings on your machine. Preparation records the measured host guards in
+`cpu-prepared/execution-policy.json.basis.json` and writes the study in `cpu-prepared/study/`.
+BlenderProc installation is only needed when you render. For a different reference pool, assets or
+study settings, copy `pilot.example.json` (1280²), `pilot-fast.example.json` (640²), or the explicit
+raw-GPU `pilot-reference.example.json` (128/512 samples) to a local configuration and update all
+paths: relative paths resolve against the configuration file, so copying a config changes their base.
 
 ```sh
 uv run python scripts/blenderproc_pilot.py prepare --config configs/local/pilot.json --output-dir outputs/experiments/pilot
@@ -63,8 +78,8 @@ setup keeps its status and diagnostics in the output directory; retry in a new d
 
 `--gpu-guard auto` (the default) measures NVIDIA VRAM when an NVIDIA tool is present and a GPU or
 automatic profile may use it; an explicitly selected GPU profile fails if NVIDIA telemetry is missing.
-`required` insists on NVIDIA VRAM telemetry, and `off` explicitly disables any inherited VRAM guard and records the decision in the guard basis. The
-adaptive GPU utility currently supports exactly one NVIDIA GPU; on multi-GPU hosts it fails rather
+`required` insists on NVIDIA VRAM telemetry, and `off` explicitly disables any inherited VRAM guard
+and records the decision in the guard basis. The adaptive GPU utility currently supports exactly one NVIDIA GPU; on multi-GPU hosts it fails rather
 than selecting a card implicitly. The lower-level monitor currently guards against the lowest free
 VRAM among NVIDIA devices, which is conservative but does not isolate the selected GPU. On systems
 without NVIDIA telemetry, automatic selection may still choose a non-NVIDIA GPU, so setup reports
