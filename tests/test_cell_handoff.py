@@ -93,16 +93,20 @@ def test_rejects_corrupted_and_unexpected_members(study, tmp_path):
         assert not (tmp_path/'dest'/'core').exists()
 
 
-def test_colab_fake_cli_fail_retry_and_cache(study, tmp_path):
+def test_colab_fake_cli_fail_retry_and_cache(study, tmp_path, monkeypatch):
+    import shutil
+    from dataset_generator_m1 import cell_handoff
     archive = tmp_path/'remote.tar.gz'; package(study, 'core', archive)
     cli = tmp_path/'fake-cli'
-    cli.write_text('#!/usr/bin/env python3\nimport shutil, sys\nassert sys.argv[1:4] == ["download", "--session", "my-session"]\nshutil.copyfile(sys.argv[4], sys.argv[5])\n')
-    cli.chmod(0o755)
+    def fake_download(command, check):
+        assert command[1:4] == ["download", "--session", "my-session"]
+        shutil.copyfile(command[4], command[5])
+    monkeypatch.setattr(cell_handoff.subprocess, 'run', fake_download)
     with pytest.raises(Exception):
         import_colab(str(tmp_path/'missing'), tmp_path/'dest', executable=cli, session='my-session', cache=tmp_path/'cache')
     assert not list((tmp_path/'cache').iterdir())
     assert import_colab(str(archive), tmp_path/'dest', executable=cli, session='my-session', cache=tmp_path/'cache')['status'] == 'imported'
-    archive.unlink(); cli.unlink()
+    archive.unlink()
     assert import_colab(str(archive), tmp_path/'dest', executable=cli, session='my-session', cache=tmp_path/'cache')['status'] == 'already-imported'
 
 

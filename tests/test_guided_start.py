@@ -167,7 +167,7 @@ def test_guided_journey_saves_prepares_generates_and_inspects(tmp_path: Path, mo
     config = examples / source.name
     config.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
     output = tmp_path / "guided-output"
-    answers = iter(["continue", "1", "42", "1", "192", "128", str(output), "prepare", "exit"])
+    answers = iter(["continue", "1", "42", "1", "192", "128", str(output), "prepare", "qa", "export-detection", "exit"])
     confirmations = iter([True, False, True, True])
 
     class _TTY:
@@ -176,6 +176,7 @@ def test_guided_journey_saves_prepares_generates_and_inspects(tmp_path: Path, mo
             return True
 
     monkeypatch.setattr("dataset_generator_m1.guided_start.sys.stdin", _TTY())
+    monkeypatch.setattr("dataset_generator_m1.guided_start.webbrowser.open", lambda url: False)
     console = Console(file=StringIO(), force_terminal=True, width=100)
     result = run_guided_start(
         config,
@@ -190,3 +191,22 @@ def test_guided_journey_saves_prepares_generates_and_inspects(tmp_path: Path, mo
     assert result["inspection"]["status"] == "valid"
     assert Path(result["config"]).parent == tmp_path / "configs"
     assert (output / "summary.json").is_file()
+    assert "QA gallery:" in console.file.getvalue()
+    assert "Empty splits:" in console.file.getvalue()
+    assert (tmp_path / "guided-output-yolo-detection" / "export.json").is_file()
+
+
+def test_cli_start_returns_normally_after_guided_exit(monkeypatch, capsys):
+    from dataset_generator_m1 import cli
+
+    monkeypatch.setattr(cli, "run_guided_start", lambda config: {"status": "complete"})
+    assert cli.main(["start"]) == 0
+    assert "AttributeError" not in capsys.readouterr().err
+
+
+def test_cli_start_reports_user_cancellation(monkeypatch, capsys):
+    from dataset_generator_m1 import cli
+
+    monkeypatch.setattr(cli, "run_guided_start", lambda config: {"status": "cancelled"})
+    assert cli.main(["start"]) == 0
+    assert "cancelled" in capsys.readouterr().out

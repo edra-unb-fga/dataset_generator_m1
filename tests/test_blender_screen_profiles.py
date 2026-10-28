@@ -25,3 +25,21 @@ def test_profiles_generate_complete_valid_configs(tmp_path,profile,size,expected
 
 def test_rejects_unknown_profile(tmp_path):
  with pytest.raises(ValueError):APPLY(BASE,CATALOG,'unknown',tmp_path/'x.json')
+
+
+def test_selector_and_prepare_share_profile_rule(tmp_path, monkeypatch):
+ from dataset_generator_m1.blender_screen_profiles import select_screen_profile
+ import importlib.util
+ spec=importlib.util.spec_from_file_location('prepare_run_parity', 'scripts/prepare_blenderproc_run.py')
+ module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+ observed={}
+ def fake_prepare(config,output):
+  observed.update(json.loads(Path(config).read_text()));return {'identity':'test'}
+ monkeypatch.setattr(module,'prepare',fake_prepare)
+ profile='colab-l4-camera-study'
+ selected=APPLY(BASE,CATALOG,profile,tmp_path/'selected.json',(640,640))
+ rule,status=select_screen_profile(CATALOG,profile,(640,640))
+ assert selected['rule']==rule and selected['status']==status
+ result=module.prepare_run(tmp_path/'selected.json',tmp_path/'prepared',screen_profile=profile,gpu_guard='off')
+ assert (observed['execution_profile'],observed['workers'],observed['threads'])==(rule['execution_profile'],rule['workers'],rule['threads'])
+ assert result['screen_status']==status

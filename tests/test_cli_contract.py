@@ -145,3 +145,31 @@ def test_asset_disjoint_analyze_only_does_not_require_output_directory() -> None
 
     assert args.analyze_only is True
     assert args.output_dir is None
+
+
+def test_human_catalog_keeps_profile_ids_copyable_on_narrow_terminal(monkeypatch, capsys):
+    monkeypatch.setenv("COLUMNS", "35")
+    assert main(["catalog", "list", "--display", "plain"]) == 0
+    output = capsys.readouterr().out
+    assert "builtin:appearance/realistic-heavy" in output
+    assert "builtin:appearance/camera-balanced" in output
+
+
+def test_human_run_status_explains_pending_pause(tmp_path, capsys):
+    from dataset_generator_m1.run_control import RunController, request_run_action
+
+    RunController.open(tmp_path, resume=False)
+    request_run_action(tmp_path, "pause")
+    assert main(["run", "status", str(tmp_path), "--display", "plain"]) == 0
+    output = capsys.readouterr().out
+    assert "draining" in output
+    assert "running" in output
+    assert "paused" in output
+
+
+def test_human_inspection_reports_actual_findings(tmp_path, capsys):
+    assert main(["run", "inspect", str(tmp_path), "--display", "plain"]) == 1
+    output = capsys.readouterr().err
+    assert "inspection failed" in output
+    assert "MISSING_ARTIFACT" in output
+    assert "Required artifact is missing" in output

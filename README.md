@@ -1,18 +1,27 @@
 # Dataset Generator M1
 
-Maintained tasks include `landing-pad`: complete rectangular panels using the shared planar renderer.
-Try `configure --family landing-pad --output configs/local/my-pad.yaml --output-format json`, then
-resolve/preview/generate/inspect/export as below. The shipped blue/yellow pads are rasterized from the supplied takeoff and landing SVG artwork.
-Use a foreground-root override to supply other production artwork.
-See [the delivery contract](docs/PRACTICAL_WORKFLOW.md) for count-policy and split semantics.
+Auditable synthetic YOLO generation for the `landing`, `landing-pad`, and `manometro` families.
+`landing-pad` generates complete rectangular panels using the shared planar renderer; its shipped
+blue/yellow pads come from the supplied takeoff and landing SVG artwork. Use a foreground-root override
+to supply other artwork. See [the delivery contract](docs/PRACTICAL_WORKFLOW.md) for count-policy and
+split semantics.
 
-Auditable synthetic YOLO generation for the `landing` and `manometro` families. The generator uses deterministic scene plans, one shared foreground/background homography, alpha-evidence-derived annotations, versioned background-mixing recipes, resumable pools, Rich live analytics, and deterministic process workers.
+The generator uses deterministic scene plans, one shared foreground/background homography,
+alpha-evidence-derived annotations, versioned background-mixing recipes, resumable pools, Rich live
+analytics, and deterministic process workers.
+
+The [first-use review](docs/experiments/first-use-review-v1.md) records tested CLI journeys and remaining
+usability gaps. The optional [BlenderProc harness](experiments/blenderproc/README.md) has separate CPU
+and GPU preparation instructions.
 
 Opt-in [planar surface examples](docs/SURFACE_RENDERING.md) add shared illumination, local wear and procedural occlusion.
 [Offline evaluation and reference checks](docs/EVALUATION.md) consume supplied predictions/camera inputs.
 The [round-one report](docs/experiments/planar-surfaces-v1/README.md) separates synthetic correctness, visual limits and generation cost.
 
 ## Install
+
+Run these commands from the repository root. The one-line commands below work in Bash and PowerShell;
+commands in other guides marked `powershell` may use PowerShell-specific continuation syntax.
 
 ```powershell
 uv sync --extra dev
@@ -49,7 +58,7 @@ uv run python -m dataset_generator_m1 resolve --config examples/configs/landing_
 Create a versionable composer with the guided Rich cockpit:
 
 ```powershell
-uv run python -m dataset_generator_m1 configure --family landing --output examples/configs/my-landing.yaml
+uv run python -m dataset_generator_m1 configure --family landing --output configs/local/my-landing.yaml
 ```
 
 The cockpit starts from `realistic-heavy`, shows warnings and an ETA range, and supports reviewed profile
@@ -97,6 +106,12 @@ uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --strat
 uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --strategy asset-disjoint --splits train=0.8,val=0.1,test=0.1 --output-dir outputs/landing-yolo
 uv run python -m dataset_generator_m1 export --pool outputs/landing-expA --format yolo --task segmentation --mask-semantics family --output-dir outputs/landing-yolo-segmentation
 ```
+
+For a one-image smoke test, use `--strategy random --splits train=1` on the export command: a
+train/validation/test split cannot give each subset a sample from a single image. Each YOLO export
+contains `data.yaml`, image and label directories, and `export.json`. Generated pools and exports go to
+the output directories you provide; generation may also record an ignored machine-local performance
+observation under `.cache/` for future estimates.
 
 Analyze-only validates the source pool and explains connected components, class support, achievable
 balance, and deterministic strategy comparisons without creating an export directory. Actual

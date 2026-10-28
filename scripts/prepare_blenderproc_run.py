@@ -10,6 +10,7 @@ import sys
 
 from dataset_generator_m1.blender_pilot import PilotConfig, load_config, prepare
 from dataset_generator_m1.blender_execution import load_catalog
+from dataset_generator_m1.blender_screen_profiles import select_screen_profile
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -27,14 +28,8 @@ def prepare_run(config_path, output_dir, *, screen_profile=None, gpu_guard='auto
     screen=Path(screen_catalog or ROOT/'experiments/blenderproc/execution/quick-screen-profiles.json')
     status=None
     if screen_profile:
-        catalog=json.loads(screen.read_text())
-        if catalog.get('schema_version')!=1 or screen_profile not in catalog.get('profiles',{}):
-            raise ValueError('Unknown saved experimental screen profile')
-        selected=catalog['profiles'][screen_profile];pixels=config['resolution'][0]*config['resolution'][1]
-        rule=next((x for x in selected['rules'] if x['max_pixels'] is None or pixels<=x['max_pixels']),None)
-        if rule is None:raise ValueError('No screen profile rule for this resolution')
+        rule,status=select_screen_profile(screen,screen_profile,config['resolution'])
         for key in ('execution_profile','workers','threads'):config[key]=rule[key]
-        status=selected['status']
     settings=Path(guard_settings or ROOT/'experiments/blenderproc/execution/adaptive-guards.json').resolve()
     source_policy=Path(config['execution_policy']) if config.get('execution_policy') else ROOT/'experiments/blenderproc/execution/profiles.json'
     catalog=load_catalog(source_policy)

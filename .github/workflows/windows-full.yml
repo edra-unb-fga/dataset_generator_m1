@@ -14,8 +14,8 @@ jobs:
   full:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.14"
           enable-cache: true
@@ -45,7 +45,7 @@ jobs:
           --set 'output.image_size=[128,128]' --set scene.occlusion.probability=1
           --output-dir outputs/windows-surface-pool --display quiet --output-format json
       - run: uv run python scripts/smoke_analysis.py --pool outputs/windows-surface-pool --output-dir outputs/windows-surface-analysis
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: windows-augmentation-report
           path: outputs/experiments/windows-quick/
