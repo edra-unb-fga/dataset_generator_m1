@@ -220,3 +220,11 @@ archives are hash-verified and packaged between timed cells. The initial 2D scre
 annotation evidence; earlier plain-wall 3D samples were reviewed as prototypes. Two subsequent
 3D attempts hit the existing system swap-out guard; the final 3D visual and performance checks were
 not completed. Do not treat the aborted run or single smoke renders as a throughput comparison.
+
+
+## Quick L4 and T4 execution screen
+
+The [Colab GPU screen](experiments/colab-quick-screen-v1/README.md) compares small matched camera
+scenes on L4 and T4 with saved, explicitly experimental worker policies. It records observed resource
+use, compute-unit rates, exact within-resolution mask checks and the excluded overlapping-transfer
+screen. Four measured scenes per setting cannot establish a hardware-class default or realism.

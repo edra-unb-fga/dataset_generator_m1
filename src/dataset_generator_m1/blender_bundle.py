@@ -57,7 +57,7 @@ def build_bundle(config_path, destination):
             target=staging/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(value,indent=2)+'\n')
             files[name]={'sha256':file_hash(target),'bytes':target.stat().st_size}
         # Explicit source roots only. No git metadata, credentials, arbitrary workspace or caches.
-        for name in ['pyproject.toml','uv.lock','scripts/blenderproc_pilot.py','scripts/study_surface_integration.py','scripts/study_surface_performance.py','scripts/study_surface_2d.py','scripts/handoff_study_cell.py','scripts/study_camera_environments.py']:
+        for name in ['pyproject.toml','uv.lock','scripts/blenderproc_pilot.py','scripts/study_surface_integration.py','scripts/study_surface_performance.py','scripts/study_surface_2d.py','scripts/handoff_study_cell.py','scripts/study_camera_environments.py','scripts/select_blender_screen_profile.py']:
             add(source/name,'source/'+name)
         for base in [source/'src/dataset_generator_m1',source/'experiments/blenderproc']:
             for path in sorted(base.rglob('*')):
