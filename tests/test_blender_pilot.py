@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import numpy as np
 import pytest
+from dataset_generator_m1 import blender_runner
 from PIL import Image
 
 from dataset_generator_m1.blender_pilot import Treatment, PilotConfig, annotation_rows, mask_rle, export_coco, export_yolo, digest_file, digest
@@ -151,6 +152,20 @@ def test_export_freezes_missing_prepared_jobs_before_launch(tmp_path,monkeypatch
     (scene/'result.json').write_text(json.dumps(row));(tmp_path/'study.json').write_text(json.dumps(study))
     export_coco(tmp_path)
     monkeypatch.setattr(pilot,'validate_inputs',lambda *args:None)
-    monkeypatch.setattr(pilot.subprocess,'Popen',lambda *args,**kwargs:pytest.fail('must not launch after freeze'))
+    monkeypatch.setattr(blender_runner.subprocess,'Popen',lambda *args,**kwargs:pytest.fail('must not launch after freeze'))
     with pytest.raises(ValueError,match='frozen'):
         pilot.run_study(tmp_path,'unused','unused',job_ids=['later'])
+
+
+def test_completed_study_returns_without_probing_or_launching(tmp_path,monkeypatch):
+    from dataset_generator_m1 import blender_pilot as pilot
+    fake_study(tmp_path)
+    monkeypatch.setattr(pilot,'validate_inputs',lambda *args:None)
+    monkeypatch.setattr(blender_runner.subprocess,'Popen',lambda *args,**kwargs:pytest.fail('completed study must not launch'))
+    value=json.loads((tmp_path/'study.json').read_text());value['config']['study_seconds']=1
+    value['contract']['runtime_sha256']=digest({key:value[key] for key in ('config','artwork','grounds','environments')});value['identity']=digest(value['contract'])
+    (tmp_path/'study.json').write_text(json.dumps(value))
+    record=json.loads((tmp_path/'scenes/base/result.json').read_text());record['identity']=value['identity'];(tmp_path/'scenes/base/result.json').write_text(json.dumps(record))
+    # Existing historical completed studies remain readable without rendering new scenes.
+    result=pilot.run_study(tmp_path,'unused','unused',job_ids=['base'])
+    assert result['status']=='complete' and result['already_complete']

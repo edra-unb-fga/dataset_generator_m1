@@ -349,3 +349,12 @@ canonical COCO full/visible sharp reference-pose geometry to the existing evalua
 conversion reports fidelity or whole-format unavailability. Rendering and export share exclusive
 study ownership; export freezes the completed dataset. See `REALISM_ROUND_TWO.md` for the scope and
 `experiments/blender-pilot-v1/README.md` for evidence and remaining calibration/transfer limits.
+
+
+The optional harness additionally resolves saved hardware execution profiles through a pinned-runtime
+capability probe. Policy data selects CPU/GPU denoising and bounded workers/threads; study resolution,
+samples and physical treatments stay explicit. Prepared input identity and immutable resolved execution
+identity jointly define a run. Workers receive disjoint jobs under one coordinator and shared guards;
+changed hardware/selection or source cannot cross-resume. `bundle` creates verified portable
+source/input archives for local/Colab execution without a clone; manifests exclude unrelated workspace
+files and credentials. This does not add GPU or distributed execution to the core planar generator.

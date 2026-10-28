@@ -372,12 +372,65 @@
       "title": "Principal Point Fraction",
       "type": "array"
     },
+    "input_bundle_identity": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Bundle Identity"
+    },
+    "execution_profile": {
+      "default": "auto",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "title": "Execution Profile",
+      "type": "string"
+    },
+    "execution_policy": {
+      "anyOf": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Execution Policy"
+    },
     "threads": {
-      "default": 6,
-      "maximum": 32,
-      "minimum": 1,
-      "title": "Threads",
-      "type": "integer"
+      "anyOf": [
+        {
+          "maximum": 64,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Threads"
+    },
+    "workers": {
+      "anyOf": [
+        {
+          "maximum": 4,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Workers"
     },
     "fast_samples": {
       "default": 32,

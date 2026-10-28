@@ -1,0 +1,332 @@
+{
+  "$defs": {
+    "Guards": {
+      "additionalProperties": false,
+      "properties": {
+        "min_available_gib": {
+          "exclusiveMinimum": 0,
+          "title": "Min Available Gib",
+          "type": "number"
+        },
+        "rss_limit_gib": {
+          "exclusiveMinimum": 0,
+          "title": "Rss Limit Gib",
+          "type": "number"
+        },
+        "max_swap_out_mib": {
+          "minimum": 0,
+          "title": "Max Swap Out Mib",
+          "type": "number"
+        },
+        "probe_timeout_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 1800,
+          "title": "Probe Timeout Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "min_available_gib",
+        "rss_limit_gib",
+        "max_swap_out_mib",
+        "probe_timeout_seconds"
+      ],
+      "title": "Guards",
+      "type": "object"
+    },
+    "Match": {
+      "additionalProperties": false,
+      "properties": {
+        "environment": {
+          "anyOf": [
+            {
+              "const": "colab",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment"
+        },
+        "gpu_name_pattern": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gpu Name Pattern"
+        },
+        "oidn_gpu": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Oidn Gpu"
+        },
+        "min_cpu_count": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Cpu Count"
+        },
+        "max_cpu_count": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Cpu Count"
+        },
+        "min_gpu_memory_mib": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Gpu Memory Mib"
+        },
+        "max_pixels": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Pixels"
+        }
+      },
+      "title": "Match",
+      "type": "object"
+    },
+    "Profile": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "automatic": {
+          "title": "Automatic",
+          "type": "boolean"
+        },
+        "match": {
+          "$ref": "#/$defs/Match"
+        },
+        "settings": {
+          "$ref": "#/$defs/Settings"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "automatic",
+        "match",
+        "settings",
+        "evidence"
+      ],
+      "title": "Profile",
+      "type": "object"
+    },
+    "Settings": {
+      "additionalProperties": false,
+      "properties": {
+        "device": {
+          "enum": [
+            "CPU",
+            "GPU"
+          ],
+          "title": "Device",
+          "type": "string"
+        },
+        "denoiser": {
+          "enum": [
+            "compositor-oidn",
+            "compositor-fast",
+            "native-gpu-oidn",
+            "native-cpu-oidn",
+            "none"
+          ],
+          "title": "Denoiser",
+          "type": "string"
+        },
+        "workers": {
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Workers",
+          "type": "integer"
+        },
+        "threads": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "const": "available",
+              "type": "string"
+            }
+          ],
+          "title": "Threads"
+        },
+        "thread_cap": {
+          "maximum": 64,
+          "minimum": 1,
+          "title": "Thread Cap",
+          "type": "integer"
+        },
+        "denoiser_prefilter": {
+          "enum": [
+            "ACCURATE",
+            "FAST",
+            "NONE"
+          ],
+          "title": "Denoiser Prefilter",
+          "type": "string"
+        },
+        "denoiser_quality": {
+          "enum": [
+            "HIGH",
+            "BALANCED",
+            "FAST"
+          ],
+          "title": "Denoiser Quality",
+          "type": "string"
+        },
+        "denoiser_input_passes": {
+          "enum": [
+            "RGB",
+            "RGB_ALBEDO",
+            "RGB_ALBEDO_NORMAL"
+          ],
+          "title": "Denoiser Input Passes",
+          "type": "string"
+        },
+        "max_bounces": {
+          "maximum": 64,
+          "minimum": 0,
+          "title": "Max Bounces",
+          "type": "integer"
+        },
+        "diffuse_bounces": {
+          "maximum": 64,
+          "minimum": 0,
+          "title": "Diffuse Bounces",
+          "type": "integer"
+        },
+        "glossy_bounces": {
+          "maximum": 64,
+          "minimum": 0,
+          "title": "Glossy Bounces",
+          "type": "integer"
+        },
+        "transparent_bounces": {
+          "maximum": 64,
+          "minimum": 0,
+          "title": "Transparent Bounces",
+          "type": "integer"
+        },
+        "renderer_initialization": {
+          "enum": [
+            "stock",
+            "guarded"
+          ],
+          "title": "Renderer Initialization",
+          "type": "string"
+        }
+      },
+      "required": [
+        "device",
+        "denoiser",
+        "workers",
+        "threads",
+        "thread_cap",
+        "denoiser_prefilter",
+        "denoiser_quality",
+        "denoiser_input_passes",
+        "max_bounces",
+        "diffuse_bounces",
+        "glossy_bounces",
+        "transparent_bounces",
+        "renderer_initialization"
+      ],
+      "title": "Settings",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "backend_order": {
+      "items": {
+        "enum": [
+          "OPTIX",
+          "CUDA",
+          "HIP",
+          "ONEAPI",
+          "METAL"
+        ],
+        "type": "string"
+      },
+      "title": "Backend Order",
+      "type": "array"
+    },
+    "guards": {
+      "$ref": "#/$defs/Guards"
+    },
+    "profiles": {
+      "items": {
+        "$ref": "#/$defs/Profile"
+      },
+      "title": "Profiles",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "backend_order",
+    "guards",
+    "profiles"
+  ],
+  "title": "Catalog",
+  "type": "object"
+}

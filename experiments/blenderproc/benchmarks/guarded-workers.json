@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "repetitions": 3,
+  "warmups": 2,
+  "measured": 20,
+  "resolution": [
+    640,
+    640
+  ],
+  "variants": [
+    {
+      "name": "one-process",
+      "execution_profile": "gpu-guarded",
+      "renderer_initialization": "guarded"
+    },
+    {
+      "name": "two-processes",
+      "execution_profile": "colab-t4-small",
+      "renderer_initialization": "guarded"
+    }
+  ],
+  "metric": "whole-command"
+}
