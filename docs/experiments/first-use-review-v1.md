@@ -34,5 +34,24 @@ environment were available; dependency installation, a clean machine and Blender
   A second fresh-agent terminal journey confirmed all three changes, generated one image, and verified
   the QA gallery and detection export exist. The read-only worktree's cache blocked the first attempt;
   running the same source from a writable checkout let the agent complete the check.
-- Remaining UX research: first-time asset acquisition and actual CPU/GPU rendering, failure diagnostics
-  for active inspection, and real human walkthroughs.
+- At the time of the initial walkthrough, asset acquisition and actual CPU/GPU rendering were untested;
+  the network-enabled follow-up below covers the first two. Active-inspection failure diagnostics,
+  fresh GPU installation and real human walkthroughs remain open.
+
+## Network-enabled clean-checkout follow-up
+
+A shallow GitHub clone of the cleanup branch was installed into a new virtual environment using the
+locked dev/evaluation dependencies and an initially empty `uv` cache. The `uv` executable and Python
+3.13.16 were already installed on the host. The full suite passed: 496 tests; 113 existing deprecation
+warnings. A fresh landing-pad composer generated two images, passed pool inspection and exported a
+single-split segmentation dataset. All three pinned ground materials and both HDR environments were
+downloaded and verified, and the documented CPU study preparation succeeded with those files.
+
+The separate BlenderProc 2.8.0 wrapper environment was installed, and BlenderProc downloaded its own
+Blender 4.2.1 runtime and initialized it. Blender's internal `pip` reused the host pip cache for some
+packages, so the Blender runtime install was not a completely empty-cache dependency test. One guarded
+CPU-only job at 128×128, four samples, one worker and two threads rendered an RGB image and masks;
+export produced one COCO image with four instances and detection/segmentation YOLO outputs. Peak
+process-tree RSS was approximately 1.01 GiB, no swap-out was observed, and the render command took
+3.09 seconds. This tiny job is a correctness smoke test, not a realism assessment or a throughput
+benchmark. No new GPU or Colab run was made. Real-human and fresh GPU-install walkthroughs remain open.
