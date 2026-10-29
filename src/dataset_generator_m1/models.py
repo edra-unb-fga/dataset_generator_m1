@@ -169,6 +169,23 @@ class SceneLightingConfig(StrictModel):
         return self
 
 
+class ForegroundContextConfig(StrictModel):
+    """Optional local background-guided foreground color adaptation."""
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+    probability: float = Field(default=0.5, ge=0, le=1)
+    strength: tuple[float, float] = (0.15, 0.35)
+    radius_fraction: float = Field(default=0.08, ge=0, le=0.5)
+    max_brightness_shift: float = Field(default=0.08, ge=0, le=1)
+    max_color_shift: float = Field(default=0.04, ge=0, le=1)
+
+    @model_validator(mode="after")
+    def validate_range(self):
+        _ordered_range(self.strength, "foreground_context.strength", 0.)
+        if self.strength[1] > 2:
+            raise ValueError("foreground_context.strength must be <=2")
+        return self
+
+
 class SceneOcclusionConfig(StrictModel):
     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
     probability: float = Field(default=0.6, ge=0, le=1)
@@ -178,6 +195,7 @@ class SceneOcclusionConfig(StrictModel):
     width_fraction: tuple[float, float] = (0.005, 0.025)
     opacity: tuple[float, float] = (1., 1.)
     min_visible_support: float = Field(default=0.25, ge=0, le=1)
+    visibility_policy: Literal["legacy", "reject-visible-below-floor"] = "legacy"
 
     @model_validator(mode="after")
     def validate_ranges(self):
@@ -202,12 +220,20 @@ class SurfaceWearConfig(StrictModel):
 class SceneConfig(StrictModel):
     compositing: Literal["legacy", "linear-srgb"] = "legacy"
     foreground_resampling: Literal["legacy", "premultiplied"] = "legacy"
+    foreground_context: ForegroundContextConfig | None = None
     canvas_scale: float = Field(default=2.0, ge=1.25)
     camera: CameraConfig = Field(default_factory=CameraConfig)
     perspective: PerspectiveConfig = Field(default_factory=PerspectiveConfig)
     background_affine: BackgroundAffineConfig = Field(default_factory=BackgroundAffineConfig)
     lighting: SceneLightingConfig | None = None
     occlusion: SceneOcclusionConfig | None = None
+
+    @model_serializer(mode="wrap")
+    def serialize_optional_context(self, handler):
+        result = handler(self)
+        if self.foreground_context is None:
+            result.pop("foreground_context", None)
+        return result
 
 
 class TransformSpec(StrictModel):
@@ -309,6 +335,7 @@ class BackgroundAffineInline(StrictModel):
 class SceneInline(StrictModel):
     compositing: Literal["legacy", "linear-srgb"] | None = None
     foreground_resampling: Literal["legacy", "premultiplied"] | None = None
+    foreground_context: ForegroundContextConfig | None = None
     canvas_scale: float | None = Field(default=None, ge=1.25)
     camera: CameraInline | None = None
     perspective: PerspectiveInline | None = None

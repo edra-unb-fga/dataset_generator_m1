@@ -232,3 +232,18 @@ screen. Four measured scenes per setting cannot establish a hardware-class defau
 The exploratory [L4 worker/thread screen](experiments/l4-worker-scaling-v1/README.md) records paired 640² and 1280² outputs, an eight-worker case, separate system RAM and GPU memory guards, sampled utilization and automatic shutdown evidence. Its short cases do not justify a general hardware default.
 
 The [L4 camera/environment continuation](experiments/l4-camera-completion-v1/README.md) follows the blocked local screen with fresh held-out scenes, exact COCO-mask round trips, bounded wall-clearance fixes, a repeated ground-mode timing check and an offline visual report. The [paired 2D CPU timing](experiments/linear-colab-timing-v1/README.md) measures linear compositing separately.
+
+
+## Placement and foreground-context integration
+
+[Round five](REALISM_ROUND_FIVE.md) records the revised placement contract and the bounded
+[2D context](../experiments/foreground-context/README.md) and
+[optional 3D study](../experiments/blenderproc/studies/realism-round/README.md) protocols.
+The initial local 2D attempt stopped on the host swap-out guard and is not a completed comparison.
+Study definitions and safeguards are reproducible; results must be evaluated separately from the
+protocol and cannot establish real-world realism or detector transfer without real-image evidence.
+
+
+## Paired effect-combinations screen
+
+The [paired 2D and physical comparison](experiments/effect-combinations-v1/README.md) isolates selected wear, lighting, shade, context and roughness controls and examines combinations. It records a small guarded historical natural-generation comparison as context; raw results and filterable visual reports remain in ignored experiment outputs.

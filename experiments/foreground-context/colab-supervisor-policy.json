@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "combined_allocation_seconds": 5400,
+  "phase_allowance_seconds": 900,
+  "shutdown_watchdog_seconds": 840,
+  "three_d_reserved_seconds": 2700,
+  "remote_max_seconds": 600,
+  "handoff_margin_seconds": 210,
+  "remote_min_seconds": 120
+}

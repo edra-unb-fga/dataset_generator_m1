@@ -15,6 +15,25 @@ from dataset_generator_m1.ownership import CoordinatorLease
 from dataset_generator_m1.cell_handoff import package_with_deadline
 
 
+def compare_outputs(prior, current):
+    """Compare identical raster shapes only; retain explicit size mismatch evidence."""
+    with Image.open(prior['image']) as image:
+        a = np.asarray(image, dtype=np.int16)
+    with Image.open(current['image']) as image:
+        b = np.asarray(image, dtype=np.int16)
+    comparable = a.shape == b.shape
+    result = {'rgb_comparable': comparable, 'baseline_rgb_shape': list(a.shape),
+              'candidate_rgb_shape': list(b.shape),
+              'incomparable_reason': None if comparable else 'rgb-shape-mismatch',
+              'rgb_mean_abs_difference': float(np.abs(a-b).mean()) if comparable else None,
+              'all_masks_equal': None}
+    if comparable:
+        with np.load(prior['masks'], allow_pickle=False) as x, np.load(current['masks'], allow_pickle=False) as y:
+            result['all_masks_equal'] = bool(sorted(x.files) == sorted(y.files) and
+                                             all(np.array_equal(x[k], y[k]) for k in x.files))
+    return result
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('config','matrix','output-dir','blenderproc','blender-install-path'):
@@ -113,11 +132,7 @@ def main():
             for row in record['rows']:
                 prior=baseline.get(row['job'])
                 if not prior or not row['image'] or not prior['image'] or not row['masks'] or not prior['masks']:continue
-                with np.load(prior['masks'],allow_pickle=False) as x,np.load(row['masks'],allow_pickle=False) as y:
-                    mask_equal=sorted(x.files)==sorted(y.files) and all(np.array_equal(x[k],y[k]) for k in x.files)
-                a=np.asarray(Image.open(prior['image']),dtype=np.int16);b=np.asarray(Image.open(row['image']),dtype=np.int16)
-                comparisons.append({'cell':record['cell'],'job':row['job'],'all_masks_equal':bool(mask_equal),
-                    'rgb_mean_abs_difference':float(np.abs(a-b).mean())})
+                comparisons.append({'cell':record['cell'], 'job':row['job'], **compare_outputs(prior, row)})
         atomic_json(root/'summary.json',{'status':'complete','records':records,'comparisons':comparisons,
             'elapsed_seconds':monotonic()-started})
     except BaseException as exc:

@@ -174,3 +174,58 @@ def test_completed_study_returns_without_probing_or_launching(tmp_path,monkeypat
     # Existing historical completed studies remain readable without rendering new scenes.
     result=pilot.run_study(tmp_path,'unused','unused',job_ids=['base'])
     assert result['status']=='complete' and result['already_complete']
+
+
+def test_stacked_diagnostic_is_not_in_normal_coco_or_yolo(tmp_path):
+    import shutil
+    scene=fake_study(tmp_path)
+    diagnostic=tmp_path/'scenes'/'diagnostic-overlap'
+    shutil.copytree(scene,diagnostic)
+    study=json.loads((tmp_path/'study.json').read_text())
+    job={'id':'diagnostic-overlap','case':'overlap','scene':{'negative':False},'scene_index':0}
+    study['jobs'].append(job)
+    study['contract']['jobs_sha256']=digest(study['jobs']);study['identity']=digest(study['contract'])
+    for path,actual in ((scene,study['jobs'][0]),(diagnostic,job)):
+        row=json.loads((path/'result.json').read_text());row['identity']=study['identity'];row['job']=actual
+        (path/'result.json').write_text(json.dumps(row))
+    (tmp_path/'study.json').write_text(json.dumps(study))
+    summary=export_coco(tmp_path)
+    normal=json.loads((tmp_path/'coco-visible.json').read_text())
+    overlap=json.loads((tmp_path/'diagnostic-overlap-coco-visible.json').read_text())
+    assert summary['images']==len(normal['images'])==1
+    assert len(overlap['images'])==1 and 'diagnostic-overlap' in overlap['images'][0]['file_name']
+    statuses=export_yolo(tmp_path)
+    assert statuses['detection']['images']==1
+    assert len(list((tmp_path/'yolo-detection'/'images').iterdir()))==1
+
+
+def test_export_preserves_original_ids_after_middle_footprint_drop(tmp_path):
+    scene=fake_study(tmp_path)
+    masks=np.zeros((2,32,48),bool);masks[0,1:5,2:6]=True;masks[1,10:14,20:24]=True
+    np.savez_compressed(scene/'masks.npz',visible=masks,full=masks)
+    row=json.loads((scene/'result.json').read_text())
+    row['files']['masks.npz']=digest_file(scene/'masks.npz')
+    row['placement_diagnostics']={'retained_original_indices':[0,2]}
+    (scene/'result.json').write_text(json.dumps(row))
+    export_coco(tmp_path)
+    for semantics in ('visible','full'):
+        labels=json.loads((tmp_path/f'coco-{semantics}.json').read_text())['annotations']
+        assert [a['instance_id'] for a in labels]==[0,1]
+        assert [a['original_instance_id'] for a in labels]==[0,2]
+    with pytest.raises(ValueError,match='identity count'):
+        annotation_rows(masks,masks,1,original_indices=[0])
+
+
+def test_only_stacked_diagnostic_exports_without_ordinary_dataset(tmp_path):
+    scene=fake_study(tmp_path)
+    study=json.loads((tmp_path/'study.json').read_text())
+    study['jobs'][0]['case']='overlap'
+    study['contract']['jobs_sha256']=digest(study['jobs']);study['identity']=digest(study['contract'])
+    row=json.loads((scene/'result.json').read_text());row['identity']=study['identity'];row['job']=study['jobs'][0]
+    (scene/'result.json').write_text(json.dumps(row));(tmp_path/'study.json').write_text(json.dumps(study))
+    from dataset_generator_m1.blender_pilot import export_study
+    result=export_study(tmp_path,yolo=True)
+    assert result['images']==0 and result['diagnostic_images']==1
+    assert result['yolo']['status']=='unavailable'
+    assert not (tmp_path/'coco-visible.json').exists()
+    assert len(json.loads((tmp_path/'diagnostic-overlap-coco-visible.json').read_text())['images'])==1

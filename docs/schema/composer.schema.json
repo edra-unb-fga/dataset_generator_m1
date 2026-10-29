@@ -611,6 +611,60 @@
       "title": "ExecutionInline",
       "type": "object"
     },
+    "ForegroundContextConfig": {
+      "additionalProperties": false,
+      "description": "Optional local background-guided foreground color adaptation.",
+      "properties": {
+        "max_brightness_shift": {
+          "default": 0.08,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Max Brightness Shift",
+          "type": "number"
+        },
+        "max_color_shift": {
+          "default": 0.04,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Max Color Shift",
+          "type": "number"
+        },
+        "probability": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Probability",
+          "type": "number"
+        },
+        "radius_fraction": {
+          "default": 0.08,
+          "maximum": 0.5,
+          "minimum": 0,
+          "title": "Radius Fraction",
+          "type": "number"
+        },
+        "strength": {
+          "default": [
+            0.15,
+            0.35
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Strength",
+          "type": "array"
+        }
+      },
+      "title": "ForegroundContextConfig",
+      "type": "object"
+    },
     "OutputInline": {
       "additionalProperties": false,
       "properties": {
@@ -1066,6 +1120,17 @@
           "default": null,
           "title": "Compositing"
         },
+        "foreground_context": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ForegroundContextConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "foreground_resampling": {
           "anyOf": [
             {
@@ -1277,6 +1342,15 @@
           "minimum": 0,
           "title": "Probability",
           "type": "number"
+        },
+        "visibility_policy": {
+          "default": "legacy",
+          "enum": [
+            "legacy",
+            "reject-visible-below-floor"
+          ],
+          "title": "Visibility Policy",
+          "type": "string"
         },
         "width_fraction": {
           "default": [

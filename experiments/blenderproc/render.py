@@ -13,7 +13,7 @@ from time import perf_counter
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'src'))
-from dataset_generator_m1.blender_camera import rotation_matrix, ground_geometry, environment_bounds
+from dataset_generator_m1.blender_camera import rotation_matrix, ground_geometry, environment_bounds, panel_footprint, footprints_overlap
 from runtime import configure as configure_execution, evidence as execution_evidence
 import bpy
 from blenderproc.python.utility.GlobalStorage import GlobalStorage
@@ -248,7 +248,7 @@ def build_scene(study,job,attempt):
     elif t['lighting'].startswith('night'):
         light('lamp','AREA',(-2,-2,3),t['light_power_w'],(1,.78,.52),t['light_size_m'])
         if t['lighting']=='night-mixed':light('lamp-blue','AREA',(3,1,2),t['light_power_w']*.6,(.55,.7,1),t['light_size_m']*1.5)
-    pads=[]
+    pads=[]; retained_indices=[]; footprints=[]; dropped=[]
     rng=np.random.default_rng(job['seed']+attempt*100003)
     for index,planned in enumerate(job['scene']['objects']):
         u,v=planned['center']
@@ -260,13 +260,20 @@ def build_scene(study,job,attempt):
         at[2]=config['thickness_metres']/2
         if job['case']=='clipped' and index==0:at[0]+=distance*.4
         if job['case']=='overlap' and index==1:
-            at=np.array(pads[0].location)+np.array([.04,.03,config['thickness_metres']])
+            angle=pads[0].rotation_euler[2]
+            at=np.array(pads[0].location)+np.array([config['width_metres']*.5*math.cos(angle),config['width_metres']*.5*math.sin(angle),config['thickness_metres']])
+        footprint=panel_footprint(at,config['width_metres'],study['artwork'][planned['artwork_index']]['aspect'],planned['angle'])
+        blockers=[retained_indices[i] for i,other in enumerate(footprints) if footprints_overlap(footprint,other)]
+        if blockers and job['case']!='overlap':
+            dropped.append({'original_index':index,'reason':'ground-footprint-overlap','blocking_indices':blockers})
+            continue
+        retained_indices.append(index); footprints.append(footprint)
         pads.append(panel(f'pad-{index}',study['artwork'][planned['artwork_index']],config['width_metres'],config['thickness_metres'],at,planned['angle'],t['roughness'],t.get('pad_bump_strength') if t.get('pad_bump_strength') is not None else t['normal_strength'],t.get('pad_bump_distance_m',.00015),job.get('wear_maps',[None]*len(job['scene']['objects']))[index]))
     # Build the room only after targets are placed: enclose their complete rigid footprints,
     # including clipped/rotated cases, instead of letting walls cut through the panels.
     corners=[]
     for index,obj in enumerate(pads):
-        angle=obj.rotation_euler[2]; aspect=study['artwork'][job['scene']['objects'][index]['artwork_index']]['aspect']
+        angle=obj.rotation_euler[2]; aspect=study['artwork'][job['scene']['objects'][retained_indices[index]]['artwork_index']]['aspect']
         for x,y in ((-.5,-.5),(-.5,.5),(.5,-.5),(.5,.5)):
             x*=config['width_metres'];y*=config['width_metres']*aspect
             corners.append((obj.location.x+x*math.cos(angle)-y*math.sin(angle),obj.location.y+x*math.sin(angle)+y*math.cos(angle)))
@@ -275,7 +282,7 @@ def build_scene(study,job,attempt):
         # Measure the final rigid panels at their actual planned positions (before lens distortion).
         actual=[]
         for obj in pads:
-            a=obj.rotation_euler[2]; aspect=study['artwork'][job['scene']['objects'][len(actual)]['artwork_index']]['aspect']
+            a=obj.rotation_euler[2]; aspect=study['artwork'][job['scene']['objects'][retained_indices[len(actual)]]['artwork_index']]['aspect']
             xs=[]
             for x,y in ((-.5,-.5),(-.5,.5),(.5,-.5),(.5,.5)):
                 x*=config['width_metres'];y*=config['width_metres']*aspect
@@ -307,12 +314,14 @@ def build_scene(study,job,attempt):
         bpy.context.object.name='occluder';bpy.context.object.scale=scale
     volume=None
     if t['haze_density']:
-        bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,8));volume=bpy.context.object;volume.name='haze';volume.scale=(30,30,16)
+        # Keep the volume boundary below the ground to avoid coincident surfaces.
+        bpy.ops.mesh.primitive_cube_add(size=1,location=(0,0,7));volume=bpy.context.object;volume.name='haze';volume.scale=(30,30,18)
         mat=bpy.data.materials.new('haze');mat.use_nodes=True;nodes=mat.node_tree.nodes;nodes.clear()
         shader=nodes.new('ShaderNodeVolumePrincipled');shader.inputs['Density'].default_value=t['haze_density']
         output=nodes.new('ShaderNodeOutputMaterial');mat.node_tree.links.new(shader.outputs['Volume'],output.inputs['Volume'])
         volume.data.materials.append(mat)
-    return [obj.name for obj in pads],volume.name if volume else None,mapping,K,distance,caster_records,camera_evidence,ground_evidence,geometry
+    placement={'requested_count':len(job['scene']['objects']),'retained_count':len(pads),'retained_original_indices':retained_indices,'dropped':dropped,'panel_bottom_z_metres':[float(obj.location.z-config['thickness_metres']/2) for obj in pads], 'ground_plane_z_metres':0.0,'contact_model':'rigid panels; bump changes shading only'}
+    return [obj.name for obj in pads],volume.name if volume else None,mapping,K,distance,caster_records,camera_evidence,ground_evidence,geometry,placement
 
 
 def distorted(value,mapping,size,interpolate):
@@ -340,7 +349,7 @@ def run_job(study,job,root):
     if (destination/'result.json').exists():return
     config=study['config'];attempts=[]
     for attempt in range(8):
-        setup_started=perf_counter();pads,volume,mapping,K,distance,casters,camera_evidence,ground_evidence,geometry=build_scene(study,job,attempt)
+        setup_started=perf_counter();pads,volume,mapping,K,distance,casters,camera_evidence,ground_evidence,geometry,placement=build_scene(study,job,attempt)
         setup_seconds=perf_counter()-setup_started
         # Labels use sharp geometry at pose0, independent of beauty DOF/blur.
         scene=bpy.context.scene;dof=scene.camera.data.dof.use_dof;motion=scene.render.use_motion_blur
@@ -403,7 +412,7 @@ def run_job(study,job,root):
                             'ground_normal_strength':job['treatment'].get('ground_normal_strength') if job['treatment'].get('ground_normal_strength') is not None else job['treatment']['normal_strength'],
                             'lamps':[{'name':o.name,'type':o.data.type,'location':list(o.location),'color':list(o.data.color),'power':o.data.energy,'rotation_euler':list(o.rotation_euler)} for o in scene.objects if o.type=='LIGHT'],
                             'treatment':job['treatment'],'wear_maps':job.get('wear_maps',[]),'casters':casters},
-                        'environment_geometry_diagnostics':geometry,'camera_distance_metres':distance,'camera_diagnostics':camera_evidence,'ground_diagnostics':ground_evidence,'reference_masks':'single-ray sharp geometry at frame0',
+                        'placement_diagnostics':placement,'environment_geometry_diagnostics':geometry,'camera_distance_metres':distance,'camera_diagnostics':camera_evidence,'ground_diagnostics':ground_evidence,'reference_masks':'single-ray sharp geometry at frame0',
                         'noise_model':'post-display RGB Gaussian approximation, not calibrated sensor simulation',
                         'files':{name:hashlib.sha256((staging/name).read_bytes()).hexdigest() for name in ('rgb.png','masks.npz')}}
                 atomic_json(staging/'result.json',record)

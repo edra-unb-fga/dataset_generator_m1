@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from dataclasses import dataclass, replace
 from time import perf_counter_ns
 from typing import Any
@@ -12,6 +13,7 @@ import numpy as np
 from .assets import AssetCatalog, AssetRecord
 from .annotation_evidence import visible_coverages
 from .backgrounds import BackgroundSample
+from .background_adaptation import adapt_foreground_to_background
 from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import composite_linear_srgb, read_rgba, resize_rgba, rotate_rgba, visible_bbox, warp_rgba
 from .scene_occlusion import SceneOccluder, composite_occluders, sample_occluders
@@ -330,6 +332,26 @@ class ScenePlanner:
         )
 
 
+def _scene_support(alpha: np.ndarray, x: float, y: float, threshold: int) -> tuple[int, int, np.ndarray]:
+    """Rasterize a subpixel-translated foreground into a bounded, un-clipped scene crop."""
+    left, top = math.floor(x) - 1, math.floor(y) - 1
+    height, width = alpha.shape
+    matrix = np.array([[1., 0., x - left], [0., 1., y - top]], dtype=np.float64)
+    coverage = cv2.warpAffine(alpha, matrix, (width + 2, height + 2), flags=cv2.INTER_LINEAR,
+                              borderMode=cv2.BORDER_CONSTANT, borderValue=0)
+    return left, top, coverage > threshold
+
+
+def _supports_intersect(a: tuple[int, int, np.ndarray], b: tuple[int, int, np.ndarray]) -> bool:
+    ax, ay, am = a
+    bx, by, bm = b
+    left, top = max(ax, bx), max(ay, by)
+    right = min(ax + am.shape[1], bx + bm.shape[1])
+    bottom = min(ay + am.shape[0], by + bm.shape[0])
+    return (left < right and top < bottom and bool(np.any(
+        am[top-ay:bottom-ay, left-ax:right-ax] & bm[top-by:bottom-by, left-bx:right-bx])))
+
+
 def _bbox_from_mask(mask: np.ndarray, threshold: int = 8) -> BBox | None:
     ys, xs = np.where(mask > threshold)
     if len(xs) == 0:
@@ -428,8 +450,14 @@ class SceneRenderer:
             raise SceneRejected(f"background coverage incomplete: {coverage_fraction:.6f}")
         timings["background_coverage"] = max(0, self.clock() - started)
 
+        context_config = self.profile.scene.foreground_context
+        context_enabled = (context_config is not None and context_config.probability > 0
+                           and context_config.strength[1] > 0)
+        context_background = rendered.copy() if context_enabled else None
+        context_records: list[dict[str, Any]] = []
         annotations: list[Annotation] = []
         masks: list[np.ndarray] = []
+        scene_supports: list[tuple[int, int, np.ndarray]] = []
         rejected: list[dict[str, Any]] = []
         camera_w = plan.camera_rect[2]
         for index, instance in enumerate(plan.instances):
@@ -539,7 +567,41 @@ class SceneRenderer:
                     )
                 )
                 continue
+            threshold = self.resolved.family.annotation.alpha_threshold
+            support = warped_alpha > threshold
+            scene_support = _scene_support(rgba[:, :, 3], top_left_x, top_left_y, threshold)
+            if (any(_supports_intersect(scene_support, previous) for previous in scene_supports)
+                    or any(np.any(support & (previous > threshold)) for previous in masks)):
+                rejected.append(build_rejection_record(
+                    **common_rejection, stage="renderer.placement", reason="foreground_support_overlap",
+                    projected_bbox=full_bbox, clipped_bbox=clipped_bbox, visibility=visible_fraction,
+                    region=spatial_region((clipped_bbox[0] + clipped_bbox[2]) / 2,
+                                          (clipped_bbox[1] + clipped_bbox[3]) / 2, out_w, out_h),
+                ))
+                timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
+                continue
             timings["foreground_visibility"] = timings.get("foreground_visibility", 0) + max(0, self.clock() - started)
+            if context_enabled:
+                context_started = self.clock()
+                context_seed = derive_seed(self.profile.run.seed, plan.slot, plan.candidate_attempt,
+                                           f"foreground-context:{instance.object_attempt}")
+                context_rng = np.random.default_rng(context_seed)
+                applied = bool(context_rng.random() < context_config.probability)
+                detail: dict[str, Any] = {"object_attempt": instance.object_attempt, "seed": context_seed,
+                                         "applied": applied}
+                if applied:
+                    strength = float(context_rng.uniform(*context_config.strength))
+                    packed = np.dstack((warped_rgb, warped_alpha))
+                    adapted, evidence = adapt_foreground_to_background(
+                        packed, context_background, strength=strength,
+                        radius_fraction=context_config.radius_fraction,
+                        max_brightness_shift=context_config.max_brightness_shift,
+                        max_color_shift=context_config.max_color_shift)
+                    warped_rgb = adapted[:, :, :3]
+                    detail.update(evidence)
+                    detail["applied"] = evidence["background_fallback"] is None
+                context_records.append(detail)
+                timings["foreground_context"] = timings.get("foreground_context", 0) + max(0, self.clock() - context_started)
             started = self.clock()
             alpha = warped_alpha[:, :, None].astype(np.float32) / 255.0
             if self.profile.scene.compositing == "linear-srgb":
@@ -576,6 +638,7 @@ class SceneRenderer:
                 )
             )
             masks.append(warped_alpha)
+            scene_supports.append(scene_support)
             timings["foreground_annotation"] = timings.get("foreground_annotation", 0) + max(0, self.clock() - started)
 
         started = self.clock()
@@ -604,6 +667,9 @@ class SceneRenderer:
                     estimated_size=(x2-x1,y2-y1),requested_objects=plan.attempted_instances,
                     stage="renderer.occlusion",reason="fully_occluded" if final_bbox is None else "visible_support_below_floor",
                     projected_bbox=annotation.bbox, visibility=fraction))
+                if (final_bbox is not None and self.profile.scene.occlusion is not None
+                        and self.profile.scene.occlusion.visibility_policy == "reject-visible-below-floor"):
+                    raise SceneRejected("visible foreground falls below occlusion visibility floor", rejected)
                 continue
             x1,y1,x2,y2 = final_bbox
             visible_annotations.append(replace(annotation,bbox=final_bbox,visible_support_fraction=fraction,
@@ -640,8 +706,12 @@ class SceneRenderer:
                           "configured": self.profile.scene.occlusion is not None,
                           "applied": bool(plan.occluders), "layers": [layer.evidence() for layer in plan.occluders],
                           "output_support_fraction": float(np.mean(external_coverage > threshold)) if external_coverage is not None else 0.,
-                          "min_visible_support": floor},
+                          "min_visible_support": floor,
+                          "visibility_policy": (self.profile.scene.occlusion.visibility_policy
+                                                if self.profile.scene.occlusion is not None else "legacy")},
         }
+        if context_enabled:
+            scene_effects["foreground_context"] = {"objects": context_records, "reference": "unaltered projected background"}
         rendered, traces = apply_pipeline_traced(
             rendered,
             self.profile.appearance.final,

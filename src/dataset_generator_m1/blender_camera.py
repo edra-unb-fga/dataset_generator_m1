@@ -86,3 +86,23 @@ def environment_bounds(position, settings, camera_speed_mps, shutter_seconds, ta
                  float(position[2]) + settings['camera_ceiling_margin_m'] + half_thickness)
     return {'half_width_m': half, 'ceiling_height_m': height, 'camera_motion_margin_m': motion,
             'target_extent_m': target_extent}
+
+
+def panel_footprint(center, width, aspect, angle_degrees):
+    """Return the four world-plane corners of a rigid rectangular panel."""
+    angle = math.radians(angle_degrees)
+    c, s = math.cos(angle), math.sin(angle)
+    return np.array([(center[0]+x*c-y*s, center[1]+x*s+y*c)
+                     for x,y in ((-width/2,-width*aspect/2), (width/2,-width*aspect/2),
+                                 (width/2,width*aspect/2), (-width/2,width*aspect/2))])
+
+
+def footprints_overlap(first, second):
+    """Separating-axis test; touching at an edge does not constitute overlap."""
+    for poly in (first, second):
+        for edge in np.roll(poly,-1,axis=0)-poly:
+            axis=np.array([-edge[1],edge[0]])
+            left=first@axis;right=second@axis
+            if left.max() <= right.min()+1e-12 or right.max() <= left.min()+1e-12:
+                return False
+    return True

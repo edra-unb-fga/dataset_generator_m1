@@ -1,0 +1,478 @@
+{
+  "schema_version": 1,
+  "purpose": "Small paired exploratory physical-effect screen, 6 ordinary scene intents plus diagnostic close-up; shared assets, not an independent quality evaluation. Wear jointly changes albedo, roughness and bump. The caster cell is diagnostic only.",
+  "cells": [
+    {
+      "id": "baseline",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "moderate-wear",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        }
+      }
+    },
+    {
+      "id": "glossy",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "roughness": 0.25
+      }
+    },
+    {
+      "id": "matte",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "roughness": 0.8
+      }
+    },
+    {
+      "id": "overcast",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "lighting": "overcast"
+      }
+    },
+    {
+      "id": "wear-glossy",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        },
+        "roughness": 0.25
+      }
+    },
+    {
+      "id": "wear-overcast",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        },
+        "lighting": "overcast"
+      }
+    },
+    {
+      "id": "wear-glossy-overcast",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.18,
+          "scratches": 0.12,
+          "marks": 12,
+          "scratch_width": 0.002
+        },
+        "roughness": 0.25,
+        "lighting": "overcast"
+      }
+    },
+    {
+      "id": "caster-diagnostic",
+      "config": {
+        "scenes": 20,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ]
+      },
+      "jobs": [
+        "000-core-fast",
+        "002-core-fast",
+        "004-core-fast",
+        "007-core-fast",
+        "012-core-fast",
+        "017-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "casters": {
+          "count": 2,
+          "seed": 2718,
+          "distance_m": 6,
+          "height_m": 3,
+          "width_m": 0.12
+        }
+      }
+    }
+  ]
+}

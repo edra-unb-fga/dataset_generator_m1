@@ -9,12 +9,12 @@ from dataset_generator_m1.assets import build_asset_catalog
 from dataset_generator_m1.backgrounds import BackgroundSample
 from dataset_generator_m1.config import load_profile
 from dataset_generator_m1.models import AppearanceConfig, OutputConfig, SceneOcclusionConfig, SamplingConfig
-from dataset_generator_m1.scene import ScenePlanner, SceneRenderer, SceneRejected
+from dataset_generator_m1.scene import ScenePlanner, SceneRenderer, SceneRejected, _scene_support, _supports_intersect
 from dataset_generator_m1.scene_occlusion import SceneOccluder, composite_occluders
 
 
-def setup_scene(count=1, floor=.25):
-    resolved=load_profile('examples/configs/landing-pad_minimal.yaml')
+def setup_scene(count=1, floor=.25, family="landing-pad"):
+    resolved=load_profile(f'examples/configs/{family}_minimal.yaml')
     profile=resolved.profile.model_copy(update={'output':OutputConfig(image_size=(128,128)),
         'appearance':AppearanceConfig(), 'sampling':SamplingConfig(instances_per_image=(count,count),foreground_size=(.3,.3),min_visible_bbox_fraction=.01),
         'scene':resolved.profile.scene.model_copy(update={'occlusion':SceneOcclusionConfig(probability=1,min_visible_support=floor)})})
@@ -89,14 +89,60 @@ def test_fully_hidden_positive_rejected_and_intentional_negative_preserved():
     assert result.scene_effects['occlusion']['applied']
 
 
-def test_hidden_by_later_target_is_removed_without_new_occluders():
+def test_colliding_later_target_is_dropped_before_composition():
     resolved,plan,bg=setup_scene(count=2)
     plan=replace(plan,instances=(plan.instances[0],replace(plan.instances[0],object_attempt=1)))
     scene=resolved.profile.scene.model_copy(update={'occlusion':None})
     resolved=resolved.model_copy(update={'profile':resolved.profile.model_copy(update={'scene':scene})})
     result=SceneRenderer(resolved).render(plan,bg)
-    assert [a.instance_id for a in result.annotations]==['instance-001']
+    assert [a.instance_id for a in result.annotations]==['instance-000']
     assert len(result.full_coverages)==1
+    assert result.rejected_instances[0]['reason']=='foreground_support_overlap'
+    single=SceneRenderer(resolved).render(replace(plan,instances=plan.instances[:1],attempted_instances=1),bg)
+    assert np.array_equal(result.image,single.image)
+    sampling=resolved.profile.sampling.model_copy(update={'count_policy':'require-count'})
+    required=resolved.model_copy(update={'profile':resolved.profile.model_copy(update={'sampling':sampling})})
+    with pytest.raises(SceneRejected,match='require-count'):
+        SceneRenderer(required).render(plan,bg)
+
+
+def test_scene_support_detects_out_of_frame_overlap_and_ignores_faint_edges():
+    alpha=np.zeros((8,8),np.uint8)
+    alpha[2:6,2:6]=255
+    # Both targets are completely outside a hypothetical frame, but overlap in scene space.
+    a=_scene_support(alpha, -50.0, -50.0, 8)
+    b=_scene_support(alpha, -49.0, -50.0, 8)
+    assert _supports_intersect(a,b)
+    faint=np.full((8,8),8,np.uint8)
+    assert not _supports_intersect(a,_scene_support(faint,-50.0,-50.0,8))
+    assert not _supports_intersect(a,_scene_support(alpha,-20.0,-20.0,8))
+
+
+@pytest.mark.parametrize('family', ['landing-pad', 'landing', 'manometro'])
+@pytest.mark.parametrize('angle', [0, 37])
+def test_transformed_collision_is_dropped_for_each_family(family, angle):
+    resolved,plan,bg=setup_scene(count=2,family=family)
+    first=replace(plan.instances[0],angle_degrees=angle)
+    plan=replace(plan,instances=(first,replace(first,object_attempt=1)))
+    result=SceneRenderer(resolved).render(plan,bg)
+    assert len(result.annotations)==1
+    assert result.annotations[0].object_attempt==0
+    assert result.rejected_instances[0]['reason']=='foreground_support_overlap'
+
+
+def test_strict_occlusion_rejects_visible_fragment_but_not_fully_hidden_target():
+    resolved,plan,bg=setup_scene(count=2,floor=.95)
+    occlusion=resolved.profile.scene.occlusion.model_copy(update={'visibility_policy':'reject-visible-below-floor'})
+    scene=resolved.profile.scene.model_copy(update={'occlusion':occlusion})
+    strict=resolved.model_copy(update={'profile':resolved.profile.model_copy(update={'scene':scene})})
+    partial=replace(plan,occluders=(layer(64,0,80,192),))
+    with pytest.raises(SceneRejected,match='below occlusion visibility floor') as error:
+        SceneRenderer(strict).render(partial,bg)
+    assert error.value.rejected_instances[0]['reason']=='visible_support_below_floor'
+    fully_hidden=replace(plan,occluders=(layer(0,0,96,192),))
+    rendered=SceneRenderer(strict).render(fully_hidden,bg)
+    assert [a.instance_id for a in rendered.annotations]==['instance-001']
+    assert rendered.rejected_instances[0]['reason']=='fully_occluded'
 
 
 def test_shared_projection_and_overlapping_occluders():

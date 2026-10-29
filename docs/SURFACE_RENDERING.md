@@ -8,7 +8,7 @@ Foreground-only native `SurfaceWear` accepts `fade`, `dirt`, `scratches`, `marks
 
 The shipped `surface-camera` preset combines mild wear with restrained exposure, motion and compression, avoiding independent surface-light/shadow stacks. Configuration is uncalibrated. Try fade .03/.06/.2, dirt .08/.18/.5, scratches .05/.12/.4 for mild/moderate/forced engineering checks; forced activation is diagnostic.
 
-Pool records retain realized seeds, sampled parameters and exclusive scene-lighting timing, alongside ordinary foreground effect traces. Cost identities include scene settings; preflight marks unmeasured enabled scene effects and budgets their temporary memory. Renderer semantics `planar-surface-v3.1` require a fresh pool after this upgrade; old pools remain inspectable and exportable. Same-version resume remains supported.
+Pool records retain realized seeds, sampled parameters and exclusive scene-lighting timing, alongside ordinary foreground effect traces. Cost identities include scene settings; preflight marks unmeasured enabled scene effects and budgets their temporary memory. Renderer semantics `planar-surface-v3.2` require a fresh pool after this upgrade; old pools remain inspectable and exportable. Same-version resume remains supported.
 
 The core 2D renderer does not simulate normal/roughness response, physical sun angles, cast shadows, specular response or raised targets; richer physical behavior remains tracked in #62/#63. The optional host map preparation below supports controlled 3D material studies without adding a physical renderer to the core. Future BlenderProc comparisons (#64) must match conditions and annotation policies, distinguish textured planes from physical scenes, and include cold start, scene reuse, output/QA and asset preparation costs. Equal dataset-size and equal generation-time comparisons answer different questions. This round installs no Blender runtime.
 
@@ -16,7 +16,7 @@ The core 2D renderer does not simulate normal/roughness response, physical sun a
 
 `examples/configs/landing-pad_occlusion.yaml` adds optional `scene.occlusion`. Configure probability [0,1], kind (`blade`, `debris`, `mixed`), count range (0–64), length/width fractions of camera width (up to 1.2/.3), opacity range [.1,1], and `min_visible_support` [0,1] (starter .25). The independent stream places bounded unlabeled strips/irregular polygons in the scene plane and projects them through the target/ground homography. Their appearance resembles simple blades and debris; it is not a validated vegetation model. They composite above targets, before common illumination/capture. No imported occluder catalog role or cast shadows are added.
 
-Full target alpha precedes later target/external occlusion. Visible alpha is its remaining contribution. `visible_support_fraction` counts visible/full pixels above the family alpha threshold **within the image**; it is independent of the historical frame-clipping `visible_bbox_fraction`. Final boxes derive from visible masks. Fully hidden and below-floor targets lose annotations and archive entries with typed rejections. Best-effort retains survivor IDs; require-count rejects incomplete candidates after occlusion. Accidental empty positives are rejected; intentional negatives remain valid. Below-floor target pixels may remain in the image as unlabeled fragments, an explicit consequence of this acceptance policy to review against future real-label conventions.
+Targets whose transformed alpha supports intersect above the family threshold are not composited: later instances are dropped, with a typed overlap rejection. Sub-threshold edges may overlap. Full target alpha precedes external occlusion. Visible alpha is its remaining contribution. `visible_support_fraction` counts visible/full pixels above the family alpha threshold **within the image**; it is independent of the historical frame-clipping `visible_bbox_fraction`. Final boxes derive from visible masks. Fully hidden and below-floor targets lose annotations and archive entries with typed rejections. Best-effort retains survivor IDs; require-count rejects incomplete candidates after occlusion. Accidental empty positives are rejected; intentional negatives remain valid. The default `visibility_policy: legacy` can leave below-floor target pixels as unlabeled fragments. Opt into `visibility_policy: reject-visible-below-floor` to reject the entire candidate when any below-floor target retains above-threshold visible contribution. Fully hidden targets may still be omitted; below-threshold residual contribution can remain.
 
 Occluder polygons/opacity enter geometry signatures; appearance-only study invariants remain strict. Scene records include layer coordinates/colors, stream seeds, output support and the acceptance floor. Exclusive occlusion/annotation timings and advisory temporary-memory estimates include enabled work. Workspace is streamed per layer rather than retained per occluder. No new default renderer features activate by omission.
 
@@ -83,3 +83,21 @@ light. The default is `legacy`; the new option changes pixel colors without chan
 geometry or acceptance. Each layer is encoded back to 8-bit sRGB before the next layer, so this is
 not a single high-precision whole-scene accumulation. The initial review supports opt-in testing, not
 a realism or detector-benefit claim. See `experiments/camera-environments-v1/README.md`.
+
+
+## Experimental local foreground context
+
+`inline.scene.foreground_context` enables a bounded colour adjustment based on the
+projected background near each target. It samples local background outside the target,
+then applies a spatially uniform sRGB brightness and colour shift to the target. It is a
+qualitative adaptation, not physical illumination, and cannot remove baked lighting or
+create material response. Alpha, target geometry and background pixels remain unchanged.
+An object-specific seed controls the configured probability and strength range; sampled
+settings and shifts are recorded in scene evidence. If no local background is available,
+the foreground remains unchanged.
+
+The `landing-pad_context-restrained.yaml` and `landing-pad_context-broad.yaml` examples
+are uncalibrated candidates. Broad settings may noticeably alter the target colours.
+Neither is a new default, and visual similarity or detector improvement has not been
+established. `scripts/study_foreground_context.py` and its saved study matrix support
+paired comparison with a separate reserved seed; both phases reuse the same asset catalog.

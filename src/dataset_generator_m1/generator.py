@@ -143,6 +143,7 @@ def _produce_slot(
                     "geometry_signature": plan.geometry_signature(),
                     "intentional_negative": plan.intentional_negative,
                     "attempted_instances": plan.attempted_instances,
+                    "retained_instances": len(rendered.annotations),
                     "camera_rect": list(plan.camera_rect),
                     "scene_to_output": plan.scene_to_output.tolist(),
                     "perspective_quad": plan.perspective_quad.tolist(),

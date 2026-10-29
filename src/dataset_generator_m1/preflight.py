@@ -237,6 +237,8 @@ def run_preflight(
                     "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_SCENE_LIGHTING_UNCALIBRATED"]}
     if request.resolved.profile.scene.occlusion is not None:
         metadata = {**metadata, "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_SCENE_OCCLUSION_UNCALIBRATED"]}
+    if request.resolved.profile.scene.foreground_context is not None:
+        metadata = {**metadata, "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_FOREGROUND_CONTEXT_UNCALIBRATED"]}
     if request.resolved.profile.scene.compositing == "linear-srgb":
         metadata = {**metadata, "warning_codes": [*metadata.get("warning_codes", []), "EXPERIMENTAL_LINEAR_COMPOSITING_UNVALIDATED"]}
     environment = environment_class()
@@ -259,6 +261,8 @@ def run_preflight(
     runtime = _runtime_estimate(request, metadata, observations, knowledge)
     if (request.resolved.profile.scene.lighting is not None or request.resolved.profile.scene.occlusion is not None) and not observations:
         runtime["confidence"] += "-scene-effects-unmeasured"
+    if request.resolved.profile.scene.foreground_context is not None and not observations:
+        runtime["confidence"] += "-foreground-context-unmeasured"
     if request.resolved.profile.scene.foreground_resampling == "premultiplied" and not observations:
         runtime["confidence"] += "-resampling-unmeasured"
     if request.resolved.profile.scene.compositing == "linear-srgb" and not observations:

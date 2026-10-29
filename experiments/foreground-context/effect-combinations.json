@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "seeds": {
+    "development": 20261029,
+    "reserved": 20261030
+  },
+  "variants": {
+    "baseline": {
+      "wear": null,
+      "lighting": null,
+      "context": null,
+      "capture": false
+    },
+    "wear": {
+      "wear": {
+        "fade": 0.06,
+        "dirt": 0.18,
+        "scratches": 0.12,
+        "marks": 12
+      },
+      "lighting": null,
+      "context": null,
+      "capture": false
+    },
+    "lighting": {
+      "wear": null,
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown"
+      },
+      "context": null,
+      "capture": false
+    },
+    "shade": {
+      "wear": null,
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          1,
+          1
+        ],
+        "gradient": [
+          0,
+          0
+        ],
+        "tint": 0,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 1,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": null,
+      "capture": false
+    },
+    "context": {
+      "wear": null,
+      "lighting": null,
+      "context": {
+        "probability": 1,
+        "strength": [
+          0.15,
+          0.35
+        ],
+        "radius_fraction": 0.08,
+        "max_brightness_shift": 0.08,
+        "max_color_shift": 0.04
+      },
+      "capture": false
+    },
+    "wear-light": {
+      "wear": {
+        "fade": 0.06,
+        "dirt": 0.18,
+        "scratches": 0.12,
+        "marks": 12
+      },
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown"
+      },
+      "context": null,
+      "capture": false
+    },
+    "wear-context": {
+      "wear": {
+        "fade": 0.06,
+        "dirt": 0.18,
+        "scratches": 0.12,
+        "marks": 12
+      },
+      "lighting": null,
+      "context": {
+        "probability": 1,
+        "strength": [
+          0.15,
+          0.35
+        ],
+        "radius_fraction": 0.08,
+        "max_brightness_shift": 0.08,
+        "max_color_shift": 0.04
+      },
+      "capture": false
+    },
+    "all": {
+      "wear": {
+        "fade": 0.06,
+        "dirt": 0.18,
+        "scratches": 0.12,
+        "marks": 12
+      },
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 1,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": {
+        "probability": 1,
+        "strength": [
+          0.15,
+          0.35
+        ],
+        "radius_fraction": 0.08,
+        "max_brightness_shift": 0.08,
+        "max_color_shift": 0.04
+      },
+      "capture": false
+    },
+    "all-capture": {
+      "wear": {
+        "fade": 0.06,
+        "dirt": 0.18,
+        "scratches": 0.12,
+        "marks": 12
+      },
+      "lighting": {
+        "probability": 0.8,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 0.7,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": {
+        "probability": 0.5,
+        "strength": [
+          0.15,
+          0.35
+        ],
+        "radius_fraction": 0.08,
+        "max_brightness_shift": 0.08,
+        "max_color_shift": 0.04
+      },
+      "capture": true
+    }
+  }
+}

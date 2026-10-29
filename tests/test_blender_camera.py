@@ -83,3 +83,13 @@ def test_environment_bounds_enclose_target_footprints_as_well_as_camera():
     interior=bounds['half_width_m']-settings['wall_thickness_m']/2
     assert bounds['target_extent_m']==12.0
     assert all(interior >= max(abs(x),abs(y))+settings['camera_horizontal_margin_m'] for x,y in corners)
+
+
+def test_rotated_panel_footprints_detect_real_intersection_not_bounding_box():
+    from dataset_generator_m1.blender_camera import panel_footprint, footprints_overlap
+    a=panel_footprint((0,0),2,.1,45)
+    b=panel_footprint((0,1),2,.1,45)
+    assert not footprints_overlap(a,b)  # bounding boxes overlap but rectangles do not
+    assert footprints_overlap(a,panel_footprint((.1,.1),2,.1,45))
+    assert not footprints_overlap(panel_footprint((0,0),1,1,0),panel_footprint((1,0),1,1,0))
+    assert footprints_overlap(panel_footprint((0,0),1,1,0),panel_footprint((.99,0),1,1,0))

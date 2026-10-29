@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "execution": {
+    "workers": 2,
+    "native_threads": 1
+  },
+  "guards": {
+    "host_available_fraction_for_rss": 0.5,
+    "host_total_fraction_reserved": 0.1,
+    "host_minimum_reserve_gib": 2,
+    "max_swap_out_mib": 16,
+    "timeout_seconds": 1000
+  }
+}

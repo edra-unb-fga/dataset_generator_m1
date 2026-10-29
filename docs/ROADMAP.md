@@ -119,3 +119,9 @@ records the completed camera cells, annotation checks, visual review and limited
 see [round four](REALISM_ROUND_FOUR.md) for the full scope and limitations. The tested walls and
 lighting remain visibly artificial, so environment geometry stays experimental and production defaults
 remain unchanged. Real-image, model-transfer and multi-hardware requirements remain open.
+
+
+The [round-five integration](REALISM_ROUND_FIVE.md) adds conservative target-placement
+contracts and an experimental local foreground-context treatment. Human-reviewed synthetic
+studies remain engineering evidence; real calibration, independent evaluation, physically
+grounded lighting and material work under #59, #61–#64 remain open.

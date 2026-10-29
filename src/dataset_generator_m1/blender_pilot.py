@@ -347,10 +347,19 @@ def prepare(config_path,output):
                              'benchmark':scene_index==0 and treatment.id==config.treatments[0].id})
                 if pose is not None:jobs[-1]['camera_pose']=pose
                 if environment_kind is not None:jobs[-1]['environment_geometry']=environment_kind
-    first=jobs[0]
+    first=next((job for job in jobs if job['scene']['objects']),jobs[0])
+    # Selected coverage may contain only negatives even though the reference pool
+    # contains positives. Keep positive diagnostics meaningful in that case.
+    if not first['scene']['objects']:
+        positive=next((scene for scene in scenes if scene['objects']),None)
+        if positive is not None:first={**first,'scene':positive}
     for case in ('negative','clipped','occluded','fully-hidden','overlap','closeup'):
         scene=dict(first['scene'])
         scene['objects']=[] if case=='negative' else list(scene['objects'][:2])
+        if case=='overlap' and scene['objects']:
+            # Two identical panels with a half-width offset retain visible support
+            # for both while intentionally overlapping in the vertical stack.
+            scene['objects']=[scene['objects'][0],dict(scene['objects'][0])]
         scene['negative']=case=='negative'
         jobs.append({**first,'id':'diagnostic-'+case,'case':case,'scene':scene,'benchmark':False})
     jobs.sort(key=lambda j:(j['quality']!='fast',j['scene_index']))
@@ -412,8 +421,9 @@ def mask_box(mask):
     return [int(xs.min()),int(ys.min()),int(xs.max()+1-xs.min()),int(ys.max()+1-ys.min())]
 
 
-def annotation_rows(visible,full,image_id,first_id=1):
+def annotation_rows(visible,full,image_id,first_id=1,original_indices=None):
     if visible.shape!=full.shape or visible.ndim!=3:raise ValueError('Matching NxHxW masks required')
+    if original_indices is not None and len(original_indices)!=len(visible):raise ValueError('Survivor identity count does not match masks')
     result={'visible':[],'full':[]};next_id=first_id
     for instance,(v,f) in enumerate(zip(visible.astype(bool),full.astype(bool))):
         if np.any(v&~f):raise ValueError('Visible mask exceeds full support')
@@ -423,7 +433,8 @@ def annotation_rows(visible,full,image_id,first_id=1):
         for semantics,mask in (('visible',v),('full',f)):
             result[semantics].append({'id':next_id,'image_id':image_id,'category_id':1,'instance_id':instance,
                 'bbox':mask_box(mask),'area':int(mask.sum()),'iscrowd':0,'segmentation':mask_rle(mask),
-                'visible_support_fraction':support})
+                'visible_support_fraction':support,
+                'original_instance_id':original_indices[instance] if original_indices is not None else instance})
         next_id+=1
     return result
 
@@ -462,7 +473,7 @@ def export_study(root, *, yolo=False):
     from .ownership import CoordinatorLease
     with CoordinatorLease(root):
         result=_export_coco(root)
-        if yolo:result['yolo']=_export_yolo(root)
+        if yolo:result['yolo']=_export_yolo(root) if result['images'] else {'status':'unavailable','reason':'No ordinary accepted scenes'}
         return result
 
 
@@ -474,10 +485,20 @@ def _export_coco(root):
     export_started=monotonic()
     root=Path(root).resolve();study=load_study(root)
     images=[];annotations={'visible':[],'full':[]};metadata={};next_id=1
+    diagnostic_images=[];diagnostic_annotations={'visible':[],'full':[]};diagnostic_metadata={};diagnostic_next_id=1
     for image_id,(job,path,row) in enumerate(completed_outputs(root,study),1):
         if row['status']!='accepted':continue
+        if job.get('case')=='overlap':
+            with np.load(path/'masks.npz',allow_pickle=False) as masks:
+                converted=annotation_rows(masks['visible'],masks['full'],image_id,diagnostic_next_id,row.get('placement_diagnostics',{}).get('retained_original_indices'))
+            diagnostic_next_id+=len(converted['visible'])
+            with Image.open(path/'rgb.png') as image:width,height=image.size
+            diagnostic_images.append({'id':image_id,'file_name':str((path/'rgb.png').relative_to(root)), 'width':width,'height':height})
+            for semantics in diagnostic_annotations:diagnostic_annotations[semantics].extend(converted[semantics])
+            diagnostic_metadata[str(image_id)]={'purpose':'stacked-panel diagnostic only; excluded from training exports','conditions':job,'render_evidence':row}
+            continue
         with np.load(path/'masks.npz',allow_pickle=False) as masks:
-            converted=annotation_rows(masks['visible'],masks['full'],image_id,next_id)
+            converted=annotation_rows(masks['visible'],masks['full'],image_id,next_id,row.get('placement_diagnostics',{}).get('retained_original_indices'))
         next_id+=len(converted['visible'])
         if not converted['visible'] and not job['scene']['negative']:raise ValueError('Accidental empty positive')
         with Image.open(path/'rgb.png') as image:width,height=image.size
@@ -486,7 +507,15 @@ def _export_coco(root):
         metadata[str(image_id)]={'synthetic_pipeline':'blenderproc','study_identity':study['identity'],
             'conditions':job,'render_evidence':row,'configured_scale':'nominal, not calibrated',
             'mask_policy':'sharp reference-pose geometry; 25% in-frame visible-support floor'}
-    if not images:raise ValueError('No accepted completed scenes to export')
+    if not images and not diagnostic_images:raise ValueError('No accepted completed scenes to export')
+    atomic_json(root/'diagnostic-overlap-metadata.json',diagnostic_metadata)
+    for semantics in diagnostic_annotations:
+        atomic_json(root/f'diagnostic-overlap-coco-{semantics}.json',{'images':diagnostic_images,'annotations':diagnostic_annotations[semantics],
+                    'categories':[{'id':1,'name':'pad'}], 'purpose':'diagnostic only; excluded from ordinary exports'})
+    if not images:
+        result={'images':0,'instances':0,'diagnostic_images':len(diagnostic_images),'export_seconds':monotonic()-export_started}
+        atomic_json(root/'coco-export.json',result)
+        return result
     atomic_json(root/'metadata.json',metadata)
     for semantics in annotations:
         atomic_json(root/f'coco-{semantics}.json',{'images':images,'annotations':annotations[semantics],

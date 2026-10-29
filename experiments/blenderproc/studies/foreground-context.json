@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "seeds": {"development": 20261027, "reserved": 20261028},
+  "variants": {
+    "baseline": null,
+    "restrained": {"probability": 0.5, "strength": [0.15, 0.35], "radius_fraction": 0.08, "max_brightness_shift": 0.08, "max_color_shift": 0.04},
+    "broad": {"probability": 1.0, "strength": [0.5, 1.5], "radius_fraction": 0.2, "max_brightness_shift": 1.0, "max_color_shift": 1.0}
+  }
+}
