@@ -17,6 +17,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from .models import SurfaceWearConfig
 from .blender_camera import sample_pose
 from .scene_presets import Preset, sample as sample_preset
+from .ground_material import GroundMapping, GroundMaterial, sample_spans, required_maps
 
 
 class Strict(BaseModel):
@@ -59,6 +60,7 @@ class Treatment(Strict):
     wear_seed: int | None = Field(default=None, ge=0)
     pad_bump_strength: float | None = Field(default=None, ge=0, le=2)
     pad_bump_distance_m: float = Field(default=.00015, ge=0, le=.01)
+    ground_material: GroundMaterial | None = None
     ground_normal_strength: float | None = Field(default=None, ge=0, le=2)
     ground_uv_offset: tuple[float, float] = (0, 0)
     environment_index: int | None = Field(default=None, ge=0)
@@ -168,6 +170,7 @@ class EnvironmentGeometrySettings(Strict):
 class PilotConfig(Strict):
     schema_version: Literal[1] = 1
     procedural: Preset | None = None
+    ground_mapping: GroundMapping | None = None
     camera_study: CameraStudy | None = None
     environment_mix: EnvironmentMix | None = None
     environment_geometry_settings: EnvironmentGeometrySettings | None = None
@@ -205,6 +208,12 @@ class PilotConfig(Strict):
             index=self.environment_geometry_settings.wall_ground_index
             if index is not None and index >= len(self.grounds):
                 raise ValueError('Wall ground material index out of range')
+        for treatment in self.treatments:
+            if treatment.ground_material:
+                for name in ('primary_index','donor_index'):
+                    index=getattr(treatment.ground_material,name)
+                    if index is not None and index >= len(self.grounds):
+                        raise ValueError('Ground material '+name.replace('_',' ')+' out of range')
         if any(not 64<=value<=2048 for value in self.resolution):
             raise ValueError('Pilot resolution is bounded to64–2048 per dimension')
         if any(not 0<=v<=1 for v in self.principal_point_fraction):
@@ -330,6 +339,8 @@ def prepare(config_path,output):
         config_data['environment_geometry_settings']=EnvironmentGeometrySettings().model_dump(mode='json')
     if config.procedural is None:
         config_data.pop('procedural')
+    if config.ground_mapping is None:
+        config_data.pop('ground_mapping')
     if config.camera_study is None:
         config_data.pop('camera_study')
     contract={'config':config_data,'reference':reference,'assets':assets,'artwork':artwork,
@@ -337,7 +348,7 @@ def prepare(config_path,output):
               'renderer_script_sha256':digest_file(Path(__file__).resolve().parents[2]/'experiments/blenderproc/render.py')}
     source_root=Path(__file__).resolve().parents[2]
     sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_camera.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','src/dataset_generator_m1/wear_materials.py','src/dataset_generator_m1/surface_effects.py','src/dataset_generator_m1/models.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
-    sources.append('src/dataset_generator_m1/scene_presets.py')
+    sources.extend(['src/dataset_generator_m1/scene_presets.py','src/dataset_generator_m1/ground_material.py'])
     if any(asset['manifest'].get('license') != 'CC0-1.0' for asset in assets):
         sources.append('src/dataset_generator_m1/asset_licenses.py')
     contract['harness_sources']={name:digest_file(source_root/name) for name in sources}
@@ -371,6 +382,19 @@ def prepare(config_path,output):
                     Treatment.model_validate(resolved['treatment'])
                     EnvironmentGeometrySettings.model_validate(resolved['environment_geometry_settings'])
                     jobs[-1].update(resolved)
+                variant=treatment.ground_material
+                if variant is not None and variant.primary_index is not None:
+                    jobs[-1]['ground_index']=variant.primary_index
+                if variant is not None and variant.donor_index == jobs[-1]['ground_index']:
+                    raise ValueError('Ground material donor must differ from selected primary ground')
+                if variant is not None:
+                    primary_roles,donor_roles=required_maps(variant.mode)
+                    for label,index,roles in (('primary',jobs[-1]['ground_index'],primary_roles),('donor',variant.donor_index,donor_roles)):
+                        missing=roles-set(grounds[index]['maps']) if roles else set()
+                        if missing:
+                            raise ValueError(f'Ground material {label} index {index} missing maps: '+', '.join(sorted(missing)))
+                if config.ground_mapping is not None:
+                    jobs[-1]['ground_spans']=sample_spans(config.seed,config.scene_offset+scene_index,config.ground_mapping.ground_spans)
                 if pose is not None:jobs[-1]['camera_pose']=pose
                 if environment_kind is not None and config.procedural is None:jobs[-1]['environment_geometry']=environment_kind
     first=next((job for job in jobs if job['scene']['objects']),jobs[0])

@@ -64,3 +64,6 @@ as a validated automatic dataset mixture.
 
 `environment_geometry_settings` can be supplied directly with a procedural preset; an
 `environment_mix` is not required because the preset supplies the enclosure type.
+
+Ground material variants and view-relative texture scaling are separate experimental controls; see
+[ground materials](GROUND_MATERIALS.md) for their interaction with preset-selected grounds.

@@ -1,0 +1,914 @@
+{
+  "schema_version": 1,
+  "purpose": "bounded paired materials and directional tangent fixture",
+  "cells": [
+    {
+      "id": "span-fallback",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      }
+    },
+    {
+      "id": "span-0-5",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "id": "span-1",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "span-1-5",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1.5,
+          1.5
+        ]
+      }
+    },
+    {
+      "id": "g0-color-only",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "color-only",
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "g0-full",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "g0-coherent-blend",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "coherent-blend",
+          "donor_index": 1,
+          "blend_scale": 2,
+          "blend_amount": 0.5,
+          "blend_seed": 12,
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "g0-rgb-blend-stress",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "rgb-blend-stress",
+          "donor_index": 1,
+          "blend_scale": 2,
+          "blend_amount": 0.5,
+          "blend_seed": 12,
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "g0-donor-mismatch-stress",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "donor-mismatch-stress",
+          "donor_index": 1,
+          "blend_scale": 2,
+          "blend_amount": 0.5,
+          "blend_seed": 12,
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "g1-color-only",
+      "ground_indices": [
+        1,
+        0
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "color-only",
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "scene_offset": 1
+    },
+    {
+      "id": "g1-full",
+      "ground_indices": [
+        1,
+        0
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "scene_offset": 1
+    },
+    {
+      "id": "g1-coherent-blend",
+      "ground_indices": [
+        1,
+        0
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "coherent-blend",
+          "donor_index": 1,
+          "blend_scale": 2,
+          "blend_amount": 0.5,
+          "blend_seed": 12,
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "scene_offset": 1
+    },
+    {
+      "id": "g1-rgb-blend-stress",
+      "ground_indices": [
+        1,
+        0
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "rgb-blend-stress",
+          "donor_index": 1,
+          "blend_scale": 2,
+          "blend_amount": 0.5,
+          "blend_seed": 12,
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "scene_offset": 1
+    },
+    {
+      "id": "g1-donor-mismatch-stress",
+      "ground_indices": [
+        1,
+        0
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "donor-mismatch-stress",
+          "donor_index": 1,
+          "blend_scale": 2,
+          "blend_amount": 0.5,
+          "blend_seed": 12,
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "scene_offset": 1
+    },
+    {
+      "id": "indoor-full",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "indoor",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "environment_strength": 0,
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "lamps": [
+          {
+            "kind": "AREA",
+            "location": [
+              -2,
+              -2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              1,
+              1
+            ],
+            "power_w": 500,
+            "size_m": 1.5
+          }
+        ],
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        }
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "indoor-coherent-blend",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "indoor",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "environment_strength": 0,
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "lamps": [
+          {
+            "kind": "AREA",
+            "location": [
+              -2,
+              -2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              1,
+              1
+            ],
+            "power_w": 500,
+            "size_m": 1.5
+          }
+        ],
+        "ground_material": {
+          "mode": "coherent-blend",
+          "donor_index": 1,
+          "primary_index": 0
+        }
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "fixture-rot-0",
+      "ground_indices": [
+        2
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "uv_rotation_degrees": 0,
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        },
+        "ground_normal_strength": 1,
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              -5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "fixture-rot-90",
+      "ground_indices": [
+        2
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": false,
+        "casters": {
+          "count": 0
+        },
+        "environment_strength": 0.15,
+        "uv_rotation_degrees": 90,
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        },
+        "ground_normal_strength": 1,
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -5,
+              5,
+              5.9
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    }
+  ]
+}
