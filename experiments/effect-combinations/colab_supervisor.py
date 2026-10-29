@@ -19,20 +19,10 @@ class Policy(BaseModel):
             raise ValueError('Remote and handoff must fit allocation')
         return self
 
-def sha(p):
-    h=hashlib.sha256()
-    with Path(p).open('rb') as f:
-        for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
-    return h.hexdigest()
+# Shared transport only: each study retains its own budget and lifecycle policy.
+_transport = runpy.run_path(str(HERE.parent / 'shared/colab_transport.py'))
+sha, write, call = (_transport[name] for name in ('sha', 'write', 'call'))
 
-def write(path,value):
-    path=Path(path); tmp=path.with_suffix(path.suffix+'.tmp');tmp.write_text(json.dumps(value,indent=2)+'\n');os.replace(tmp,path)
-
-def call(colab,*args,timeout=180,check=True):
-    result=subprocess.run([colab,'--auth=oauth2',*args],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=timeout)
-    print(re.sub(r'(?i)(colab-runtime-proxy-token=)[^\s&]+',r'\1[REDACTED]',result.stdout),flush=True)
-    if check and result.returncode:raise RuntimeError(f'{args[0]} exited {result.returncode}')
-    return result
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); sub=p.add_subparsers(dest='action',required=True)
@@ -57,7 +47,7 @@ def main():
         if not member.isfile() or tar.extractfile(member).read()!=policy_bytes:raise ValueError('Bundle policy differs from supervisor policy')
     root.mkdir(parents=True,exist_ok=False)
     remote=root/'remote.py';remote.write_bytes((HERE/'colab_remote.py').read_bytes())
-    chunk_helper=root/'context_chunking.py';chunk_helper.write_bytes((HERE/'colab_chunking.py').read_bytes())
+    chunk_helper=root/'context_chunking.py';chunk_helper.write_bytes((HERE.parent/'shared/colab_transport.py').read_bytes())
     chunks=runpy.run_path(str(chunk_helper))['split_bundle'](bundle,root/'chunks')
     if chunks['sha256']!=sha(bundle):raise ValueError('Split bundle checksum mismatch')
     (root/'supervisor-policy.json').write_bytes(policy_bytes)

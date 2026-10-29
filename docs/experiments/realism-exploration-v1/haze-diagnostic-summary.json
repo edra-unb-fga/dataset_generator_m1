@@ -1,0 +1,1030 @@
+{
+  "status": "complete",
+  "records": [
+    {
+      "cell": "baseline",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 9.358045763000064,
+        "peak_rss_bytes": 3960664064,
+        "minimum_available_bytes": 51947716608,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.010833740234375,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4721.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "98edfa70dcea8ccaf260b26281d6a580f4199c93400e6971dc0da56c1781aa4e",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "a68568db8aac1a8b773942c3b15398e2f9f15dc51d64ce9bae1a31c5ab634391",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.02137709199996607,
+              "annotation_seconds": 4.102644958999917,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/baseline/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/baseline/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.015100885000038033,
+              "annotation_seconds": 3.935061232999942,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/baseline/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/baseline/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.011806535999994594,
+              "annotation_seconds": 3.872592188999988,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/baseline/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/baseline/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "original-haze",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.253702933999989,
+        "peak_rss_bytes": 3836284928,
+        "minimum_available_bytes": 52019986432,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.010833740234375,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4735.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "98edfa70dcea8ccaf260b26281d6a580f4199c93400e6971dc0da56c1781aa4e",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "00136ca3a0d2834c81581c534addc95d45004d686203b1ee5882b8675ffb3261",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.02365664299998116,
+              "annotation_seconds": 1.0159539490000498,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/original-haze/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/original-haze/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.016076541999950678,
+              "annotation_seconds": 0.8767857220000224,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/original-haze/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/original-haze/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.012968987000022025,
+              "annotation_seconds": 0.7895358490000035,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/original-haze/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/original-haze/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "very-light-haze",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 5.996951546999981,
+        "peak_rss_bytes": 3823910912,
+        "minimum_available_bytes": 52029870080,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.010833740234375,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4905.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "98edfa70dcea8ccaf260b26281d6a580f4199c93400e6971dc0da56c1781aa4e",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "59b7b39aa691c4afb4ad346c32d12cf36a3767d44b3e8739ac0e65bc6c366dba",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.02348202799998944,
+              "annotation_seconds": 0.9750235059999568,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/very-light-haze/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/very-light-haze/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.016684836000081305,
+              "annotation_seconds": 0.825082320999968,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/very-light-haze/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/very-light-haze/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.013236525000024812,
+              "annotation_seconds": 0.7584048709999252,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/very-light-haze/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/very-light-haze/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "volume-below-ground",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 7.27765734500008,
+        "peak_rss_bytes": 3831689216,
+        "minimum_available_bytes": 52081926144,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.010833740234375,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 5055.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "98edfa70dcea8ccaf260b26281d6a580f4199c93400e6971dc0da56c1781aa4e",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "1a7b02b2479a0e002bfab6fd852d8a22b544b74529a1399c033c780215d87ae2",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.024410710999973162,
+              "annotation_seconds": 1.012811926999916,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/volume-below-ground/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/volume-below-ground/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.016416253999977926,
+              "annotation_seconds": 0.8584279350000088,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/volume-below-ground/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/volume-below-ground/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.012899478000008457,
+              "annotation_seconds": 0.7755374850000862,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": null,
+          "image": "/content/realism-retry/results/cells/volume-below-ground/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/volume-below-ground/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "cell": "original-haze",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 34.82472412109375,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "original-haze",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 28.799998372395834,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "original-haze",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 13.720255533854166,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "very-light-haze",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 36.15728759765625,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "very-light-haze",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 28.417313639322916,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "very-light-haze",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 14.820125325520833,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "volume-below-ground",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 2.6852994791666664,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "volume-below-ground",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 3.0302115885416665,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "volume-below-ground",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 1.5068098958333334,
+      "all_masks_equal": true
+    }
+  ],
+  "elapsed_seconds": 148.459207634
+}

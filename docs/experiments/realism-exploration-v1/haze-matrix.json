@@ -1,0 +1,304 @@
+{
+  "schema_version": 1,
+  "purpose": "Corrected volume screen: outdoor and indoor haze; density is not calibrated",
+  "cells": [
+    {
+      "id": "baseline",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "outdoor-light",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "haze_density": 0.01
+      }
+    },
+    {
+      "id": "outdoor-medium",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "haze_density": 0.03
+      }
+    },
+    {
+      "id": "outdoor-strong",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 1,
+          "indoor": 0,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "sun",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "haze_density": 0.05
+      }
+    },
+    {
+      "id": "indoor-clear",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "indoor-medium",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.5,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "haze_density": 0.03
+      }
+    }
+  ]
+}

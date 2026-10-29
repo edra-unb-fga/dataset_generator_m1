@@ -1,0 +1,271 @@
+{
+  "status": "complete",
+  "paired_slots": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "signatures": {
+    "baseline": "6b0b88032f51b5b2e1d3e09786c79b169e9d43cdaa4e16bcd1f1f1ce3e0d23ab",
+    "broad": "6b0b88032f51b5b2e1d3e09786c79b169e9d43cdaa4e16bcd1f1f1ce3e0d23ab",
+    "balanced": "6b0b88032f51b5b2e1d3e09786c79b169e9d43cdaa4e16bcd1f1f1ce3e0d23ab",
+    "balanced-wear": "6b0b88032f51b5b2e1d3e09786c79b169e9d43cdaa4e16bcd1f1f1ce3e0d23ab",
+    "balanced-strong-wear": "6b0b88032f51b5b2e1d3e09786c79b169e9d43cdaa4e16bcd1f1f1ce3e0d23ab"
+  },
+  "timings": {
+    "baseline": {
+      "accepted": 6,
+      "inspection": "valid",
+      "generation_seconds": 17.118187252999633,
+      "preparation_seconds": 2.4190148130001035,
+      "execution": {
+        "workers": 1,
+        "native_threads": 1,
+        "max_in_flight": 2,
+        "cache_bytes_per_worker": 0,
+        "estimated_peak_bytes": 1309094708,
+        "ram_budget_bytes": 2951172096,
+        "cpu_budget": 23,
+        "warnings": [],
+        "requested": {
+          "workers": 1,
+          "cpu_budget": null,
+          "ram_budget_mb": null,
+          "native_threads": 1,
+          "max_in_flight": null,
+          "decoded_cache_mb": 0
+        },
+        "memory_estimate": {
+          "model_version": "phase-lifetimes-v4",
+          "estimate_metric": "process-tree RSS planning upper estimate",
+          "runtime_reserve_bytes": 268435456,
+          "native_reserve_bytes": 0,
+          "coordinator_reserve_bytes": 65536000,
+          "worker_peak_bytes": 707788800,
+          "phase_peaks_bytes_per_worker": {
+            "background": 707788800,
+            "scene_render": 297856544,
+            "mask_evidence": 131072000
+          },
+          "recipe_peaks_bytes": {
+            "direct": 471859200,
+            "palette": 629145600,
+            "mask_multiband": 707788800,
+            "displaced": 550502400
+          },
+          "queued_result_bytes": 49152000,
+          "headroom_percent": 20,
+          "headroom_bytes": 218182452,
+          "estimated_peak_bytes": 1309094708,
+          "source_dimensions_complete": true,
+          "decoded_cache_bytes": 0,
+          "cache_headroom_bytes": 0
+        }
+      }
+    },
+    "broad": {
+      "accepted": 6,
+      "inspection": "valid",
+      "generation_seconds": 16.140094719012268,
+      "preparation_seconds": 0.012771191992214881,
+      "execution": {
+        "workers": 1,
+        "native_threads": 1,
+        "max_in_flight": 2,
+        "cache_bytes_per_worker": 0,
+        "estimated_peak_bytes": 1309094708,
+        "ram_budget_bytes": 2994720768,
+        "cpu_budget": 23,
+        "warnings": [],
+        "requested": {
+          "workers": 1,
+          "cpu_budget": null,
+          "ram_budget_mb": null,
+          "native_threads": 1,
+          "max_in_flight": null,
+          "decoded_cache_mb": 0
+        },
+        "memory_estimate": {
+          "model_version": "phase-lifetimes-v4",
+          "estimate_metric": "process-tree RSS planning upper estimate",
+          "runtime_reserve_bytes": 268435456,
+          "native_reserve_bytes": 0,
+          "coordinator_reserve_bytes": 65536000,
+          "worker_peak_bytes": 707788800,
+          "phase_peaks_bytes_per_worker": {
+            "background": 707788800,
+            "scene_render": 320204320,
+            "mask_evidence": 131072000
+          },
+          "recipe_peaks_bytes": {
+            "direct": 471859200,
+            "palette": 629145600,
+            "mask_multiband": 707788800,
+            "displaced": 550502400
+          },
+          "queued_result_bytes": 49152000,
+          "headroom_percent": 20,
+          "headroom_bytes": 218182452,
+          "estimated_peak_bytes": 1309094708,
+          "source_dimensions_complete": true,
+          "decoded_cache_bytes": 0,
+          "cache_headroom_bytes": 0
+        }
+      }
+    },
+    "balanced": {
+      "accepted": 6,
+      "inspection": "valid",
+      "generation_seconds": 15.679768756002886,
+      "preparation_seconds": 0.010578396992059425,
+      "execution": {
+        "workers": 1,
+        "native_threads": 1,
+        "max_in_flight": 2,
+        "cache_bytes_per_worker": 0,
+        "estimated_peak_bytes": 1309094708,
+        "ram_budget_bytes": 3022992998,
+        "cpu_budget": 23,
+        "warnings": [],
+        "requested": {
+          "workers": 1,
+          "cpu_budget": null,
+          "ram_budget_mb": null,
+          "native_threads": 1,
+          "max_in_flight": null,
+          "decoded_cache_mb": 0
+        },
+        "memory_estimate": {
+          "model_version": "phase-lifetimes-v4",
+          "estimate_metric": "process-tree RSS planning upper estimate",
+          "runtime_reserve_bytes": 268435456,
+          "native_reserve_bytes": 0,
+          "coordinator_reserve_bytes": 65536000,
+          "worker_peak_bytes": 707788800,
+          "phase_peaks_bytes_per_worker": {
+            "background": 707788800,
+            "scene_render": 320204320,
+            "mask_evidence": 131072000
+          },
+          "recipe_peaks_bytes": {
+            "direct": 471859200,
+            "palette": 629145600,
+            "mask_multiband": 707788800,
+            "displaced": 550502400
+          },
+          "queued_result_bytes": 49152000,
+          "headroom_percent": 20,
+          "headroom_bytes": 218182452,
+          "estimated_peak_bytes": 1309094708,
+          "source_dimensions_complete": true,
+          "decoded_cache_bytes": 0,
+          "cache_headroom_bytes": 0
+        }
+      }
+    },
+    "balanced-wear": {
+      "accepted": 6,
+      "inspection": "valid",
+      "generation_seconds": 15.049248336988967,
+      "preparation_seconds": 0.010861436996492557,
+      "execution": {
+        "workers": 1,
+        "native_threads": 1,
+        "max_in_flight": 2,
+        "cache_bytes_per_worker": 0,
+        "estimated_peak_bytes": 1309094708,
+        "ram_budget_bytes": 2667855052,
+        "cpu_budget": 23,
+        "warnings": [],
+        "requested": {
+          "workers": 1,
+          "cpu_budget": null,
+          "ram_budget_mb": null,
+          "native_threads": 1,
+          "max_in_flight": null,
+          "decoded_cache_mb": 0
+        },
+        "memory_estimate": {
+          "model_version": "phase-lifetimes-v4",
+          "estimate_metric": "process-tree RSS planning upper estimate",
+          "runtime_reserve_bytes": 268435456,
+          "native_reserve_bytes": 0,
+          "coordinator_reserve_bytes": 65536000,
+          "worker_peak_bytes": 707788800,
+          "phase_peaks_bytes_per_worker": {
+            "background": 707788800,
+            "scene_render": 320204320,
+            "mask_evidence": 131072000
+          },
+          "recipe_peaks_bytes": {
+            "direct": 471859200,
+            "palette": 629145600,
+            "mask_multiband": 707788800,
+            "displaced": 550502400
+          },
+          "queued_result_bytes": 49152000,
+          "headroom_percent": 20,
+          "headroom_bytes": 218182452,
+          "estimated_peak_bytes": 1309094708,
+          "source_dimensions_complete": true,
+          "decoded_cache_bytes": 0,
+          "cache_headroom_bytes": 0
+        }
+      }
+    },
+    "balanced-strong-wear": {
+      "accepted": 6,
+      "inspection": "valid",
+      "generation_seconds": 15.00651945399295,
+      "preparation_seconds": 0.011587594999582507,
+      "execution": {
+        "workers": 1,
+        "native_threads": 1,
+        "max_in_flight": 2,
+        "cache_bytes_per_worker": 0,
+        "estimated_peak_bytes": 1309094708,
+        "ram_budget_bytes": 2694896025,
+        "cpu_budget": 23,
+        "warnings": [],
+        "requested": {
+          "workers": 1,
+          "cpu_budget": null,
+          "ram_budget_mb": null,
+          "native_threads": 1,
+          "max_in_flight": null,
+          "decoded_cache_mb": 0
+        },
+        "memory_estimate": {
+          "model_version": "phase-lifetimes-v4",
+          "estimate_metric": "process-tree RSS planning upper estimate",
+          "runtime_reserve_bytes": 268435456,
+          "native_reserve_bytes": 0,
+          "coordinator_reserve_bytes": 65536000,
+          "worker_peak_bytes": 707788800,
+          "phase_peaks_bytes_per_worker": {
+            "background": 707788800,
+            "scene_render": 320204320,
+            "mask_evidence": 131072000
+          },
+          "recipe_peaks_bytes": {
+            "direct": 471859200,
+            "palette": 629145600,
+            "mask_multiband": 707788800,
+            "displaced": 550502400
+          },
+          "queued_result_bytes": 49152000,
+          "headroom_percent": 20,
+          "headroom_bytes": 218182452,
+          "estimated_peak_bytes": 1309094708,
+          "source_dimensions_complete": true,
+          "decoded_cache_bytes": 0,
+          "cache_headroom_bytes": 0
+        }
+      }
+    }
+  },
+  "report": "report.html"
+}

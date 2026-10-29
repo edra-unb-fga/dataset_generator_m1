@@ -71,10 +71,12 @@ def panel(name,artwork,width,thickness,location,angle,roughness,normal_strength,
     return obj
 
 
-def light(name,kind,location,power,color,size,target=(0,0,0)):
+def light(name,kind,location,power,color,size,target=(0,0,0),spot_size_rad=.7853981633974483,spot_blend=.15):
     data=bpy.data.lights.new(name,kind);data.energy=power;data.color=color
     if kind=='AREA':data.shape='DISK';data.size=size
     if kind=='SUN':data.angle=size
+    if kind in ('POINT','SPOT'):data.shadow_soft_size=size
+    if kind=='SPOT':data.spot_size=spot_size_rad;data.spot_blend=spot_blend
     obj=bpy.data.objects.new(name,data);bpy.context.collection.objects.link(obj);obj.location=location
     obj.rotation_euler=(Vector(target)-obj.location).to_track_quat('-Z','Y').to_euler()
     return obj
@@ -100,7 +102,24 @@ def ground_material(ground,treatment,extent=40,tile_override=None):
     return mat
 
 
-def environment_geometry(kind, position, settings, grounds, camera_speed_mps, shutter_seconds, target_corners=()):
+def fit_indoor_lamp(location, kind, size, geometry, thickness):
+    """Fit the whole emitter into the room; return None if it cannot fit."""
+    radius=size/2 if kind=='AREA' else size
+    clearance=thickness/2+.01+radius
+    limit=geometry['half_width_m']-clearance
+    top=geometry['ceiling_height_m']-clearance
+    if limit<=0 or top<=radius+.01: return None
+    return [max(-limit,min(limit,location[0])), max(-limit,min(limit,location[1])),
+            max(radius+.01,min(top,location[2]))]
+
+def indoor_caster_fits(location, scale, geometry, thickness):
+    """Conservatively test a caster's complete axis-aligned extent against the room."""
+    wall=geometry['half_width_m']-thickness/2
+    ceiling=geometry['ceiling_height_m']-thickness/2
+    return (abs(location[0])+scale[0]/2 < wall and abs(location[1])+scale[1]/2 < wall
+            and location[2]-scale[2]/2 >= 0 and location[2]+scale[2]/2 < ceiling)
+
+def environment_geometry(kind, position, settings, grounds, camera_speed_mps, shutter_seconds, target_corners=(), add_ceiling_light=True):
     """Build enclosing surfaces using saved dimensions and material choices."""
     if kind == 'open':
         return None
@@ -119,17 +138,20 @@ def environment_geometry(kind, position, settings, grounds, camera_speed_mps, sh
         links.new(coord.outputs['UV'],mapping.inputs['Vector'])
         links.new(mapping.outputs['Vector'],texture.inputs['Vector'])
         links.new(texture.outputs['Color'],shader.inputs['Base Color'])
-    def box(name, location, scale):
+    ceiling_color=settings.get('ceiling_color')
+    ceiling_mat=wall_mat if ceiling_color is None else material('environment-ceiling',(*ceiling_color,1),settings.get('ceiling_roughness') if settings.get('ceiling_roughness') is not None else settings['wall_roughness'])[0]
+    def box(name, location, scale, surface=wall_mat):
         bpy.ops.mesh.primitive_cube_add(size=1,location=location)
-        obj=bpy.context.object;obj.name=name;obj.scale=scale;obj.data.materials.append(wall_mat)
+        obj=bpy.context.object;obj.name=name;obj.scale=scale;obj.data.materials.append(surface)
     thickness=settings['wall_thickness_m']
     for axis in (-1,1):
         box(f'environment-wall-x-{axis}',(axis*half,0,wall_height/2),(thickness,2*half,wall_height))
         box(f'environment-wall-y-{axis}',(0,axis*half,wall_height/2),(2*half,thickness,wall_height))
     if kind == 'indoor':
-        box('environment-ceiling',(0,0,height),(2*half,2*half,thickness))
-        light('environment-ceiling-light','AREA',(0,0,height-settings['indoor_light_ceiling_offset_m']),
-              settings['indoor_light_power_w'],settings['indoor_light_color'],settings['indoor_light_size_m'])
+        box('environment-ceiling',(0,0,height),(2*half,2*half,thickness),ceiling_mat)
+        if add_ceiling_light:
+            light('environment-ceiling-light','AREA',(0,0,height-settings['indoor_light_ceiling_offset_m']),
+                  settings['indoor_light_power_w'],settings['indoor_light_color'],settings['indoor_light_size_m'])
     return {'kind':kind,'half_width_m':half,'wall_height_m':wall_height,
             'ceiling_height_m':height if kind == 'indoor' else None,
             'camera_motion_margin_m':bounds['camera_motion_margin_m'],'target_extent_m':bounds['target_extent_m'],'settings':settings}
@@ -242,12 +264,6 @@ def build_scene(study,job,attempt):
     if t['lighting']=='sun' and job.get('environment_geometry')!='indoor':
         elev=math.radians(t['sun_elevation_degrees'])
         light('sun','SUN',(-5,-5,7*math.tan(elev)),2.0,(1,.94,.85),.025)
-    if t.get('lamps') is not None:
-        for index,lamp in enumerate(t['lamps']):
-            light(f'lamp-{index}','AREA',lamp['location'],lamp['power_w'],lamp['color'],lamp['size_m'],lamp['target'])
-    elif t['lighting'].startswith('night'):
-        light('lamp','AREA',(-2,-2,3),t['light_power_w'],(1,.78,.52),t['light_size_m'])
-        if t['lighting']=='night-mixed':light('lamp-blue','AREA',(3,1,2),t['light_power_w']*.6,(.55,.7,1),t['light_size_m']*1.5)
     pads=[]; retained_indices=[]; footprints=[]; dropped=[]
     rng=np.random.default_rng(job['seed']+attempt*100003)
     for index,planned in enumerate(job['scene']['objects']):
@@ -277,7 +293,23 @@ def build_scene(study,job,attempt):
         for x,y in ((-.5,-.5),(-.5,.5),(.5,-.5),(.5,.5)):
             x*=config['width_metres'];y*=config['width_metres']*aspect
             corners.append((obj.location.x+x*math.cos(angle)-y*math.sin(angle),obj.location.y+x*math.sin(angle)+y*math.cos(angle)))
-    geometry=environment_geometry(job.get('environment_geometry','open'),position,config.get('environment_geometry_settings'),study['grounds'],t['camera_speed_mps'],t['shutter_seconds'],corners)
+    geometry=environment_geometry(job.get('environment_geometry','open'),position,job.get('environment_geometry_settings',config.get('environment_geometry_settings')),study['grounds'],t['camera_speed_mps'],t['shutter_seconds'],corners,add_ceiling_light='preset' not in job)
+    resolved_lamps=[]
+    if t.get('lamps') is not None:
+        for index,lamp in enumerate(t['lamps']):
+            kind=lamp.get('kind','AREA'); location=list(lamp['location'])
+            if 'preset' in job and geometry and geometry['kind']=='indoor' and kind!='SUN':
+                location=fit_indoor_lamp(location,kind,lamp['size_m'],geometry,job['environment_geometry_settings']['wall_thickness_m'])
+                if location is None:
+                    resolved_lamps.append({**lamp,'status':'omitted','reason':'emitter-exceeds-room'})
+                    continue
+            size=lamp.get('angular_size_rad') if kind=='SUN' and lamp.get('angular_size_rad') is not None else lamp['size_m']
+            light(f'lamp-{index}',kind,location,lamp['power_w'],lamp['color'],size,lamp['target'],lamp.get('spot_size_rad',.7853981633974483),lamp.get('spot_blend',.15))
+            resolved_lamps.append({**lamp,'actual_location':location})
+    elif t['lighting'].startswith('night'):
+        light('lamp','AREA',(-2,-2,3),t['light_power_w'],(1,.78,.52),t['light_size_m'])
+        if t['lighting']=='night-mixed':light('lamp-blue','AREA',(3,1,2),t['light_power_w']*.6,(.55,.7,1),t['light_size_m']*1.5)
+    if geometry is not None and 'preset' in job:geometry['resolved_lamps']=resolved_lamps
     if camera_evidence is not None:
         # Measure the final rigid panels at their actual planned positions (before lens distortion).
         actual=[]
@@ -301,10 +333,33 @@ def build_scene(study,job,attempt):
             obj=bpy.context.object;obj.name=f'ambient-caster-{index}';obj.scale=scale
             caster_records.append({'name':obj.name,'location':list(location),'scale':list(scale),'visible_camera':True,'fixture':'legacy-posts'})
     for index,planned in enumerate(job.get('casters',[])):
-        bpy.ops.mesh.primitive_cube_add(size=1,location=planned['location'])
-        obj=bpy.context.object;obj.name=f'ambient-caster-{index}';obj.scale=planned['scale']
-        obj.visible_camera=planned['visible_camera']
-        caster_records.append({'name':obj.name,**planned,'fixture':'procedural'})
+        shape=planned.get('shape','box')
+        if 'preset' in job:
+            if geometry and geometry['kind']=='indoor' and not indoor_caster_fits(planned['location'],planned['scale'],geometry,job['environment_geometry_settings']['wall_thickness_m']):
+                caster_records.append({**planned,'fixture':'procedural','status':'omitted','reason':'outside-room-or-intersects-boundary'})
+                continue
+            bottom=planned['location'][2]-planned['scale'][2]/2
+            footprint=panel_footprint(planned['location'],planned['scale'][0],planned['scale'][1]/planned['scale'][0],0)
+            if bottom < -1e-8 or (bottom < config['thickness_metres'] and any(footprints_overlap(footprint,p) for p in footprints)):
+                caster_records.append({**planned,'fixture':'procedural','status':'omitted','reason':'ground-or-panel-intersection'})
+                continue
+        # Slats are four independently placed pieces sharing one sampled arrangement.
+        offsets=(-.375,-.125,.125,.375) if shape=='overhead-slats' else (0,)
+        for piece,offset in enumerate(offsets):
+            location=list(planned['location']);location[0]+=offset*planned['scale'][0]
+            if shape=='cylinder':
+                bpy.ops.mesh.primitive_cylinder_add(vertices=16, radius=.5, depth=1, location=location)
+            elif shape=='sphere':
+                bpy.ops.mesh.primitive_uv_sphere_add(segments=16,ring_count=8,radius=.5,location=location)
+            else:
+                bpy.ops.mesh.primitive_cube_add(size=1,location=location)
+            obj=bpy.context.object;obj.name=(f'ambient-caster-{index}-{piece}' if 'preset' in job else f'ambient-caster-{index}');obj.scale=planned['scale']
+            if shape=='overhead-slats':obj.scale.x*=.12
+            obj.visible_camera=planned['visible_camera']
+            if 'preset' in job:
+                caster_records.append({'name':obj.name,**planned,'piece':piece,'actual_location':location,'actual_scale':list(obj.scale),'fixture':'procedural'})
+            else:
+                caster_records.append({'name':obj.name,**planned,'fixture':'procedural'})
     if (t['occluder'] or job['case'] in ('occluded','fully-hidden')) and pads:
         at=np.array(pads[0].location)
         if job['case']=='fully-hidden':scale=(2.,2.,.1)

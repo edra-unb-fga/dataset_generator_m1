@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "seeds": {
+    "development": 20261029,
+    "reserved": 20261030
+  },
+  "variants": {
+    "baseline": {
+      "wear": null,
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 1,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": null,
+      "capture": true
+    },
+    "broad": {
+      "wear": null,
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 1,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": {
+        "probability": 1,
+        "strength": [
+          0.5,
+          1.5
+        ],
+        "radius_fraction": 0.2,
+        "max_brightness_shift": 1.0,
+        "max_color_shift": 1.0
+      },
+      "capture": true
+    },
+    "balanced": {
+      "wear": null,
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 1,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": {
+        "probability": 1,
+        "strength": [
+          0.35,
+          0.9
+        ],
+        "radius_fraction": 0.16,
+        "max_brightness_shift": 0.35,
+        "max_color_shift": 0.25
+      },
+      "capture": true
+    },
+    "balanced-wear": {
+      "wear": {
+        "fade": 0.06,
+        "dirt": 0.18,
+        "scratches": 0.12,
+        "marks": 12,
+        "scratch_width": 0.002
+      },
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 1,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": {
+        "probability": 1,
+        "strength": [
+          0.35,
+          0.9
+        ],
+        "radius_fraction": 0.16,
+        "max_brightness_shift": 0.35,
+        "max_color_shift": 0.25
+      },
+      "capture": true
+    },
+    "balanced-strong-wear": {
+      "wear": {
+        "fade": 0.08,
+        "dirt": 0.25,
+        "scratches": 0.4,
+        "marks": 28,
+        "scratch_width": 0.008
+      },
+      "lighting": {
+        "probability": 1,
+        "gain": [
+          0.9,
+          1.05
+        ],
+        "gradient": [
+          0.02,
+          0.12
+        ],
+        "tint": 0.015,
+        "source_assumption": "unknown",
+        "shade": {
+          "probability": 1,
+          "strength": [
+            0.12,
+            0.4
+          ],
+          "radius_fraction": [
+            0.12,
+            0.45
+          ]
+        }
+      },
+      "context": {
+        "probability": 1,
+        "strength": [
+          0.35,
+          0.9
+        ],
+        "radius_fraction": 0.16,
+        "max_brightness_shift": 0.35,
+        "max_color_shift": 0.25
+      },
+      "capture": true
+    }
+  }
+}

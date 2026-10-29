@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from .models import SurfaceWearConfig
 from .blender_camera import sample_pose
+from .scene_presets import Preset, sample as sample_preset
 
 
 class Strict(BaseModel):
@@ -23,11 +24,15 @@ class Strict(BaseModel):
 
 
 class Lamp(Strict):
+    kind: Literal['AREA', 'POINT', 'SPOT', 'SUN'] = 'AREA'
     location: tuple[float, float, float] = (-2, -2, 3)
     color: tuple[float, float, float] = (1, .78, .52)
     target: tuple[float, float, float] = (0, 0, 0)
     power_w: float = Field(default=800, gt=0, le=10000)
     size_m: float = Field(default=.7, gt=0, le=10)
+    angular_size_rad: float | None = Field(default=None, gt=0, le=.5)
+    spot_size_rad: float = Field(default=0.7853981633974483, gt=0, le=3.141592653589793)
+    spot_blend: float = Field(default=.15, ge=0, le=1)
 
     @model_validator(mode='after')
     def valid_color(self):
@@ -136,6 +141,8 @@ class EnvironmentGeometrySettings(Strict):
     wall_thickness_m: float = Field(default=.1, gt=0, le=2)
     wall_color: tuple[float, float, float] = (.48, .48, .45)
     wall_roughness: float = Field(default=.85, ge=0, le=1)
+    ceiling_color: tuple[float, float, float] | None = None
+    ceiling_roughness: float | None = Field(default=None, ge=0, le=1)
     wall_ground_index: int | None = Field(default=None, ge=0)
     wall_texture_repeats: float = Field(default=1, gt=0, le=100)
     indoor_light_power_w: float = Field(default=800, gt=0, le=10000)
@@ -145,7 +152,7 @@ class EnvironmentGeometrySettings(Strict):
 
     @model_validator(mode='after')
     def valid_colors(self):
-        if any(not 0 <= value <= 1 for color in (self.wall_color, self.indoor_light_color) for value in color):
+        if any(not 0 <= value <= 1 for color in (self.wall_color, self.indoor_light_color, self.ceiling_color or self.wall_color) for value in color):
             raise ValueError('Environment colors must be in [0,1]')
         if self.camera_horizontal_margin_m <= self.wall_thickness_m / 2:
             raise ValueError('Camera horizontal margin must exceed half the wall thickness')
@@ -160,6 +167,7 @@ class EnvironmentGeometrySettings(Strict):
 
 class PilotConfig(Strict):
     schema_version: Literal[1] = 1
+    procedural: Preset | None = None
     camera_study: CameraStudy | None = None
     environment_mix: EnvironmentMix | None = None
     environment_geometry_settings: EnvironmentGeometrySettings | None = None
@@ -189,8 +197,10 @@ class PilotConfig(Strict):
 
     @model_validator(mode='after')
     def validate_shape(self):
+        if self.procedural is not None and (len(self.treatments) != 1 or self.quality_treatments not in (None, ())):
+            raise ValueError('Procedural workflow requires exactly one template treatment and no quality_treatments')
         if self.environment_geometry_settings is not None:
-            if self.environment_mix is None:
+            if self.environment_mix is None and self.procedural is None:
                 raise ValueError('Environment geometry settings require environment_mix')
             index=self.environment_geometry_settings.wall_ground_index
             if index is not None and index >= len(self.grounds):
@@ -228,9 +238,12 @@ def atomic_json(path, value):
     os.replace(temporary,path)
 
 
-def load_config(path):
+def load_config(path, *, procedural=None):
     path=Path(path).resolve()
-    config=PilotConfig.model_validate(json.loads(path.read_text()))
+    data=json.loads(path.read_text())
+    if procedural is not None:
+        data['procedural']=procedural
+    config=PilotConfig.model_validate(data)
     def local(value):return (path.parent/value).resolve()
     return config.model_copy(update={
         'execution_policy':local(config.execution_policy) if config.execution_policy is not None else None,
@@ -311,9 +324,12 @@ def prepare(config_path,output):
     config_data=config.model_dump(mode='json')
     if config.environment_mix is None:
         config_data.pop('environment_mix')
-        config_data.pop('environment_geometry_settings')
+        if config.procedural is None or config.environment_geometry_settings is None:
+            config_data.pop('environment_geometry_settings')
     elif config.environment_geometry_settings is None:
         config_data['environment_geometry_settings']=EnvironmentGeometrySettings().model_dump(mode='json')
+    if config.procedural is None:
+        config_data.pop('procedural')
     if config.camera_study is None:
         config_data.pop('camera_study')
     contract={'config':config_data,'reference':reference,'assets':assets,'artwork':artwork,
@@ -321,39 +337,49 @@ def prepare(config_path,output):
               'renderer_script_sha256':digest_file(Path(__file__).resolve().parents[2]/'experiments/blenderproc/render.py')}
     source_root=Path(__file__).resolve().parents[2]
     sources=['src/dataset_generator_m1/blender_pilot.py','src/dataset_generator_m1/blender_camera.py','src/dataset_generator_m1/blender_execution.py','src/dataset_generator_m1/blender_runner.py','src/dataset_generator_m1/wear_materials.py','src/dataset_generator_m1/surface_effects.py','src/dataset_generator_m1/models.py','experiments/blenderproc/render.py','experiments/blenderproc/runtime.py','experiments/blenderproc/probe.py']
+    sources.append('src/dataset_generator_m1/scene_presets.py')
     if any(asset['manifest'].get('license') != 'CC0-1.0' for asset in assets):
         sources.append('src/dataset_generator_m1/asset_licenses.py')
     contract['harness_sources']={name:digest_file(source_root/name) for name in sources}
     jobs=[]
     quality_treatments=(config.treatments[0].id,) if config.quality_treatments is None else config.quality_treatments
     for scene_index in range(config.scenes):
+        sequence_index=(config.scene_offset+scene_index) if config.procedural is not None else scene_index
         reference_scene_index=(config.scene_offset+scene_index)%len(scenes)
         scene=scenes[reference_scene_index]
-        pose=sample_pose(config.seed+scene_index, config.camera_study.model_dump(mode='json')) if config.camera_study else None
+        pose=sample_pose(config.seed+sequence_index, config.camera_study.model_dump(mode='json')) if config.camera_study else None
         environment_kind=None
         if config.environment_mix is not None:
             weights=config.environment_mix.model_dump()
             probabilities=np.array(list(weights.values()),dtype=float);probabilities/=probabilities.sum()
             environment_kind=str(np.random.default_rng(config.seed+scene_index+271828).choice(list(weights),p=probabilities))
-        for treatment in config.treatments:
+        for treatment in (config.treatments[:1] if config.procedural is not None else config.treatments):
             for quality in ('fast','quality'):
+                if config.procedural is not None and quality == 'quality':
+                    continue
                 if quality=='quality' and treatment.id not in quality_treatments:
                     continue
                 # All fast coverage precedes expensive quality comparisons.
-                jobs.append({'id':f'{scene_index:03d}-{treatment.id}-{quality}', 'seed':config.seed+scene_index,
+                jobs.append({'id':f'{scene_index:03d}-{treatment.id}-{quality}', 'seed':config.seed+sequence_index,
                              'scene_index':scene_index,'reference_scene_index':reference_scene_index,'scene':scene,'treatment':treatment.model_dump(mode='json'),
                              'samples':config.fast_samples if quality=='fast' else config.quality_samples,'quality':quality,
                              'ground_index':scene_index%len(grounds),'case':'ordinary',
                              'benchmark':scene_index==0 and treatment.id==config.treatments[0].id})
+                if config.procedural is not None:
+                    resolved=sample_preset(config.procedural, config.seed, sequence_index, treatment.model_dump(mode='json'),
+                        (config.environment_geometry_settings or EnvironmentGeometrySettings()).model_dump(mode='json'), len(grounds), len(environments))
+                    Treatment.model_validate(resolved['treatment'])
+                    EnvironmentGeometrySettings.model_validate(resolved['environment_geometry_settings'])
+                    jobs[-1].update(resolved)
                 if pose is not None:jobs[-1]['camera_pose']=pose
-                if environment_kind is not None:jobs[-1]['environment_geometry']=environment_kind
+                if environment_kind is not None and config.procedural is None:jobs[-1]['environment_geometry']=environment_kind
     first=next((job for job in jobs if job['scene']['objects']),jobs[0])
     # Selected coverage may contain only negatives even though the reference pool
     # contains positives. Keep positive diagnostics meaningful in that case.
     if not first['scene']['objects']:
         positive=next((scene for scene in scenes if scene['objects']),None)
         if positive is not None:first={**first,'scene':positive}
-    for case in ('negative','clipped','occluded','fully-hidden','overlap','closeup'):
+    for case in (() if config.procedural is not None else ('negative','clipped','occluded','fully-hidden','overlap','closeup')):
         scene=dict(first['scene'])
         scene['objects']=[] if case=='negative' else list(scene['objects'][:2])
         if case=='overlap' and scene['objects']:
@@ -365,6 +391,8 @@ def prepare(config_path,output):
     jobs.sort(key=lambda j:(j['quality']!='fast',j['scene_index']))
     for job in jobs:
         settings=job['treatment']['casters']
+        if config.procedural is not None:
+            continue
         job['casters']=[]
         if settings and job['treatment']['shadows']:
             rng=np.random.default_rng(settings['seed']+job['scene_index'])

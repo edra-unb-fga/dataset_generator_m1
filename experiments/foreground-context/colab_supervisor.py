@@ -36,23 +36,9 @@ def check_bundle_policy(bundle, policy_bytes):
             raise ValueError('Supervisor policy does not match immutable bundle')
 
 
-def sha(path):
-    h=hashlib.sha256()
-    with Path(path).open('rb') as f:
-        for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
-    return h.hexdigest()
-
-
-def write(path, value):
-    path=Path(path);tmp=path.with_suffix(path.suffix+'.tmp')
-    tmp.write_text(json.dumps(value,indent=2)+'\n');os.replace(tmp,path)
-
-
-def call(colab,*args,timeout=180,check=True):
-    result=subprocess.run([colab,'--auth=oauth2',*args],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=timeout)
-    print(re.sub(r'(?i)(colab-runtime-proxy-token=)[^\s&]+',r'\1[REDACTED]',result.stdout),flush=True)
-    if check and result.returncode:raise RuntimeError(f'{args[0]} exited {result.returncode}')
-    return result
+# Shared transport only: each study retains its own budget and lifecycle policy.
+_transport = runpy.run_path(str(HERE.parent / 'shared/colab_transport.py'))
+sha, write, call = (_transport[name] for name in ('sha', 'write', 'call'))
 
 
 def closed_seconds(entry):
@@ -146,7 +132,7 @@ def main():
         out=root/('development-retry-01' if args.retry_failed_development else args.phase);out.mkdir(exist_ok=False)
         write(out/'budget-basis.json',basis)
         remote=out/'remote.py';remote.write_bytes((HERE/'colab_remote.py').read_bytes())
-        chunk_helper=out/'context_chunking.py';chunk_helper.write_bytes((HERE/'colab_chunking.py').read_bytes())
+        chunk_helper=out/'context_chunking.py';chunk_helper.write_bytes((HERE.parent/'shared/colab_transport.py').read_bytes())
         chunks=runpy.run_path(str(chunk_helper))['split_bundle'](bundle,out/'chunks')
         if chunks['sha256']!=sha(bundle):raise ValueError('Split bundle checksum mismatch')
         (out/'supervisor-policy.json').write_bytes(policy_bytes)

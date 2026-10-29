@@ -244,6 +244,45 @@
           "title": "Wall Roughness",
           "type": "number"
         },
+        "ceiling_color": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ceiling Color"
+        },
+        "ceiling_roughness": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ceiling Roughness"
+        },
         "wall_ground_index": {
           "anyOf": [
             {
@@ -354,6 +393,17 @@
     "Lamp": {
       "additionalProperties": false,
       "properties": {
+        "kind": {
+          "default": "AREA",
+          "enum": [
+            "AREA",
+            "POINT",
+            "SPOT",
+            "SUN"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
         "location": {
           "default": [
             -2,
@@ -433,9 +483,581 @@
           "maximum": 10,
           "title": "Size M",
           "type": "number"
+        },
+        "angular_size_rad": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 0.5,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Angular Size Rad"
+        },
+        "spot_size_rad": {
+          "default": 0.7853981633974483,
+          "exclusiveMinimum": 0,
+          "maximum": 3.141592653589793,
+          "title": "Spot Size Rad",
+          "type": "number"
+        },
+        "spot_blend": {
+          "default": 0.15,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Spot Blend",
+          "type": "number"
         }
       },
       "title": "Lamp",
+      "type": "object"
+    },
+    "Preset": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "environment": {
+          "enum": [
+            "open",
+            "outdoor",
+            "indoor"
+          ],
+          "title": "Environment",
+          "type": "string"
+        },
+        "lighting": {
+          "items": {
+            "$ref": "#/$defs/WeightedLight"
+          },
+          "maxItems": 6,
+          "minItems": 1,
+          "title": "Lighting",
+          "type": "array"
+        },
+        "ground_weights": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/WeightedGround"
+              },
+              "maxItems": 6,
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ground Weights"
+        },
+        "wall_texture": {
+          "default": "none",
+          "enum": [
+            "none",
+            "base"
+          ],
+          "title": "Wall Texture",
+          "type": "string"
+        },
+        "wall_colors": {
+          "items": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Wall Colors",
+          "type": "array"
+        },
+        "ceiling_colors": {
+          "items": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Ceiling Colors",
+          "type": "array"
+        },
+        "wall_heights_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Wall Heights M",
+          "type": "array"
+        },
+        "wall_roughness": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Wall Roughness",
+          "type": "array"
+        },
+        "ceiling_roughness": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Ceiling Roughness",
+          "type": "array"
+        },
+        "roughness": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Roughness",
+          "type": "array"
+        },
+        "environment_strength": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Environment Strength",
+          "type": "array"
+        },
+        "sun_azimuth_degrees": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Sun Azimuth Degrees",
+          "type": "array"
+        },
+        "sun_elevation_degrees": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Sun Elevation Degrees",
+          "type": "array"
+        },
+        "sun_angular_size": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Sun Angular Size",
+          "type": "array"
+        },
+        "sun_power": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Sun Power",
+          "type": "array"
+        },
+        "sun_colors": {
+          "items": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Sun Colors",
+          "type": "array"
+        },
+        "lamp_count": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "title": "Lamp Count",
+          "type": "array"
+        },
+        "lamp_types": {
+          "items": {
+            "$ref": "#/$defs/WeightedType"
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "title": "Lamp Types",
+          "type": "array"
+        },
+        "lamp_x_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Lamp X M",
+          "type": "array"
+        },
+        "lamp_y_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Lamp Y M",
+          "type": "array"
+        },
+        "lamp_z_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Lamp Z M",
+          "type": "array"
+        },
+        "lamp_size_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Lamp Size M",
+          "type": "array"
+        },
+        "lamp_colors": {
+          "items": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Lamp Colors",
+          "type": "array"
+        },
+        "lamp_power_w": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Lamp Power W",
+          "type": "array"
+        },
+        "spot_size_rad": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Spot Size Rad",
+          "type": "array"
+        },
+        "spot_blend": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Spot Blend",
+          "type": "array"
+        },
+        "caster_count": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "title": "Caster Count",
+          "type": "array"
+        },
+        "caster_shapes": {
+          "items": {
+            "$ref": "#/$defs/WeightedShape"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Caster Shapes",
+          "type": "array"
+        },
+        "caster_distance_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Caster Distance M",
+          "type": "array"
+        },
+        "caster_height_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Caster Height M",
+          "type": "array"
+        },
+        "caster_width_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Caster Width M",
+          "type": "array"
+        },
+        "overhead_height_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Overhead Height M",
+          "type": "array"
+        },
+        "overhead_width_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Overhead Width M",
+          "type": "array"
+        },
+        "overhead_thickness_m": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Overhead Thickness M",
+          "type": "array"
+        },
+        "caster_visible_camera": {
+          "default": false,
+          "title": "Caster Visible Camera",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "environment",
+        "lighting",
+        "wall_colors",
+        "ceiling_colors",
+        "wall_heights_m",
+        "wall_roughness",
+        "ceiling_roughness",
+        "roughness",
+        "environment_strength",
+        "sun_azimuth_degrees",
+        "sun_elevation_degrees",
+        "sun_angular_size",
+        "sun_power",
+        "sun_colors",
+        "lamp_count",
+        "lamp_types",
+        "lamp_x_m",
+        "lamp_y_m",
+        "lamp_z_m",
+        "lamp_size_m",
+        "lamp_colors",
+        "lamp_power_w",
+        "spot_size_rad",
+        "spot_blend",
+        "caster_count",
+        "caster_shapes",
+        "caster_distance_m",
+        "caster_height_m",
+        "caster_width_m",
+        "overhead_height_m",
+        "overhead_width_m",
+        "overhead_thickness_m"
+      ],
+      "title": "Preset",
       "type": "object"
     },
     "SurfaceWearConfig": {
@@ -841,6 +1463,112 @@
       ],
       "title": "Treatment",
       "type": "object"
+    },
+    "WeightedGround": {
+      "additionalProperties": false,
+      "properties": {
+        "index": {
+          "maximum": 5,
+          "minimum": 0,
+          "title": "Index",
+          "type": "integer"
+        },
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "index",
+        "weight"
+      ],
+      "title": "WeightedGround",
+      "type": "object"
+    },
+    "WeightedLight": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "enum": [
+            "sun",
+            "environment",
+            "overcast",
+            "shade",
+            "night-single",
+            "night-mixed"
+          ],
+          "title": "Value",
+          "type": "string"
+        },
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "weight"
+      ],
+      "title": "WeightedLight",
+      "type": "object"
+    },
+    "WeightedShape": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "enum": [
+            "box",
+            "cylinder",
+            "sphere",
+            "overhead-slab",
+            "overhead-slats"
+          ],
+          "title": "Value",
+          "type": "string"
+        },
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "weight"
+      ],
+      "title": "WeightedShape",
+      "type": "object"
+    },
+    "WeightedType": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "enum": [
+            "AREA",
+            "POINT",
+            "SPOT"
+          ],
+          "title": "Value",
+          "type": "string"
+        },
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "weight"
+      ],
+      "title": "WeightedType",
+      "type": "object"
     }
   },
   "additionalProperties": false,
@@ -850,6 +1578,17 @@
       "default": 1,
       "title": "Schema Version",
       "type": "integer"
+    },
+    "procedural": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Preset"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "camera_study": {
       "anyOf": [
