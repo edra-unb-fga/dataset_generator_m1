@@ -1,0 +1,66 @@
+{
+  "first_pass": {
+    "source_commit": "a2edd1b",
+    "input_spec": {
+      "bundle_sha256": "241a8008e3d430f8e11f105cbe41428e78ae634949407d351d67a7d4b7fc1e7f",
+      "bootstrap_sha256": "f203cf202f8570b3efc8e065628a2e856dd5b62c46f6c21085d39c9f3371e7ad",
+      "matrix_sha256": "9ef5ae9d81edf76a9e904ca6dce365c2defd41d4972953adaa1f4e440f322f28",
+      "total_seconds": 1100
+    },
+    "result_archive": {
+      "status": "complete",
+      "error": null,
+      "sha256": "228218557fa0c77e5b3cc577cee6bd1e3aa74d875cd84a3bc7ca37b40403aa46",
+      "bytes": 11665440,
+      "wall_seconds": 327.393101955
+    },
+    "completed_cells": 18,
+    "reference_indices": [
+      0,
+      1
+    ],
+    "resolution": [
+      640,
+      640
+    ],
+    "samples": 32,
+    "panel_width_m": 1.0,
+    "panel_thickness_m": 0.003,
+    "observed_balance_before_CU": 156.76,
+    "observed_balance_after_CU": 156.63,
+    "observed_active_rate_CU_per_hour": 1.94,
+    "controller_to_stop_seconds": 362.4,
+    "cost_note": "Balance snapshots may reflect billing delay; controller duration includes time outside allocation. Not exact metered cost."
+  },
+  "context": {
+    "source_commit": "a2edd1b",
+    "input_spec": {
+      "bundle_sha256": "e189c3b4eecf58773fb4c0f66c817abc234676401c27d858dd27872522a0f265",
+      "bootstrap_sha256": "f203cf202f8570b3efc8e065628a2e856dd5b62c46f6c21085d39c9f3371e7ad",
+      "matrix_sha256": "4a12dce8f1759d92875896f943080cff6657420de4ec6127666dba17505415f3",
+      "total_seconds": 750
+    },
+    "result_archive": {
+      "status": "complete",
+      "error": null,
+      "sha256": "2d307a421306c9eccd33200468d463b8e784f55dc1f127c42cb48bcdeff0f17e",
+      "bytes": 4367088,
+      "wall_seconds": 179.67109198699973
+    },
+    "completed_cells": 6,
+    "reference_indices": [
+      0
+    ],
+    "resolution": [
+      640,
+      640
+    ],
+    "samples": 32,
+    "panel_width_m": 1.0,
+    "panel_thickness_m": 0.005,
+    "observed_balance_before_CU": 156.63,
+    "observed_balance_after_CU": 156.52,
+    "observed_active_rate_CU_per_hour": 1.94,
+    "cost_note": "Balance snapshots are not exact per-runtime billing."
+  }
+}

@@ -1,0 +1,401 @@
+{
+  "schema_version": 1,
+  "purpose": "paired contextual sunlight, caster, pad wear and material variations",
+  "cells": [
+    {
+      "id": "context-full",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": true,
+        "casters": {
+          "count": 3,
+          "seed": 681,
+          "distance_m": 4,
+          "height_m": 2.5,
+          "width_m": 0.35
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -6,
+              -4,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ],
+        "roughness": 0.38,
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.22,
+          "scratches": 0.08,
+          "marks": 10
+        },
+        "wear_seed": 881,
+        "ground_normal_strength": 1
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "context-normal-off",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": true,
+        "casters": {
+          "count": 3,
+          "seed": 681,
+          "distance_m": 4,
+          "height_m": 2.5,
+          "width_m": 0.35
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -6,
+              -4,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ],
+        "roughness": 0.38,
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.22,
+          "scratches": 0.08,
+          "marks": 10
+        },
+        "wear_seed": 881,
+        "ground_normal_strength": 0
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "context-uv-45",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": true,
+        "casters": {
+          "count": 3,
+          "seed": 681,
+          "distance_m": 4,
+          "height_m": 2.5,
+          "width_m": 0.35
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "full",
+          "primary_index": 0
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -6,
+              -4,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ],
+        "roughness": 0.38,
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.22,
+          "scratches": 0.08,
+          "marks": 10
+        },
+        "wear_seed": 881,
+        "ground_normal_strength": 1,
+        "uv_rotation_degrees": 45,
+        "ground_uv_offset": [
+          0.37,
+          0.61
+        ]
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "context-coherent-blend",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": true,
+        "casters": {
+          "count": 3,
+          "seed": 681,
+          "distance_m": 4,
+          "height_m": 2.5,
+          "width_m": 0.35
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "coherent-blend",
+          "primary_index": 0,
+          "donor_index": 1,
+          "blend_amount": 1,
+          "blend_scale": 2,
+          "blend_seed": 12
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -6,
+              -4,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ],
+        "roughness": 0.38,
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.22,
+          "scratches": 0.08,
+          "marks": 10
+        },
+        "wear_seed": 881,
+        "ground_normal_strength": 1
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "context-rgb-blend-stress",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": true,
+        "casters": {
+          "count": 3,
+          "seed": 681,
+          "distance_m": 4,
+          "height_m": 2.5,
+          "width_m": 0.35
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "rgb-blend-stress",
+          "primary_index": 0,
+          "donor_index": 1,
+          "blend_amount": 1,
+          "blend_scale": 2,
+          "blend_seed": 12
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -6,
+              -4,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ],
+        "roughness": 0.38,
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.22,
+          "scratches": 0.08,
+          "marks": 10
+        },
+        "wear_seed": 881,
+        "ground_normal_strength": 1
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "context-donor-mismatch-stress",
+      "ground_indices": [
+        0,
+        1
+      ],
+      "environment": "open",
+      "treatment": {
+        "id": "base",
+        "lighting": "environment",
+        "shadows": true,
+        "casters": {
+          "count": 3,
+          "seed": 681,
+          "distance_m": 4,
+          "height_m": 2.5,
+          "width_m": 0.35
+        },
+        "environment_strength": 0.15,
+        "ground_material": {
+          "mode": "donor-mismatch-stress",
+          "primary_index": 0,
+          "donor_index": 1,
+          "blend_amount": 1,
+          "blend_scale": 2,
+          "blend_seed": 12
+        },
+        "lamps": [
+          {
+            "kind": "SUN",
+            "location": [
+              -6,
+              -4,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.94,
+              0.85
+            ],
+            "power_w": 2,
+            "size_m": 0.7,
+            "angular_size_rad": 0.00918
+          }
+        ],
+        "roughness": 0.38,
+        "wear": {
+          "fade": 0.06,
+          "dirt": 0.22,
+          "scratches": 0.08,
+          "marks": 10
+        },
+        "wear_seed": 881,
+        "ground_normal_strength": 1
+      },
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      }
+    }
+  ]
+}

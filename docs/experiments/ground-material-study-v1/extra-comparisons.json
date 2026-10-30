@@ -1,0 +1,35 @@
+{
+  "purpose": "Descriptive direct coherent/RGB-only comparison; not a realism score",
+  "comparisons": [
+    {
+      "baseline": "g0-coherent-blend",
+      "candidate": "g0-rgb-blend-stress",
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 0.9546598792076111,
+      "foreground_rgb_mae": 0.9457979202270508,
+      "background_rgb_mae": 0.9554892778396606,
+      "visible_pixels": 35054
+    },
+    {
+      "baseline": "g1-coherent-blend",
+      "candidate": "g1-rgb-blend-stress",
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 0.48934730887413025,
+      "foreground_rgb_mae": 0.11808539181947708,
+      "background_rgb_mae": 0.4988706707954407,
+      "visible_pixels": 10244
+    },
+    {
+      "baseline": "context-coherent-blend",
+      "candidate": "context-rgb-blend-stress",
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 2.684713840484619,
+      "foreground_rgb_mae": 0.18143218755722046,
+      "background_rgb_mae": 2.9192824363708496,
+      "visible_pixels": 35093
+    }
+  ]
+}

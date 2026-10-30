@@ -71,4 +71,8 @@ otherwise `normal_strength`.
 
 For paired studies freeze the source/configuration and compare saved matrices, geometry and mask
 checks alongside full images and crops. See the [study workflow](../experiments/blenderproc/studies/ground-material-study/README.md)
-for readiness and evidence. Do not infer real-image or model performance from visual examples.
+and [24-cell screen](experiments/ground-material-study-v1/README.md) for evidence and limitations.
+Explicit directional sunlight, 0.5/1/1.5 spans and a contextual wear/shadow comparison have been
+exercised. The whole screen reuses only two reference scenes. UV transforms currently move map sets
+together; independent UV transforms per map and true displacement remain outside this interface.
+Do not infer real-image or model performance from visual examples.
