@@ -3,6 +3,33 @@
 The normative current behavior lives in `docs/SPEC.md`. This file orders future work by evidence and
 dependency; unchecked items are not promises that current commands already implement them.
 
+## Reading this roadmap
+
+The [study index](experiments/README.md) distinguishes shipped capabilities, optional experimental
+work, and historical stopped or superseded results. [Scene presets](SCENE_PRESETS.md) describe
+visual context independently of annotation families. Remaining real-image calibration, model-transfer
+evidence and multi-hardware baselines are open; synthetic screens do not establish production readiness.
+
+### Procedural consolidation follow-up
+
+The optional harness now has reusable `open`, `outdoor` and `indoor` scene presets, explicit sampled
+light/caster/material controls and ordinary seeded scene preparation. The
+[bounded visual screen](experiments/procedural-scenes-v1/README.md) establishes execution evidence,
+with source-revision limits, rather than calibrated distributions. Next priorities are:
+
+- Bind ground/material eligibility to environment meaning; the generic presets currently accept
+  every supplied ground unless `ground_weights` restricts the catalog.
+- Refine indoor lamp power, emitter size and placement together, retaining glare cases deliberately
+  without making washed-out targets the routine outcome.
+- Review outdoor shadows and reflections with varied framing; walls may be outside top-down views,
+  and sampled casters need not cast visible shadows on the target.
+- Add reviewed weighted mixtures and conditional relationships only after the component presets
+  are useful. Atmosphere and wear still come from template treatments, not preset-level distributions.
+
+Continue to retain compact decisions and selected evidence through the study index, rather than
+promoting one-off diagnostic fixture scripts into defaults. Independent real-data/model evaluation,
+calibrated materials and representative coverage remain open under #59 and #61–#64.
+
 ## Now
 
 ### Practical workflow review stack
@@ -119,3 +146,9 @@ records the completed camera cells, annotation checks, visual review and limited
 see [round four](REALISM_ROUND_FOUR.md) for the full scope and limitations. The tested walls and
 lighting remain visibly artificial, so environment geometry stays experimental and production defaults
 remain unchanged. Real-image, model-transfer and multi-hardware requirements remain open.
+
+
+The [round-five integration](REALISM_ROUND_FIVE.md) adds conservative target-placement
+contracts and an experimental local foreground-context treatment. Human-reviewed synthetic
+studies remain engineering evidence; real calibration, independent evaluation, physically
+grounded lighting and material work under #59, #61–#64 remain open.

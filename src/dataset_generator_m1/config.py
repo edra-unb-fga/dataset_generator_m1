@@ -14,6 +14,7 @@ from .models import (
     AppearanceConfig,
     BackgroundCatalogMetadata,
     FamilyDefinition,
+    ForegroundContextConfig,
     GenerationComposer,
     GenerationProfile,
     ProfileBundle,
@@ -301,6 +302,10 @@ def load_profile(
     resolved_values['execution'] = {**ExecutionConfig().model_dump(mode='json'), **resolved_values['execution']}
     resolved_values["scene"].setdefault("foreground_resampling", "legacy")
     resolved_values["scene"].setdefault("compositing", "legacy")
+    resolved_values["scene"].setdefault("foreground_context", None)
+    if (resolved_values["scene"]["foreground_context"] is None
+            and any(path.startswith("scene.foreground_context.") for path in applied)):
+        resolved_values["scene"]["foreground_context"] = ForegroundContextConfig().model_dump(mode="json")
     for override_path, value in applied.items():
         _set_leaf(resolved_values, override_path, value)
 

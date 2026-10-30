@@ -18,6 +18,13 @@ Opt-in [planar surface examples](docs/SURFACE_RENDERING.md) add shared illuminat
 [Offline evaluation and reference checks](docs/EVALUATION.md) consume supplied predictions/camera inputs.
 The [round-one report](docs/experiments/planar-surfaces-v1/README.md) separates synthetic correctness, visual limits and generation cost.
 
+## Find your starting point
+
+- Use the workflow below for the shipped 2D generator; the annotation family describes the target
+  and annotation rules, while a scene preset describes its visual context. See [scene presets](docs/SCENE_PRESETS.md).
+- Browse [study evidence](docs/experiments/README.md) by question, or read the [retention guide](docs/EXPERIMENT_RETENTION.md) before handling raw runs.
+- The [optional BlenderProc harness](experiments/blenderproc/README.md) is separate experimental 3D work; real-image calibration and model-transfer evidence remain open.
+
 ## Install
 
 Run these commands from the repository root. The one-line commands below work in Bash and PowerShell;

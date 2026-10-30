@@ -62,6 +62,7 @@ def test_generation_pool_is_auditable_and_resumable(tmp_path: Path) -> None:
     assert samples[0]["stage_timings_ns"]["scene_render"] > 0
     assert samples[0]["stage_timings_ns"]["image_encode_write"] > 0
     assert samples[0]["attempted_instances"] >= len(samples[0]["annotations"])
+    assert samples[0]["retained_instances"] == len(samples[0]["annotations"])
     assert samples[0]["annotations"][0]["source_group"]
     assert samples[0]["schema_version"] == 2
     assert samples[0]["annotations"][0]["instance_id"].startswith("instance-")

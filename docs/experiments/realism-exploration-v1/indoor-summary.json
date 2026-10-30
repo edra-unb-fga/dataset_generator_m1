@@ -1,0 +1,3212 @@
+{
+  "status": "complete",
+  "records": [
+    {
+      "cell": "baseline",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 9.87626961799998,
+        "peak_rss_bytes": 3592523776,
+        "minimum_available_bytes": 52318851072,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4187.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "2b8c32908ae07c51748c41ea2f3a90e15a6a37afb2dce7c4c6a53dcc3427e218",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.031597331000000395,
+              "annotation_seconds": 4.360164467000004,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/baseline/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/baseline/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.02465654899998526,
+              "annotation_seconds": 4.0813636380000275,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/baseline/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/baseline/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.020404030000008788,
+              "annotation_seconds": 4.001435293000043,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/baseline/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/baseline/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "red-walls",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.8571960250000075,
+        "peak_rss_bytes": 3516022784,
+        "minimum_available_bytes": 52397060096,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4215.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "68ead97dd18403c9cbb502284fa63f0cbe4697c8c67e4e2afe26bd756f127ff1",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.03144689200001949,
+              "annotation_seconds": 1.16407992500001,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.75,
+                0.08,
+                0.08
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/red-walls/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/red-walls/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.024033946000031392,
+              "annotation_seconds": 0.9082101810000154,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.75,
+                0.08,
+                0.08
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/red-walls/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/red-walls/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.019844143999989683,
+              "annotation_seconds": 0.7994068620000121,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.75,
+                0.08,
+                0.08
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/red-walls/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/red-walls/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "blue-walls",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.567624916,
+        "peak_rss_bytes": 3612098560,
+        "minimum_available_bytes": 52300505088,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4231.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "6c49cd9d691731827afc648d7ce5d1b0d5ccf0035612088519890881b62ddab7",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.03127691099996355,
+              "annotation_seconds": 1.144480098000031,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.08,
+                0.16,
+                0.75
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/blue-walls/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/blue-walls/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.023847890999945776,
+              "annotation_seconds": 0.8532526730000427,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.08,
+                0.16,
+                0.75
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/blue-walls/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/blue-walls/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.01962450399997806,
+              "annotation_seconds": 0.788919232000012,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.08,
+                0.16,
+                0.75
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/blue-walls/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/blue-walls/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "red-gloss-walls",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.8442425110000045,
+        "peak_rss_bytes": 3418996736,
+        "minimum_available_bytes": 52457545728,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4197.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "e3046c32d82e47754ec64e5406559056fe7d8243cd22e2dd48f093bf4662cd59",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.032523627999978544,
+              "annotation_seconds": 1.190983358999972,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.75,
+                0.08,
+                0.08
+              ],
+              "wall_roughness": 0.12,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/red-gloss-walls/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/red-gloss-walls/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.024153762000025836,
+              "annotation_seconds": 0.9350940310000055,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.75,
+                0.08,
+                0.08
+              ],
+              "wall_roughness": 0.12,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/red-gloss-walls/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/red-gloss-walls/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.01999211700001524,
+              "annotation_seconds": 0.8037765439999589,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.75,
+                0.08,
+                0.08
+              ],
+              "wall_roughness": 0.12,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/red-gloss-walls/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/red-gloss-walls/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "textured-walls",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.823623623999993,
+        "peak_rss_bytes": 3601162240,
+        "minimum_available_bytes": 52322988032,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4189.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "e5f6a4bd118ede89bf1593109112486aa9b0802094f106839b01e0a84b142c85",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.03140739999997777,
+              "annotation_seconds": 1.0970980700000155,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": 0,
+              "wall_texture_repeats": 2.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/textured-walls/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/textured-walls/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.02346712700000353,
+              "annotation_seconds": 0.8516480349999824,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": 0,
+              "wall_texture_repeats": 2.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/textured-walls/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/textured-walls/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.020041707000018505,
+              "annotation_seconds": 0.8094262189999881,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": 0,
+              "wall_texture_repeats": 2.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/textured-walls/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/textured-walls/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "mixed-area-lights",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.851950298999952,
+        "peak_rss_bytes": 3508649984,
+        "minimum_available_bytes": 52437733376,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4207.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "e145aa1e5fde124f1fe05f21418b105c5ac7c6f1b23e4077e9d03947f579a4bb",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.03395882700004904,
+              "annotation_seconds": 1.163970849000009,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-area-lights/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-area-lights/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.025237656000001607,
+              "annotation_seconds": 0.8926289300000008,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-area-lights/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-area-lights/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.020558503000017936,
+              "annotation_seconds": 0.8012101950000101,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-area-lights/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-area-lights/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "mixed-point-lights",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.823371650000013,
+        "peak_rss_bytes": 3490054144,
+        "minimum_available_bytes": 52429312000,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4227.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "abe9b9873ce2b5539bd7495716bebe90eaec76a0c02e27ccd0e1b4e15933b9a3",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.0331311269999901,
+              "annotation_seconds": 1.112104670000008,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-point-lights/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-point-lights/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.024923347000026297,
+              "annotation_seconds": 0.909248568999999,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-point-lights/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-point-lights/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.020470466000006127,
+              "annotation_seconds": 0.8255312129999766,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-point-lights/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-point-lights/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "mixed-spot-lights",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.818350686000031,
+        "peak_rss_bytes": 3577532416,
+        "minimum_available_bytes": 52351913984,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4197.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "53bfbe97ea3104a580956912abf544475cce2caf65553d4d4995790221f503b1",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.033489325999994435,
+              "annotation_seconds": 1.1517032090000043,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-spot-lights/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-spot-lights/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.025604292000025453,
+              "annotation_seconds": 0.8653754850000155,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-spot-lights/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-spot-lights/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.020437539999988985,
+              "annotation_seconds": 0.797302381999998,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/mixed-spot-lights/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/mixed-spot-lights/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    },
+    {
+      "cell": "indoor-haze",
+      "outcome": {
+        "phase": "run-01",
+        "status": "complete",
+        "reason": null,
+        "returncodes": [
+          0,
+          0,
+          0
+        ],
+        "command_seconds": 6.579729723000014,
+        "peak_rss_bytes": 3617918976,
+        "minimum_available_bytes": 52311916544,
+        "swap_out_delta_bytes": 0,
+        "guards": {
+          "min_available_gib": 5.295809555053712,
+          "rss_limit_gib": 41.004092407226565,
+          "max_swap_out_mib": 16.0,
+          "probe_timeout_seconds": 300.0,
+          "min_gpu_free_mib": 1842.72
+        },
+        "sampled_peak_gpu_memory_mib": 4513.0,
+        "selected_jobs": [
+          "000-core-fast",
+          "001-core-fast",
+          "diagnostic-closeup"
+        ],
+        "workers": 3,
+        "execution_identity": "e9c82fcd8568575dfd448ede1ed8ac85dc8ffbfccb32b1c0535d00a8297edf73",
+        "execution_profile": "gpu-guarded"
+      },
+      "study_identity": "8565d43ec9da4de8bd87f2cc0783eb15b6e2f5e3eafeb0f4877392d8f4f45c99",
+      "rows": [
+        {
+          "job": "000-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.048783466000031694,
+              "annotation_seconds": 1.0753562680000073,
+              "support": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.17148437500000002,
+            "representative_centered_width_fraction": 0.17148437500000052,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.13426295742311223,
+              0.16968392112602199,
+              0.18033375263097312,
+              0.19759012673901571
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 11.629068927210954,
+            "tile_m": 4.784572524062429,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 7.112590066148162,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 6.294495960932449,
+            "wall_height_m": 7.8135622943844405,
+            "ceiling_height_m": 7.8135622943844405,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 4.244495960932449,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/indoor-haze/scenes/000-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/indoor-haze/scenes/000-core-fast/masks.npz"
+        },
+        {
+          "job": "diagnostic-closeup",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.027101195999989613,
+              "annotation_seconds": 0.9158199550000177,
+              "support": [
+                1.0,
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261101,
+              "quaternion_wxyz": [
+                -0.28311110703502695,
+                0.06467336866281406,
+                0.012216530252482573,
+                0.9568261142171003
+              ],
+              "yaw_degrees": 212.96545801645755,
+              "tilt_degrees": 7.547537871800184,
+              "tilt_direction_degrees": 174.2141662361075,
+              "ground_spans": 1.48656751055141
+            },
+            "target_width_fraction": 0.213671875,
+            "representative_centered_width_fraction": 0.4754683662383745,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": 0.45,
+            "actual_projected_width_fractions_before_distortion": [
+              0.40363478058498703,
+              0.510364663006168
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 3.8759293132805457,
+            "tile_m": 1.5946818282362605,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.48656751055141,
+            "achieved_spans": 1.48656751055141,
+            "central_view_width_m": 2.370602195522749,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 3.9223333804423364,
+            "wall_height_m": 3.304272420525668,
+            "ceiling_height_m": 3.304272420525668,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 1.8723333804423365,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/indoor-haze/scenes/diagnostic-closeup/rgb.png",
+          "masks": "/content/realism-retry/results/cells/indoor-haze/scenes/diagnostic-closeup/masks.npz"
+        },
+        {
+          "job": "001-core-fast",
+          "status": "accepted",
+          "attempts": [
+            {
+              "attempt": 0,
+              "setup_seconds": 0.030721067999991192,
+              "annotation_seconds": 0.821021729999984,
+              "support": [
+                1.0
+              ],
+              "rejection": null
+            }
+          ],
+          "camera": {
+            "pose": {
+              "seed": 20261102,
+              "quaternion_wxyz": [
+                -0.5313211168582055,
+                -0.06960454435366273,
+                0.04506249072280614,
+                0.8431028704231324
+              ],
+              "yaw_degrees": 244.4380355968529,
+              "tilt_degrees": 9.512642696350632,
+              "tilt_direction_degrees": 294.86166741225253,
+              "ground_spans": 1.330456931384442
+            },
+            "target_width_fraction": 0.1765625,
+            "representative_centered_width_fraction": 0.1765625000000012,
+            "distance_bound_reached": false,
+            "deliberate_closeup_distance_scale": null,
+            "actual_projected_width_fractions_before_distortion": [
+              0.17670425439016196
+            ],
+            "actual_widths_include_clipping": false
+          },
+          "ground": {
+            "extent_m": 40.0,
+            "required_extent_m": 9.6803383016138,
+            "tile_m": 4.35530216945143,
+            "nominal_tile_m": 2.0,
+            "requested_spans": 1.330456931384442,
+            "achieved_spans": 1.330456931384442,
+            "central_view_width_m": 5.794541959620353,
+            "near_horizon_fallback": false,
+            "extent_clamped": false,
+            "coverage_guaranteed": true,
+            "distortion_bounds_used": false,
+            "motion_margin_m": 0,
+            "tile_clamped": false,
+            "material_mode": "view-relative"
+          },
+          "environment": {
+            "kind": "indoor",
+            "half_width_m": 2.9776641920185343,
+            "wall_height_m": 6.5864117357063545,
+            "ceiling_height_m": 6.5864117357063545,
+            "camera_motion_margin_m": 0,
+            "target_extent_m": 0.6668220863222314,
+            "settings": {
+              "min_half_width_m": 2.5,
+              "camera_horizontal_margin_m": 2.0,
+              "min_room_height_m": 3.0,
+              "camera_ceiling_margin_m": 1.0,
+              "outdoor_wall_height_m": 1.5,
+              "wall_thickness_m": 0.1,
+              "wall_color": [
+                0.65,
+                0.65,
+                0.65
+              ],
+              "wall_roughness": 0.85,
+              "wall_ground_index": null,
+              "wall_texture_repeats": 1.0,
+              "indoor_light_power_w": 800.0,
+              "indoor_light_color": [
+                1.0,
+                1.0,
+                1.0
+              ],
+              "indoor_light_size_m": 2.0,
+              "indoor_light_ceiling_offset_m": 0.15
+            }
+          },
+          "image": "/content/realism-retry/results/cells/indoor-haze/scenes/001-core-fast/rgb.png",
+          "masks": "/content/realism-retry/results/cells/indoor-haze/scenes/001-core-fast/masks.npz"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "cell": "red-walls",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 7.63769775390625,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "red-walls",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 2.1078141276041666,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "red-walls",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 25.018656412760418,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "blue-walls",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 7.89109375,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "blue-walls",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 1.9759171549479166,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "blue-walls",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 22.189130859375,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "red-gloss-walls",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 7.5335888671875,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "red-gloss-walls",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 2.0948356119791667,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "red-gloss-walls",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 24.79443115234375,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "textured-walls",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 10.68732666015625,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "textured-walls",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 2.8117415364583334,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "textured-walls",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 37.54619710286458,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-area-lights",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 52.431210123697916,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-area-lights",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 15.824828287760417,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-area-lights",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 44.514353841145834,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-point-lights",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 32.77857259114583,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-point-lights",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 9.877740885416667,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-point-lights",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 29.907029622395832,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-spot-lights",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 6.0487548828125,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-spot-lights",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 4.677161458333333,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "mixed-spot-lights",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 5.176048990885417,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "indoor-haze",
+      "job": "000-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 37.92235677083333,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "indoor-haze",
+      "job": "diagnostic-closeup",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 94.01163981119792,
+      "all_masks_equal": true
+    },
+    {
+      "cell": "indoor-haze",
+      "job": "001-core-fast",
+      "rgb_comparable": true,
+      "baseline_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "candidate_rgb_shape": [
+        640,
+        640,
+        3
+      ],
+      "incomparable_reason": null,
+      "rgb_mean_abs_difference": 43.42316162109375,
+      "all_masks_equal": true
+    }
+  ],
+  "elapsed_seconds": 218.45086435200002
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "max_combined_allocation_seconds": 2100,
+  "watchdog_seconds_per_phase": 2100,
+  "phases": {
+    "development": {
+      "remote_seconds": 1500
+    }
+  },
+  "soft_target_combined_allocation_seconds": 1500,
+  "note": "Single exploratory phase, conservative watchdog reservation includes setup and retrieval."
+}

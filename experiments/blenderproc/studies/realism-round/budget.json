@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "max_combined_allocation_seconds": 5400,
+  "watchdog_seconds_per_phase": 2700,
+  "phases": {
+    "development": {
+      "remote_seconds": 1800
+    },
+    "reserved": {
+      "remote_seconds": 1200
+    }
+  },
+  "soft_target_combined_allocation_seconds": 3600,
+  "note": "Two single-runtime phases; conservative reservation charges the full watchdog interval even if it finishes early."
+}

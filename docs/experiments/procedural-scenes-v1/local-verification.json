@@ -1,0 +1,359 @@
+{
+  "purpose": "Bounded final-renderer CPU verification, not a performance benchmark",
+  "scenes": [
+    {
+      "image": "final-indoor-000.png",
+      "image_sha256": "a94eea54e60c38debf020eb26ca67f377b28e7f8d436c87916a2f897165f41f0",
+      "study_identity": "3415a50df314616c3d1bc9d03d030cdd2c138955d3a4f9309bd72299fe6e8bee",
+      "seed": 20261109,
+      "scene_offset": 0,
+      "source_fingerprints": {
+        "src/dataset_generator_m1/blender_pilot.py": "c8142f7eedf605c2c6473ed6485b4aeb14fa0aa1be652d9e7628a9827ef53bb9",
+        "src/dataset_generator_m1/blender_camera.py": "4b471d970ab5cc580e3a89dba78eb801db0f0ee01781594283f0ffc6a53a4836",
+        "src/dataset_generator_m1/blender_execution.py": "51fe350d95bdad57882d1c8e66a84433742ef110fbf3afdfabc2a9dd356ec257",
+        "src/dataset_generator_m1/blender_runner.py": "7d9264ae07fe15de7dc7b74ba4ded91b9b8817d0bd23c76756a26feb2d50c854",
+        "src/dataset_generator_m1/wear_materials.py": "cf92f43a6c9bf4e8715615a8cc18b6161af34f6c7e5cea80ad261bee2dafe82d",
+        "src/dataset_generator_m1/surface_effects.py": "c9d82079da98618939ab6aab084333b9b4356fc95d967a5bcdec0e2b825fd617",
+        "src/dataset_generator_m1/models.py": "105c2cbba2b08f7d746242412d4e54913208eea8744d13a945453de8b378699a",
+        "experiments/blenderproc/render.py": "7acc693658397faa975087f2bd551aa054245d1a5e7207c16c46577625d9ff31",
+        "experiments/blenderproc/runtime.py": "0b659d088279491254e69e5d9d0f5c1ad73329fb7f8facbb7a296a822cdd9e5c",
+        "experiments/blenderproc/probe.py": "d9ec9621e82eb2c976576963bd4c8dff419aa2fa943fc12bab93522a6d0c54a5",
+        "src/dataset_generator_m1/scene_presets.py": "e6c9aaa969743407be7abf7d709d72e78b84175e5afd868835ffb79b0f5c8c01"
+      },
+      "status": "accepted",
+      "attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.042831050988752395,
+          "annotation_seconds": 0.5329667530022562,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "blender": "4.2.1 LTS",
+      "blenderproc": "2.8.0",
+      "device": "CPU",
+      "renderer_settings": {
+        "engine": "CYCLES",
+        "samples": 32,
+        "denoiser": "compositor-oidn",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "internal_resolution": [
+          640,
+          640
+        ],
+        "output_resolution": [
+          640,
+          640
+        ],
+        "numpy": "1.24.3",
+        "camera_to_world_opengl": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9396926164627075,
+            -0.3420201539993286,
+            -2.0893936157226562
+          ],
+          [
+            0.0,
+            0.3420201539993286,
+            0.9396926164627075,
+            5.740561485290527
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "motion_blur": false,
+        "depth_of_field": false
+      },
+      "environment_geometry_diagnostics": {
+        "kind": "indoor",
+        "half_width_m": 5.71392383263655,
+        "wall_height_m": 6.790561660072529,
+        "ceiling_height_m": 6.790561660072529,
+        "camera_motion_margin_m": 0,
+        "target_extent_m": 3.6639238326365504,
+        "settings": {
+          "min_half_width_m": 2.5,
+          "camera_horizontal_margin_m": 2.0,
+          "min_room_height_m": 3.0,
+          "camera_ceiling_margin_m": 1.0,
+          "outdoor_wall_height_m": 1.955538056008506,
+          "wall_thickness_m": 0.1,
+          "wall_color": [
+            0.48,
+            0.48,
+            0.45
+          ],
+          "wall_roughness": 0.73931925480898,
+          "ceiling_color": [
+            0.8,
+            0.8,
+            0.78
+          ],
+          "ceiling_roughness": 0.512613011199992,
+          "wall_ground_index": null,
+          "wall_texture_repeats": 1.0,
+          "indoor_light_power_w": 800.0,
+          "indoor_light_color": [
+            1.0,
+            0.9,
+            0.75
+          ],
+          "indoor_light_size_m": 2.0,
+          "indoor_light_ceiling_offset_m": 0.15
+        },
+        "resolved_lamps": [
+          {
+            "kind": "AREA",
+            "location": [
+              -1.132487198206999,
+              0.3581972953544015,
+              2.2524670658326924
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.8,
+              0.88,
+              1.0
+            ],
+            "power_w": 643.7465499583752,
+            "size_m": 0.7698820181118471,
+            "spot_size_rad": 1.0408251646759323,
+            "spot_blend": 0.13497803807478104,
+            "actual_location": [
+              -1.132487198206999,
+              0.3581972953544015,
+              2.2524670658326924
+            ]
+          },
+          {
+            "kind": "POINT",
+            "location": [
+              0.20286564154611186,
+              -1.2707751846697666,
+              2.6285231417305677
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.8,
+              0.88,
+              1.0
+            ],
+            "power_w": 600.519647154973,
+            "size_m": 1.1574511600796653,
+            "spot_size_rad": 0.8222586819236589,
+            "spot_blend": 0.24682915469431183,
+            "actual_location": [
+              0.20286564154611186,
+              -1.2707751846697666,
+              2.6285231417305677
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "image": "final-indoor-003.png",
+      "image_sha256": "1c488a6f66cf04271a6400dd8d6aaeb6799a222387debd841146c83a3c85fe3f",
+      "study_identity": "d587c28b0898a07f060b10b95c2c6a3f3c039bcf3db31915db1937f78b25fc40",
+      "seed": 20261109,
+      "scene_offset": 3,
+      "source_fingerprints": {
+        "src/dataset_generator_m1/blender_pilot.py": "c8142f7eedf605c2c6473ed6485b4aeb14fa0aa1be652d9e7628a9827ef53bb9",
+        "src/dataset_generator_m1/blender_camera.py": "4b471d970ab5cc580e3a89dba78eb801db0f0ee01781594283f0ffc6a53a4836",
+        "src/dataset_generator_m1/blender_execution.py": "51fe350d95bdad57882d1c8e66a84433742ef110fbf3afdfabc2a9dd356ec257",
+        "src/dataset_generator_m1/blender_runner.py": "7d9264ae07fe15de7dc7b74ba4ded91b9b8817d0bd23c76756a26feb2d50c854",
+        "src/dataset_generator_m1/wear_materials.py": "cf92f43a6c9bf4e8715615a8cc18b6161af34f6c7e5cea80ad261bee2dafe82d",
+        "src/dataset_generator_m1/surface_effects.py": "c9d82079da98618939ab6aab084333b9b4356fc95d967a5bcdec0e2b825fd617",
+        "src/dataset_generator_m1/models.py": "105c2cbba2b08f7d746242412d4e54913208eea8744d13a945453de8b378699a",
+        "experiments/blenderproc/render.py": "7acc693658397faa975087f2bd551aa054245d1a5e7207c16c46577625d9ff31",
+        "experiments/blenderproc/runtime.py": "0b659d088279491254e69e5d9d0f5c1ad73329fb7f8facbb7a296a822cdd9e5c",
+        "experiments/blenderproc/probe.py": "d9ec9621e82eb2c976576963bd4c8dff419aa2fa943fc12bab93522a6d0c54a5",
+        "src/dataset_generator_m1/scene_presets.py": "e6c9aaa969743407be7abf7d709d72e78b84175e5afd868835ffb79b0f5c8c01"
+      },
+      "status": "accepted",
+      "attempts": [
+        {
+          "attempt": 0,
+          "setup_seconds": 0.02169734297785908,
+          "annotation_seconds": 0.4950129659846425,
+          "support": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "rejection": null
+        }
+      ],
+      "blender": "4.2.1 LTS",
+      "blenderproc": "2.8.0",
+      "device": "CPU",
+      "renderer_settings": {
+        "engine": "CYCLES",
+        "samples": 32,
+        "denoiser": "compositor-oidn",
+        "max_bounces": 4,
+        "diffuse_bounces": 2,
+        "glossy_bounces": 2,
+        "internal_resolution": [
+          640,
+          640
+        ],
+        "output_resolution": [
+          640,
+          640
+        ],
+        "numpy": "1.24.3",
+        "camera_to_world_opengl": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9396925568580627,
+            -0.34202033281326294,
+            -2.510979413986206
+          ],
+          [
+            0.0,
+            0.34202033281326294,
+            0.9396925568580627,
+            6.898859024047852
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "motion_blur": false,
+        "depth_of_field": false
+      },
+      "environment_geometry_diagnostics": {
+        "kind": "indoor",
+        "half_width_m": 5.416843916867486,
+        "wall_height_m": 7.948859109799049,
+        "ceiling_height_m": 7.948859109799049,
+        "camera_motion_margin_m": 0,
+        "target_extent_m": 3.3668439168674857,
+        "settings": {
+          "min_half_width_m": 2.5,
+          "camera_horizontal_margin_m": 2.0,
+          "min_room_height_m": 3.0,
+          "camera_ceiling_margin_m": 1.0,
+          "outdoor_wall_height_m": 2.0704425757965637,
+          "wall_thickness_m": 0.1,
+          "wall_color": [
+            0.48,
+            0.48,
+            0.45
+          ],
+          "wall_roughness": 0.859399430985182,
+          "ceiling_color": [
+            0.65,
+            0.65,
+            0.62
+          ],
+          "ceiling_roughness": 0.7397216736629315,
+          "wall_ground_index": null,
+          "wall_texture_repeats": 1.0,
+          "indoor_light_power_w": 800.0,
+          "indoor_light_color": [
+            1.0,
+            0.9,
+            0.75
+          ],
+          "indoor_light_size_m": 2.0,
+          "indoor_light_ceiling_offset_m": 0.15
+        },
+        "resolved_lamps": [
+          {
+            "kind": "AREA",
+            "location": [
+              0.5714493806527501,
+              0.2719010494497489,
+              2.331242508638395
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.8,
+              0.88,
+              1.0
+            ],
+            "power_w": 1087.987384246128,
+            "size_m": 1.173094013849953,
+            "spot_size_rad": 1.1831712919776003,
+            "spot_blend": 0.3821922599176123,
+            "actual_location": [
+              0.5714493806527501,
+              0.2719010494497489,
+              2.331242508638395
+            ]
+          },
+          {
+            "kind": "AREA",
+            "location": [
+              0.7037837053945979,
+              1.4034388033837635,
+              2.090350107191932
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.8,
+              0.88,
+              1.0
+            ],
+            "power_w": 924.7911015978459,
+            "size_m": 1.3089574805951636,
+            "spot_size_rad": 0.8918251976484171,
+            "spot_blend": 0.13868660187886647,
+            "actual_location": [
+              0.7037837053945979,
+              1.4034388033837635,
+              2.090350107191932
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -8,7 +8,7 @@ from .assets import discover_images
 from .backgrounds import _release_schedule
 
 MIB = 1024**2
-MODEL_VERSION = "phase-lifetimes-v3"
+MODEL_VERSION = "phase-lifetimes-v4"
 HEADROOM_PERCENT = 20
 
 
@@ -146,7 +146,10 @@ def memory_components(resolved, workers, window, native_threads, shapes):
     foreground = max(64*shapes['foreground_pixels'],
         4*(shapes['foreground_pixels']+shapes['foreground_rotated_pixels']),
         4*(shapes['foreground_rotated_pixels']+resized))
-    retained_render = 7*canvas + (3+2*instances)*output
+    # Retain cropped boolean scene-plane alpha supports for collision checks.
+    support_crop = (target_width + 2) * (math.ceil(resized / target_width) + 2)
+    support_crops = (instances + 1) * support_crop
+    retained_render = 7*canvas + (3+2*instances)*output + support_crops
     render = max(41*canvas+3*output, retained_render+foreground+52*output)
     if resolved.profile.scene.foreground_resampling == "premultiplied":
         # Float packed premultiplication/filter/unpremultiplication plus integer alpha.
@@ -163,6 +166,10 @@ def memory_components(resolved, workers, window, native_threads, shapes):
         render = max(render,retained_render+width*min(height,128)*tile_bytes+output*3)
     if resolved.profile.scene.occlusion is not None:
         render = max(render,retained_render+output*52)
+    context = resolved.profile.scene.foreground_context
+    if context is not None and context.probability > 0 and context.strength[1] > 0:
+        # Immutable RGB background plus packed/adjusted RGBA and bounded tile/statistics temporaries.
+        render += 11*output + width*min(height,128)*24 + 128*128*24
     evidence = 3*canvas+(32+6*instances)*output
     phases = {'background':background,'scene_render':render,'mask_evidence':evidence}
     worker_peak = max(phases.values())

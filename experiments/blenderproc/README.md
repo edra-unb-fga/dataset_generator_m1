@@ -411,3 +411,22 @@ pause the remote study before transfer and wait for transfer and verification be
 timed command. The local lease cannot control a remote machine. A failed archive download restarts
 that archive; already verified cells are retained. This interface was tested locally and with a fake
 CLI, not against a live Colab runtime in this round.
+
+
+### Ground-level panel separation and contact
+
+Ordinary scenes compare complete rotated ground-plane panel footprints before mesh creation.
+Later intersecting panels are dropped; `placement_diagnostics` records requested and retained
+counts, original survivor indices and blocking indices. Exported annotations retain the original
+identity as `original_instance_id`, including after an intermediate panel is dropped. Camera
+framing remains fixed. Touching
+footprint edges are permitted. The deliberately stacked `diagnostic-overlap` case is excluded
+from ordinary COCO and YOLO exports and has separately named diagnostic COCO files. A study
+with only an accepted overlap diagnostic can export those files without publishing a normal
+dataset.
+
+Panel bottoms are placed at the ground plane (z=0); pad bump is shading-only, not mesh
+displacement. The result records bottom and ground heights for inspection. This geometric
+evidence does not alone prove that shading or ray tracing has no apparent contact artifact.
+Source and job hashes seal this behavior for new studies; old completed studies remain
+inspectable, but changed renderer/source hashes prevent incompatible resumes.

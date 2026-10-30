@@ -86,3 +86,25 @@ def test_expired_handoff_stops_before_next_cell(tmp_path, monkeypatch):
     with pytest.raises(TimeoutError,match='deadline'):module.main()
     assert calls==['one'] and not (root/'cells'/'two').exists()
     assert json.loads((root/'summary.json').read_text())['status']=='failed'
+
+
+def test_camera_comparison_records_matching_and_mismatched_raster_shapes(tmp_path):
+    import numpy as np
+    from PIL import Image
+    spec=importlib.util.spec_from_file_location('camera_study_comparison',Path('scripts/study_camera_environments.py'))
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    def output(name, size, value):
+        rgb=tmp_path/f'{name}.png'; masks=tmp_path/f'{name}.npz'
+        Image.fromarray(np.full((*size,3),value,np.uint8)).save(rgb)
+        np.savez(masks, instance=np.full(size,255,np.uint8))
+        return {'image':str(rgb),'masks':str(masks)}
+    reference=output('reference',(4,4),10)
+    same=output('same',(4,4),15)
+    larger=output('larger',(8,8),15)
+    result=module.compare_outputs(reference,same)
+    assert result['rgb_comparable'] and result['rgb_mean_abs_difference']==5
+    assert result['all_masks_equal'] is True and result['incomparable_reason'] is None
+    result=module.compare_outputs(reference,larger)
+    assert not result['rgb_comparable'] and result['rgb_mean_abs_difference'] is None
+    assert result['all_masks_equal'] is None and result['incomparable_reason']=='rgb-shape-mismatch'
+    assert result['baseline_rgb_shape']==[4,4,3] and result['candidate_rgb_shape']==[8,8,3]

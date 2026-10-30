@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "allocation_timeout_seconds": 1500,
+  "remote_max_seconds": 1150,
+  "remote_min_seconds": 120,
+  "handoff_margin_seconds": 210,
+  "samples": 8
+}

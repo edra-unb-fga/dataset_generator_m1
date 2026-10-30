@@ -1,0 +1,690 @@
+{
+  "schema_version": 1,
+  "purpose": "Exploratory indoor wall color/material and mixed area/point/spot lighting plus haze; uncalibrated",
+  "cells": [
+    {
+      "id": "baseline",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "red-walls",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.75,
+            0.08,
+            0.08
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "blue-walls",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.08,
+            0.16,
+            0.75
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "red-gloss-walls",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.75,
+            0.08,
+            0.08
+          ],
+          "wall_roughness": 0.12,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "textured-walls",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ],
+          "wall_ground_index": 0,
+          "wall_texture_repeats": 2
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ]
+    },
+    {
+      "id": "mixed-area-lights",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "lamps": [
+          {
+            "location": [
+              -2,
+              -2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.65,
+              0.4
+            ],
+            "power_w": 600,
+            "size_m": 1
+          },
+          {
+            "location": [
+              2,
+              2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.5,
+              0.7,
+              1
+            ],
+            "power_w": 600,
+            "size_m": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "mixed-point-lights",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "lamps": [
+          {
+            "location": [
+              -2,
+              -2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.65,
+              0.4
+            ],
+            "power_w": 600,
+            "size_m": 0.01
+          },
+          {
+            "location": [
+              2,
+              2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.5,
+              0.7,
+              1
+            ],
+            "power_w": 600,
+            "size_m": 0.01
+          }
+        ]
+      }
+    },
+    {
+      "id": "mixed-spot-lights",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "lamps": [
+          {
+            "location": [
+              -2,
+              -2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.65,
+              0.4
+            ],
+            "power_w": 600,
+            "size_m": 0.06
+          },
+          {
+            "location": [
+              2,
+              2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.5,
+              0.7,
+              1
+            ],
+            "power_w": 600,
+            "size_m": 0.06
+          }
+        ]
+      }
+    },
+    {
+      "id": "indoor-haze",
+      "config": {
+        "scenes": 2,
+        "seed": 20261101,
+        "resolution": [
+          640,
+          640
+        ],
+        "fast_samples": 32,
+        "quality_samples": 128,
+        "quality_treatments": [],
+        "execution_profile": "gpu-guarded",
+        "workers": 6,
+        "threads": 2,
+        "camera_study": {
+          "preset": "drone",
+          "material_mode": "view-relative"
+        },
+        "environment_mix": {
+          "open": 0,
+          "indoor": 1,
+          "outdoor": 0
+        },
+        "treatments": [
+          {
+            "id": "core",
+            "lighting": "environment",
+            "roughness": 0.4,
+            "shadows": true,
+            "casters": {
+              "count": 0
+            }
+          }
+        ],
+        "thickness_metres": 0.005,
+        "environment_geometry_settings": {
+          "wall_color": [
+            0.65,
+            0.65,
+            0.65
+          ],
+          "wall_roughness": 0.85,
+          "indoor_light_power_w": 800,
+          "indoor_light_color": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "jobs": [
+        "000-core-fast",
+        "001-core-fast",
+        "diagnostic-closeup"
+      ],
+      "treatment": {
+        "haze_density": 0.008,
+        "lamps": [
+          {
+            "location": [
+              -2,
+              -2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              1,
+              0.65,
+              0.4
+            ],
+            "power_w": 600,
+            "size_m": 1
+          },
+          {
+            "location": [
+              2,
+              2,
+              3
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "color": [
+              0.5,
+              0.7,
+              1
+            ],
+            "power_w": 600,
+            "size_m": 1
+          }
+        ]
+      }
+    }
+  ]
+}
