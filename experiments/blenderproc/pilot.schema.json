@@ -390,6 +390,144 @@
       "title": "Ground",
       "type": "object"
     },
+    "GroundMapping": {
+      "additionalProperties": false,
+      "properties": {
+        "ground_spans": {
+          "default": [
+            0.5,
+            1.5
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Ground Spans",
+          "type": "array"
+        },
+        "extent_bounds_m": {
+          "default": [
+            40,
+            500
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Extent Bounds M",
+          "type": "array"
+        },
+        "tile_bounds_m": {
+          "default": [
+            0.1,
+            500
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Tile Bounds M",
+          "type": "array"
+        },
+        "footprint_margin": {
+          "default": 1.1,
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Footprint Margin",
+          "type": "number"
+        }
+      },
+      "title": "GroundMapping",
+      "type": "object"
+    },
+    "GroundMaterial": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "color-only",
+            "full",
+            "coherent-blend",
+            "rgb-blend-stress",
+            "donor-mismatch-stress"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "primary_index": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Primary Index"
+        },
+        "donor_index": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Donor Index"
+        },
+        "blend_scale": {
+          "default": 2,
+          "maximum": 20,
+          "minimum": 0.1,
+          "title": "Blend Scale",
+          "type": "number"
+        },
+        "blend_amount": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Blend Amount",
+          "type": "number"
+        },
+        "blend_seed": {
+          "default": 0,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Blend Seed",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "GroundMaterial",
+      "type": "object"
+    },
     "Lamp": {
       "additionalProperties": false,
       "properties": {
@@ -1194,6 +1332,17 @@
           "title": "Pad Bump Distance M",
           "type": "number"
         },
+        "ground_material": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GroundMaterial"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "ground_normal_strength": {
           "anyOf": [
             {
@@ -1583,6 +1732,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/Preset"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "ground_mapping": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GroundMapping"
         },
         {
           "type": "null"

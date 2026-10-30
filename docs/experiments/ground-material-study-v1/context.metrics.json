@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "matrix_purpose": "paired contextual sunlight, caster, pad wear and material variations",
+  "metrics": [
+    {
+      "cell": "context-full",
+      "job": "000-base-fast",
+      "status": "accepted",
+      "reason": null,
+      "ground_assets": [
+        "Ground068"
+      ],
+      "environment": "open",
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "ground_material": {
+        "mode": "full",
+        "primary_index": 0
+      },
+      "ground_normal_strength": 1.0,
+      "shadows": true,
+      "casters": {
+        "count": 3,
+        "seed": 681,
+        "distance_m": 4.0,
+        "height_m": 2.5,
+        "width_m": 0.35
+      },
+      "ground_diagnostics": {
+        "extent_m": 40.0,
+        "required_extent_m": 9.031973929983986,
+        "tile_m": 6.281683138956934,
+        "nominal_tile_m": 2.0,
+        "requested_spans": 1.0,
+        "achieved_spans": 1.0,
+        "central_view_width_m": 6.281683138956934,
+        "near_horizon_fallback": false,
+        "extent_clamped": false,
+        "coverage_guaranteed": true,
+        "distortion_bounds_used": false,
+        "motion_margin_m": 0,
+        "tile_clamped": false,
+        "material_mode": "view-relative"
+      },
+      "environment_diagnostics": null,
+      "command_seconds": 8.772120410000298,
+      "peak_resource": {
+        "peak_rss_bytes": 1481834496,
+        "sampled_peak_gpu_memory_mib": 1608.0
+      },
+      "actual_ground_spans": 1.0,
+      "study_hash": "00af31e096ae1086bf178e940e1434282c315d7da5c59b828edff90ac8918305",
+      "comparison_role": "baseline"
+    },
+    {
+      "cell": "context-normal-off",
+      "job": "000-base-fast",
+      "status": "accepted",
+      "reason": null,
+      "ground_assets": [
+        "Ground068"
+      ],
+      "environment": "open",
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "ground_material": {
+        "mode": "full",
+        "primary_index": 0
+      },
+      "ground_normal_strength": 0.0,
+      "shadows": true,
+      "casters": {
+        "count": 3,
+        "seed": 681,
+        "distance_m": 4.0,
+        "height_m": 2.5,
+        "width_m": 0.35
+      },
+      "ground_diagnostics": {
+        "extent_m": 40.0,
+        "required_extent_m": 9.031973929983986,
+        "tile_m": 6.281683138956934,
+        "nominal_tile_m": 2.0,
+        "requested_spans": 1.0,
+        "achieved_spans": 1.0,
+        "central_view_width_m": 6.281683138956934,
+        "near_horizon_fallback": false,
+        "extent_clamped": false,
+        "coverage_guaranteed": true,
+        "distortion_bounds_used": false,
+        "motion_margin_m": 0,
+        "tile_clamped": false,
+        "material_mode": "view-relative"
+      },
+      "environment_diagnostics": null,
+      "command_seconds": 5.931253785000081,
+      "peak_resource": {
+        "peak_rss_bytes": 1325649920,
+        "sampled_peak_gpu_memory_mib": 1608.0
+      },
+      "actual_ground_spans": 1.0,
+      "study_hash": "d826b18f4ad1442a80dc110af27c5fcd91c829483c3902c0d116b6018bc4b560",
+      "mask_mismatch": false,
+      "paired": true,
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 4.259449005126953,
+      "foreground_rgb_mae": 0.2501733601093292,
+      "background_rgb_mae": 4.635136127471924,
+      "visible_pixels": 35093,
+      "comparison_baseline": "context-full",
+      "comparison_role": "variant"
+    },
+    {
+      "cell": "context-uv-45",
+      "job": "000-base-fast",
+      "status": "accepted",
+      "reason": null,
+      "ground_assets": [
+        "Ground068"
+      ],
+      "environment": "open",
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "ground_material": {
+        "mode": "full",
+        "primary_index": 0
+      },
+      "ground_normal_strength": 1.0,
+      "shadows": true,
+      "casters": {
+        "count": 3,
+        "seed": 681,
+        "distance_m": 4.0,
+        "height_m": 2.5,
+        "width_m": 0.35
+      },
+      "ground_diagnostics": {
+        "extent_m": 40.0,
+        "required_extent_m": 9.031973929983986,
+        "tile_m": 6.281683138956934,
+        "nominal_tile_m": 2.0,
+        "requested_spans": 1.0,
+        "achieved_spans": 1.0,
+        "central_view_width_m": 6.281683138956934,
+        "near_horizon_fallback": false,
+        "extent_clamped": false,
+        "coverage_guaranteed": true,
+        "distortion_bounds_used": false,
+        "motion_margin_m": 0,
+        "tile_clamped": false,
+        "material_mode": "view-relative"
+      },
+      "environment_diagnostics": null,
+      "command_seconds": 5.692159206999804,
+      "peak_resource": {
+        "peak_rss_bytes": 1372651520,
+        "sampled_peak_gpu_memory_mib": 1608.0
+      },
+      "actual_ground_spans": 1.0,
+      "study_hash": "306465472e9ba4ed8cfa4cb86cd3279e236a131e91696ff6d2c505642be353f3",
+      "mask_mismatch": false,
+      "paired": true,
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 11.935754776000977,
+      "foreground_rgb_mae": 0.25340285897254944,
+      "background_rgb_mae": 13.030445098876953,
+      "visible_pixels": 35093,
+      "comparison_baseline": "context-full",
+      "comparison_role": "variant"
+    },
+    {
+      "cell": "context-coherent-blend",
+      "job": "000-base-fast",
+      "status": "accepted",
+      "reason": null,
+      "ground_assets": [
+        "Ground068",
+        "Asphalt012"
+      ],
+      "environment": "open",
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "ground_material": {
+        "mode": "coherent-blend",
+        "primary_index": 0,
+        "donor_index": 1,
+        "blend_amount": 1,
+        "blend_scale": 2,
+        "blend_seed": 12
+      },
+      "ground_normal_strength": 1.0,
+      "shadows": true,
+      "casters": {
+        "count": 3,
+        "seed": 681,
+        "distance_m": 4.0,
+        "height_m": 2.5,
+        "width_m": 0.35
+      },
+      "ground_diagnostics": {
+        "extent_m": 40.0,
+        "required_extent_m": 9.031973929983986,
+        "tile_m": 6.281683138956934,
+        "nominal_tile_m": 2.0,
+        "requested_spans": 1.0,
+        "achieved_spans": 1.0,
+        "central_view_width_m": 6.281683138956934,
+        "near_horizon_fallback": false,
+        "extent_clamped": false,
+        "coverage_guaranteed": true,
+        "distortion_bounds_used": false,
+        "motion_margin_m": 0,
+        "tile_clamped": false,
+        "material_mode": "view-relative"
+      },
+      "environment_diagnostics": null,
+      "command_seconds": 5.930193986000177,
+      "peak_resource": {
+        "peak_rss_bytes": 1334243328,
+        "sampled_peak_gpu_memory_mib": 1616.0
+      },
+      "actual_ground_spans": 1.0,
+      "study_hash": "bd6a16814932f842fa0e0036071785f001c9609dcc7c97e7617894130e360056",
+      "mask_mismatch": false,
+      "paired": true,
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 8.35243034362793,
+      "foreground_rgb_mae": 0.8493241667747498,
+      "background_rgb_mae": 9.055505752563477,
+      "visible_pixels": 35093,
+      "comparison_baseline": "context-full",
+      "comparison_role": "variant"
+    },
+    {
+      "cell": "context-rgb-blend-stress",
+      "job": "000-base-fast",
+      "status": "accepted",
+      "reason": null,
+      "ground_assets": [
+        "Ground068",
+        "Asphalt012"
+      ],
+      "environment": "open",
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "ground_material": {
+        "mode": "rgb-blend-stress",
+        "primary_index": 0,
+        "donor_index": 1,
+        "blend_amount": 1,
+        "blend_scale": 2,
+        "blend_seed": 12
+      },
+      "ground_normal_strength": 1.0,
+      "shadows": true,
+      "casters": {
+        "count": 3,
+        "seed": 681,
+        "distance_m": 4.0,
+        "height_m": 2.5,
+        "width_m": 0.35
+      },
+      "ground_diagnostics": {
+        "extent_m": 40.0,
+        "required_extent_m": 9.031973929983986,
+        "tile_m": 6.281683138956934,
+        "nominal_tile_m": 2.0,
+        "requested_spans": 1.0,
+        "achieved_spans": 1.0,
+        "central_view_width_m": 6.281683138956934,
+        "near_horizon_fallback": false,
+        "extent_clamped": false,
+        "coverage_guaranteed": true,
+        "distortion_bounds_used": false,
+        "motion_margin_m": 0,
+        "tile_clamped": false,
+        "material_mode": "view-relative"
+      },
+      "environment_diagnostics": null,
+      "command_seconds": 5.931728137999926,
+      "peak_resource": {
+        "peak_rss_bytes": 1334800384,
+        "sampled_peak_gpu_memory_mib": 1612.0
+      },
+      "actual_ground_spans": 1.0,
+      "study_hash": "05197ce309f214be2e1d5ec3e8dda7b7fca9bc0871c61c4bfe6cd005e60d3436",
+      "mask_mismatch": false,
+      "paired": true,
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 8.531250953674316,
+      "foreground_rgb_mae": 0.8385432958602905,
+      "background_rgb_mae": 9.252092361450195,
+      "visible_pixels": 35093,
+      "comparison_baseline": "context-full",
+      "comparison_role": "variant"
+    },
+    {
+      "cell": "context-donor-mismatch-stress",
+      "job": "000-base-fast",
+      "status": "accepted",
+      "reason": null,
+      "ground_assets": [
+        "Ground068",
+        "Asphalt012"
+      ],
+      "environment": "open",
+      "ground_mapping": {
+        "ground_spans": [
+          1,
+          1
+        ]
+      },
+      "ground_material": {
+        "mode": "donor-mismatch-stress",
+        "primary_index": 0,
+        "donor_index": 1,
+        "blend_amount": 1,
+        "blend_scale": 2,
+        "blend_seed": 12
+      },
+      "ground_normal_strength": 1.0,
+      "shadows": true,
+      "casters": {
+        "count": 3,
+        "seed": 681,
+        "distance_m": 4.0,
+        "height_m": 2.5,
+        "width_m": 0.35
+      },
+      "ground_diagnostics": {
+        "extent_m": 40.0,
+        "required_extent_m": 9.031973929983986,
+        "tile_m": 6.281683138956934,
+        "nominal_tile_m": 2.0,
+        "requested_spans": 1.0,
+        "achieved_spans": 1.0,
+        "central_view_width_m": 6.281683138956934,
+        "near_horizon_fallback": false,
+        "extent_clamped": false,
+        "coverage_guaranteed": true,
+        "distortion_bounds_used": false,
+        "motion_margin_m": 0,
+        "tile_clamped": false,
+        "material_mode": "view-relative"
+      },
+      "environment_diagnostics": null,
+      "command_seconds": 5.676249534999897,
+      "peak_resource": {
+        "peak_rss_bytes": 1379217408,
+        "sampled_peak_gpu_memory_mib": 1608.0
+      },
+      "actual_ground_spans": 1.0,
+      "study_hash": "b04767989087e864f5adff6e3db5baa2795b26dbebb191ba74c46c050e2521dd",
+      "mask_mismatch": false,
+      "paired": true,
+      "masks_equal": true,
+      "rgb_shape_match": true,
+      "rgb_mae": 4.811141490936279,
+      "foreground_rgb_mae": 0.8698601126670837,
+      "background_rgb_mae": 5.180458068847656,
+      "visible_pixels": 35093,
+      "comparison_baseline": "context-full",
+      "comparison_role": "variant"
+    }
+  ]
+}

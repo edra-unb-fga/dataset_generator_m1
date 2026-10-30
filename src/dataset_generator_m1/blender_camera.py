@@ -106,3 +106,9 @@ def footprints_overlap(first, second):
             if left.max() <= right.min()+1e-12 or right.max() <= left.min()+1e-12:
                 return False
     return True
+
+
+def ground_uv(x, y, tile, angle_degrees, offset):
+    """World XY to UV with a rotated tangent frame and UV-space offset."""
+    angle=math.radians(angle_degrees);c=math.cos(angle);s=math.sin(angle)
+    return ((c*x-s*y)/tile+offset[0],(s*x+c*y)/tile+offset[1])

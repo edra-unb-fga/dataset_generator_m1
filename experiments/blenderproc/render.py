@@ -13,7 +13,7 @@ from time import perf_counter
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'src'))
-from dataset_generator_m1.blender_camera import rotation_matrix, ground_geometry, environment_bounds, panel_footprint, footprints_overlap
+from dataset_generator_m1.blender_camera import rotation_matrix, ground_geometry, environment_bounds, panel_footprint, footprints_overlap, ground_uv
 from runtime import configure as configure_execution, evidence as execution_evidence
 import bpy
 from blenderproc.python.utility.GlobalStorage import GlobalStorage
@@ -82,7 +82,7 @@ def light(name,kind,location,power,color,size,target=(0,0,0),spot_size_rad=.7853
     return obj
 
 
-def ground_material(ground,treatment,extent=40,tile_override=None):
+def legacy_ground_material(ground,treatment,extent=40,tile_override=None):
     mat,shader=material('ground',roughness=.8)
     nodes=mat.node_tree.nodes;links=mat.node_tree.links
     coord=nodes.new('ShaderNodeTexCoord');mapping=nodes.new('ShaderNodeMapping')
@@ -101,6 +101,52 @@ def ground_material(ground,treatment,extent=40,tile_override=None):
         links.new(texture.outputs['Color'],normal.inputs['Color']);links.new(normal.outputs['Normal'],shader.inputs['Normal'])
     return mat
 
+
+def ground_material(grounds,index,treatment,extent=40,tile_override=None,explicit_uv=False):
+    variant=treatment.get('ground_material')
+    if variant is None and not explicit_uv:
+        return legacy_ground_material(grounds[index],treatment,extent,tile_override)
+    mat,shader=material('ground',roughness=.8);nodes=mat.node_tree.nodes;links=mat.node_tree.links
+    coord=nodes.new('ShaderNodeTexCoord');uv=coord.outputs['UV']
+    mode=variant['mode'] if variant else 'full'
+    donor=grounds[variant['donor_index']] if variant and variant.get('donor_index') is not None else None
+    source=grounds[index]
+    def texture(ground,role):
+        node=image_node(mat,ground['maps'][role],role!='color');links.new(uv,node.inputs['Vector']);return node.outputs['Color']
+    def normal(ground):
+        node=nodes.new('ShaderNodeNormalMap');node.inputs['Strength'].default_value=treatment.get('ground_normal_strength') if treatment.get('ground_normal_strength') is not None else treatment['normal_strength']
+        links.new(texture(ground,'normal'),node.inputs['Color']);return node.outputs['Normal']
+    mask=None
+    if mode in ('coherent-blend','rgb-blend-stress'):
+        offset=nodes.new('ShaderNodeVectorMath');offset.operation='ADD';links.new(uv,offset.inputs[0]);seed=variant['blend_seed']
+        offset.inputs[1].default_value=((seed%997)/997,(seed%991)/991,(seed%983)/983)
+        noise=nodes.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=variant['blend_scale'];links.new(offset.outputs['Vector'],noise.inputs['Vector'])
+        amount=nodes.new('ShaderNodeMath');amount.operation='MULTIPLY';amount.inputs[1].default_value=variant['blend_amount'];links.new(noise.outputs['Fac'],amount.inputs[0]);mask=amount.outputs[0]
+    def blend(a,b):
+        node=nodes.new('ShaderNodeMixRGB');node.blend_type='MIX';links.new(mask,node.inputs[0]);links.new(a,node.inputs[1]);links.new(b,node.inputs[2]);return node.outputs['Color']
+    color=texture(source,'color')
+    if mode in ('coherent-blend','rgb-blend-stress'):color=blend(color,texture(donor,'color'))
+    links.new(color,shader.inputs['Base Color'])
+    if mode!='color-only':
+        physical=donor if mode=='donor-mismatch-stress' else source
+        rough=texture(physical,'roughness') if 'roughness' in physical['maps'] else None
+        normal_output=normal(physical) if 'normal' in physical['maps'] else None
+        if mode=='coherent-blend':
+            rough=blend(rough,texture(donor,'roughness'))
+            # Blend decoded shading vectors, then normalize; tangent-space RGB is never mixed.
+            normal_output=blend(normal_output,normal(donor))
+            normalize=nodes.new('ShaderNodeVectorMath');normalize.operation='NORMALIZE';links.new(normal_output,normalize.inputs[0]);normal_output=normalize.outputs['Vector']
+        if rough is not None:links.new(rough,shader.inputs['Roughness'])
+        if normal_output is not None:links.new(normal_output,shader.inputs['Normal'])
+    return mat
+
+def ground_mesh_uv(obj,tile,angle_degrees,offset):
+    # Change mesh UVs themselves: Blender derives the normal-map tangent frame from them.
+    uv=obj.data.uv_layers.active
+    for polygon in obj.data.polygons:
+        for loop_index in polygon.loop_indices:
+            vertex=obj.data.vertices[obj.data.loops[loop_index].vertex_index].co
+            uv.data[loop_index].uv=ground_uv(vertex.x,vertex.y,tile,angle_degrees,offset)
 
 def fit_indoor_lamp(location, kind, size, geometry, thickness):
     """Fit the whole emitter into the room; return None if it cannot fit."""
@@ -230,7 +276,7 @@ def build_scene(study,job,attempt):
         bproc.renderer.enable_motion_blur(motion_blur_length=t['shutter_seconds']*24)
     mapping=None
     if any(t['distortion']):mapping=bproc.camera.set_lens_distortion(*t['distortion'])
-    if job.get('camera_pose'):
+    if job.get('camera_pose') or config.get('ground_mapping') is not None:
         internal_K=bproc.camera.get_intrinsics_as_K_matrix() if mapping is not None else K
         bounds=None
         if mapping is not None:
@@ -238,17 +284,22 @@ def build_scene(study,job,attempt):
             bounds=(float(np.min(mapping[1]))-1,float(np.min(mapping[0]))-1,
                     float(np.max(mapping[1]))+1,float(np.max(mapping[0]))+1)
         motion=t['camera_speed_mps']*max(1/24,t['shutter_seconds']/2) if t['camera_speed_mps'] else 0
-        ground_evidence=ground_geometry(position,rotation,internal_K,(width,height),settings,t['uv_scale_m'],
-                                        job['camera_pose']['ground_spans'],pixel_bounds=bounds,motion_m=motion,
+        ground_settings=config.get('ground_mapping') or settings
+        spans=job.get('ground_spans',job.get('camera_pose',{}).get('ground_spans'))
+        ground_evidence=ground_geometry(position,rotation,internal_K,(width,height),ground_settings,t['uv_scale_m'],
+                                        spans,pixel_bounds=bounds,motion_m=motion,
                                         distorted=mapping is not None)
-        if settings['material_mode']=='fixed-physical':
+        if config.get('ground_mapping') is None and settings['material_mode']=='fixed-physical':
             ground_evidence['tile_m']=t['uv_scale_m']
             ground_evidence['achieved_spans']=(ground_evidence['central_view_width_m']/t['uv_scale_m'] if ground_evidence['central_view_width_m'] else None)
-        ground_evidence['material_mode']=settings['material_mode']
+        ground_evidence['material_mode']='view-relative' if config.get('ground_mapping') is not None else settings['material_mode']
     extent=ground_evidence['extent_m'] if ground_evidence else 40
     tile=ground_evidence['tile_m'] if ground_evidence else None
     bpy.ops.mesh.primitive_plane_add(size=extent)
-    ground=bpy.context.object;ground.name='ground';ground.data.materials.append(ground_material(study['grounds'][job['ground_index']],t,extent,tile))
+    ground=bpy.context.object;ground.name='ground'
+    explicit_uv=bool(t.get('ground_material') is not None or config.get('ground_mapping') is not None)
+    if explicit_uv:ground_mesh_uv(ground,tile or t['uv_scale_m'],t['uv_rotation_degrees'],t.get('ground_uv_offset',(0,0)))
+    ground.data.materials.append(ground_material(study['grounds'],job['ground_index'],t,extent,tile,explicit_uv))
     world=scene.world;world.use_nodes=True
     background=world.node_tree.nodes.get('Background')
     tex=world.node_tree.nodes.new('ShaderNodeTexEnvironment')
@@ -461,7 +512,7 @@ def run_job(study,job,root):
                             'output_resolution':config['resolution'],'numpy':np.__version__,
                             'camera_to_world_opengl':np.asarray(scene.camera.matrix_world).tolist(),
                             'motion_blur':motion,'depth_of_field':dof},'intrinsics_K_before_distortion':K.tolist(),
-                        'surface_diagnostics':{'ground_index':job['ground_index'],'environment_index':envindex_for(job['treatment'],len(study['environments'])),
+                        'surface_diagnostics':{'ground_index':job['ground_index'],'ground_material':job['treatment'].get('ground_material'),'environment_index':envindex_for(job['treatment'],len(study['environments'])),
                             'environment_strength':scene.world.node_tree.nodes.get('Background').inputs['Strength'].default_value,
                             'pad_bump_strength':job['treatment'].get('pad_bump_strength') if job['treatment'].get('pad_bump_strength') is not None else job['treatment']['normal_strength'],
                             'ground_normal_strength':job['treatment'].get('ground_normal_strength') if job['treatment'].get('ground_normal_strength') is not None else job['treatment']['normal_strength'],

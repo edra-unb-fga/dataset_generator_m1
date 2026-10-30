@@ -15,7 +15,13 @@ evidence and multi-hardware baselines are open; synthetic screens do not establi
 The optional harness now has reusable `open`, `outdoor` and `indoor` scene presets, explicit sampled
 light/caster/material controls and ordinary seeded scene preparation. The
 [bounded visual screen](experiments/procedural-scenes-v1/README.md) establishes execution evidence,
-with source-revision limits, rather than calibrated distributions. Next priorities are:
+with source-revision limits, rather than calibrated distributions.
+
+The [ground/material screen](experiments/ground-material-study-v1/README.md) subsequently exercised
+independent view-relative mapping, explicit directional sun, coherent UV tangents and controlled
+material blends in 24 GPU cells. Coherent and deliberately mismatched modes remain opt-in. It
+primarily diversifies ground/context and does not establish better plastic-pad reflections or model
+transfer; it leaves the following priorities open:
 
 - Bind ground/material eligibility to environment meaning; the generic presets currently accept
   every supplied ground unless `ground_weights` restricts the catalog.
