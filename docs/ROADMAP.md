@@ -12,6 +12,14 @@ evidence and multi-hardware baselines are open; synthetic screens do not establi
 
 ### Planned coherent-defaults round
 
+The [coherent-scene evidence index](experiments/coherent-scene-studies-v1/README.md) now records
+the opt-in varied 2D candidates and matched, natural and targeted 3D lighting screens. Conditional
+single-spot fill and a main-lamp power cap are configurable in the experimental indoor presets.
+The reviewed samples still include pale targets and conspicuous shadows; the revised natural draw
+does not validate fill frequency. Review each family and the 3D mixture separately before any
+default promotion. Compact source and evidence are under draft PR #89; original galleries and
+archives remain local-only.
+
 The active follow-up prepares opt-in, reviewable indoor, walled-outdoor and open-scene mixtures
 and stronger 2D candidates. Ground eligibility belongs to scene profiles; material/wear and light
 distributions are provisional. A curated 3D default and each 2D family default require individual
