@@ -1609,7 +1609,24 @@
           "spot_blend": [
             0.5,
             0.9
-          ]
+          ],
+          "indoor_light_balance": {
+            "max_total_power_w": 1200,
+            "single_spot_fill": {
+              "power_w": 150,
+              "size_m": 2,
+              "location": [
+                0,
+                0,
+                3
+              ],
+              "color": [
+                1,
+                0.95,
+                0.9
+              ]
+            }
+          }
         },
         "treatment_overrides": {
           "haze_density": 0
@@ -1815,7 +1832,24 @@
           "spot_blend": [
             0.5,
             0.9
-          ]
+          ],
+          "indoor_light_balance": {
+            "max_total_power_w": 1200,
+            "single_spot_fill": {
+              "power_w": 150,
+              "size_m": 2,
+              "location": [
+                0,
+                0,
+                3
+              ],
+              "color": [
+                1,
+                0.95,
+                0.9
+              ]
+            }
+          }
         },
         "treatment_overrides": {
           "haze_density": 0
