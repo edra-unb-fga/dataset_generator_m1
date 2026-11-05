@@ -1,6 +1,6 @@
 ## Intent
 
-<!-- What outcome does this PR deliver? Link the issue or experiment decision. -->
+<!-- What outcome does this PR deliver? Link the issue or experiment decision. Use a closing keyword only when all issue acceptance criteria are met. -->
 
 ## Contracts affected
 
@@ -25,6 +25,7 @@ Compatibility notes:
 - [ ] Relevant docs were updated or no documentation changed.
 - [ ] Generated artifacts are ignored, or tracked evidence is small and intentionally reviewed.
 - [ ] No raw dataset or accidental local output is included.
+- [ ] Related issues and roadmap status were reconciled where authorized, or follow-up is noted.
 
 ## Full CLI validation
 

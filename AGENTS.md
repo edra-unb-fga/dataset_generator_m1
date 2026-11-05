@@ -4,7 +4,7 @@ Start with the smallest source that matches the task:
 
 - Domain language and invariants: `CONTEXT.md`
 - Executable product contract: `docs/SPEC.md`
-- Code, tests, worktrees, and pull requests: `docs/DEVELOPMENT.md`
+- Code, tests, worktrees, pull requests, and authorized issue/project tracking: `docs/DEVELOPMENT.md`
 - Controlled studies and performance evidence: `docs/EXPERIMENTS.md`
 - Future work and explicit deferrals: `docs/ROADMAP.md`
 
