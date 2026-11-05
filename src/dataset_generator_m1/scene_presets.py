@@ -23,6 +23,7 @@ class WeightedShape(Strict):
 
 class WeightedGround(Strict):
     index: int = Field(ge=0, le=5)
+    asset_id: str | None = Field(default=None, min_length=1, max_length=128)
     weight: float = Field(gt=0, le=1000)
 
 class Preset(Strict):

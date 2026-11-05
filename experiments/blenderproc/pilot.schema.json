@@ -1198,6 +1198,111 @@
       "title": "Preset",
       "type": "object"
     },
+    "SceneMaterialState": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        },
+        "roughness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Roughness",
+          "type": "number"
+        },
+        "wear": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SurfaceWearConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "weight",
+        "roughness"
+      ],
+      "title": "SceneMaterialState",
+      "type": "object"
+    },
+    "SceneMixture": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/SceneMixtureMember"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Members",
+          "type": "array"
+        },
+        "material_states": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SceneMaterialState"
+          },
+          "maxItems": 12,
+          "title": "Material States",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "members"
+      ],
+      "title": "SceneMixture",
+      "type": "object"
+    },
+    "SceneMixtureMember": {
+      "additionalProperties": false,
+      "properties": {
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        },
+        "preset": {
+          "$ref": "#/$defs/Preset"
+        },
+        "treatment_overrides": {
+          "additionalProperties": true,
+          "title": "Treatment Overrides",
+          "type": "object"
+        }
+      },
+      "required": [
+        "weight",
+        "preset"
+      ],
+      "title": "SceneMixtureMember",
+      "type": "object"
+    },
     "SurfaceWearConfig": {
       "additionalProperties": false,
       "properties": {
@@ -1622,6 +1727,20 @@
           "title": "Index",
           "type": "integer"
         },
+        "asset_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Asset Id"
+        },
         "weight": {
           "exclusiveMinimum": 0,
           "maximum": 1000,
@@ -1734,10 +1853,14 @@
           "$ref": "#/$defs/Preset"
         },
         {
+          "$ref": "#/$defs/SceneMixture"
+        },
+        {
           "type": "null"
         }
       ],
-      "default": null
+      "default": null,
+      "title": "Procedural"
     },
     "ground_mapping": {
       "anyOf": [

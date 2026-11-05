@@ -117,3 +117,53 @@ def test_indoor_fixture_bounds_use_emitter_extent():
     assert not valid([2.8,0,2],[1,1,1],room,.2)
     assert not valid([0,0,3.8],[1,1,1],room,.2)
     assert not valid([0,0,.1],[1,1,1],room,.2)
+
+
+def test_balanced_candidate_mixture_validates_catalog_and_samples_chunks(tmp_path, monkeypatch):
+    import json
+    import numpy as np
+    from PIL import Image
+    from dataset_generator_m1 import blender_pilot as pilot
+    candidate=json.loads((catalog().parent/'pilot-balanced-candidate.example.json').read_text())
+    art=tmp_path/'art.png'; Image.fromarray(np.full((12,12,4),255,np.uint8)).save(art)
+    sha=pilot.digest_file(art)
+    monkeypatch.setattr(pilot,'reference_scenes',lambda _: ([{'objects':[{'center':[.5,.5],'fraction':.2,'angle':0,'source_sha256':sha}], 'negative':False,'reference_image':'x'}], {'run_sha256':'x','samples_sha256':'x'}))
+    ground=tmp_path/'ground';ground.mkdir();(ground/'color.jpg').write_bytes(b'color')
+    g=tmp_path/'ground.json';g.write_text(json.dumps({'asset_id':'ground','license':'CC0-1.0','maps':{'color':{'sha256':pilot.digest_file(ground/'color.jpg')}}}))
+    hdr=tmp_path/'sky.hdr';hdr.write_bytes(b'sky');e=tmp_path/'sky.json';e.write_text(json.dumps({'license':'CC0-1.0','path':'sky.hdr','sha256':pilot.digest_file(hdr)}))
+    grounds=[]
+    for asset_id in ('Ground068','Asphalt012','Concrete034'):
+        directory=tmp_path/asset_id; directory.mkdir(); (directory/'color.jpg').write_bytes(b'color')
+        manifest=tmp_path/(asset_id+'.json'); manifest.write_text(json.dumps({'asset_id':asset_id,'license':'CC0-1.0','maps':{'color':{'sha256':pilot.digest_file(directory/'color.jpg')}}}))
+        grounds.append({'material_file':str(manifest)})
+    candidate.update(reference_pool=str(tmp_path), artwork=[str(art)]*2, grounds=grounds, environments=[str(e)], scenes=24)
+    assert candidate['thickness_metres']==.005
+    assert candidate['ground_mapping']['ground_spans']==[.5,1.5]
+    with pytest.raises(ValueError, match='ground index'):
+        pilot.PilotConfig.model_validate({**candidate,'grounds':candidate['grounds'][:2]})
+    bad=json.loads(json.dumps(candidate));bad['procedural']['members'][0]['treatment_overrides']['unknown']=1
+    with pytest.raises(ValueError): pilot.PilotConfig.model_validate(bad)
+    conflict=json.loads(json.dumps(candidate)); conflict['procedural']['members'][0]['treatment_overrides']['roughness']=.2
+    with pytest.raises(ValueError,match='preset-controlled fields'): pilot.PilotConfig.model_validate(conflict)
+    conflicting_wear=json.loads(json.dumps(candidate)); conflicting_wear['procedural']['members'][0]['treatment_overrides']['wear']={'fade':.1}
+    with pytest.raises(ValueError,match='wear conflicts'): pilot.PilotConfig.model_validate(conflicting_wear)
+    incompatible=json.loads(json.dumps(candidate)); incompatible['treatments'][0]['ground_material']={'mode':'color-only','primary_index':0}
+    with pytest.raises(ValueError,match='not eligible'): pilot.PilotConfig.model_validate(incompatible)
+    wrong={**candidate,'grounds':list(reversed(grounds))}; path=tmp_path/'config.json';path.write_text(json.dumps(wrong))
+    with pytest.raises(ValueError, match='does not match declared asset_id'): pilot.prepare(path,tmp_path/'wrong')
+    path.write_text(json.dumps(candidate))
+    whole=pilot.prepare(path,tmp_path/'whole')
+    assert [a['manifest']['asset_id'] for a in whole['contract']['assets'] if a['kind']=='ground'] == ['Ground068','Asphalt012','Concrete034']
+    legacy={**candidate}; legacy.pop('procedural'); path.write_text(json.dumps(legacy))
+    old=pilot.prepare(path,tmp_path/'legacy')
+    assert [a['manifest']['asset_id'] for a in old['contract']['assets'] if a['kind']=='ground'] == ['Ground068','Asphalt012','Concrete034']
+    path.write_text(json.dumps(candidate))
+    assert all(.5 <= j['ground_spans'] <= 1.5 for j in whole['jobs'])
+    assert {j['environment_geometry'] for j in whole['jobs']} == {'open','outdoor','indoor'}
+    assert {j['material_state']['id'] for j in whole['jobs']} == {'clean-reflective','light-wear','worn'}
+    assert all(j['ground_index']==2 and j['treatment']['haze_density']==0 for j in whole['jobs'] if j['environment_geometry']=='indoor')
+    candidate.update(scenes=12,scene_offset=12);path.write_text(json.dumps(candidate))
+    chunk=pilot.prepare(path,tmp_path/'chunk')
+    for a,b in zip(chunk['jobs'],whole['jobs'][12:],strict=True):
+        for key in ('preset','treatment','ground_index','casters','environment_geometry','material_state','ground_spans'):
+            assert a[key]==b[key]

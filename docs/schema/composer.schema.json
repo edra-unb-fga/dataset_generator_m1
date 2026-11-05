@@ -472,6 +472,213 @@
       "title": "ComposerInline",
       "type": "object"
     },
+    "DirectionalShadeConfig": {
+      "additionalProperties": false,
+      "description": "Qualitative scene-plane slab; range ordering is enforced at runtime.",
+      "properties": {
+        "angle_degrees": {
+          "default": [
+            0.0,
+            360.0
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 360,
+              "minimum": -360,
+              "type": "number"
+            },
+            {
+              "maximum": 360,
+              "minimum": -360,
+              "type": "number"
+            }
+          ],
+          "title": "Angle Degrees",
+          "type": "array"
+        },
+        "length": {
+          "default": [
+            0.3,
+            1.0
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1.5,
+              "minimum": 0.01,
+              "type": "number"
+            },
+            {
+              "maximum": 1.5,
+              "minimum": 0.01,
+              "type": "number"
+            }
+          ],
+          "title": "Length",
+          "type": "array"
+        },
+        "longitudinal_offset": {
+          "default": [
+            -0.3,
+            0.3
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            }
+          ],
+          "title": "Longitudinal Offset",
+          "type": "array"
+        },
+        "offset": {
+          "default": [
+            -0.3,
+            0.3
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            }
+          ],
+          "title": "Offset",
+          "type": "array"
+        },
+        "probability": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Probability",
+          "type": "number"
+        },
+        "shape": {
+          "default": "band",
+          "enum": [
+            "band",
+            "rectangle",
+            "ellipse",
+            "wall",
+            "mixed"
+          ],
+          "title": "Shape",
+          "type": "string"
+        },
+        "shape_weights": {
+          "default": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Shape Weights",
+          "type": "array"
+        },
+        "softness": {
+          "default": [
+            0.01,
+            0.08
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 0.5,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 0.5,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Softness",
+          "type": "array"
+        },
+        "strength": {
+          "default": [
+            0.2,
+            0.5
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 0.8,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "maximum": 0.8,
+              "minimum": 0,
+              "type": "number"
+            }
+          ],
+          "title": "Strength",
+          "type": "array"
+        },
+        "width": {
+          "default": [
+            0.15,
+            0.4
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 1.5,
+              "minimum": 0.01,
+              "type": "number"
+            },
+            {
+              "maximum": 1.5,
+              "minimum": 0.01,
+              "type": "number"
+            }
+          ],
+          "title": "Width",
+          "type": "array"
+        }
+      },
+      "title": "DirectionalShadeConfig",
+      "type": "object"
+    },
     "EnvironmentalShadeConfig": {
       "additionalProperties": false,
       "description": "Bounded qualitative scene-wide shade; does not simulate contact shadows.",
@@ -1187,6 +1394,17 @@
     "SceneLightingConfig": {
       "additionalProperties": false,
       "properties": {
+        "directional_shade": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DirectionalShadeConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "gain": {
           "default": [
             0.85,

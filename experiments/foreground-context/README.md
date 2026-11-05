@@ -35,6 +35,36 @@ measurements are sampled and total process RSS can count shared pages more than 
 Development and reserved seeds differ, but use the same source assets; they are
 not a real-image or asset-held-out evaluation.
 
+## Coherent scene candidate ablation
+
+The untested `coherent-candidate.json` compares baseline, previous restrained
+context, stronger capped context, that context with the candidate shared illumination,
+and the same treatment with candidate wear forced on. The harness uses premultiplied
+resampling in every cell and disables capture effects; it measures the treatments rather than the full production
+appearance stack. Its generic HTML description says effects are forced except for
+`all-capture`; for this matrix use the recorded per-cell probabilities instead.
+The candidate-combined scene parameters match `builtin:scene/coherent-candidate`.
+For each family, run development first, inspect full images and target crops, then
+freeze the matrix before a reserved-seed run. Example (use fresh paths):
+
+```sh
+uv run python scripts/guarded_effect_combinations.py \
+  --config examples/configs/landing-pad_minimal.yaml --phase development --samples 20 \
+  --matrix experiments/foreground-context/coherent-candidate.json \
+  --output-dir outputs/experiments/coherent-candidate-development
+uv run python scripts/guarded_effect_combinations.py \
+  --config examples/configs/landing-pad_minimal.yaml --phase reserved --samples 12 \
+  --matrix experiments/foreground-context/coherent-candidate.json \
+  --output-dir outputs/experiments/coherent-candidate-reserved
+```
+
+Repeat for landing and manometro with separate paths. A previous local attempt hit
+the saved swap guard; a stopped run is not visual or throughput evidence and its
+guard must not be weakened automatically. Single ordered generation rates from this
+harness are exploratory: for throughput qualification use warmed alternating repeats
+and report setup, guard measurements and variability separately. None of the
+candidate cells has been visually qualified by this matrix yet.
+
 ## Colab CPU: independent development and reserved phases
 
 Build one immutable bundle after all relevant code changes have been finalized:

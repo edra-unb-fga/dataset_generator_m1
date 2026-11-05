@@ -310,14 +310,24 @@ def _ask_integer(label, default, console, ask, *, minimum=None, auto=False):
 
 def _advanced_editor(document: dict[str, Any], config: Path, console: Console, ask: Callable[..., str]) -> dict[str, Any]:
     while True:
-        action = ask("Advanced: appearance, subject, values, effect, help, back, cancel or done", choices=["appearance", "subject", "values", "effect", "help", "back", "cancel", "done"], default="done")
+        action = ask("Advanced: coherent, appearance, subject, values, effect, help, back, cancel or done", choices=["coherent", "appearance", "subject", "values", "effect", "help", "back", "cancel", "done"], default="done")
         if action == "cancel":
             raise GuidedCancelled("advanced")
         if action == "back":
             return document
         if action == "done":
             return document
-        if action == "appearance":
+        if action == "coherent":
+            console.print("Experimental coherent candidate: shared varied shadows, surface wear, and occasional grain. Existing inline overrides still apply.")
+            use = ask("Select both experimental coherent profiles?", choices=["yes", "no"], default="no")
+            if use == "yes":
+                document = set_subject_reference(document, "scene", "builtin:scene/coherent-varied")
+                document.setdefault("appearance", {})["preset"] = (
+                    "builtin:appearance/coherent-varied-manometro"
+                    if document.get("family") == "builtin:family/manometro"
+                    else "builtin:appearance/coherent-varied"
+                )
+        elif action == "appearance":
             choices = appearance_references(config)
             for index, reference in enumerate(choices, 1):
                 console.print(f"{index}. {reference}")

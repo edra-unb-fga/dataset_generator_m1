@@ -111,10 +111,36 @@ def sample_environmental_shade(config, rng):
     return evidence
 
 
-def apply_scene_lighting(rgb, scene_to_output, canvas_size, evidence, shade=None):
+def sample_directional_shade(config, rng):
+    """Sample a slab on an independent stream, with no physical shadow claim."""
+    if config is None or config.probability == 0 or config.strength[1] == 0:
+        return None
+    evidence = {'applied': bool(rng.random() < config.probability),
+                'model': 'scene-directional-slab-v1',
+                'physical_claim': 'qualitative-environmental-shade'}
+    if evidence['applied']:
+        evidence.update(angle=float(np.deg2rad(rng.uniform(*config.angle_degrees))),
+                        offset=float(rng.uniform(*config.offset)),
+                        width=float(rng.uniform(*config.width)),
+                        softness=float(rng.uniform(*config.softness)),
+                        strength=float(rng.uniform(*config.strength)))
+        shape = config.shape
+        if shape == 'mixed':
+            weights = np.asarray(config.shape_weights, dtype=float)
+            shape = str(rng.choice(['band', 'rectangle', 'ellipse', 'wall'], p=weights/weights.sum()))
+        if shape != 'band':
+            evidence['shape'] = shape
+        if shape in ('rectangle', 'ellipse'):
+            evidence.update(length=float(rng.uniform(*config.length)),
+                            longitudinal_offset=float(rng.uniform(*config.longitudinal_offset)))
+    return evidence
+
+
+def apply_scene_lighting(rgb, scene_to_output, canvas_size, evidence, shade=None, directional_shade=None):
     lighting_active = evidence is not None and evidence['applied']
     shade_active = shade is not None and shade['applied'] and shade.get('strength', 0) > 0
-    if not lighting_active and not shade_active:
+    directional_active = directional_shade is not None and directional_shade['applied'] and directional_shade.get('strength', 0) > 0
+    if not lighting_active and not shade_active and not directional_active:
         return rgb
     inverse = np.linalg.inv(scene_to_output)
     h, w = rgb.shape[:2]
@@ -140,5 +166,33 @@ def apply_scene_lighting(rgb, scene_to_output, canvas_size, evidence, shade=None
             v = (-sine*dx+cosine*dy)/shade['radius'][1]
             attenuation = 1-shade['strength']*np.exp(-.5*(u*u+v*v))
             factor = factor*attenuation[:, :, None]
+        if directional_active:
+            angle = directional_shade['angle']
+            signed = np.cos(angle)*sx + np.sin(angle)*sy - directional_shade['offset']
+            distance = np.abs(signed)
+            half_width = directional_shade['width']/2
+            shape = directional_shade.get('shape', 'band')
+            if shape == 'wall':
+                distance = signed
+                half_width = 0
+            elif shape != 'band':
+                longitudinal = np.abs(-np.sin(angle)*sx + np.cos(angle)*sy - directional_shade['longitudinal_offset'])
+                half_length = directional_shade['length']/2
+                if shape == 'rectangle':
+                    distance = np.maximum(distance - half_width, longitudinal - half_length)
+                elif shape == 'ellipse':
+                    # Approximate signed distance, with softness in scene units.
+                    distance = (np.sqrt((distance/half_width)**2 + (longitudinal/half_length)**2) - 1)*min(half_width, half_length)
+                else:
+                    raise ValueError(f'Unknown directional shade shape: {shape}')
+                half_width = 0
+            softness = directional_shade['softness']
+            if softness == 0:
+                coverage = (distance <= half_width).astype(np.float32)
+            else:
+                # Smoothstep across an edge of the specified scene-space width.
+                t = np.clip((half_width + softness/2 - distance)/softness, 0, 1)
+                coverage = t*t*(3-2*t)
+            factor = factor*(1-directional_shade['strength']*coverage[:, :, None])
         result[top:top+len(ys)] = linear_to_srgb(srgb_to_linear(rgb[top:top+len(ys)])*factor)
     return result

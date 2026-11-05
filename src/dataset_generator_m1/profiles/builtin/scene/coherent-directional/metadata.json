@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:scene/coherent-directional","subject":"scene","status":"experimental","intents":["paired-scene-review"],"performance_risk":"informational","warning_codes":["UNCALIBRATED_COHERENT_SCENE"],"evidence":["docs/SURFACE_RENDERING.md"],"scaling_drivers":["canvas-scale","perspective","foreground-count","output-megapixels"]}

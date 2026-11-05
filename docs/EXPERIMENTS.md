@@ -15,3 +15,10 @@ reviewed definitions, compact measurements, fingerprints and selected visual evi
 For the augmentation or placement CLI commands and their interpretation, see the historical narrative.
 Appearance-only treatments must preserve alpha and annotations; occlusion intentionally changes visible
 masks. Do not infer real-image performance or detector transfer from synthetic appearance alone.
+
+For image-first review, `scripts/build_scene_review_gallery.py` builds a portable HTML gallery
+beside a JSON manifest. It filters by engine, family and condition, shows per-image metadata and
+provides an enlarged viewer with keyboard navigation and a full-screen button. The companion
+`collect_2d_review_gallery.py` and `collect_3d_review_gallery.py` collect committed study images;
+they do not fabricate missing results or turn a partial study into a successful one. Keep the
+manifest, its profile files and image directory together when moving a gallery.

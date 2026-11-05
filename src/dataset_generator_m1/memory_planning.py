@@ -162,7 +162,10 @@ def memory_components(resolved, workers, window, native_threads, shapes):
         render = max(render, retained_render + foreground + output*8 + width*min(height, 128)*160)
     if resolved.profile.scene.lighting is not None:
         shade = resolved.profile.scene.lighting.shade
-        tile_bytes = 80 if shade is not None and shade.probability > 0 and shade.strength[1] > 0 else 40
+        directional = resolved.profile.scene.lighting.directional_shade
+        shade_active = shade is not None and shade.probability > 0 and shade.strength[1] > 0
+        directional_active = directional is not None and directional.probability > 0 and directional.strength[1] > 0
+        tile_bytes = 112 if shade_active and directional_active else 80 if shade_active or directional_active else 40
         render = max(render,retained_render+width*min(height,128)*tile_bytes+output*3)
     if resolved.profile.scene.occlusion is not None:
         render = max(render,retained_render+output*52)

@@ -1,0 +1,2075 @@
+{
+  "schema_version": 1,
+  "reference_pool": "../../outputs/reference-pad-pool",
+  "artwork": [
+    "../../foregrounds/landing_pad_foregrounds/landing-base.png",
+    "../../foregrounds/landing_pad_foregrounds/takeoff-base.png"
+  ],
+  "grounds": [
+    {
+      "material_file": "../../outputs/blender-assets/Ground068.json"
+    },
+    {
+      "material_file": "../../outputs/blender-assets/Asphalt012.json"
+    },
+    {
+      "material_file": "../../outputs/blender-assets/Concrete034.json"
+    }
+  ],
+  "environments": [
+    "../../outputs/blender-assets/kloofendal_48d_partly_cloudy_puresky.json",
+    "../../outputs/blender-assets/overcast_soil_puresky.json"
+  ],
+  "resolution": [
+    640,
+    640
+  ],
+  "scenes": 3,
+  "study_seconds": 7200,
+  "quality_treatments": [],
+  "treatments": [
+    {
+      "id": "base"
+    }
+  ],
+  "execution_profile": "auto",
+  "threads": null,
+  "workers": null,
+  "fast_samples": 32,
+  "quality_samples": 128,
+  "thickness_metres": 0.005,
+  "procedural": {
+    "id": "lighting-refined-candidate",
+    "members": [
+      {
+        "weight": 5,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 0,
+              "weight": 1,
+              "asset_id": "Ground068"
+            },
+            {
+              "index": 1,
+              "weight": 1,
+              "asset_id": "Asphalt012"
+            },
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0.15,
+            0.7
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 8
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -3,
+            3
+          ],
+          "lamp_y_m": [
+            -3,
+            3
+          ],
+          "lamp_z_m": [
+            2.5,
+            4.0
+          ],
+          "lamp_size_m": [
+            0.8,
+            2.25
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            300,
+            1000
+          ],
+          "caster_count": [
+            0,
+            4
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3.5
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "open-broad",
+          "environment": "open",
+          "lighting": [
+            {
+              "value": "sun",
+              "weight": 1
+            },
+            {
+              "value": "environment",
+              "weight": 1
+            },
+            {
+              "value": "overcast",
+              "weight": 1
+            },
+            {
+              "value": "shade",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            1.0,
+            1.9
+          ],
+          "spot_blend": [
+            0.5,
+            0.9
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0.002
+        }
+      },
+      {
+        "weight": 4,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 0,
+              "weight": 1,
+              "asset_id": "Ground068"
+            },
+            {
+              "index": 1,
+              "weight": 1,
+              "asset_id": "Asphalt012"
+            },
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0.15,
+            0.7
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 8
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_y_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_z_m": [
+            2,
+            3.5
+          ],
+          "lamp_size_m": [
+            0.5,
+            2
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            240,
+            960
+          ],
+          "caster_count": [
+            0,
+            4
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3.5
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "open-soft",
+          "environment": "open",
+          "lighting": [
+            {
+              "value": "sun",
+              "weight": 1
+            },
+            {
+              "value": "environment",
+              "weight": 1
+            },
+            {
+              "value": "overcast",
+              "weight": 1
+            },
+            {
+              "value": "shade",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            0.9,
+            1.8
+          ],
+          "spot_blend": [
+            0.5,
+            0.9
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0.002
+        }
+      },
+      {
+        "weight": 1,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 0,
+              "weight": 1,
+              "asset_id": "Ground068"
+            },
+            {
+              "index": 1,
+              "weight": 1,
+              "asset_id": "Asphalt012"
+            },
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0.15,
+            0.7
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 3
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_y_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_z_m": [
+            2,
+            3
+          ],
+          "lamp_size_m": [
+            0.2,
+            1.5
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            300,
+            1200
+          ],
+          "caster_count": [
+            0,
+            4
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3.5
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "open-original",
+          "environment": "open",
+          "lighting": [
+            {
+              "value": "sun",
+              "weight": 1
+            },
+            {
+              "value": "environment",
+              "weight": 1
+            },
+            {
+              "value": "overcast",
+              "weight": 1
+            },
+            {
+              "value": "shade",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            0.6,
+            1.2
+          ],
+          "spot_blend": [
+            0.1,
+            0.4
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0.002
+        }
+      },
+      {
+        "weight": 5,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 0,
+              "weight": 1,
+              "asset_id": "Ground068"
+            },
+            {
+              "index": 1,
+              "weight": 1,
+              "asset_id": "Asphalt012"
+            },
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0.15,
+            0.7
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 8
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -3,
+            3
+          ],
+          "lamp_y_m": [
+            -3,
+            3
+          ],
+          "lamp_z_m": [
+            2.5,
+            4.0
+          ],
+          "lamp_size_m": [
+            0.8,
+            2.25
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            300,
+            1000
+          ],
+          "caster_count": [
+            0,
+            4
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3.5
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "outdoor-broad",
+          "environment": "outdoor",
+          "lighting": [
+            {
+              "value": "sun",
+              "weight": 1
+            },
+            {
+              "value": "overcast",
+              "weight": 1
+            },
+            {
+              "value": "shade",
+              "weight": 1
+            },
+            {
+              "value": "night-single",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            1.0,
+            1.9
+          ],
+          "spot_blend": [
+            0.5,
+            0.9
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0.001
+        }
+      },
+      {
+        "weight": 4,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 0,
+              "weight": 1,
+              "asset_id": "Ground068"
+            },
+            {
+              "index": 1,
+              "weight": 1,
+              "asset_id": "Asphalt012"
+            },
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0.15,
+            0.7
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 8
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_y_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_z_m": [
+            2,
+            3.5
+          ],
+          "lamp_size_m": [
+            0.5,
+            2
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            240,
+            960
+          ],
+          "caster_count": [
+            0,
+            4
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3.5
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "outdoor-soft",
+          "environment": "outdoor",
+          "lighting": [
+            {
+              "value": "sun",
+              "weight": 1
+            },
+            {
+              "value": "overcast",
+              "weight": 1
+            },
+            {
+              "value": "shade",
+              "weight": 1
+            },
+            {
+              "value": "night-single",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            0.9,
+            1.8
+          ],
+          "spot_blend": [
+            0.5,
+            0.9
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0.001
+        }
+      },
+      {
+        "weight": 1,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 0,
+              "weight": 1,
+              "asset_id": "Ground068"
+            },
+            {
+              "index": 1,
+              "weight": 1,
+              "asset_id": "Asphalt012"
+            },
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0.15,
+            0.7
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 3
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_y_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_z_m": [
+            2,
+            3
+          ],
+          "lamp_size_m": [
+            0.2,
+            1.5
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            300,
+            1200
+          ],
+          "caster_count": [
+            0,
+            4
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3.5
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "outdoor-original",
+          "environment": "outdoor",
+          "lighting": [
+            {
+              "value": "sun",
+              "weight": 1
+            },
+            {
+              "value": "overcast",
+              "weight": 1
+            },
+            {
+              "value": "shade",
+              "weight": 1
+            },
+            {
+              "value": "night-single",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            0.6,
+            1.2
+          ],
+          "spot_blend": [
+            0.1,
+            0.4
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0.001
+        }
+      },
+      {
+        "weight": 5,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0,
+            0
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 8
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -3,
+            3
+          ],
+          "lamp_y_m": [
+            -3,
+            3
+          ],
+          "lamp_z_m": [
+            2.5,
+            4.0
+          ],
+          "lamp_size_m": [
+            0.8,
+            2.25
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            300,
+            1000
+          ],
+          "caster_count": [
+            0,
+            2
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "indoor-broad",
+          "environment": "indoor",
+          "lighting": [
+            {
+              "value": "environment",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            1.0,
+            1.9
+          ],
+          "spot_blend": [
+            0.5,
+            0.9
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0
+        }
+      },
+      {
+        "weight": 4,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0,
+            0
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 8
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_y_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_z_m": [
+            2,
+            3.5
+          ],
+          "lamp_size_m": [
+            0.5,
+            2
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            240,
+            960
+          ],
+          "caster_count": [
+            0,
+            2
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "indoor-soft",
+          "environment": "indoor",
+          "lighting": [
+            {
+              "value": "environment",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            0.9,
+            1.8
+          ],
+          "spot_blend": [
+            0.5,
+            0.9
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0
+        }
+      },
+      {
+        "weight": 1,
+        "preset": {
+          "schema_version": 1,
+          "ground_weights": [
+            {
+              "index": 2,
+              "weight": 1,
+              "asset_id": "Concrete034"
+            }
+          ],
+          "wall_colors": [
+            [
+              0.48,
+              0.48,
+              0.45
+            ],
+            [
+              0.65,
+              0.62,
+              0.55
+            ]
+          ],
+          "ceiling_colors": [
+            [
+              0.8,
+              0.8,
+              0.78
+            ],
+            [
+              0.65,
+              0.65,
+              0.62
+            ]
+          ],
+          "wall_heights_m": [
+            1.2,
+            2.5
+          ],
+          "wall_roughness": [
+            0.55,
+            0.95
+          ],
+          "ceiling_roughness": [
+            0.45,
+            0.95
+          ],
+          "roughness": [
+            0.35,
+            0.85
+          ],
+          "environment_strength": [
+            0,
+            0
+          ],
+          "sun_azimuth_degrees": [
+            -180,
+            180
+          ],
+          "sun_elevation_degrees": [
+            20,
+            75
+          ],
+          "sun_angular_size": [
+            0.01,
+            0.08
+          ],
+          "sun_power": [
+            1,
+            3
+          ],
+          "sun_colors": [
+            [
+              1,
+              0.94,
+              0.85
+            ],
+            [
+              1,
+              0.98,
+              0.94
+            ]
+          ],
+          "lamp_count": [
+            1,
+            3
+          ],
+          "lamp_types": [
+            {
+              "value": "AREA",
+              "weight": 3
+            },
+            {
+              "value": "POINT",
+              "weight": 1
+            },
+            {
+              "value": "SPOT",
+              "weight": 1
+            }
+          ],
+          "lamp_x_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_y_m": [
+            -2.0,
+            2.0
+          ],
+          "lamp_z_m": [
+            2,
+            3
+          ],
+          "lamp_size_m": [
+            0.2,
+            1.5
+          ],
+          "lamp_colors": [
+            [
+              1,
+              0.85,
+              0.7
+            ],
+            [
+              0.8,
+              0.88,
+              1
+            ]
+          ],
+          "lamp_power_w": [
+            300,
+            1200
+          ],
+          "caster_count": [
+            0,
+            2
+          ],
+          "caster_shapes": [
+            {
+              "value": "box",
+              "weight": 3
+            },
+            {
+              "value": "cylinder",
+              "weight": 2
+            },
+            {
+              "value": "sphere",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slab",
+              "weight": 1
+            },
+            {
+              "value": "overhead-slats",
+              "weight": 1
+            }
+          ],
+          "caster_distance_m": [
+            4,
+            8
+          ],
+          "caster_height_m": [
+            1,
+            3
+          ],
+          "caster_width_m": [
+            0.1,
+            0.6
+          ],
+          "overhead_height_m": [
+            2.5,
+            3
+          ],
+          "overhead_width_m": [
+            1,
+            3
+          ],
+          "overhead_thickness_m": [
+            0.05,
+            0.15
+          ],
+          "caster_visible_camera": false,
+          "id": "indoor-original",
+          "environment": "indoor",
+          "lighting": [
+            {
+              "value": "environment",
+              "weight": 1
+            }
+          ],
+          "wall_texture": "none",
+          "spot_size_rad": [
+            0.6,
+            1.2
+          ],
+          "spot_blend": [
+            0.1,
+            0.4
+          ]
+        },
+        "treatment_overrides": {
+          "haze_density": 0
+        }
+      }
+    ],
+    "material_states": [
+      {
+        "id": "clean-reflective",
+        "weight": 1,
+        "roughness": 0.15,
+        "wear": null
+      },
+      {
+        "id": "light-wear",
+        "weight": 1,
+        "roughness": 0.4,
+        "wear": {
+          "fade": 0.04,
+          "dirt": 0.1,
+          "scratches": 0.08
+        }
+      },
+      {
+        "id": "worn",
+        "weight": 1,
+        "roughness": 0.7,
+        "wear": {
+          "fade": 0.1,
+          "dirt": 0.25,
+          "scratches": 0.2
+        }
+      }
+    ]
+  },
+  "ground_mapping": {
+    "ground_spans": [
+      0.5,
+      1.5
+    ],
+    "extent_bounds_m": [
+      40,
+      500
+    ],
+    "tile_bounds_m": [
+      0.1,
+      500
+    ],
+    "footprint_margin": 1.1
+  }
+}

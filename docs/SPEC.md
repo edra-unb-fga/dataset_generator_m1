@@ -389,3 +389,13 @@ each layer back to 8-bit sRGB. It changes appearance only: sampling, the shared 
 full/visible coverage and annotations remain unchanged. Legacy omission preserves its existing
 identity and behavior. This mode remains experimental; the initial paired screen and its limits are
 recorded in `experiments/camera-environments-v1/README.md`.
+
+Optional `scene.lighting.directional_shade` supplies a deterministic independently
+sampled scene-plane band, or explicitly selected finite rectangle or ellipse, with bounded
+width, direction, position, attenuation and edge softness. Finite shapes also have bounded
+length and longitudinal position. Generated schemas constrain each range endpoint; runtime also
+rejects reversed ranges. It affects the composed RGB image through the shared homography,
+before capture, without changing masks or annotations. Omission and disabled
+configuration retain existing rendering and canonical serialization. It is a
+qualitative environmental shade approximation; it does not model physical casters
+or contact shadows. See `SURFACE_RENDERING.md` for configuration bounds.

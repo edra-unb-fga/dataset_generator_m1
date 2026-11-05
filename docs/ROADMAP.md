@@ -10,9 +10,33 @@ work, and historical stopped or superseded results. [Scene presets](SCENE_PRESET
 visual context independently of annotation families. Remaining real-image calibration, model-transfer
 evidence and multi-hardware baselines are open; synthetic screens do not establish production readiness.
 
+### Planned coherent-defaults round
+
+The active follow-up prepares opt-in, reviewable indoor, walled-outdoor and open-scene mixtures
+and stronger 2D candidates. Ground eligibility belongs to scene profiles; material/wear and light
+distributions are provisional. A curated 3D default and each 2D family default require individual
+human review before promotion. See the review artifacts and source-revision details for what was
+actually evaluated; a candidate or test is not itself a promoted default.
+
+The isolated cross-engine sample contract prototype compares native annotation evidence without
+equating 2D alpha coverage with 3D binary masks. Its next step is explicit class mapping, broader
+native validation and interchange/version migration design, tracked in [#84](https://github.com/edra-unb-fga/dataset_generator_m1/issues/84). A future optional engine integration
+must also settle lifecycle, scheduling, failures, resume, resource accounting, platform installation
+and hardware-independent configuration. Maintain a useful standalone BlenderProc path until those
+contracts are proven.
+
+After the current round, requested-count fulfillment #29 and background-QA calibration #27 are useful
+separate reliability work. Hardware-class baselines #28, nested placement #31, real-reference and
+detector comparisons #59/#61/#64, and remaining lighting/material and occlusion work #62/#63 retain
+their separate acceptance criteria. More 2D performance work should begin with paired bottleneck and
+memory measurements: candidate opportunities include asset reuse, measured background synthesis cost,
+and optional GPU or distributed execution; none is a committed speedup or current capability. True
+ground displacement, independent per-map UV transformations, broad world generation and automatic
+deletion of experiment data remain deferred.
+
 ### Procedural consolidation follow-up
 
-The optional harness now has reusable `open`, `outdoor` and `indoor` scene presets, explicit sampled
+The earlier consolidation delivered reusable `open`, `outdoor` and `indoor` scene presets, explicit sampled
 light/caster/material controls and ordinary seeded scene preparation. The
 [bounded visual screen](experiments/procedural-scenes-v1/README.md) establishes execution evidence,
 with source-revision limits, rather than calibrated distributions.
@@ -21,7 +45,9 @@ The [ground/material screen](experiments/ground-material-study-v1/README.md) sub
 independent view-relative mapping, explicit directional sun, coherent UV tangents and controlled
 material blends in 24 GPU cells. Coherent and deliberately mismatched modes remain opt-in. It
 primarily diversifies ground/context and does not establish better plastic-pad reflections or model
-transfer; it leaves the following priorities open:
+transfer; it identified the following priorities for the coherent-defaults round. That round has
+since introduced an opt-in mixture with ground eligibility and member-level treatments; its visual
+and default-promotion decisions remain open:
 
 - Bind ground/material eligibility to environment meaning; the generic presets currently accept
   every supplied ground unless `ground_weights` restricts the catalog.
@@ -29,8 +55,8 @@ transfer; it leaves the following priorities open:
   without making washed-out targets the routine outcome.
 - Review outdoor shadows and reflections with varied framing; walls may be outside top-down views,
   and sampled casters need not cast visible shadows on the target.
-- Add reviewed weighted mixtures and conditional relationships only after the component presets
-  are useful. Atmosphere and wear still come from template treatments, not preset-level distributions.
+- Review weighted mixtures and conditional relationships against useful component presets; the
+  candidate coordinates member atmosphere and sampled material/wear states, without calibration.
 
 Continue to retain compact decisions and selected evidence through the study index, rather than
 promoting one-off diagnostic fixture scripts into defaults. Independent real-data/model evaluation,

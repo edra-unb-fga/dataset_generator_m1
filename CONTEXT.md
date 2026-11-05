@@ -3,6 +3,8 @@
 This file defines the project language. It intentionally describes the domain, not the implementation.
 
 - **Family**: one coherent annotation problem with an ordered class catalog, asset-mapping rules, and geometric policies. A run has exactly one family.
+- **Scene preset**: a reusable description of an environment and its visual conditions, independently of the target annotation family.
+- **Scene mixture**: weighted choices of scene presets used to vary the environmental context across samples.
 - **Composer**: the strict, versioned user configuration that selects subject profiles plus typed inline values and optional ordered appearance effects.
 - **Profile bundle**: reusable executable YAML plus machine metadata and human documentation for one typed subject.
 - **Resolved generation contract**: the immutable, hashed runtime input produced from a composer, referenced profiles, declared overrides, family definition, and recipes.

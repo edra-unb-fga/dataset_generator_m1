@@ -68,3 +68,35 @@ def test_bootstrap_preserves_budget_limited_outputs_without_export(tmp_path,monk
     monkeypatch.setattr(bundle.subprocess,'run',run)
     with pytest.raises(RuntimeError,match='before completion'):bundle.run_bundle(tmp_path/'archive',workspace)
     assert not any('export' in call for call in calls)
+
+
+def test_relocated_chunk_config_resolves_inputs_inside_bundle(tmp_path):
+    from dataset_generator_m1.blender_bundle import write_bundle_config
+    from dataset_generator_m1.blender_pilot import load_config
+    workspace=tmp_path/'relocated'/'workspace';workspace.mkdir(parents=True)
+    data={'reference_pool':'inputs/reference','artwork':['inputs/a.png','inputs/b.png'],
+          'grounds':[{'material_file':'inputs/ground.json'}], 'environments':['inputs/sky.json'],
+          'treatments':[{'id':'base'}], 'quality_treatments':[]}
+    path=write_bundle_config(workspace,'candidate-0-config.json',data)
+    resolved=load_config(path)
+    assert resolved.reference_pool == workspace/'inputs/reference'
+    assert resolved.artwork[0] == workspace/'inputs/a.png'
+    assert resolved.grounds[0].material_file == workspace/'inputs/ground.json'
+    assert resolved.environments[0] == workspace/'inputs/sky.json'
+    with pytest.raises(FileExistsError): write_bundle_config(workspace,'candidate-0-config.json',data)
+    with pytest.raises(ValueError): write_bundle_config(workspace,'../escape.json',data)
+
+
+@pytest.mark.parametrize('study',['balanced-candidate','ground-mapping-followup'])
+def test_remote_studies_write_chunk_configs_with_bundle_helper(study):
+    import ast
+    path=Path('experiments/blenderproc/studies')/study/'remote.py'
+    tree=ast.parse(path.read_text())
+    calls=[node for node in ast.walk(tree) if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='write_config']
+    assert calls and all(isinstance(call.args[0],ast.Name) and call.args[0].id=='w' for call in calls)
+
+
+def test_reference_pool_failure_includes_inspection_findings(tmp_path):
+    from dataset_generator_m1.blender_pilot import reference_scenes
+    with pytest.raises(ValueError,match='MISSING_ARTIFACT'):
+        reference_scenes(tmp_path/'missing')

@@ -17,6 +17,7 @@ provides chronological context and commands. Raw output may be absent from a che
 | What did the latest exploratory realism screen show? | [Shadows, indoor, haze and 2D](realism-exploration-v1/README.md) | Historical study-only fixtures; paired masks, visual limitations and a failed haze launch retained. |
 | Do reusable scene presets run outside diagnostic studies? | [Procedural scene screen](procedural-scenes-v1/README.md) | Ordinary open/outdoor/indoor jobs on L4; revision-bound images, indoor hotspots and limited sample coverage. |
 | How do ground scaling, sunlight and material maps interact? | [Ground scale and material screen](ground-material-study-v1/README.md) | Optional independent mapping, verified flat-plane UV tangents, coherent/stress material variants and matched synthetic evidence. |
+| What did the coherent 2D and 3D candidate studies show? | [Coherent-scene evidence index](coherent-scene-studies-v1/README.md) | Opt-in candidates and synthetic reviews; local raw galleries and original archives are not shipped. |
 | How usable is the workflow? | [First-use review](first-use-review-v1.md) | Historical usability observations; verify current behavior in the product contract. |
 
 See [scene presets](../SCENE_PRESETS.md) for current scenario controls and [roadmap](../ROADMAP.md)

@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from .models import SurfaceWearConfig
 from .blender_camera import sample_pose
-from .scene_presets import Preset, sample as sample_preset
+from .scene_presets import Preset, sample as sample_preset, stream as preset_stream
 from .ground_material import GroundMapping, GroundMaterial, sample_spans, required_maps
 
 
@@ -167,9 +167,37 @@ class EnvironmentGeometrySettings(Strict):
         return self
 
 
+class SceneMixtureMember(Strict):
+    weight: float = Field(gt=0, le=1000)
+    preset: Preset
+    treatment_overrides: dict = Field(default_factory=dict)
+
+
+class SceneMaterialState(Strict):
+    id: str = Field(pattern=r'^[a-z0-9][a-z0-9-]{0,63}$')
+    weight: float = Field(gt=0, le=1000)
+    roughness: float = Field(ge=0, le=1)
+    wear: SurfaceWearConfig | None = None
+
+
+class SceneMixture(Strict):
+    schema_version: Literal[1] = 1
+    id: str = Field(pattern=r'^[a-z0-9][a-z0-9-]{0,63}$')
+    members: tuple[SceneMixtureMember, ...] = Field(min_length=1, max_length=12)
+    material_states: tuple[SceneMaterialState, ...] = Field(default=(), max_length=12)
+
+    @model_validator(mode='after')
+    def distinct_members(self):
+        if len({member.preset.id for member in self.members}) != len(self.members):
+            raise ValueError('Duplicate mixture preset IDs')
+        if len({state.id for state in self.material_states}) != len(self.material_states):
+            raise ValueError('Duplicate mixture material state IDs')
+        return self
+
+
 class PilotConfig(Strict):
     schema_version: Literal[1] = 1
-    procedural: Preset | None = None
+    procedural: Preset | SceneMixture | None = None
     ground_mapping: GroundMapping | None = None
     camera_study: CameraStudy | None = None
     environment_mix: EnvironmentMix | None = None
@@ -202,6 +230,30 @@ class PilotConfig(Strict):
     def validate_shape(self):
         if self.procedural is not None and (len(self.treatments) != 1 or self.quality_treatments not in (None, ())):
             raise ValueError('Procedural workflow requires exactly one template treatment and no quality_treatments')
+        if self.procedural is not None:
+            import warnings
+            members = self.procedural.members if isinstance(self.procedural, SceneMixture) else ()
+            presets = [member.preset for member in members] if members else [self.procedural]
+            for preset in presets:
+                if preset.ground_weights is None:
+                    warnings.warn(f'Preset {preset.id} permits every supplied ground; verify material eligibility', UserWarning, stacklevel=2)
+                elif any(item.index >= len(self.grounds) for item in preset.ground_weights):
+                    raise ValueError(f'Preset {preset.id} ground index is outside the supplied ground catalog')
+            for treatment in self.treatments:
+                variant = treatment.ground_material
+                if variant is not None and variant.primary_index is not None:
+                    for preset in presets:
+                        if preset.ground_weights is not None and variant.primary_index not in {item.index for item in preset.ground_weights}:
+                            raise ValueError(f'Ground material primary is not eligible for preset {preset.id}')
+            for member in members:
+                if self.procedural.material_states and 'wear' in member.treatment_overrides:
+                    raise ValueError('Mixture member wear conflicts with material states')
+                overwritten = {'lighting','roughness','environment_strength','environment_index','shadows','casters','lamps'} & member.treatment_overrides.keys()
+                if overwritten:
+                    raise ValueError('Mixture overrides conflict with preset-controlled fields: ' + ', '.join(sorted(overwritten)))
+                if 'ground_material' in member.treatment_overrides:
+                    raise ValueError('Mixture treatment overrides cannot replace ground material selection')
+                Treatment.model_validate({**self.treatments[0].model_dump(mode='json'), **member.treatment_overrides})
         if self.environment_geometry_settings is not None:
             if self.environment_mix is None and self.procedural is None:
                 raise ValueError('Environment geometry settings require environment_mix')
@@ -263,7 +315,10 @@ def load_config(path, *, procedural=None):
 
 def reference_scenes(pool):
     from .inspection import inspect_pool
-    if inspect_pool(pool)['status']!='valid':raise ValueError('Reference pool failed integrity inspection')
+    inspection=inspect_pool(pool)
+    if inspection['status']!='valid':
+        findings='; '.join(f"{item.get('code','UNKNOWN')}: {item.get('message','')}" for item in inspection.get('findings',[]))
+        raise ValueError('Reference pool failed integrity inspection: '+(findings or 'no findings provided'))
     run=json.loads((pool/'run.json').read_text())
     if run.get('family',{}).get('name')!='landing-pad':
         raise ValueError('Reference must be a landing-pad pool')
@@ -307,6 +362,12 @@ def prepare(config_path,output):
             maps[role]=str(file.resolve())
         grounds.append({'maps':maps,'provenance':record})
         assets.append({'kind':'ground','manifest':record})
+    if config.procedural is not None:
+        presets = [m.preset for m in config.procedural.members] if isinstance(config.procedural, SceneMixture) else [config.procedural]
+        for preset in presets:
+            for item in preset.ground_weights or ():
+                if item.asset_id is not None and grounds[item.index]['provenance']['asset_id'] != item.asset_id:
+                    raise ValueError(f'Preset {preset.id} ground index {item.index} does not match declared asset_id {item.asset_id}')
     settings=config.environment_geometry_settings
     if settings is not None and settings.wall_ground_index is not None and 'color' not in grounds[settings.wall_ground_index]['maps']:
         raise ValueError('Selected wall ground material requires a color map')
@@ -377,8 +438,21 @@ def prepare(config_path,output):
                              'ground_index':scene_index%len(grounds),'case':'ordinary',
                              'benchmark':scene_index==0 and treatment.id==config.treatments[0].id})
                 if config.procedural is not None:
-                    resolved=sample_preset(config.procedural, config.seed, sequence_index, treatment.model_dump(mode='json'),
+                    preset = config.procedural
+                    treatment_data = treatment.model_dump(mode='json')
+                    if isinstance(preset, SceneMixture):
+                        weights = np.array([member.weight for member in preset.members], dtype=float)
+                        member = preset.members[int(preset_stream(config.seed, sequence_index, 'mixture').choice(len(weights), p=weights / weights.sum()))]
+                        treatment_data.update(member.treatment_overrides)
+                        preset = member.preset
+                    resolved=sample_preset(preset, config.seed, sequence_index, treatment_data,
                         (config.environment_geometry_settings or EnvironmentGeometrySettings()).model_dump(mode='json'), len(grounds), len(environments))
+                    if isinstance(config.procedural, SceneMixture) and config.procedural.material_states:
+                        states = config.procedural.material_states
+                        weights = np.array([state.weight for state in states], dtype=float)
+                        state = states[int(preset_stream(config.seed, sequence_index, 'material-state').choice(len(states), p=weights / weights.sum()))]
+                        resolved['treatment'].update(roughness=state.roughness, wear=state.wear.model_dump(mode='json') if state.wear is not None else None)
+                        resolved['material_state'] = state.model_dump(mode='json')
                     Treatment.model_validate(resolved['treatment'])
                     EnvironmentGeometrySettings.model_validate(resolved['environment_geometry_settings'])
                     jobs[-1].update(resolved)
