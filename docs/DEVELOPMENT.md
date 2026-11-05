@@ -48,6 +48,31 @@ affected contract pass.
 Repository settings delete merged branches automatically; retained prototype branches are the
 intentional exception.
 
+## Issue and roadmap tracking
+
+For implementation, experiment or review work that may affect a tracked issue, check relevant
+open issues and the [dataset-generator roadmap project](https://github.com/orgs/edra-unb-fga/projects/13)
+before creating a new issue. Reuse existing issues when their scope fits; split a distinct decision or
+deliverable into a narrowly scoped issue when that helps navigation. Reference related issues in PRs;
+use a closing keyword only when the PR actually satisfies the issue's complete acceptance criteria.
+
+When the user has authorized GitHub updates, add new or previously untracked relevant issues to the
+project, and reconcile their status and the **Horizon** and **Workstream** fields with the evidence.
+Record meaningful results, changed scope, blockers, limitations and follow-up links on the affected
+issues at handoff or another useful milestone when explicitly authorized to post; avoid routine status
+chatter and duplicate comments.
+Keep issues open when only a subset is complete. Do not claim real-world or detector benefit from
+synthetic review alone, or describe uncommitted work as merged. Link portable, sanitized evidence;
+do not publish private assets, local paths or raw result pools in issues or PRs.
+
+The project's **Cycle** and **Review window** are optional planning aids, not deadlines; use the
+durations currently configured in the project. Assign a cycle or date only when the user or an agreed
+plan has chosen one, and mark
+work **In progress** or **Done** only when that state is true. Preserve the user's separate approval
+gates for default promotion. If GitHub access or authorization is unavailable, continue local work
+and report the specific tracking update still needed. The project supplements `docs/ROADMAP.md`;
+update that file when priorities, capability boundaries or explicit deferrals materially change.
+
 ## Minimum verification
 
 For a new computer, use `docs/EXECUTION.md`: reproduce correctness first, then run the portable
