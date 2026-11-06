@@ -3,6 +3,8 @@
 The later [coherent-varied 2D screen](2026-11-05-2d-screen.md) adds fresh-seed comparisons,
 an independent visual review, a motion-blur replay and exploratory throughput observations. The
 [coordinated 3D lighting screen](2026-11-05-3d-screen.md) compares three matched lamp treatments.
+The [profile follow-up](2026-11-06-profile-followup.md) adds balanced, surface-varied,
+challenging and forced-motion 2D comparisons and 3D RGB capture postprocessing.
 
 These synthetic engineering studies prepared selectable candidates; they do not approve a default,
 establish real-image realism, or establish detector performance. Their full native images, per-sample

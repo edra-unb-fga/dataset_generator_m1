@@ -14,41 +14,13 @@ import signal
 import sys
 
 import psutil
-from pydantic import BaseModel, ConfigDict, Field
-
 from dataset_generator_m1.blender_runner import monitor
-from dataset_generator_m1.models import ExecutionConfig
+from study_guard_policy import GuardSettings, Policy, resolve_guards
 from study_effect_combinations import DEFAULT_MATRIX
 from study_surface_2d import atomic_json
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_POLICY = ROOT / 'experiments/foreground-context/local-cpu-policy.json'
-
-
-class GuardSettings(BaseModel):
-    model_config = ConfigDict(extra='forbid', frozen=True, allow_inf_nan=False)
-    host_available_fraction_for_rss: float = Field(gt=0, lt=1)
-    host_total_fraction_reserved: float = Field(gt=0, lt=1)
-    host_minimum_reserve_gib: float = Field(gt=0)
-    max_swap_out_mib: float = Field(gt=0)
-    timeout_seconds: float = Field(gt=0)
-
-
-class Policy(BaseModel):
-    model_config = ConfigDict(extra='forbid', frozen=True, allow_inf_nan=False)
-    schema_version: int = Field(ge=1, le=1)
-    execution: ExecutionConfig
-    guards: GuardSettings
-
-
-def resolve_guards(settings, total, available):
-    if not 0 < available <= total:
-        raise ValueError('Invalid host memory measurements')
-    reserve = max(settings.host_minimum_reserve_gib, total / 2**30 * settings.host_total_fraction_reserved)
-    rss = min(available / 2**30 * settings.host_available_fraction_for_rss, available / 2**30 - reserve)
-    if rss <= 0:
-        raise ValueError('Insufficient available memory for the requested reserve')
-    return {'min_available_gib': reserve, 'rss_limit_gib': rss, 'max_swap_out_mib': settings.max_swap_out_mib}
 
 
 def run(config, output_dir, phase, samples, policy_path=DEFAULT_POLICY, matrix_path=DEFAULT_MATRIX):

@@ -1,5 +1,27 @@
 # Experimental planar surfaces
 
+## Coherent profile choices for review
+
+These profiles are opt-in, uncalibrated candidates; no family default is changed.
+Select the scene and appearance independently, and inspect the fully resolved
+composer because explicit inline overrides remain in force.
+
+| Choice | Scene profile | Appearance profile | Purpose |
+| --- | --- | --- | --- |
+| Earlier coherent | `coherent-varied` | `coherent-varied` (`coherent-varied-manometro` for gauges) | Paired reference with shared shade and restrained wear. |
+| Balanced capture | `coherent-varied` | `coherent-balanced` (`coherent-balanced-manometro` for gauges) | Existing coherent surface and shared shade with frequent, weighted motion blur. |
+| Surface variation | `coherent-varied` | `coherent-surface-varied` (`coherent-surface-varied-manometro` for gauges) | More visible, still qualitative existing wear. |
+| Challenging | `coherent-challenging` | `coherent-challenging` (`coherent-challenging-manometro` for gauges) | Wider shade and wear ranges plus stronger exposure variation. |
+
+`WeightedMotionBlur` is one final-RGB transform: activation is independent of
+surface wear, and only one weighted odd-sized kernel is sampled when it activates.
+The experimental balanced settings at 640px are 40/20/10% for 3/7/15px kernels
+on landing and landing-pad and 40/15/5% on manometro; other outcomes remain
+unblurred. Kernels are specified in output pixels, not automatically calibrated
+to resolution, camera motion or exposure. The severe setting intentionally can
+obscure small markings. Actual realized frequencies vary with seed and sample size.
+Old explicit profiles and composers that omit appearance retain their prior behavior.
+
 Use `examples/configs/landing-pad_surface.yaml` through the normal resolve, preview, preflight and generate commands. Existing composers retain their selected effects. No physically calibrated realism or detector gain is claimed.
 
 `scene.lighting` is optional (omission disables it). Its probability (default .8), gain range [.85,1.10], gradient amplitude [.05,.25] and tint bound .025 sample one constant/linear irradiance field in scene coordinates. Gain is bounded [.1,2], gradient [0,1], tint [0,.1]. Inverse shared homography evaluates the same field for all surfaces. Texture affine rotation leaves the lighting field fixed. Modulation uses linear RGB after composition and before capture effects, with bounded row workspaces. It cannot remove baked shadows from photographs. `source_assumption` records `unknown`, `baked` or `unlit-approximation`; it is a declaration, not an inferred property.

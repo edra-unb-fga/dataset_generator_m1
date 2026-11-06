@@ -17,6 +17,7 @@ import numpy as np
 from .surface_effects import apply_surface_wear, validate_surface_wear
 from .models import TransformSpec
 from .native_effects import apply_atmospheric_fog, validate_atmospheric_fog_params
+from .capture_effects import apply_weighted_motion, validate_weighted_motion
 
 
 SUPPORTED_TRANSFORMS = {
@@ -30,6 +31,7 @@ SUPPORTED_TRANSFORMS = {
     "PlanckianJitter",
     "SaltAndPepper",
     "MotionBlur",
+    "WeightedMotionBlur",
     "PlasmaShadow",
     "PlasmaBrightnessContrast",
     "RandomSunFlare",
@@ -40,7 +42,7 @@ SUPPORTED_TRANSFORMS = {
     "SurfaceWear",
 }
 
-NATIVE_TRANSFORMS = {"AtmosphericFog", "SurfaceWear"}
+NATIVE_TRANSFORMS = {"AtmosphericFog", "SurfaceWear", "WeightedMotionBlur"}
 
 
 @dataclass(frozen=True)
@@ -128,6 +130,9 @@ def validate_transform_specs(specs: Iterable[TransformSpec], stage: str) -> None
         if spec.type == "AtmosphericFog":
             validate_atmospheric_fog_params(spec.params, stage)
             continue
+        if spec.type == "WeightedMotionBlur":
+            validate_weighted_motion(spec.params, stage)
+            continue
         transform_type = getattr(A, spec.type, None)
         if transform_type is None:
             raise ValueError(f"Installed Albumentations {backend_version()} lacks {spec.type} required by {stage}")
@@ -177,6 +182,9 @@ def apply_pipeline(
         if spec.type == "AtmosphericFog":
             rgb, _ = apply_atmospheric_fog(rgb, spec.params, rng)
             continue
+        if spec.type == "WeightedMotionBlur":
+            rgb, _ = apply_weighted_motion(rgb, spec.params, rng)
+            continue
         transform_type = getattr(A, spec.type)
         transform = transform_type(**spec.params, p=1.0)
         rgb = transform(image=rgb)["image"]
@@ -221,7 +229,8 @@ def apply_pipeline_traced(
         applied_params: tuple[dict[str, Any], ...] = ()
         if applied:
             if spec.type in NATIVE_TRANSFORMS:
-                native = apply_surface_wear if spec.type == "SurfaceWear" else apply_atmospheric_fog
+                native = {"SurfaceWear": apply_surface_wear, "AtmosphericFog": apply_atmospheric_fog,
+                          "WeightedMotionBlur": apply_weighted_motion}[spec.type]
                 rgb, sampled = native(rgb, spec.params, activation_rng)
                 applied_params = (_json_safe(sampled),)
             else:

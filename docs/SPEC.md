@@ -28,7 +28,7 @@ start [--config COMPOSER]
 catalog list
 catalog show PROFILE-REFERENCE [--config COMPOSER]
 catalog promote --config COMPOSER --stage background|foreground|final --id ID
-configure --family landing|manometro --output COMPOSER
+configure --family landing-pad|landing|manometro --output COMPOSER
 resolve --config COMPOSER [--overrides FILE] [--set PATH=VALUE...]
 validate --config COMPOSER
 preview scenes --config COMPOSER [--variants VARIANTS] --samples N --output-dir DIR

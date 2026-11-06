@@ -12,6 +12,15 @@ evidence and multi-hardware baselines are open; synthetic screens do not establi
 
 ### Planned coherent-defaults round
 
+The follow-up profile and resource-boundary review is recorded in
+[organization and behavior boundaries](reviews/2026-11-05-organization-and-boundaries.md).
+Reconcile study-only versus ordinary-run policies, retain original evidence, and
+review each proposed family and 3D default independently. Further work includes
+structured plastic texture (#63), signal-dependent capture and reference-based
+adaptation (#61), resource monitoring (#90) and experiment retention (#91), and
+the separate cross-engine and real-image work (#84, #59 and #64). Do not treat visual preference
+as evidence of model improvement or automatically delete local results.
+
 The [coherent-scene evidence index](experiments/coherent-scene-studies-v1/README.md) now records
 the opt-in varied 2D candidates and matched, natural and targeted 3D lighting screens. Conditional
 single-spot fill and a main-lamp power cap are configurable in the experimental indoor presets.

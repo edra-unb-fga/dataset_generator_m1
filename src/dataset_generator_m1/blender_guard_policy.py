@@ -17,6 +17,10 @@ def adaptive_guards(base, settings, *, total_bytes, available_bytes, gpu_total_m
     if rss <= 0:
         raise ValueError('Insufficient host memory for the requested reserve')
     result={**base,'min_available_gib':reserve,'rss_limit_gib':rss,'max_swap_out_mib':settings['max_swap_out_mib']}
+    if 'swap_out_action' in settings:
+        if settings['swap_out_action'] not in ('warn', 'abort'):
+            raise ValueError('Invalid swap-out action')
+        result['swap_out_action']=settings['swap_out_action']
     if gpu_total_mib is not None or gpu_free_mib is not None:
         if gpu_total_mib is None or gpu_free_mib is None or gpu_total_mib <= 0 or not 0 <= gpu_free_mib <= gpu_total_mib:
             raise ValueError('Invalid GPU memory measurements')

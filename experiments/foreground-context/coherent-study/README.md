@@ -7,8 +7,11 @@ the complete geometry, annotation and visible/full mask signature for each pair.
 The candidate cells have their own probabilistic effects; they do not share the
 baseline's appearance random streams. No family default is changed.
 
-The saved local policy retains its 2 GiB minimum available-memory reserve,
-adaptive process-tree RSS limit, and 16 MiB additional system-wide swap-out guard.
+The current saved local policy retains its 2 GiB minimum available-memory reserve and
+adaptive process-tree RSS limit; 16 MiB of system-wide swap-out now records a warning.
+Use `experiments/foreground-context/strict-benchmark-policy.json` for the explicit
+legacy stop behavior when controlling benchmark conditions. Historical runs retain
+their recorded policies and should not be silently retried under different limits.
 The driver uses one worker and one native thread; each new directory records the
 actual guard basis, policy bytes, effective profiles, source hashes, command, driver
 hash, resource trace, pool inspection and generation wall time. A guard stop is an

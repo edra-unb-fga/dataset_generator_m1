@@ -13,6 +13,7 @@
     "PlanckianJitter": {"category": "color", "stages": ["background", "foreground", "final"], "summary": "Vary physically inspired color temperature."},
     "SaltAndPepper": {"category": "noise", "stages": ["background", "foreground", "final"], "summary": "Add sparse impulse noise."},
     "MotionBlur": {"category": "blur", "stages": ["background", "foreground", "final"], "summary": "Apply directional motion blur."},
+    "WeightedMotionBlur": {"category": "blur", "stages": ["final"], "summary": "Sample one directional motion-blur kernel from editable weighted severities."},
     "PlasmaShadow": {"category": "lighting", "stages": ["background", "foreground", "final"], "summary": "Add spatially varying soft shadow."},
     "PlasmaBrightnessContrast": {"category": "lighting", "stages": ["background", "foreground", "final"], "summary": "Vary brightness and contrast spatially."},
     "RandomSunFlare": {"category": "lighting", "stages": ["background", "final"], "summary": "Add lens-flare artifacts."},

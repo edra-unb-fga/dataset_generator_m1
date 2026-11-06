@@ -19,7 +19,7 @@ from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
 from .catalog import list_profiles, resolved_contract, show_profile
-from .config import load_profile, load_yaml_strict
+from .config import load_profile, load_yaml_strict, resolve_family_name
 from .configurator import (
     APPEARANCE_IDS,
     appearance_references,
@@ -324,7 +324,7 @@ def _advanced_editor(document: dict[str, Any], config: Path, console: Console, a
                 document = set_subject_reference(document, "scene", "builtin:scene/coherent-varied")
                 document.setdefault("appearance", {})["preset"] = (
                     "builtin:appearance/coherent-varied-manometro"
-                    if document.get("family") == "builtin:family/manometro"
+                    if resolve_family_name(document["family"], config) == "manometro"
                     else "builtin:appearance/coherent-varied"
                 )
         elif action == "appearance":

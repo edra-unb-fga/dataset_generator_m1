@@ -28,7 +28,7 @@ ACKNOWLEDGED = {'REALISTIC_HEAVY_COST', 'UNCALIBRATED_COHERENT_APPEARANCE',
 DEFAULT_POLICY = ROOT / 'experiments/foreground-context/local-cpu-policy.json'
 
 
-def profiles(root, family, treatment, samples, seed, size):
+def profiles(root, family, treatment, samples, seed, size, force_kernel=None):
     """Save source composers and return resolved, paired production profiles."""
     source = ROOT / f'examples/configs/{family}_minimal.yaml'
     raw = yaml.safe_load(source.read_text())
@@ -36,7 +36,8 @@ def profiles(root, family, treatment, samples, seed, size):
     for variant in ('baseline', 'candidate'):
         composer = dict(raw)
         composer['scene'] = 'builtin:scene/coherent-varied'
-        composer['appearance'] = {'preset': 'builtin:appearance/coherent-varied-manometro'}
+        appearance = ('coherent-balanced-manometro' if family == 'manometro' else 'coherent-balanced') if force_kernel else 'coherent-varied-manometro'
+        composer['appearance'] = {'preset': 'builtin:appearance/'+appearance}
         path = root / f'{family}-{variant}.yaml'
         path.write_text(yaml.safe_dump(composer, sort_keys=False))
         base = load_profile(path)
@@ -46,6 +47,9 @@ def profiles(root, family, treatment, samples, seed, size):
         for effect in values['appearance']['final']:
             if effect['id'] == 'coherent-motion':
                 effect['probability'] = 1.0 if variant == 'candidate' else 0.0
+            if force_kernel and effect['type'] == 'WeightedMotionBlur':
+                effect['probability'] = 1.0 if variant == 'candidate' else 0.0
+                effect['params'] = {'kernels': [force_kernel], 'weights': [1]}
         values['execution'] = ExecutionConfig(workers=1, native_threads=1).model_dump(mode='json')
         profile = GenerationProfile.model_validate(values)
         result[variant] = base.model_copy(update={'profile': profile,
@@ -55,10 +59,10 @@ def profiles(root, family, treatment, samples, seed, size):
     return result
 
 
-def worker(root, families, treatment, samples, seed, size):
+def worker(root, families, treatment, samples, seed, size, force_kernel=None):
     records = []
     for family in families:
-        cells = profiles(root, family, treatment, samples, seed, size)
+        cells = profiles(root, family, treatment, samples, seed, size, force_kernel)
         atomic_json(root/f'{family}-profiles.json', {v: {'profile': p.profile.model_dump(mode='json'),
             'source_hashes': p.source_hashes, 'contract_hash': p.contract_hash, 'software': software_identity()}
             for v, p in cells.items()})
@@ -84,7 +88,7 @@ def worker(root, families, treatment, samples, seed, size):
         'Synthetic scenes share an asset catalog; no real-image or detector benefit is established.']})
 
 
-def run(root, families, treatment, samples, seed, size, policy_path):
+def run(root, families, treatment, samples, seed, size, policy_path, force_kernel=None):
     policy_bytes = policy_path.read_bytes()
     policy = Policy.model_validate_json(policy_bytes)
     memory = psutil.virtual_memory()
@@ -95,6 +99,7 @@ def run(root, families, treatment, samples, seed, size, policy_path):
     command = [sys.executable, str(Path(__file__).resolve()), '--worker', '--output-dir', str(root),
         '--families', *families, '--treatment', treatment, '--samples', str(samples),
         '--seed', str(seed), '--size', str(size)]
+    if force_kernel is not None: command.extend(['--force-kernel', str(force_kernel)])
     atomic_json(root/'invocation.json', {'command': command, 'policy_sha256': hashlib.sha256(policy_bytes).hexdigest(),
         'driver_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'note': 'One worker and one native thread; ordered single-pass cells.'})
@@ -116,6 +121,7 @@ def main():
     parser.add_argument('--samples', type=int, default=4)
     parser.add_argument('--seed', type=int, default=20261031)
     parser.add_argument('--size', type=int, default=640)
+    parser.add_argument('--force-kernel', type=int, choices=(3,7,15), help='Force a weighted capture kernel for the candidate')
     parser.add_argument('--policy', type=Path, default=DEFAULT_POLICY)
     parser.add_argument('--worker', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
@@ -124,9 +130,9 @@ def main():
         parser.error('Require 1–100 samples, nonnegative seed, size 64–1280 and unique families')
     root = args.output_dir.resolve()
     if args.worker:
-        worker(root, args.families, args.treatment, args.samples, args.seed, args.size)
+        worker(root, args.families, args.treatment, args.samples, args.seed, args.size, args.force_kernel)
     else:
-        print(run(root, args.families, args.treatment, args.samples, args.seed, args.size, args.policy.resolve()))
+        print(run(root, args.families, args.treatment, args.samples, args.seed, args.size, args.policy.resolve(), args.force_kernel))
 
 
 if __name__ == '__main__':

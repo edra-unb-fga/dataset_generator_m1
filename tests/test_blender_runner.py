@@ -78,6 +78,38 @@ def test_monitor_aggregates_worker_rss_before_guarding(tmp_path,monkeypatch):
     assert all(p.poll() is not None for p in started)
 
 
+@pytest.mark.parametrize('action,expected', [('warn','complete'), ('abort','guard-aborted')])
+def test_swap_guard_actions(tmp_path, monkeypatch, action, expected):
+    import psutil
+    calls=iter([0,17*2**20])
+    monkeypatch.setattr(psutil,'swap_memory',lambda:SimpleNamespace(sout=next(calls,17*2**20)))
+    monkeypatch.setattr(psutil,'virtual_memory',lambda:SimpleNamespace(available=8*2**30))
+    guards={'min_available_gib':2,'rss_limit_gib':4,'max_swap_out_mib':16,'swap_out_action':action}
+    result=runner.monitor([[sys.executable,'-c','pass']],tmp_path,'swap',5,guards)
+    assert result['status']==expected
+    assert result['warnings']==(['host-swap-out'] if action=='warn' else [])
+
+
+@pytest.mark.parametrize('action,expected', [('warn','complete'), ('abort','guard-aborted')])
+def test_swap_telemetry_failure_is_not_mistaken_for_zero(tmp_path,monkeypatch,action,expected):
+    import psutil
+    monkeypatch.setattr(psutil,'swap_memory',lambda:(_ for _ in ()).throw(OSError('no swap telemetry')))
+    monkeypatch.setattr(psutil,'virtual_memory',lambda:SimpleNamespace(available=8*2**30))
+    guards={'min_available_gib':2,'rss_limit_gib':4,'max_swap_out_mib':16,'swap_out_action':action}
+    result=runner.monitor([[sys.executable,'-c','pass']],tmp_path,'swap',5,guards)
+    assert result['status']==expected and result['swap_out_delta_bytes'] is None
+    if action=='warn': assert result['warnings']==['swap-telemetry-unavailable']
+    else: assert result['reason']=='swap-telemetry-unavailable'
+
+
+def test_low_memory_still_aborts_when_swap_warns(tmp_path,monkeypatch):
+    import psutil
+    monkeypatch.setattr(psutil,'virtual_memory',lambda:SimpleNamespace(available=1*2**30))
+    guards={'min_available_gib':2,'rss_limit_gib':4,'max_swap_out_mib':16,'swap_out_action':'warn'}
+    result=runner.monitor([[sys.executable,'-c','import time;time.sleep(60)']],tmp_path,'memory',5,guards)
+    assert result['reason']=='available-memory-floor'
+
+
 @pytest.mark.skipif(sys.platform=='win32',reason='POSIX process groups')
 def test_monitor_reaps_orphan_when_wrapper_exits_before_first_sample(tmp_path):
     import os,time,psutil

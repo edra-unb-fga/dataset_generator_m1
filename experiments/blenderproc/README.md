@@ -57,6 +57,16 @@ machine-independent capacity estimates. An optional `min_gpu_free_mib` guard sto
 free VRAM falls below its limit or NVIDIA telemetry is unavailable. GPU and host RAM are separate.
 Budget-limited output may still be exported explicitly.
 
+New ordinary policies record system-wide swap-out above the configured threshold as a warning;
+the other resource guards remain active. The shared counter does not identify the cause. Previously
+prepared studies retain their frozen action; a missing action means the historical abort behavior.
+For a deliberately strict timing study, pass `--guard-settings experiments/blenderproc/execution/strict-benchmark-guards.json`
+to the fresh preparation command. Swap activity can contaminate measurements even when it warns.
+The optional `scripts/postprocess_blender_capture.py --input-dir STUDY --output-dir NEW_DIR
+--profile builtin:appearance/coherent-balanced --seed 42` applies only the profile's final RGB
+effects to verified accepted renders. It writes hashes, seeds and copied geometric mask evidence;
+the masks do not represent optical blur. Source images and annotations remain untouched.
+
 For one-command setup, generate a fresh policy and prepare the study together:
 
 ```sh

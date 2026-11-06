@@ -27,6 +27,18 @@ def test_lighting_candidate_preserves_context_mix_and_explicit_tail():
         assert broad['preset']['lamp_power_w'] != soft['preset']['lamp_power_w']
 
 
+def test_broad_material_candidate_reweights_without_changing_scene_geometry():
+    root = Path(__file__).resolve().parents[1]/'experiments/blenderproc'
+    baseline = json.loads((root/'pilot-lighting-refined-candidate.example.json').read_text())
+    candidate = json.loads((root/'pilot-broad-material-candidate.example.json').read_text())
+    PilotConfig.model_validate(candidate)
+    assert candidate['thickness_metres'] == baseline['thickness_metres'] == .005
+    for old,new in zip(baseline['procedural']['members'],candidate['procedural']['members'],strict=True):
+        assert old['preset'] == new['preset']
+        assert new['weight'] == (7 if new['preset']['id'].endswith('-broad') else 2 if new['preset']['id'].endswith('-soft') else 1)
+    assert [x['weight'] for x in candidate['procedural']['material_states']] == [2,6,2]
+
+
 def test_optional_indoor_balance_preserves_legacy_and_sampling_streams():
     from dataset_generator_m1.scene_presets import Preset, sample
 

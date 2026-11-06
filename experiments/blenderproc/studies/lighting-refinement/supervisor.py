@@ -20,6 +20,7 @@ p.add_argument('--watchdog', action='store_true')
 p.add_argument('--rate-evidence', required=False, help='Prior single-L4 controller usage log')
 p.add_argument('--budget-baseline', required=False, help='Usage snapshot before the first study attempt')
 p.add_argument('--prior-spend-reserve', type=float, required=False, help='Conservative CU reserve for earlier attempts')
+p.add_argument('--max-total-cu', type=float, default=3.0, help='Aggregate CU ceiling, at most 3')
 a = p.parse_args(); out = Path(a.output)
 status_file = out/'status.json'
 def status(step, **extra):
@@ -30,6 +31,8 @@ def call(*args, timeout=180, check=True):
     return transport_call(a.colab, '--config', str(out/'colab-sessions.json'), *args, timeout=timeout, check=check)
 
 def preflight():
+    if not math.isfinite(a.max_total_cu) or not 0 < a.max_total_cu <= 3:
+        raise ValueError('max-total-cu must be greater than 0 and at most 3')
     inp=Path(a.input_dir); scripts=Path(a.scripts_dir)
     for name in ('input.tar.gz','input.tar.gz.run.py','spec.json','generate_scene_presets.py'):
         if not (inp/name).is_file() or not (inp/name).stat().st_size: raise ValueError('Missing or empty input: '+name)
@@ -52,7 +55,7 @@ def usage_snapshot(name):
 
 def gate(rate):
     estimated=rate*a.watchdog_seconds/3600
-    if not math.isfinite(rate) or rate <= 0 or estimated > 3 or estimated > 5:
+    if not math.isfinite(rate) or rate <= 0 or estimated > a.max_total_cu:
         raise ValueError(f'Budget gate failed: {rate} CU/hr implies {estimated:.3f} CU by watchdog')
     return estimated
 
@@ -90,17 +93,17 @@ try:
     prior=float(found.group(1)); conservative=prior*2
     before=usage_snapshot('usage-before')
     if before['assignments'] != 0 or before['rate'] != 0: raise ValueError('Existing active assignment; avoid duplicate runtime')
-    if before['balance'] < 3: raise ValueError('Account balance below 3 CU target')
+    if before['balance'] < a.max_total_cu: raise ValueError('Account balance below configured CU ceiling')
     estimated=gate(conservative)
-    aggregate=check_aggregate_budget(baseline['balance'],before['balance'],conservative,a.watchdog_seconds,prior_reserve=a.prior_spend_reserve,hard_cap=3.0)
-    write(out/'cost-gate.json',{'evidence_path':str(evidence.resolve()),'evidence_sha256':sha(evidence),'prior_rate':prior,'conservative_rate':conservative,'watchdog_seconds':a.watchdog_seconds,'max_estimated_cu':estimated,'target_cu':3,'hard_cap_cu':3,'before':before,'baseline':baseline,'baseline_sha256':sha(baseline_path),'aggregate':aggregate,'prior_reserve_assumptions':'Operator supplied conservative upper bound; independently verify the number and limits of earlier attempts','supervisor_sha256':sha(Path(__file__)),'budget_code_sha256':sha(Path(__file__).resolve().parents[3]/'shared/colab_budget.py')})
+    aggregate=check_aggregate_budget(baseline['balance'],before['balance'],conservative,a.watchdog_seconds,prior_reserve=a.prior_spend_reserve,hard_cap=a.max_total_cu)
+    write(out/'cost-gate.json',{'evidence_path':str(evidence.resolve()),'evidence_sha256':sha(evidence),'prior_rate':prior,'conservative_rate':conservative,'watchdog_seconds':a.watchdog_seconds,'max_estimated_cu':estimated,'target_cu':a.max_total_cu,'hard_cap_cu':a.max_total_cu,'before':before,'baseline':baseline,'baseline_sha256':sha(baseline_path),'aggregate':aggregate,'prior_reserve_assumptions':'Operator supplied conservative upper bound; independently verify the number and limits of earlier attempts','supervisor_sha256':sha(Path(__file__)),'budget_code_sha256':sha(Path(__file__).resolve().parents[3]/'shared/colab_budget.py')})
     status('allocating')
     call('new', '-s', a.session, '--gpu', 'L4', timeout=240)
     status('allocated')
     after=usage_snapshot('usage-allocated')
     if after['assignments'] != 1: raise ValueError('Expected exactly one active assignment')
     gate(after['rate'])
-    actual_aggregate=check_aggregate_budget(baseline['balance'],after['balance'],after['rate'],a.watchdog_seconds,prior_reserve=a.prior_spend_reserve,hard_cap=3.0)
+    actual_aggregate=check_aggregate_budget(baseline['balance'],after['balance'],after['rate'],a.watchdog_seconds,prior_reserve=a.prior_spend_reserve,hard_cap=a.max_total_cu)
     write(out/'cost-gate-allocated.json',actual_aggregate)
     inp = Path(a.input_dir); scripts = Path(a.scripts_dir)
     transfer=split_bundle(inp/'input.tar.gz',out/'chunks')
