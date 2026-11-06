@@ -400,6 +400,14 @@ camera margin also supplies target-to-wall clearance; result diagnostics record 
 for a plain-colored wall. The examples choose the Concrete034 ground entry explicitly; this
 is a prototype requiring visual and annotation review, not a calibrated material library.
 
+`pilot-broad-material-candidate.example.json` is an additional opt-in mixture for
+review alongside the existing balanced candidate. It retains the same three scene
+contexts, camera settings and nominal pad thickness, while weighting broad, softer
+and original lighting 7:2:1 within each context and clean, lightly worn and visibly
+worn material states 2:6:2. These are editable starting weights, not calibrated
+prevalences; original lighting retains deliberately difficult examples. The file is
+not automatically selected and does not change saved studies or existing presets.
+
 ## Material provenance and completed-cell handoff
 
 Locally supplied non-CC0 ground and environment manifests must declare `license`, `author`,

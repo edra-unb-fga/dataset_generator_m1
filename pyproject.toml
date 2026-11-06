@@ -35,4 +35,4 @@ dataset_generator_m1 = ["family_profiles/*.yaml", "profiles/builtin/*/*/*", "kno
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-testpaths = ["tests", "experiments"]
+testpaths = ["tests", "experiments", "prototypes"]

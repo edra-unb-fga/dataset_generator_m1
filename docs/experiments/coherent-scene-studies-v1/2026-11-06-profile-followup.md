@@ -47,3 +47,6 @@ verified BlenderProc scenes in a new directory. `scripts/collect_coherent_profil
 and `scripts/build_scene_review_gallery.py` build a portable image-first gallery
 once all recorded source pools are available. Keep output pools and render archives
 outside tracked source; document any absent source rather than fabricating it.
+To include a recovered natural 3D run, pass its verified review directory with
+`--natural-3d`; the collector checks its evidence and image hashes before copying
+the images, and labels them as a fresh natural sample.

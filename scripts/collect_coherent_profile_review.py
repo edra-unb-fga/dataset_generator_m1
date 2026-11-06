@@ -15,7 +15,7 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def collect_review(studies, capture, source_3d, output):
+def collect_review(studies, capture, source_3d, output, natural_3d=None):
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=False)
     rows = []
@@ -64,6 +64,26 @@ def collect_review(studies, capture, source_3d, output):
                          'metadata':{'capture_identity':manifest['identity'],'source_study_identity':manifest['source_study_identity'],
                                      'image_sha256':expected,'capture_trace':item['trace'] if kind=='capture' else [],
                                      'geometric_masks_sha256':item['source_masks_sha256'], 'job':source_result['job']}})
+    if natural_3d is not None:
+        reviewed = Path(natural_3d).resolve()
+        evidence = json.loads((reviewed/'evidence.json').read_text())
+        if not evidence.get('complete') or not evidence.get('provenance_verified'):
+            raise ValueError('Natural 3D study has not passed recovery and provenance checks')
+        gallery = reviewed/'gallery'
+        natural = json.loads((gallery/'manifest.json').read_text())
+        for item in natural['images']:
+            source = (gallery/item['path']).resolve()
+            if not source.is_relative_to(gallery) or sha(source) != item['metadata']['image_sha256']:
+                raise ValueError('Natural 3D image path or checksum is invalid')
+            target = output/'3d-natural'/source.name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if target.exists():
+                raise ValueError('Duplicate natural 3D image name')
+            shutil.copyfile(source, target)
+            item['path'] = target.relative_to(output).as_posix()
+            item['condition'] = 'fresh natural sample / ' + item['condition']
+            item['metadata']['study_evidence'] = evidence
+            rows.append(item)
     result={'title':'Coherent profiles and capture: paired review','images':rows}
     (output/'manifest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     return result
@@ -73,8 +93,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--study',nargs=2,action='append',required=True,metavar=('LABEL','PATH'))
     parser.add_argument('--capture',required=True);parser.add_argument('--source-3d',required=True)
+    parser.add_argument('--natural-3d',help='Verified, recovered fresh 3D study directory')
     parser.add_argument('--output',required=True)
-    args=parser.parse_args(); result=collect_review(args.study,args.capture,args.source_3d,args.output)
+    args=parser.parse_args(); result=collect_review(args.study,args.capture,args.source_3d,args.output,args.natural_3d)
     print(f"Collected {len(result['images'])} gallery cards")
 
 
