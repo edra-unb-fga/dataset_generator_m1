@@ -17,6 +17,9 @@ from dataset_generator_m1.blender_execution import Catalog
     {'kernels': [2], 'weights': [1]}, {'kernels': [3, 3], 'weights': [1, 1]},
     {'kernels': [3], 'weights': [0]}, {'kernels': [3], 'weights': [float('nan')]},
     {'kernels': [3], 'weights': [1, 2]}, {'kernels': [3], 'weights': [1], 'extra': 1},
+    {'kernels': [3], 'weights': [1], 'reference_size': 0},
+    {'kernels': [3], 'weights': [1], 'reference_size': True},
+    {'kernels': [3], 'weights': [1], 'reference_size': 640.0},
 ])
 def test_invalid_motion_distributions(params):
     with pytest.raises(ValueError):
@@ -36,6 +39,65 @@ def test_weighted_motion_is_reproducible_and_preserves_alpha():
     assert at[0].applied_params==bt[0].applied_params
     assert at[0].applied_params[0]['kernel'] in (3,7,15)
     with pytest.raises(ValueError):validate_transform_specs([spec],'foreground')
+
+
+def test_reference_size_at_640_matches_fixed_pixels_and_rng():
+    image=np.random.default_rng(42).integers(0,256,(640,640,3),dtype=np.uint8)
+    params={'kernels':[3,7,15],'weights':[4,2,1]}
+    fixed, before=apply_weighted_motion(image,params,np.random.default_rng(52))
+    scaled, after=apply_weighted_motion(image,{**params,'reference_size':640},np.random.default_rng(52))
+    assert np.array_equal(fixed,scaled)
+    assert before['kernel']==after['configured_kernel']==after['effective_kernel']
+    assert before['transform_seed']==after['transform_seed']
+    assert before['applied_transforms'][0][1]['kernel'].shape==after['applied_transforms'][0][1]['kernel'].shape
+
+
+def test_finite_extreme_motion_weights_do_not_overflow():
+    image=np.zeros((16,16,3),dtype=np.uint8)
+    params={'kernels':[3,7],'weights':[1e308,1e308]}
+    _, first=apply_weighted_motion(image,params,np.random.default_rng(9))
+    _, second=apply_weighted_motion(image,params,np.random.default_rng(9))
+    assert first['kernel'] in (3,7)
+    assert first['kernel']==second['kernel']
+
+
+@pytest.mark.parametrize('shape,kernel,expected', [
+    ((1280,1280,3),3,7), ((1280,1280,3),7,15), ((1280,1280,3),15,31),
+    ((1280,720,3),7,7), ((640,640,3),7,7), ((320,320,3),3,1),
+    ((1,5,3),15,1), ((12000,12000,3),15,255),
+])
+def test_scaled_kernel_rounding_bounds_and_trace(monkeypatch,shape,kernel,expected):
+    import dataset_generator_m1.capture_effects as capture
+    monkeypatch.setattr(capture.A,'Compose',lambda *a,**kw:lambda **inputs:{'image':inputs['image']})
+    image=np.broadcast_to(np.zeros((1,1,3),dtype=np.uint8),shape)
+    result, trace=apply_weighted_motion(image,{'kernels':[kernel],'weights':[1],'reference_size':640},np.random.default_rng(4))
+    assert result is image
+    assert trace['configured_kernel']==kernel and trace['effective_kernel']==expected
+    assert trace['output_dimensions']==[shape[1],shape[0]]
+    assert trace['scale']==min(shape[:2])/640
+    assert (trace['noop_reason'] is not None)==(expected==1)
+    assert (trace['clamp_reason'] is not None)==(shape[0]==12000)
+
+
+def test_scaled_profile_preserves_alpha_and_trace():
+    image=np.zeros((128,128,4),dtype=np.uint8);image[20:80,20:80,:]=255
+    spec=TransformSpec(id='scaled',type='WeightedMotionBlur',probability=1,
+                       params={'kernels':[15],'weights':[1],'reference_size':64})
+    a, at=apply_pipeline_traced(image,[spec],42,'final',preserve_alpha=True)
+    b, bt=apply_pipeline_traced(image,[spec],42,'final',preserve_alpha=True)
+    assert np.array_equal(a,b) and np.array_equal(a[:,:,3],image[:,:,3])
+    assert at[0].applied_params==bt[0].applied_params
+    assert at[0].applied_params[0]['effective_kernel']==31
+
+
+@pytest.mark.parametrize('suffix,prob,weights',[('',.7,[4,2,1]),('-manometro',.6,[8,3,1])])
+def test_scaled_nominees_resolve_with_existing_severity_mix(suffix,prob,weights):
+    from dataset_generator_m1.config import load_appearance_profile
+    profile=load_appearance_profile('builtin:appearance/coherent-balanced-scaled'+suffix,Path('examples/configs/landing-pad_minimal.yaml'))
+    motion=next(item for item in profile.final if item.type=='WeightedMotionBlur')
+    assert motion.probability==prob
+    assert motion.params=={'reference_size':640,'kernels':[3,7,15],'weights':weights}
+    validate_transform_specs(profile.final,'final')
 
 
 @pytest.mark.parametrize('family,prob,expected', [('pad',.7,[.4,.2,.1]),('gauge',.6,[.4,.15,.05])])

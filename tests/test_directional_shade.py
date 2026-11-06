@@ -177,6 +177,13 @@ def test_mixed_shapes_are_seeded_weighted_and_render_wall():
         DirectionalShadeConfig(shape='mixed', shape_weights=(-1, 1, 1, 1))
 
 
+def test_mixed_shade_accepts_extreme_finite_weights():
+    config = DirectionalShadeConfig(probability=1, shape='mixed', shape_weights=(1e308, 1e308, 0, 0))
+    first = sample_directional_shade(config, np.random.default_rng(17))
+    assert first == sample_directional_shade(config, np.random.default_rng(17))
+    assert first.get('shape', 'band') in ('band', 'rectangle')
+
+
 def test_guided_coherent_choice_selects_experimental_profiles(tmp_path):
     from rich.console import Console
     from dataset_generator_m1.configurator import default_composer

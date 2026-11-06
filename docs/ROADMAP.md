@@ -12,6 +12,13 @@ evidence and multi-hardware baselines are open; synthetic screens do not establi
 
 ### Planned coherent-defaults round
 
+The closing review prepares resolution-scaled balanced 2D candidates using a
+640-pixel reference and the shorter output dimension. These are provisional
+engineering settings, not calibrated motion blur. The broader 2D background
+screen and a targeted 640/1280 comparison inform the family reviews; each
+default remains subject to its own approval. The two 3D mixtures are reviewed
+separately, and their different natural draws do not establish artifact rates.
+
 The follow-up profile and resource-boundary review is recorded in
 [organization and behavior boundaries](reviews/2026-11-05-organization-and-boundaries.md).
 Reconcile study-only versus ordinary-run policies, retain original evidence, and

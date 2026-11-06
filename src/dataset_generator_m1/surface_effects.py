@@ -127,7 +127,12 @@ def sample_directional_shade(config, rng):
         shape = config.shape
         if shape == 'mixed':
             weights = np.asarray(config.shape_weights, dtype=float)
-            shape = str(rng.choice(['band', 'rectangle', 'ellipse', 'wall'], p=weights/weights.sum()))
+            with np.errstate(over='ignore'):
+                total = weights.sum()
+            if not np.isfinite(total):
+                weights = weights / weights.max()
+                total = weights.sum()
+            shape = str(rng.choice(['band', 'rectangle', 'ellipse', 'wall'], p=weights/total))
         if shape != 'band':
             evidence['shape'] = shape
         if shape in ('rectangle', 'ellipse'):

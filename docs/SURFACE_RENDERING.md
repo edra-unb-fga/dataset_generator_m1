@@ -10,6 +10,7 @@ composer because explicit inline overrides remain in force.
 | --- | --- | --- | --- |
 | Earlier coherent | `coherent-varied` | `coherent-varied` (`coherent-varied-manometro` for gauges) | Paired reference with shared shade and restrained wear. |
 | Balanced capture | `coherent-varied` | `coherent-balanced` (`coherent-balanced-manometro` for gauges) | Existing coherent surface and shared shade with frequent, weighted motion blur. |
+| Scaled balanced capture | `coherent-varied` | `coherent-balanced-scaled` (`coherent-balanced-scaled-manometro` for gauges) | Same severity mix, with kernels scaled from a 640-pixel shorter side. |
 | Surface variation | `coherent-varied` | `coherent-surface-varied` (`coherent-surface-varied-manometro` for gauges) | More visible, still qualitative existing wear. |
 | Challenging | `coherent-challenging` | `coherent-challenging` (`coherent-challenging-manometro` for gauges) | Wider shade and wear ranges plus stronger exposure variation. |
 
@@ -21,6 +22,15 @@ unblurred. Kernels are specified in output pixels, not automatically calibrated
 to resolution, camera motion or exposure. The severe setting intentionally can
 obscure small markings. Actual realized frequencies vary with seed and sample size.
 Old explicit profiles and composers that omit appearance retain their prior behavior.
+
+The scaled nominees set `reference_size: 640` on `WeightedMotionBlur`. The chosen
+kernel scales with the shorter output dimension; the nearest odd size is chosen,
+with ties rounded upward. At 1280×1280, configured 3/7/15 become 7/15/31 pixels.
+The effective size is bounded by 255 and the shorter image dimension; size one is
+an explicit no-op. The trace records the configured and effective sizes, scale,
+output dimensions and any bound or no-op. This is a provisional resolution rule,
+not calibrated physical camera motion. Omit `reference_size` for the exact legacy
+fixed-pixel behavior.
 
 Use `examples/configs/landing-pad_surface.yaml` through the normal resolve, preview, preflight and generate commands. Existing composers retain their selected effects. No physically calibrated realism or detector gain is claimed.
 

@@ -5,6 +5,10 @@ an independent visual review, a motion-blur replay and exploratory throughput ob
 [coordinated 3D lighting screen](2026-11-05-3d-screen.md) compares three matched lamp treatments.
 The [profile follow-up](2026-11-06-profile-followup.md) adds balanced, surface-varied,
 challenging and forced-motion 2D comparisons and 3D RGB capture postprocessing.
+The [background breadth screen](2026-11-06-background-breadth.md) exercises the
+full 82-path 2D catalog with natural paired scenes and labeled forced coverage.
+
+The [scaled capture closing review](2026-11-06-scaled-closing.md) records the matched 640/1280 panel and its threshold-sensitive cross-resolution exception.
 
 These synthetic engineering studies prepared selectable candidates; they do not approve a default,
 establish real-image realism, or establish detector performance. Their full native images, per-sample
