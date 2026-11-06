@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
 
 
 class Strict(BaseModel):
@@ -73,6 +73,14 @@ class Guards(Strict):
     max_swap_out_mib: float = Field(ge=0)
     probe_timeout_seconds: float = Field(gt=0, le=1800)
     min_gpu_free_mib: float | None = Field(default=None, ge=0)
+    swap_out_action: Literal['warn', 'abort'] | None = None
+
+    @model_serializer(mode='wrap')
+    def preserve_legacy_policy_identity(self, handler):
+        value = handler(self)
+        if self.swap_out_action is None:
+            value.pop('swap_out_action', None)
+        return value
 
 
 class Catalog(Strict):

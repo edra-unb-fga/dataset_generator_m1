@@ -159,6 +159,30 @@ def test_process_workers_preserve_geometry_and_annotations(tmp_path: Path) -> No
     assert process_sample["rejected_instances"] == serial_sample["rejected_instances"]
 
 
+def test_scaled_capture_is_consistent_across_worker_counts(tmp_path: Path) -> None:
+    from dataset_generator_m1.config import load_appearance_profile
+
+    resolved = small_resolved()
+    appearance = load_appearance_profile(
+        'builtin:appearance/coherent-balanced-scaled', Path('examples/configs/landing_minimal.yaml')
+    )
+    # Force the scaled effect so this verifies its worker behavior even for a
+    # seed that would normally leave capture blur disabled.
+    motion = next(effect for effect in appearance.final if effect.type == 'WeightedMotionBlur')
+    motion = motion.model_copy(update={'probability': 1.0, 'params': {'kernels': [15], 'weights': [1], 'reference_size': 640}})
+    appearance = appearance.model_copy(update={'foreground': (), 'background': (), 'final': (motion,)})
+    resolved = resolved.model_copy(update={'profile': resolved.profile.model_copy(update={'appearance': appearance})})
+    serial_pool, process_pool = tmp_path/'scaled-serial', tmp_path/'scaled-process'
+    generate_pool(resolved, serial_pool, GenerationOptions(display='quiet', workers=1))
+    generate_pool(resolved, process_pool, GenerationOptions(display='quiet', workers=2))
+    serial = json.loads((serial_pool/'samples.jsonl').read_text())
+    parallel = json.loads((process_pool/'samples.jsonl').read_text())
+    assert serial['geometry_signature'] == parallel['geometry_signature']
+    assert serial['annotations'] == parallel['annotations']
+    assert serial['mask_evidence']['sha256'] == parallel['mask_evidence']['sha256']
+    assert (serial_pool/serial['image_path']).read_bytes() == (process_pool/parallel['image_path']).read_bytes()
+
+
 def test_external_stop_creates_a_resumable_pool(tmp_path: Path, monkeypatch) -> None:
     import dataset_generator_m1.generator as generator_module
 

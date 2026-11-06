@@ -4,7 +4,7 @@ import hashlib
 from pathlib import Path
 from typing import Literal
 import numpy as np
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
 
 class Strict(BaseModel):
     model_config = ConfigDict(extra='forbid', frozen=True, allow_inf_nan=False)
@@ -23,7 +23,27 @@ class WeightedShape(Strict):
 
 class WeightedGround(Strict):
     index: int = Field(ge=0, le=5)
+    asset_id: str | None = Field(default=None, min_length=1, max_length=128)
     weight: float = Field(gt=0, le=1000)
+
+class SingleSpotFill(Strict):
+    power_w: float = Field(gt=0, le=10000)
+    size_m: float = Field(ge=.01, le=10)
+    location: tuple[float, float, float]
+    color: tuple[float, float, float] = (1., .95, .9)
+
+    @model_validator(mode='after')
+    def bounds(self):
+        if not all(-20 <= value <= 20 for value in self.location[:2]) or not .2 <= self.location[2] <= 20:
+            raise ValueError('Invalid fill location')
+        if any(not 0 <= value <= 1 for value in self.color): raise ValueError('Invalid fill color')
+        return self
+
+
+class IndoorLightBalance(Strict):
+    max_total_power_w: float | None = Field(default=None, gt=0, le=80000)
+    single_spot_fill: SingleSpotFill | None = None
+
 
 class Preset(Strict):
     schema_version: Literal[1] = 1
@@ -63,9 +83,19 @@ class Preset(Strict):
     overhead_width_m: tuple[float, float]
     overhead_thickness_m: tuple[float, float]
     caster_visible_camera: bool = False
+    indoor_light_balance: IndoorLightBalance | None = None
+
+    @model_serializer(mode='wrap')
+    def serialize_legacy(self, handler):
+        result = handler(self)
+        if self.indoor_light_balance is None:
+            result.pop('indoor_light_balance', None)
+        return result
 
     @model_validator(mode='after')
     def bounds(self):
+        if self.environment != 'indoor' and self.indoor_light_balance is not None:
+            raise ValueError('Indoor light balance requires indoor environment')
         ranges=((self.wall_heights_m,.2,20),(self.wall_roughness,0,1),(self.ceiling_roughness,0,1),
                 (self.roughness,0,1),(self.environment_strength,0,10), (self.sun_azimuth_degrees,-180,180),
                 (self.sun_elevation_degrees,5,90),(self.sun_angular_size,.001,.5),(self.sun_power,.01,10),
@@ -134,6 +164,18 @@ def sample(preset, seed, scene_index, treatment, settings, ground_count, environ
                 'target':[0,0,0],'color':choice(name+'-color',preset.lamp_colors),
                 'power_w':uniform(name+'-power',preset.lamp_power_w),'size_m':uniform(name+'-size',preset.lamp_size_m),
                 'spot_size_rad':uniform(name+'-spot-size',preset.spot_size_rad),'spot_blend':uniform(name+'-spot-blend',preset.spot_blend)})
+    if preset.indoor_light_balance is not None:
+        balance = preset.indoor_light_balance
+        lamps = t['lamps']
+        total = sum(lamp['power_w'] for lamp in lamps)
+        if balance.max_total_power_w is not None and total > balance.max_total_power_w:
+            for lamp in lamps:
+                lamp['power_w'] *= balance.max_total_power_w / total
+        if balance.single_spot_fill is not None and len(lamps) == 1 and lamps[0]['kind'] == 'SPOT':
+            fill = balance.single_spot_fill
+            lamps.append({'kind':'AREA','location':list(fill.location),'target':[0,0,0],
+                          'color':list(fill.color),'power_w':fill.power_w,'size_m':fill.size_m,
+                          'spot_size_rad':.7853981633974483,'spot_blend':.15})
     s=dict(settings)
     s.update(wall_color=choice('wall-color',preset.wall_colors),ceiling_color=choice('ceiling-color',preset.ceiling_colors),
         wall_roughness=uniform('wall-roughness',preset.wall_roughness),ceiling_roughness=uniform('ceiling-roughness',preset.ceiling_roughness),

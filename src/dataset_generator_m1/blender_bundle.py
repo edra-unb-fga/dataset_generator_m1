@@ -33,8 +33,19 @@ def safe_relative(value):
     return path
 
 
+def write_bundle_config(workspace, name, config):
+    """Keep relocated relative inputs anchored at the unpacked bundle root."""
+    if Path(name).name != name or not name.endswith('.json') or name in ('config.json','manifest.json'):
+        raise ValueError('Invalid bundle run config filename')
+    path=Path(workspace)/name
+    with path.open('x') as file:
+        json.dump(config,file,indent=2)
+        file.write('\n')
+    return path
+
+
 def build_bundle(config_path, destination):
-    from .blender_pilot import load_config, reference_scenes
+    from .blender_pilot import SceneMixture, load_config, reference_scenes
     from .asset_licenses import validate_asset_license
     from .inspection import _LocalLinks
     config=load_config(config_path);reference_scenes(config.reference_pool)
@@ -99,7 +110,10 @@ def build_bundle(config_path, destination):
             if not path.is_relative_to(config.reference_pool):raise ValueError('Reference file escapes pool')
             add(path,'inputs/reference/'+path.relative_to(config.reference_pool).as_posix())
         write('config.json',value)
-        if any(t.wear is not None for t in config.treatments):
+        if (any(t.wear is not None for t in config.treatments)
+                or isinstance(config.procedural, SceneMixture) and (
+                    any(state.wear is not None for state in config.procedural.material_states)
+                    or any(member.treatment_overrides.get('wear') is not None for member in config.procedural.members))):
             from .blender_pilot import prepare
             with tempfile.TemporaryDirectory() as prepared_temp:
                 prepared=Path(prepared_temp)/'study'

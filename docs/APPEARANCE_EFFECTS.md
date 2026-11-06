@@ -27,7 +27,7 @@ The local effect is deterministic, records its sampled parameters and duration, 
 The installed backend currently supports the following catalog-visible transforms through the same traced pipeline:
 
 - color and exposure: `HueSaturationValue`, `RandomBrightnessContrast`, `RandomGamma`, `PlanckianJitter`, `Illumination`, `PlasmaBrightnessContrast`;
-- blur and noise: `GaussianBlur`, `MotionBlur`, `GaussNoise`, `AdditiveNoise`, `SaltAndPepper`;
+- blur and noise: `GaussianBlur`, `MotionBlur`, `WeightedMotionBlur`, `GaussNoise`, `AdditiveNoise`, `SaltAndPepper`;
 - lighting and shadow: `PlasmaShadow`, `RandomSunFlare`;
 - weather: `RandomFog`, `RandomRain`.
 - camera encoding: `ImageCompression` (final RGB stage, JPEG quality bounds).

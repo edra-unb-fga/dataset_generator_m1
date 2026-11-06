@@ -57,6 +57,16 @@ machine-independent capacity estimates. An optional `min_gpu_free_mib` guard sto
 free VRAM falls below its limit or NVIDIA telemetry is unavailable. GPU and host RAM are separate.
 Budget-limited output may still be exported explicitly.
 
+New ordinary policies record system-wide swap-out above the configured threshold as a warning;
+the other resource guards remain active. The shared counter does not identify the cause. Previously
+prepared studies retain their frozen action; a missing action means the historical abort behavior.
+For a deliberately strict timing study, pass `--guard-settings experiments/blenderproc/execution/strict-benchmark-guards.json`
+to the fresh preparation command. Swap activity can contaminate measurements even when it warns.
+The optional `scripts/postprocess_blender_capture.py --input-dir STUDY --output-dir NEW_DIR
+--profile builtin:appearance/coherent-balanced --seed 42` applies only the profile's final RGB
+effects to verified accepted renders. It writes hashes, seeds and copied geometric mask evidence;
+the masks do not represent optical blur. Source images and annotations remain untouched.
+
 For one-command setup, generate a fresh policy and prepare the study together:
 
 ```sh
@@ -389,6 +399,14 @@ camera margin also supplies target-to-wall clearance; result diagnostics record 
 `grounds` entry; `wall_texture_repeats` sets UV repetitions per face. Set the index to null
 for a plain-colored wall. The examples choose the Concrete034 ground entry explicitly; this
 is a prototype requiring visual and annotation review, not a calibrated material library.
+
+`pilot-broad-material-candidate.example.json` is an additional opt-in mixture for
+review alongside the existing balanced candidate. It retains the same three scene
+contexts, camera settings and nominal pad thickness, while weighting broad, softer
+and original lighting 7:2:1 within each context and clean, lightly worn and visibly
+worn material states 2:6:2. These are editable starting weights, not calibrated
+prevalences; original lighting retains deliberately difficult examples. The file is
+not automatically selected and does not change saved studies or existing presets.
 
 ## Material provenance and completed-cell handoff
 

@@ -36,6 +36,22 @@
           ],
           "default": null,
           "title": "Min Gpu Free Mib"
+        },
+        "swap_out_action": {
+          "anyOf": [
+            {
+              "enum": [
+                "warn",
+                "abort"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Swap Out Action"
         }
       },
       "required": [

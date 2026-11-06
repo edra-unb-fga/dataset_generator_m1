@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import math
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator, model_serializer
 
@@ -143,6 +143,52 @@ class EnvironmentalShadeConfig(StrictModel):
         return self
 
 
+ShadeStrength = Annotated[float, Field(ge=0, le=.8)]
+ShadeWidth = Annotated[float, Field(ge=.01, le=1.5)]
+ShadeSoftness = Annotated[float, Field(ge=0, le=.5)]
+ShadeOffset = Annotated[float, Field(ge=-1, le=1)]
+ShadeAngle = Annotated[float, Field(ge=-360, le=360)]
+
+
+class DirectionalShadeConfig(StrictModel):
+    """Qualitative scene-plane slab; range ordering is enforced at runtime."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+    probability: float = Field(default=0.7, ge=0, le=1)
+    strength: tuple[ShadeStrength, ShadeStrength] = (0.2, 0.5)
+    width: tuple[ShadeWidth, ShadeWidth] = (0.15, 0.4)
+    softness: tuple[ShadeSoftness, ShadeSoftness] = (0.01, 0.08)
+    offset: tuple[ShadeOffset, ShadeOffset] = (-0.3, 0.3)
+    angle_degrees: tuple[ShadeAngle, ShadeAngle] = (0., 360.)
+    shape: Literal["band", "rectangle", "ellipse", "wall", "mixed"] = "band"
+    shape_weights: tuple[float, float, float, float] = (1., 1., 1., 1.)
+    length: tuple[ShadeWidth, ShadeWidth] = (0.3, 1.0)
+    longitudinal_offset: tuple[ShadeOffset, ShadeOffset] = (-0.3, 0.3)
+
+    @model_serializer(mode="wrap")
+    def serialize_shape(self, handler):
+        result = handler(self)
+        if self.shape != "mixed":
+            result.pop("shape_weights", None)
+        if self.shape == "band":
+            for key in ("shape", "length", "longitudinal_offset"):
+                result.pop(key, None)
+        return result
+
+    @model_validator(mode="after")
+    def validate_ranges(self):
+        if any(x < 0 for x in self.shape_weights) or sum(self.shape_weights) <= 0:
+            raise ValueError("shape_weights must be nonnegative with a positive sum")
+        _ordered_range(self.strength, "directional_shade.strength")
+        _ordered_range(self.width, "directional_shade.width")
+        _ordered_range(self.softness, "directional_shade.softness")
+        _ordered_range(self.offset, "directional_shade.offset")
+        _ordered_range(self.angle_degrees, "directional_shade.angle_degrees")
+        _ordered_range(self.length, "directional_shade.length")
+        _ordered_range(self.longitudinal_offset, "directional_shade.longitudinal_offset")
+        return self
+
+
 class SceneLightingConfig(StrictModel):
     model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
     probability: float = Field(default=0.8, ge=0, le=1)
@@ -151,6 +197,7 @@ class SceneLightingConfig(StrictModel):
     tint: float = Field(default=0.025, ge=0, le=0.1)
     source_assumption: Literal["unknown", "baked", "unlit-approximation"] = "unknown"
     shade: EnvironmentalShadeConfig | None = None
+    directional_shade: DirectionalShadeConfig | None = None
 
     @model_serializer(mode="wrap")
     def serialize_omitted_shade(self, handler, info):
@@ -158,6 +205,8 @@ class SceneLightingConfig(StrictModel):
         preserve_disabled = isinstance(info.context, dict) and info.context.get('preserve_disabled_shade', False)
         if self.shade is None or (not preserve_disabled and (self.shade.probability == 0 or self.shade.strength[1] == 0)):
             result.pop('shade', None)
+        if self.directional_shade is None or (not preserve_disabled and (self.directional_shade.probability == 0 or self.directional_shade.strength[1] == 0)):
+            result.pop('directional_shade', None)
         return result
 
     @model_validator(mode="after")

@@ -528,6 +528,38 @@
       "title": "GroundMaterial",
       "type": "object"
     },
+    "IndoorLightBalance": {
+      "additionalProperties": false,
+      "properties": {
+        "max_total_power_w": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 80000,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Total Power W"
+        },
+        "single_spot_fill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SingleSpotFill"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "IndoorLightBalance",
+      "type": "object"
+    },
     "Lamp": {
       "additionalProperties": false,
       "properties": {
@@ -1158,6 +1190,17 @@
           "default": false,
           "title": "Caster Visible Camera",
           "type": "boolean"
+        },
+        "indoor_light_balance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IndoorLightBalance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -1196,6 +1239,174 @@
         "overhead_thickness_m"
       ],
       "title": "Preset",
+      "type": "object"
+    },
+    "SceneMaterialState": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        },
+        "roughness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Roughness",
+          "type": "number"
+        },
+        "wear": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SurfaceWearConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "weight",
+        "roughness"
+      ],
+      "title": "SceneMaterialState",
+      "type": "object"
+    },
+    "SceneMixture": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/SceneMixtureMember"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Members",
+          "type": "array"
+        },
+        "material_states": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SceneMaterialState"
+          },
+          "maxItems": 12,
+          "title": "Material States",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "members"
+      ],
+      "title": "SceneMixture",
+      "type": "object"
+    },
+    "SceneMixtureMember": {
+      "additionalProperties": false,
+      "properties": {
+        "weight": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Weight",
+          "type": "number"
+        },
+        "preset": {
+          "$ref": "#/$defs/Preset"
+        },
+        "treatment_overrides": {
+          "additionalProperties": true,
+          "title": "Treatment Overrides",
+          "type": "object"
+        }
+      },
+      "required": [
+        "weight",
+        "preset"
+      ],
+      "title": "SceneMixtureMember",
+      "type": "object"
+    },
+    "SingleSpotFill": {
+      "additionalProperties": false,
+      "properties": {
+        "power_w": {
+          "exclusiveMinimum": 0,
+          "maximum": 10000,
+          "title": "Power W",
+          "type": "number"
+        },
+        "size_m": {
+          "maximum": 10,
+          "minimum": 0.01,
+          "title": "Size M",
+          "type": "number"
+        },
+        "location": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Location",
+          "type": "array"
+        },
+        "color": {
+          "default": [
+            1.0,
+            0.95,
+            0.9
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Color",
+          "type": "array"
+        }
+      },
+      "required": [
+        "power_w",
+        "size_m",
+        "location"
+      ],
+      "title": "SingleSpotFill",
       "type": "object"
     },
     "SurfaceWearConfig": {
@@ -1622,6 +1833,20 @@
           "title": "Index",
           "type": "integer"
         },
+        "asset_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Asset Id"
+        },
         "weight": {
           "exclusiveMinimum": 0,
           "maximum": 1000,
@@ -1734,10 +1959,14 @@
           "$ref": "#/$defs/Preset"
         },
         {
+          "$ref": "#/$defs/SceneMixture"
+        },
+        {
           "type": "null"
         }
       ],
-      "default": null
+      "default": null,
+      "title": "Procedural"
     },
     "ground_mapping": {
       "anyOf": [

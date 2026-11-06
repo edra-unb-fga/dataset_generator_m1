@@ -199,6 +199,15 @@ def _merge_inline(base: dict[str, Any], inline: dict[str, Any]) -> dict[str, Any
     return result
 
 
+def resolve_family_name(reference: str, composer_path: str | Path) -> str:
+    """Resolve a family reference without relying on its spelling or location."""
+    value, _, _, _ = _load_bundle(reference, Path(composer_path).resolve(), 'family')
+    name = value.get('family')
+    if not isinstance(name, str) or not name:
+        raise ValueError('Family profile does not define a family name')
+    return name
+
+
 def load_profile(
     path: str | Path,
     overrides: dict[str, Any] | None = None,

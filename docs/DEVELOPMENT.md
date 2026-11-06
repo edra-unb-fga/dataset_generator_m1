@@ -88,7 +88,7 @@ asset roots. The PR handoff specifies the current review stack and unfinished pl
   disappearing processes, bounded overflow, pause polling, terminal-state flush, opt-out, and resume
   sessions; pair monitor-on/off production runs before making overhead claims.
 - Geometry/annotation change: run scene, imaging, annotation-evidence, QA, inspection, and export contracts.
-- Pool mask-evidence change: run annotation-evidence, generation-pool, inspection, scene, and export contracts; compare serial/process mask hashes and inspect both maintained families.
+- Pool mask-evidence change: run annotation-evidence, generation-pool, inspection, scene, and export contracts; compare serial/process mask hashes and inspect landing-pad, landing, and manometro.
 - Segmentation-export change: exercise detection and segmentation for random, stratified, and asset-disjoint splits; review fidelity warnings and both family QA galleries.
 - Split-planning change: exercise impossible/fragile component fixtures, analyze-only no-write behavior,
   embedded analysis equality, deterministic assignments, and both detection/segmentation export paths.

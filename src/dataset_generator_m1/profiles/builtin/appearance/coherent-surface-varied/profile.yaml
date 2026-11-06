@@ -1,0 +1,67 @@
+schema_version: 1
+subject: appearance
+value:
+  background: []
+  foreground:
+  - id: coherent-wear
+    type: SurfaceWear
+    probability: 0.8
+    params:
+      fade: 0.05
+      dirt: 0.12
+      scratches: 0.08
+      marks: 9
+  - id: coherent-foreground-grain
+    type: GaussNoise
+    probability: 0.15
+    params:
+      std_range:
+      - 0.003
+      - 0.012
+      mean_range:
+      - 0.0
+      - 0.0
+      per_channel: false
+  final:
+  - id: coherent-image-grain
+    type: GaussNoise
+    probability: 0.15
+    params:
+      std_range:
+      - 0.003
+      - 0.012
+      mean_range:
+      - 0.0
+      - 0.0
+      per_channel: false
+  - id: coherent-exposure
+    type: RandomBrightnessContrast
+    probability: 0.35
+    params:
+      brightness_limit:
+      - -0.04
+      - 0.04
+      contrast_limit:
+      - -0.06
+      - 0.06
+      ensure_safe_range: true
+  - id: coherent-weighted-motion
+    type: WeightedMotionBlur
+    probability: 0.7
+    params:
+      kernels:
+      - 3
+      - 7
+      - 15
+      weights:
+      - 4
+      - 2
+      - 1
+  - id: coherent-compression
+    type: ImageCompression
+    probability: 0.3
+    params:
+      quality_range:
+      - 88
+      - 98
+      compression_type: jpeg

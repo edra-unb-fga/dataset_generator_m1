@@ -1,0 +1,1 @@
+{"schema_version":1,"id":"builtin:appearance/coherent-refined","subject":"appearance","status":"experimental","intents":["paired-scene-review"],"performance_risk":"informational","warning_codes":["UNCALIBRATED_COHERENT_APPEARANCE"],"evidence":["docs/SURFACE_RENDERING.md"],"scaling_drivers":["foreground-source-pixels","output-pixels","marks"]}

@@ -1,5 +1,37 @@
 # Experimental planar surfaces
 
+## Coherent profile choices for review
+
+These profiles are opt-in, uncalibrated candidates; no family default is changed.
+Select the scene and appearance independently, and inspect the fully resolved
+composer because explicit inline overrides remain in force.
+
+| Choice | Scene profile | Appearance profile | Purpose |
+| --- | --- | --- | --- |
+| Earlier coherent | `coherent-varied` | `coherent-varied` (`coherent-varied-manometro` for gauges) | Paired reference with shared shade and restrained wear. |
+| Balanced capture | `coherent-varied` | `coherent-balanced` (`coherent-balanced-manometro` for gauges) | Existing coherent surface and shared shade with frequent, weighted motion blur. |
+| Scaled balanced capture | `coherent-varied` | `coherent-balanced-scaled` (`coherent-balanced-scaled-manometro` for gauges) | Same severity mix, with kernels scaled from a 640-pixel shorter side. |
+| Surface variation | `coherent-varied` | `coherent-surface-varied` (`coherent-surface-varied-manometro` for gauges) | More visible, still qualitative existing wear. |
+| Challenging | `coherent-challenging` | `coherent-challenging` (`coherent-challenging-manometro` for gauges) | Wider shade and wear ranges plus stronger exposure variation. |
+
+`WeightedMotionBlur` is one final-RGB transform: activation is independent of
+surface wear, and only one weighted odd-sized kernel is sampled when it activates.
+The experimental balanced settings at 640px are 40/20/10% for 3/7/15px kernels
+on landing and landing-pad and 40/15/5% on manometro; other outcomes remain
+unblurred. Kernels are specified in output pixels, not automatically calibrated
+to resolution, camera motion or exposure. The severe setting intentionally can
+obscure small markings. Actual realized frequencies vary with seed and sample size.
+Old explicit profiles and composers that omit appearance retain their prior behavior.
+
+The scaled nominees set `reference_size: 640` on `WeightedMotionBlur`. The chosen
+kernel scales with the shorter output dimension; the nearest odd size is chosen,
+with ties rounded upward. At 1280×1280, configured 3/7/15 become 7/15/31 pixels.
+The effective size is bounded by 255 and the shorter image dimension; size one is
+an explicit no-op. The trace records the configured and effective sizes, scale,
+output dimensions and any bound or no-op. This is a provisional resolution rule,
+not calibrated physical camera motion. Omit `reference_size` for the exact legacy
+fixed-pixel behavior.
+
 Use `examples/configs/landing-pad_surface.yaml` through the normal resolve, preview, preflight and generate commands. Existing composers retain their selected effects. No physically calibrated realism or detector gain is claimed.
 
 `scene.lighting` is optional (omission disables it). Its probability (default .8), gain range [.85,1.10], gradient amplitude [.05,.25] and tint bound .025 sample one constant/linear irradiance field in scene coordinates. Gain is bounded [.1,2], gradient [0,1], tint [0,.1]. Inverse shared homography evaluates the same field for all surfaces. Texture affine rotation leaves the lighting field fixed. Modulation uses linear RGB after composition and before capture effects, with bounded row workspaces. It cannot remove baked shadows from photographs. `source_assumption` records `unknown`, `baked` or `unlit-approximation`; it is a declaration, not an inferred property.
@@ -101,3 +133,55 @@ are uncalibrated candidates. Broad settings may noticeably alter the target colo
 Neither is a new default, and visual similarity or detector improvement has not been
 established. `scripts/study_foreground_context.py` and its saved study matrix support
 paired comparison with a separate reserved seed; both phases reuse the same asset catalog.
+
+The opt-in `builtin:scene/coherent-candidate` combines premultiplied resampling,
+background context and a shared illumination field while retaining standard geometry.
+Context is always attempted, with strength [.35,.65], radius .12, brightness cap .12
+and per-channel chroma cap .06. The field uses probability .8, gain [.9,1.05],
+gradient [.02,.12] and tint .015. These caps are deliberately much lower than the
+previous broad treatment, which produced purple and washed-out targets. They are
+uncalibrated engineering choices rather than evidence that the result is more realistic.
+Set `scene: builtin:scene/coherent-candidate` and
+`appearance: {preset: builtin:appearance/coherent-candidate}` in a new composer to
+try the coordinated treatment. Its wear probability is .8 with fade .08, dirt .24,
+scratches .16 and 16 marks; restrained whole-frame exposure, motion blur and JPEG
+compression complete the candidate. Existing composers keep their selected profiles.
+Review every family separately before promotion.
+See `experiments/foreground-context/coherent-candidate.json` for a saved ablation.
+
+`builtin:scene/coherent-refined` and `builtin:appearance/coherent-refined` are a
+second paired-review variant: initial landing crops showed conspicuous circular dirt
+in the first candidate. The refined appearance lowers wear to probability .65, fade
+.03, dirt .06, scratches .04 and six marks. The refined scene adds optional shared
+shade (probability .5, strength [.08,.18], radii [.2,.45]). The shade is a common
+field, not a physical contact shadow. Both variants remain experimental.
+
+### Opt-in directional shade
+
+`scene.lighting.directional_shade` adds an independent qualitative slab attenuation
+in normalized scene coordinates after foreground/background composition and before
+capture. `probability` is in [0, 1]; ordered `strength` is [0, .8], `width` is
+[.01, 1.5], `softness` is [0, .5], `offset` is [-1, 1], and `angle_degrees` is
+[-360, 360]. Both endpoints are bounded in the generated JSON Schemas; runtime
+also rejects reversed pairs, which ordinary JSON Schema cannot generally express.
+`width`, `softness` and `offset` use normalized scene coordinates:
+the signed position is `cos(angle) * (scene_x / canvas_width - .5) + sin(angle)
+* (scene_y / canvas_height - .5)`. Zero softness gives a hard edge; otherwise
+smoothstep transitions across the given edge width. It samples a separate random
+stream, records parameters with the scene effect, and shares the existing scene
+homography. It leaves masks and annotations unchanged. Omitted or disabled shade
+preserves the existing serialized profile and rendering. Inline disabling survives
+profile merge. This infinite slab is a procedural approximation; it does not infer a
+caster, height, contact shadow or baked lighting, and is not a calibrated physical
+lighting model. `builtin:scene/coherent-directional` is an experimental scene
+profile paired for review with `builtin:appearance/coherent-refined`; no default
+profile uses it.
+
+Directional shade also accepts `shape: rectangle` or `shape: ellipse` for finite,
+independently sampled silhouettes; omission keeps the original infinite `band` and
+its random draws. `length` is the full extent along the band (scene fraction,
+ordered range .01–1.5, default [.3,1]); `longitudinal_offset` sets its center
+along that axis (ordered range -1–1, default [-.3,.3]). The existing width,
+offset, angle, strength and bounded softness controls still apply. Shapes are
+analytic scene-plane approximations, not physical caster geometry. Choose shapes
+explicitly for controlled studies; no mixed-shape production preset is promoted.

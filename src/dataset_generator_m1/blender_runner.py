@@ -12,7 +12,9 @@ from .blender_execution import resolve_execution
 def monitor(commands, root, name, seconds, guards, *, gpu=False):
     import psutil
     from .blender_pilot import atomic_json
-    started=monotonic();swap0=psutil.swap_memory().sout;observations=[];gpu_samples=[];reason=None
+    started=monotonic();observations=[];gpu_samples=[];reason=None;warnings=[]
+    try:swap0=psutil.swap_memory().sout
+    except (OSError, RuntimeError, AttributeError):swap0=None
     processes=[];logs=[];last_gpu=-1;gpu_free=None
     try:
         for index,command in enumerate(commands):
@@ -29,8 +31,15 @@ def monitor(commands, root, name, seconds, guards, *, gpu=False):
                 for child in tree:
                     try:rss+=child.memory_info().rss
                     except psutil.Error:pass
-            elapsed=monotonic()-started;available=psutil.virtual_memory().available;swap=max(0,psutil.swap_memory().sout-swap0)
+            elapsed=monotonic()-started;available=psutil.virtual_memory().available
+            try:swap=max(0,psutil.swap_memory().sout-swap0) if swap0 is not None else None
+            except (OSError, RuntimeError, AttributeError):swap=None
             observations.append({'seconds':elapsed,'rss_bytes':rss,'available_bytes':available,'swap_out_delta_bytes':swap})
+            swap_reason=('swap-telemetry-unavailable' if swap is None else 'host-swap-out' if swap>guards['max_swap_out_mib']*2**20 else None)
+            if swap_reason and guards.get('swap_out_action')=='warn' and swap_reason not in warnings:
+                import sys
+                warnings.append(swap_reason)
+                print(f'Warning: {swap_reason}; host memory, process RSS and GPU guards remain active.',file=sys.stderr,flush=True)
             if gpu and elapsed-last_gpu>=1:
                 last_gpu=elapsed;gpu_free=None
                 try:
@@ -41,12 +50,12 @@ def monitor(commands, root, name, seconds, guards, *, gpu=False):
                 except (OSError,ValueError,IndexError,subprocess.SubprocessError):pass
             reason=('available-memory-floor' if available<guards['min_available_gib']*2**30 else
                     'process-tree-RSS' if rss>guards['rss_limit_gib']*2**30 else
-                    'host-swap-out' if swap>guards['max_swap_out_mib']*2**20 else
+                    swap_reason if swap_reason and guards.get('swap_out_action')!='warn' else
                     'gpu-telemetry-unavailable' if gpu and guards.get('min_gpu_free_mib') is not None and gpu_free is None else
                     'gpu-memory-floor' if gpu_free is not None and guards.get('min_gpu_free_mib') is not None and gpu_free<guards['min_gpu_free_mib'] else
                     'study-time-budget' if elapsed>=seconds else None)
             atomic_json(root/'progress.json',{'status':'running','phase':name,'elapsed_seconds':elapsed,
-                'remaining_budget_seconds':max(0,seconds-elapsed),'completed_scenes':len(list((root/'scenes').glob('*/result.json')))})
+                'remaining_budget_seconds':max(0,seconds-elapsed),'completed_scenes':len(list((root/'scenes').glob('*/result.json'))),'warnings':warnings})
             if reason or all(p.poll() is not None for p in processes):break
             # No blocking worker wait: resources cover the entire concurrent process group.
             import time
@@ -79,7 +88,7 @@ def monitor(commands, root, name, seconds, guards, *, gpu=False):
             'reason':reason,'returncodes':codes,'command_seconds':monotonic()-started,
             'peak_rss_bytes':max((o['rss_bytes'] for o in observations),default=0),
             'minimum_available_bytes':min((o['available_bytes'] for o in observations),default=None),
-            'swap_out_delta_bytes':max((o['swap_out_delta_bytes'] for o in observations),default=0),'guards':guards,
+            'swap_out_delta_bytes':max((o['swap_out_delta_bytes'] for o in observations if o['swap_out_delta_bytes'] is not None),default=None),'guards':guards,'warnings':warnings,
             'sampled_peak_gpu_memory_mib':max((d['memory_mib'] for sample in gpu_samples for d in sample['devices']),default=None)}
     atomic_json(root/f'{name}-resources.json',observations)
     atomic_json(root/f'{name}-gpu.json',gpu_samples)

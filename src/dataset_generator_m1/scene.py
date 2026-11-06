@@ -17,7 +17,7 @@ from .background_adaptation import adapt_foreground_to_background
 from .filters import TransformTrace, apply_pipeline_traced
 from .imaging import composite_linear_srgb, read_rgba, resize_rgba, rotate_rgba, visible_bbox, warp_rgba
 from .scene_occlusion import SceneOccluder, composite_occluders, sample_occluders
-from .surface_effects import apply_scene_lighting, sample_lighting, sample_environmental_shade
+from .surface_effects import apply_scene_lighting, sample_lighting, sample_environmental_shade, sample_directional_shade
 from .models import ResolvedProfile
 from .placement_diagnostics import (
     bounded_spatial_histogram,
@@ -696,9 +696,14 @@ class SceneRenderer:
         shade_config = self.profile.scene.lighting.shade if self.profile.scene.lighting is not None else None
         shade_seed = derive_seed(self.profile.run.seed, plan.slot, plan.candidate_attempt, "scene-environmental-shade")
         shade = sample_environmental_shade(shade_config, np.random.default_rng(shade_seed))
-        rendered = apply_scene_lighting(rendered, plan.scene_to_output, plan.canvas_size, lighting, shade)
+        directional_config = self.profile.scene.lighting.directional_shade if self.profile.scene.lighting is not None else None
+        directional_seed = derive_seed(self.profile.run.seed, plan.slot, plan.candidate_attempt, "scene-directional-shade")
+        directional = sample_directional_shade(directional_config, np.random.default_rng(directional_seed))
+        rendered = apply_scene_lighting(rendered, plan.scene_to_output, plan.canvas_size, lighting, shade, directional)
         if shade is not None:
             lighting = {**lighting, 'shade': {'seed': shade_seed, **shade}}
+        if directional is not None:
+            lighting = {**lighting, 'directional_shade': {'seed': directional_seed, **directional}}
         timings["scene_lighting"] = max(0, self.clock()-started)
         scene_effects = {
             "lighting": {"seed": lighting_seed, **lighting} if lighting is not None else None,
