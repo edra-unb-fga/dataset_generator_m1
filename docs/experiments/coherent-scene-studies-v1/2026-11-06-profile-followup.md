@@ -23,6 +23,24 @@ The high blur can make fine gauge markings unreadable while other image context
 remains. Stronger wear can still show repetitive stains; it is a variation for
 review, not a new physical plastic texture. These observations are qualitative.
 
+## Review recommendations, not approvals
+
+- **Landing-pad:** start review with balanced capture and shared shade. Compare
+  surface-varied against it at full size before deciding whether the extra marks
+  should be part of an ordinary mixture.
+- **Landing:** start from the same balanced capture choice, but separately inspect
+  wear on the light circular artwork, where repeated marks are more conspicuous.
+- **Manometro:** start with the gauge-specific balanced candidate and review the
+  forced 15px examples at full size. The proposed 5% severe tail is an editable
+  starting choice, not an established readability or detector threshold.
+- **3D:** retain the reviewed balanced mixture and compare the broad/material
+  candidate as a separate choice. The latter reweights existing component presets;
+  its weights are not evidence that lighting artifacts have been resolved.
+
+Challenging is useful as a selectable stress mixture; these small samples do not
+justify making it the default. Each family and the 3D mixture need their own user
+approval before promotion.
+
 Single ordered, unwarmed four-pair comparisons against `realistic-heavy` measured
 2.19→1.88 accepted images/s for landing-pad, 2.55→2.13 for landing, and 2.48→2.20
 for manometro. They are small exploratory measurements, not stable performance
@@ -35,6 +53,32 @@ The local gallery `outputs/experiments/pr89-profile-review/` includes these
 comparisons and 24 existing 3D renders before and after the selected RGB capture
 profile. The latter are post-render treatments; geometric masks are copied
 unchanged and are not blurred-optics annotations. They are not new 3D renders.
+
+## Fresh 3D mixture
+
+A fresh 12-scene L4 draw of the broader material candidate completed and passed
+archive, source, image, mask and shutdown verification. It sampled six open, four
+outdoor and two indoor scenes, reusing the same reference assets. Archive SHA-256:
+`98471e9ead7004bf88e8988f2cd8ee97ff600388fae41e68588c9b3c816c0fa8`;
+input bundle identity: `cc710515bb33883fabda37fbd0a4b4ba3d6833b8f58fe029ae6fcb62b60b3b15`.
+The runtime took 134 seconds for its remote script, including setup, and was
+shut down by its supervisor. These are fresh sampled scenes, not matched new
+lighting renders or an estimate of artifact frequency.
+
+On visual inspection, multiple targets remain recognizable and the sample includes
+several ground appearances. The indoor examples 001 and 007 are pale, outdoor 008
+is strongly washed out, and open 011 is dark with strong geometric shadows. Some
+challenging cases are intentional, but the tiny and uneven context sample does not
+establish whether they occur at a desirable rate. Earlier matched lighting triplets
+are documented in [the 3D screen](2026-11-05-3d-screen.md); they investigate the
+component lights, not the newly weighted distribution.
+
+The preceding 24-scene attempt produced no retrievable results: its independent
+watchdog stopped the runtime at its deadline after the execution connection failed
+to complete. It is not counted as a study. Across both attempts the displayed
+Colab balance fell from 154.90 to 154.58 CU, with zero active assignments after
+shutdown. The observed 0.32 CU difference may lag actual billing; before allocation
+the retry's conservative aggregate gate was 1.39 CU against the 2 CU limit.
 
 ## Reproduction
 
